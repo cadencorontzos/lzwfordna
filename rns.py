@@ -59,7 +59,6 @@ def toRNSStream(filename):
     newFile2    = open(filename + ".two.txt", 'w')
     newFile3    = open(filename + ".three.txt", 'w')
 
-
     nextChar = file.read(1)
     while nextChar:  
         td.start_record()
@@ -72,6 +71,7 @@ def toRNSStream(filename):
         # newFile2.write(combineStreamsToByte(r2, d2))
         # newFile3.write(combineStreamsToByte(r3, d3))
         newFile1.write(str(r1))
+        td.add()
         newFile2.write(str(r2))
         newFile3.write(str(r3))
         nextChar = file.read(1)
@@ -80,6 +80,7 @@ def toRNSStream(filename):
     newFile2.close()
     newFile3.close()
     file.close()
+    td.save()
 
 def combineStreamsToByte(s1, s2):
     combo = s1* (2**4) +s2
