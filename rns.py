@@ -61,7 +61,9 @@ def toRNSStream(filename):
 
     nextChar = file.read(1)
     while nextChar:  
+
         
+
         td.start_record()
         r1, r2, r3 = encodeRNS(nextChar)
         # nextChar = file.read(1)
