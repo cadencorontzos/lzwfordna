@@ -2,3 +2,4 @@
 /textfiles
 /visualization
 __pycache__
+*.vscode
