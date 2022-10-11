@@ -3,3 +3,5 @@
 /visualization
 __pycache__
 *.vscode
+*.o
+*.out
