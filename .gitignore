@@ -3,8 +3,10 @@
 /visualization
 __pycache__
 *.vscode
-/lzwcpp/*.o
+*.o
 /lzwcpp/test
 *.out
 *main
-/lzwcpp/a.out
+*a.out
+/lzwcpp/lzw
+/lzwcpp/main
