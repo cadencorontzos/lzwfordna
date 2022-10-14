@@ -5,7 +5,7 @@
 # Variables to control Makefile operation
  
 CXX=g++
-CXX_FLAGS=-g -std=c++14 -Wall -g
+CXX_FLAGS=-Wall -Wextra -pedantic -std=c++17 -O3#-Werror
 TARGETS=test_bitio
  
 # ****************************************************
@@ -19,7 +19,7 @@ lzw: lzw.o bitio.o
 	$(CXX) $(CXX_FLAGS) -o lzw lzw.o bitio.o 
 
 %.o: %.cc %.hh
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXX_FLAGS) -c -o $@ $<
 
 clean:
 	rm *.o $(EXEC) -f

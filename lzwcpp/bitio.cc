@@ -11,13 +11,27 @@ BitInput::BitInput(std::istream& is)
 };
 
 
-bool BitInput::input_bit(){
+// bool BitInput::eof(){
+//     return (*input_stream).eof();
+// }
 
+bool BitInput::input_bit(){
+    // if((*this).eof()){
+    //     throw 100;
+    // }
     if(index == CHARACTER_SIZE || index == 0){
         index = 0;
-        (*input_stream).get(buffer);
+        char b;
+        (*input_stream).get(b);
+        // std::cout <<"b:" <<b << std::endl;
+        buffer = int(b) ;
     }
+    // std::cout << std::endl << "buffer : " << buffer << std::endl;
+    // std::cout << "index: " << index << std::endl;
+    // std::cout << "buffer << index: " << (buffer>>index) << std::endl;
 
+    // std::cout << "bit returned :" << ((buffer>>index) &1) << std::endl;
+    
     return (buffer>>index++) & 1;
 }
 
@@ -37,6 +51,7 @@ BitOutput::~BitOutput(){
         }
     }
  };
+
 
 // Output a single bit (buffered)
 void BitOutput::output_bit(bool bit){

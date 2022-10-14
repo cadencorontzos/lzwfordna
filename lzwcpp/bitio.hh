@@ -17,13 +17,14 @@ class BitInput {
   BitInput& operator=(const BitInput&) = default;
   BitInput& operator=(BitInput&&) = default;
 
+  // bool eof();
   // Read a single bit (or trailing zero)
   // Allowed to crash or throw an exception if called past end-of-file.
   bool input_bit();
 
   private:
     std::istream* input_stream;
-    char buffer;
+    int buffer;
     int index;
 };
 
@@ -41,6 +42,7 @@ class BitOutput {
   BitOutput(BitOutput&&) = default;
   BitOutput& operator=(const BitOutput&) = default;
   BitOutput& operator=(BitOutput&&) = default;
+
 
   // Output a single bit (buffered)
   void output_bit(bool bit);

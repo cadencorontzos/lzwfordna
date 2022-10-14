@@ -139,6 +139,23 @@ test_100_bits()
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+void test_many_zeros()
+{
+  std::stringstream bits;
+  {
+    BitOutput bito(bits);
+    for (int i = 0; i < 100; ++i) {
+      bito.output_bit(false);
+    }
+  }
+
+  BitInput biti(bits);
+  for (int i = 0; i < 100; ++i) {
+    assert(biti.input_bit() == false);
+  }
+  assert(!biti.input_bit());
+}
 int
 main() {
   test_1_bit();
@@ -147,6 +164,7 @@ main() {
   test_9_bits();
   test_16_bits();
   test_100_bits();
+  test_many_zeros();
   std::cout<< "tests passed !" << std::endl;
   return 0;
 }
