@@ -10,3 +10,5 @@ __pycache__
 *a.out
 /lzwcpp/lzw
 /lzwcpp/main
+/lzwcpp/lzwencode
+/lzwcpp/lzwdecode
