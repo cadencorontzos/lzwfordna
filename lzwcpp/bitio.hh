@@ -23,9 +23,10 @@ class BitInput {
   bool input_bit();
 
   private:
-    std::istream* input_stream;
-    int buffer;
+    std::istream& input_stream;
     int index;
+    int buffer;
+ 
 };
 
 // BitOutput: Write a single bit at a time to an output stream
@@ -48,7 +49,7 @@ class BitOutput {
   void output_bit(bool bit);
 
   private:
-     std::ostream* output_stream;
+     std::ostream& output_stream;
      int index;
      char buffer;
 };

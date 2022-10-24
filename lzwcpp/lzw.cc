@@ -13,25 +13,11 @@ namespace fs = std::filesystem;
 
 LZW::LZW() = default;
 
-
 LZW::~LZW() = default;
 
-CompressionStatistics* LZW::encode(std::string filename, std::string output_filename){
+void LZW::encode(std::ifstream* input, std::ofstream* output){
     
-    std::ifstream input (filename, std::ios::binary);
-
-    if (!input.is_open()){
-        std::cout << "Unable to open " << filename << ".\n";
-        return nullptr;
-    }
-
-    std::ofstream output;
-
-    auto original_size =  fs::file_size(filename);
-
-    output.open(output_filename, std::ios::binary);
-
-    BitOutput bit_output(output);
+    BitOutput bit_output(*output);
     std::unordered_map<std::string, int> dictionary;
 
     for (int i = 0; i < 256; ++i){
@@ -45,9 +31,8 @@ CompressionStatistics* LZW::encode(std::string filename, std::string output_file
     int codeword_size = 8;
     int max_codeword_size = 1<<8;
     // std::string f = "11";
-    std::cout << "Encoding File " << filename << std::endl;
     // std::cout << ((dictionary.find(f))==dictionary.end())<< std::endl;
-    K = input.get();
+    K = (*input).get();
     // std::cout << K << std::endl;
     std::string currentBlock = "";
     int blockSize = 0;
@@ -95,7 +80,7 @@ CompressionStatistics* LZW::encode(std::string filename, std::string output_file
         }
 
         // std::cout << char(K);
-        K = input.get();
+        K = (*input).get();
     }
 
     if (currentBlock !="" && dictionary.find(currentBlock ) != dictionary.end()){
@@ -108,7 +93,10 @@ CompressionStatistics* LZW::encode(std::string filename, std::string output_file
         for (int i = codeword_size-1; i>=0; --i){
             bit_output.output_bit((code>>i)&1);
             std::cout<< ' ' << ((code>>i)&1) ;
+
         }
+
+        // outout magic codeword
 
     }else if (currentBlock!=""){
 
@@ -125,11 +113,6 @@ CompressionStatistics* LZW::encode(std::string filename, std::string output_file
         }
 
     }
-
-
-
-    CompressionStatistics* stats = new CompressionStatistics {true, 0.0, 0.0, 1, 1} ;
-    return stats;
 }
 
 static int get_codeword(int code_size, BitInput* bit_input){
@@ -141,21 +124,8 @@ static int get_codeword(int code_size, BitInput* bit_input){
     return b;
 }
     // Decode an input stream, and write to output stream
-CompressionStatistics* LZW::decode(std::string filename, std::string output_filename){
+void LZW::decode(std::ifstream* input, std::ofstream* output){
 
-    std::ifstream input (filename, std::ios::binary);
-
-    // if file can't be opened, move on to the next argument
-    if (!input.is_open()){
-    
-        std::cout << "Unable to open " << filename << ".\n";
-        return nullptr;
-    }
-
-    std::ofstream output;
-
-
-    output.open(output_filename, std::ios::binary);
 
 
     std::unordered_map<int, std::string> dictionary;
@@ -173,10 +143,10 @@ CompressionStatistics* LZW::decode(std::string filename, std::string output_file
     char nextByte;
     // std::cout << max_codeword_size;
 
-    BitInput bit_input(input);
+    BitInput bit_input(*input);
     // std::cout << "here";
     // int currentBlock = get_codeword(code_size, &bit_input);
-    while(!input.eof()){
+    while(!(*input).eof()){
 
 
         if (codeword == max_codeword_size){
@@ -187,7 +157,7 @@ CompressionStatistics* LZW::decode(std::string filename, std::string output_file
         outputBoth = false;
         // int decodedPart = dictionary[codeword];
         codewordFound = get_codeword(code_size, &bit_input);
-        if(input.eof()){
+        if((*input).eof()){
             break;
         }
         
@@ -199,7 +169,7 @@ CompressionStatistics* LZW::decode(std::string filename, std::string output_file
         // std::cout << "and this byte : " << byte  << std::endl;//debug
 
         // std::cout << "I added " << codeword <<  "->" << decodedCodeword->second  << byte << " to the dictionary" << std::endl;//debug
-        output << decodedCodeword->second << nextByte;
+        (*output) << decodedCodeword->second << nextByte;
 
         
         dictionary[codeword] = decodedCodeword->second + nextByte;
@@ -215,7 +185,7 @@ CompressionStatistics* LZW::decode(std::string filename, std::string output_file
     if(!outputBoth){
         auto decodedCodeword = dictionary.find(codewordFound);
         std::cout  << decodedCodeword->second << std::endl;
-        output << decodedCodeword->second;
+        (*output) << decodedCodeword->second;
         
     }
 
@@ -223,16 +193,4 @@ CompressionStatistics* LZW::decode(std::string filename, std::string output_file
     std::cout << dictionary[codewordFound] << std::endl;
 
     std::cout << nextByte;
-    CompressionStatistics* stats = new CompressionStatistics {true, 0.0, 0.0, 1, 1} ;
-    return stats;
-}
-
-int main(){
-
-    
-   auto f = new LZW();
-   std::cout << "Encoding File" << std::endl << std::endl;
-   f->encode("./test/test.txt", "./test/encode2.txt");
-   std::cout << std::endl << std::endl << "Decoding that Encoding" << std::endl << std::endl;
-   f->decode("./test/encode2.txt", "./test/decode2.txt");
 }

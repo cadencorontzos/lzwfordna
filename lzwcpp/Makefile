@@ -5,21 +5,26 @@
 # Variables to control Makefile operation
  
 CXX=g++
-CXX_FLAGS=-Wall -Wextra -pedantic -std=c++17 -O3#-Werror
-TARGETS=test_bitio
+CXXFLAGS=-Wall -Wextra -pedantic -std=c++2a -O3#-Werror
  
 # ****************************************************
 # Targets needed to bring the executable up to date
  
 
 test_bitio: test_bitio.o bitio.o
-	$(CXX) $(CXX_FLAGS) -o main test_bitio.o bitio.o 
+	$(CXX) $(CXXFLAGS) -o main test_bitio.o bitio.o 
+all: lzwencode lzwdecode
 
-lzw: lzw.o bitio.o
-	$(CXX) $(CXX_FLAGS) -o lzw lzw.o bitio.o 
+lzwencode: lzwencode.o bitio.o lzw.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
-%.o: %.cc %.hh
-	$(CXX) $(CXX_FLAGS) -c -o $@ $<
+lzwdecode: lzwdecode.o bitio.o lzw.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
+# lzw: lzw.o bitio.o
+# 	$(CXX) $(CXXFLAGS) -o lzw lzw.o bitio.o 
+
+%.o: %.cpp %.hh
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
 	rm *.o $(EXEC) -f
