@@ -32,14 +32,10 @@ int main(int argc, char* argv[]){
     std::ofstream output;
     fs::path inputFilePath = fs::current_path() / argv[1];
 
-    auto input_size = fs::file_size(inputFilePath);
-
-
-
     output.open( std::string(argv[1])+".decompressed.lzw", std::ios::binary);
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    compressor.decode(&input, &output);
+    compressor.decode(input, output);
     auto end_time = std::chrono::high_resolution_clock::now();
 
     output.close();

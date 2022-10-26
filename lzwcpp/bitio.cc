@@ -3,40 +3,21 @@
 #include <iostream>
 #include <climits>
 
-BitInput::BitInput(std::istream& is)
-: input_stream(is), index(CHAR_BIT), buffer(0)
-{
-}
-
-
-// bool BitInput::eof(){
-//     return (*input_stream).eof();
-// }
+BitInput::BitInput(std::istream& is): input_stream(is), index(CHAR_BIT), buffer(0) {}
 
 bool BitInput::input_bit(){
-    // if((*this).eof()){
-    //     throw 100;
-    // }
+
     if(index == CHAR_BIT){
         index = 0;
         char b;
         input_stream.get(b);
-        // std::cout <<"b:" <<b << std::endl;
         buffer = int(b) ;
     }
-    // std::cout << std::endl << "buffer : " << buffer << std::endl;
-    // std::cout << "index: " << index << std::endl;
-    // std::cout << "buffer << index: " << (buffer>>index) << std::endl;
-
-    // std::cout << "bit returned :" << ((buffer>>index) &1) << std::endl;
-    
     return (buffer>>index++) & 1;
 }
 
 
-BitOutput::BitOutput(std::ostream& os)
-: output_stream(os), index(0), buffer(0)
-{}
+BitOutput::BitOutput(std::ostream& os): output_stream(os), index(0), buffer(0) {}
 
 
 BitOutput::~BitOutput(){
@@ -45,21 +26,16 @@ BitOutput::~BitOutput(){
             output_stream.put(buffer);
         }
     }
- };
+ }
 
-
-// Output a single bit (buffered)
 void BitOutput::output_bit(bool bit){
 
     if (index == 0){
         buffer = 0;
     }
 
-
-    buffer |= (bit<<index++);
-
-    // if a byte is complete, output it to the stream
-
+    buffer |= (bit<<index++);\
+    
     if (index == CHAR_BIT){
         output_stream.put(buffer);
         index = 0;
