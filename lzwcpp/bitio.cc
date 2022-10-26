@@ -3,9 +3,8 @@
 #include <iostream>
 #include <climits>
 
-const int CHARACTER_SIZE =8;
 BitInput::BitInput(std::istream& is)
-: input_stream(is), index(CHARACTER_SIZE), buffer(0)
+: input_stream(is), index(CHAR_BIT), buffer(0)
 {
 }
 
@@ -18,7 +17,7 @@ bool BitInput::input_bit(){
     // if((*this).eof()){
     //     throw 100;
     // }
-    if(index == CHARACTER_SIZE){
+    if(index == CHAR_BIT){
         index = 0;
         char b;
         input_stream.get(b);
@@ -61,7 +60,7 @@ void BitOutput::output_bit(bool bit){
 
     // if a byte is complete, output it to the stream
 
-    if (index == CHARACTER_SIZE){
+    if (index == CHAR_BIT){
         output_stream.put(buffer);
         index = 0;
     }

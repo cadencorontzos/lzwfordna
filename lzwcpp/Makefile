@@ -5,7 +5,7 @@
 # Variables to control Makefile operation
  
 CXX=g++
-CXXFLAGS=-Wall -Wextra -pedantic -std=c++2a -O3#-Werror
+CXXFLAGS=-Wall -Wextra -pedantic -std=c++2a #-Werror
  
 # ****************************************************
 # Targets needed to bring the executable up to date

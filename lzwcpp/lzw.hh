@@ -9,7 +9,7 @@ class LZW {
     LZW();
     ~LZW();
     // Encode an input stream, and write to output stream
-    void encode(std::ifstream* input, std::ofstream* output);
+    void encode(std::ifstream& input, std::ofstream& output);
 
     // Decode an input stream, and write to output stream
     void decode(std::ifstream* input, std::ofstream* output);

@@ -1,6 +1,6 @@
 #include "lzw.hh"
 #include "bitio.hh"
-#include <climits>
+
 #include <iostream>
 #include <map>
 #include <string>
@@ -8,6 +8,7 @@
 #include <chrono>
 #include <filesystem>
 #include <unordered_map>
+#include <climits>
 
 namespace fs = std::filesystem;
 
@@ -15,77 +16,71 @@ LZW::LZW() = default;
 
 LZW::~LZW() = default;
 
-void LZW::encode(std::ifstream* input, std::ofstream* output){
+void outputCodeword( int codeword, int codeword_size , BitOutput& bit_output){
+    for (int i = codeword_size-1; i>=0; --i){
+        bit_output.output_bit((codeword>>i)&1);
+    }
+}
+
+void outputChar( char character,  BitOutput& bit_output){
+    for (int i = CHAR_BIT-1; i>=0; --i){
+        bit_output.output_bit((character>>i)&1);
+    }
+}
+
+void LZW::encode(std::ifstream& input, std::ofstream& output){
     
-    BitOutput bit_output(*output);
+    BitOutput bit_output(output);
     std::unordered_map<std::string, int> dictionary;
 
     for (int i = 0; i < 256; ++i){
         std::string str1(1, char(i));
         dictionary[str1] = i;
     }
-    // std::cout << std::to_string(0) << std::endl;
+ 
     char K;
-    int codeword = 256;
+    int codeword = 258;
     std::string str_K;
-    int codeword_size = 8;
-    int max_codeword_size = 1<<8;
-    // std::string f = "11";
-    // std::cout << ((dictionary.find(f))==dictionary.end())<< std::endl;
-    K = (*input).get();
-    // std::cout << K << std::endl;
+    int codeword_size = 9;
+    int max_codeword_size = 1<<9;
     std::string currentBlock = "";
-    int blockSize = 0;
-    // output << "fuck";
+
+    K = input.get();
     while(K != -1){
         
-        // std::cout << "next character: "  << K << std::endl; // debug
-        // If our table is full, expand
+
         if (codeword == max_codeword_size){
             codeword_size += 1;
             max_codeword_size<<= 1;
         }
 
         
-
-        // If w+K is not new, build up w
         if (dictionary.find(currentBlock + K) != dictionary.end()){
-            
             currentBlock = currentBlock +K;
-            //std::cout << currentBlock << " is already in the dict" << std::endl;//debug
-            // std::cout << "here:" << currentBlock << std::endl;
-            blockSize++;
-
         }
         else{
-            // std::cout << "I haven't seen this before :"  << currentBlock << " " << K << std::endl; //debug
             int code = dictionary[currentBlock];
-            // std::cout << code << std::endl;
-            blockSize = 0;
-            // std::cout << "I'll output this codeword (in binary) :" ; //debug
-            for (int i = codeword_size-1; i>=0; --i){
-                bit_output.output_bit((code>>i)&1);
-                // std::cout << ((code>>i)&1) ;//debug
-                // std::cout<< ' ' << ((code>>i)&1) ;
-    
-            }
-            // std::cout << std::endl << "and this character:" << K << "which in binary is " << std::endl;//debug
-            for (int i = 7; i>=0; --i){
-                bit_output.output_bit((K>>i)&1);
-                // std::cout<< ' ' << ((K>>i)&1) ;//debug
-            }
+  
+            outputCodeword(code, codeword_size, bit_output);
+            outputChar(K, bit_output);
             dictionary[currentBlock + K] = codeword;
             codeword += 1;
             currentBlock = "";
         }
-
-        // std::cout << char(K);
-        K = (*input).get();
+        K = input.get();
     }
 
-    if (currentBlock !="" && dictionary.find(currentBlock ) != dictionary.end()){
+    if (currentBlock !=""){
+        std::cout << currentBlock;
+        char back = currentBlock.back();
+        currentBlock.pop_back();
+        int code;
+        if(currentBlock.length() == 0){
+            code = 257;
+        }else{
+            code = dictionary[currentBlock];
+        }
         
-        int code = dictionary[currentBlock];
         // std::cout << "dsdfsd" << code << std::endl;
         // std::cout << 
         std::cout << currentBlock << std::endl;
@@ -95,24 +90,11 @@ void LZW::encode(std::ifstream* input, std::ofstream* output){
             std::cout<< ' ' << ((code>>i)&1) ;
 
         }
+        outputChar(back, bit_output);
 
-        // outout magic codeword
-
-    }else if (currentBlock!=""){
-
-        int code = dictionary[currentBlock];
-        
-        std::cout << "new code at end "<< code << std::endl;
-        blockSize = 0;
-        // std::cout << code << std::endl;
-        for (int i = codeword_size-1; i>=0; --i){
-            bit_output.output_bit((code>>i)&1);
-            // std::cout << ((code>>i)&1) ;
-            // std::cout<< ' ' << ((code>>i)&1) ;
-
-        }
 
     }
+    outputCodeword(256, codeword_size, bit_output);
 }
 
 static int get_codeword(int code_size, BitInput* bit_input){
@@ -135,10 +117,10 @@ void LZW::decode(std::ifstream* input, std::ofstream* output){
         dictionary[i] = str1;
     }
 
-    int code_size = 8;
-    int codeword = 256;
+    int code_size = 9;
+    int codeword = 258;
     int codewordFound;
-    int max_codeword_size = 1<<8;
+    int max_codeword_size = 1<<9;
     bool outputBoth;
     char nextByte;
     // std::cout << max_codeword_size;
@@ -146,51 +128,57 @@ void LZW::decode(std::ifstream* input, std::ofstream* output){
     BitInput bit_input(*input);
     // std::cout << "here";
     // int currentBlock = get_codeword(code_size, &bit_input);
-    while(!(*input).eof()){
+    codewordFound = get_codeword(code_size, &bit_input);
+    while(codewordFound!=256){
+        outputBoth = false;
+        // int decodedPart = dictionary[codeword];
+        if((*input).eof()){
+            break;
+        }
 
+        nextByte = char(get_codeword(8, &bit_input));
+
+        if (codewordFound==257){
+            (*output) << nextByte;
+            break;
+        }
+
+        outputBoth = true;
+        // std::cout << " _________________________________________" << std::endl;
+        // std::cout << "codeword = " << codeword << std::endl;
+        // std::cout << "I found this codeword : "<< codewordFound << std::endl; //debug
+        auto decodedCodeword = dictionary.find(codewordFound);
+        // std::cout << "Which maps to this string: " << decodedCodeword->second << std::endl;//debug
+
+        // std::cout << "and this byte : " << nextByte  << std::endl;//debug
+
+        // std::cout << "I added " << codeword <<  "->" << decodedCodeword->second  << nextByte << " to the dictionary" << std::endl;//debug
+
+        (*output) << decodedCodeword->second << nextByte;
+        // std::cout << " _________________________________________" << std::endl;
+        
+        dictionary[codeword] = decodedCodeword->second + nextByte;
+        codeword+=1;
 
         if (codeword == max_codeword_size){
             code_size += 1;
             max_codeword_size <<= 1;
         }
         
-        outputBoth = false;
-        // int decodedPart = dictionary[codeword];
+    
         codewordFound = get_codeword(code_size, &bit_input);
-        if((*input).eof()){
-            break;
-        }
-        
-        outputBoth = true;
-        // std::cout << "I found this codeword : "<< codewordFound << std::endl; //debug
-        auto decodedCodeword = dictionary.find(codewordFound);
-        // std::cout << "Which maps to this string: " << decodedCodeword->second << std::endl;//debug
-        nextByte = char(get_codeword(8, &bit_input));
-        // std::cout << "and this byte : " << byte  << std::endl;//debug
-
-        // std::cout << "I added " << codeword <<  "->" << decodedCodeword->second  << byte << " to the dictionary" << std::endl;//debug
-        (*output) << decodedCodeword->second << nextByte;
-
-        
-        dictionary[codeword] = decodedCodeword->second + nextByte;
-        codeword+=1;
-        
-        // std::string decoded = dictionary[codewordFound];
-        // std::string nextByte = 
-        // std::cout << "decodedPard: " << decodedPart<< std::endl;
-        // std::cout << " newChar " << newCharacter << std::endl;
-        
     
     }
-    if(!outputBoth){
-        auto decodedCodeword = dictionary.find(codewordFound);
-        std::cout  << decodedCodeword->second << std::endl;
-        (*output) << decodedCodeword->second;
+
+    // if(!outputBoth){
+    //     auto decodedCodeword = dictionary.find(codewordFound);
+    //     std::cout  << decodedCodeword->second << std::endl;
+    //     (*output) << decodedCodeword->second;
         
-    }
+    // }
 
-    std::cout << codewordFound << std::endl;
-    std::cout << dictionary[codewordFound] << std::endl;
+    // std::cout << codewordFound << std::endl;
+    // std::cout << dictionary[codewordFound] << std::endl;
 
-    std::cout << nextByte;
+    // std::cout << nextByte;
 }

@@ -39,7 +39,7 @@ int main(int argc, char* argv[]){
     output.open( std::string(argv[1])+".compressed.lzw", std::ios::binary);
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    compressor.encode(&input, &output);
+    compressor.encode(input, output);
     auto end_time = std::chrono::high_resolution_clock::now();
 
     output.close();
