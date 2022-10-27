@@ -11,20 +11,6 @@
 
 namespace fs = std::filesystem;
 
-void LZW::output_n_bits(int bits, int n , BitOutput& bit_output){
-    for (int i = n-1; i>=0; --i){
-        bit_output.output_bit((bits>>i)&1);
-    }
-}
-
-int LZW::read_n_bits(int n, BitInput& bit_input){
-    int b = 0;
-    for (int i= n-1; i >=0; i--){
-        b |= (bit_input.input_bit()<<i);
-    }
-    return b;
-}
-
 LZW::LZW() = default;
 
 LZW::~LZW() = default;
@@ -57,8 +43,8 @@ void LZW::encode(std::ifstream& input, std::ofstream& output){
         }
         else{
             int code = dictionary[currentBlock];
-            output_n_bits(code, codeword_size, bit_output);
-            output_n_bits((int) K, CHAR_BIT, bit_output);
+            bit_output.output_n_bits(code, codeword_size);
+            bit_output.output_n_bits((int) K, CHAR_BIT);
             dictionary[currentBlock + K] = codeword;
             codeword += 1;
             currentBlock = "";
@@ -77,11 +63,11 @@ void LZW::encode(std::ifstream& input, std::ofstream& output){
             code = dictionary[currentBlock];
         }
         
-        output_n_bits(code, codeword_size, bit_output);
-        output_n_bits((int) back, CHAR_BIT, bit_output);
+        bit_output.output_n_bits(code, codeword_size);
+        bit_output.output_n_bits((int) back, CHAR_BIT);
 
     }
-    output_n_bits(256, codeword_size, bit_output);
+    bit_output.output_n_bits(256, codeword_size);
 }
 
 
@@ -102,7 +88,7 @@ void LZW::decode(std::ifstream& input, std::ofstream& output){
     char nextByte;
     BitInput bit_input(input);
 
-    codewordFound = read_n_bits(code_size, bit_input);
+    codewordFound = bit_input.read_n_bits(code_size);
 
     while(codewordFound!=256){
      
@@ -111,7 +97,7 @@ void LZW::decode(std::ifstream& input, std::ofstream& output){
             break;
         }
 
-        nextByte = char(read_n_bits(8, bit_input));
+        nextByte = char(bit_input.read_n_bits(8));
 
         if (codewordFound==257){
             output << nextByte;
@@ -140,7 +126,7 @@ void LZW::decode(std::ifstream& input, std::ofstream& output){
         }
         
     
-        codewordFound = read_n_bits(code_size, bit_input);
+        codewordFound = bit_input.read_n_bits(code_size);
     
     }
 

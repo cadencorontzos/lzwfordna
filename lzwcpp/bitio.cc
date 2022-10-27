@@ -16,6 +16,13 @@ bool BitInput::input_bit(){
     return (buffer>>index++) & 1;
 }
 
+int BitInput::read_n_bits(int n){
+    int b = 0;
+    for (int i= n-1; i >=0; i--){
+        b |= (input_bit()<<i);
+    }
+    return b;
+}
 
 BitOutput::BitOutput(std::ostream& os): output_stream(os), index(0), buffer(0) {}
 
@@ -35,10 +42,15 @@ void BitOutput::output_bit(bool bit){
     }
 
     buffer |= (bit<<index++);\
-    
+
     if (index == CHAR_BIT){
         output_stream.put(buffer);
         index = 0;
     }
 }
 
+void BitOutput::output_n_bits(int bits, int n){
+    for (int i = n-1; i>=0; --i){
+        output_bit((bits>>i)&1);
+    }
+}

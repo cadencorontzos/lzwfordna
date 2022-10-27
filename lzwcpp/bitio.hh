@@ -22,6 +22,7 @@ class BitInput {
   // Allowed to crash or throw an exception if called past end-of-file.
   bool input_bit();
 
+  int read_n_bits(int n);
   private:
     std::istream& input_stream;
     int index;
@@ -47,6 +48,8 @@ class BitOutput {
 
   // Output a single bit (buffered)
   void output_bit(bool bit);
+
+  void output_n_bits(int bits, int n);
 
   private:
      std::ostream& output_stream;
