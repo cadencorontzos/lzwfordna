@@ -8,7 +8,7 @@ class LZW {
     LZW();
     ~LZW();
 
-    void encode(std::ifstream& input, std::ofstream& output);
-    void decode(std::ifstream& input, std::ofstream& output);
+    void encode(std::istream& input, std::ostream& output);
+    void decode(std::istream& input, std::ostream& output);
 
 };

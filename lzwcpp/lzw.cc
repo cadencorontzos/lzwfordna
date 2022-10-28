@@ -15,7 +15,7 @@ LZW::LZW() = default;
 
 LZW::~LZW() = default;
 
-void LZW::encode(std::ifstream& input, std::ofstream& output){
+void LZW::encode(std::istream& input, std::ostream& output){
     
     BitOutput bit_output(output);
     std::unordered_map<std::string, int> dictionary;
@@ -72,7 +72,7 @@ void LZW::encode(std::ifstream& input, std::ofstream& output){
 
 
 
-void LZW::decode(std::ifstream& input, std::ofstream& output){
+void LZW::decode(std::istream& input, std::ostream& output){
 
     std::unordered_map<int, std::string> dictionary;
 
@@ -103,20 +103,8 @@ void LZW::decode(std::ifstream& input, std::ofstream& output){
             output << nextByte;
             break;
         }
-
-        // std::cout << " _________________________________________" << std::endl;
-        // std::cout << "codeword = " << codeword << std::endl;
-        // std::cout << "I found this codeword : "<< codewordFound << std::endl; //debug
         auto decodedCodeword = dictionary.find(codewordFound);
-        // std::cout << "Which maps to this string: " << decodedCodeword->second << std::endl;//debug
-
-        // std::cout << "and this byte : " << nextByte  << std::endl;//debug
-
-        // std::cout << "I added " << codeword <<  "->" << decodedCodeword->second  << nextByte << " to the dictionary" << std::endl;//debug
-
-        output << decodedCodeword->second << nextByte;
-        // std::cout << " _________________________________________" << std::endl;
-        
+        output << decodedCodeword->second << nextByte;    
         dictionary[codeword] = decodedCodeword->second + nextByte;
         codeword+=1;
 

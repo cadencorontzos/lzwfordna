@@ -3,17 +3,17 @@
 #include <iostream>
 #include <climits>
 
-BitInput::BitInput(std::istream& is): input_stream(is), index(CHAR_BIT), buffer(0) {}
+BitInput::BitInput(std::istream& is): input_stream(is), index(-1), buffer(0) {}
 
 bool BitInput::input_bit(){
 
-    if(index == CHAR_BIT){
-        index = 0;
+    if(index == -1){
+        index = CHAR_BIT-1;
         char b;
         input_stream.get(b);
         buffer = int(b) ;
     }
-    return (buffer>>index++) & 1;
+    return (buffer>>index--) & 1;
 }
 
 int BitInput::read_n_bits(int n){
@@ -24,12 +24,12 @@ int BitInput::read_n_bits(int n){
     return b;
 }
 
-BitOutput::BitOutput(std::ostream& os): output_stream(os), index(0), buffer(0) {}
+BitOutput::BitOutput(std::ostream& os): output_stream(os), index(CHAR_BIT-1), buffer(0) {}
 
 
 BitOutput::~BitOutput(){
     if(output_stream){
-        if(index>0){
+        if(index<CHAR_BIT-1){
             output_stream.put(buffer);
         }
     }
@@ -37,15 +37,15 @@ BitOutput::~BitOutput(){
 
 void BitOutput::output_bit(bool bit){
 
-    if (index == 0){
+    if (index == CHAR_BIT-1){
         buffer = 0;
     }
 
-    buffer |= (bit<<index++);\
+    buffer |= (bit<<index--);
 
-    if (index == CHAR_BIT){
+    if (index == -1){
         output_stream.put(buffer);
-        index = 0;
+        index = CHAR_BIT-1;
     }
 }
 

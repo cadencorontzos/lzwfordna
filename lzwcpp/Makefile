@@ -1,10 +1,14 @@
 CXX=g++
 CXXFLAGS=-Wall -Wextra -pedantic -std=c++2a -O3 -Werror
- 
-all: lzwencode lzwdecode
+EXEC= test_lzw test_bitio lzwdecode lzwencode
+
+all: lzwencode lzwdecode test_lzw test_bitio
 
 test_bitio: test_bitio.o bitio.o
-	$(CXX) $(CXXFLAGS) -o main test_bitio.o bitio.o 
+	$(CXX) $(CXXFLAGS) -o $@ $^ 
+
+test_lzw: test_lzw.o bitio.o lzw.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 lzwencode: lzwencode.o bitio.o lzw.o
 	$(CXX) $(CXXFLAGS) -o $@ $^

@@ -52,7 +52,7 @@ void
 test_8_bits()
 {
   std::stringstream bits0, bits1;
-
+  // std::cout << "hered" ;
   {
     BitOutput bito0(bits0);
     BitOutput bito1(bits1);
@@ -64,6 +64,7 @@ test_8_bits()
     }
   }
 
+  // std::cout << "hereagain";
   BitInput biti0(bits0);
   BitInput biti1(bits1);
   for (int i = 0; i < 8; ++i) {
