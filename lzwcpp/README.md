@@ -33,5 +33,5 @@ to run unit tests
 to run integration tests
 ```
     make all
-    sh integration.sh
+    sh integration.sh $FOLDER_NAME
 ```
