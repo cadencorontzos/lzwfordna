@@ -11,17 +11,15 @@ float compressionRatio( int output_size, int input_size){
 }
 
 int main(int argc, char* argv[]){
-    // Checking that there are more than 1 arguments
+
+
     if (argc != 2){
         std::cerr<<"Please include the name of the file you would like to compress\n";
         return 1;
     }
 
-
     std::cout<<"Compressing file "<<argv[1]<< std::endl;
-   
     std::ifstream input (argv[1], std::ios::binary);
-
     if (!input.is_open()){
         std::cout << "Unable to open " << argv[1] << ".\n";
         return 1;
@@ -33,11 +31,11 @@ int main(int argc, char* argv[]){
     fs::path inputFilePath = fs::current_path() / argv[1];
 
     auto input_size = fs::file_size(inputFilePath);
-
     std::cout << "Original File size: " << input_size << " bytes" << std::endl;
 
     output.open( std::string(argv[1])+".compressed.lzw", std::ios::binary);
 
+    // compress file
     auto start_time = std::chrono::high_resolution_clock::now();
     compressor.encode(input, output);
     auto end_time = std::chrono::high_resolution_clock::now();

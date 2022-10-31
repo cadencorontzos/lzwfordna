@@ -17,105 +17,136 @@ LZW::~LZW() = default;
 
 void LZW::encode(std::istream& input, std::ostream& output){
     
-    BitOutput bit_output(output);
+    // initialize starter dictionary
     std::unordered_map<std::string, int> dictionary;
-
-    for (int i = 0; i < 256; ++i){
+    for (int i = 0; i < STARTING_DICT_SIZE; ++i){
         std::string str1(1, char(i));
         dictionary[str1] = i;
     }
  
-    char K;
-    int codeword = 258;
-    std::string str_K;
-    int codeword_size = 9;
-    int max_codeword_size = 1<<9;
-    std::string currentBlock = "";
+    BitOutput bit_output(output);
 
-    K = input.get();
-    while(K != -1){
+    // the current codeword we are using, and the size of the codewords
+    // each time we use a codeword we will have to increment so all codewords are unique
+    int codeword = STARTING_CODEWORD;
+    int codeword_size = STARTING_CODE_SIZE;
+    int max_codeword_size = 1<<STARTING_CODE_SIZE;
+
+    // the pieces of the file we are reading
+    // current block is a string that we've seen before (its in the dictionary), next_character is the following character that we are looking at
+    std::string currentBlock = "";
+    char next_character;
+
+    next_character = input.get();
+    while(next_character != -1){
+
+        // increment the codword size if the current codeword becomes too large
         if (codeword == max_codeword_size){
             codeword_size += 1;
             max_codeword_size<<= 1;
         }
-        if (dictionary.find(currentBlock + K) != dictionary.end()){
-            currentBlock = currentBlock +K;
+
+        // if we've already seen the sequence, keep going
+        if (dictionary.find(currentBlock + next_character) != dictionary.end()){
+            currentBlock = currentBlock + next_character;
         }
         else{
+
+            // lookup the current block in the dictionary and output it, along with the new character
             int code = dictionary[currentBlock];
             bit_output.output_n_bits(code, codeword_size);
-            bit_output.output_n_bits((int) K, CHAR_BIT);
-            dictionary[currentBlock + K] = codeword;
+            bit_output.output_n_bits((int) next_character, CHAR_BIT);
+
+            // add this new sequence to our dictionary
+            dictionary[currentBlock + next_character] = codeword;
             codeword += 1;
             currentBlock = "";
         }
-        K = input.get();
+        next_character = input.get();
     }
 
-    if (currentBlock !=""){
-        std::cout << currentBlock;
-        char back = currentBlock.back();
-        currentBlock.pop_back();
-        int code;
-        if(currentBlock.length() == 0){
-            code = 257;
-        }else{
-            code = dictionary[currentBlock];
-        }
-        
+    // output special eof character
+    bit_output.output_n_bits(EOF_CODEWORD, codeword_size);
+
+    // after we've encoded, we either have 
+    // no current block (case 0)
+    // we have a current block that is a single character (case 1)
+    // otherwise we have a current block > 1 byte (default)
+    switch (currentBlock.length()){
+    case 0:
+        bit_output.output_bit(false);
+        bit_output.output_bit(false);
+        break;
+    case 1:
+        bit_output.output_bit(false);
+        bit_output.output_bit(true);
+        bit_output.output_n_bits((int) currentBlock[0], CHAR_BIT);
+        break;
+    default:
+        bit_output.output_bit(true);
+        bit_output.output_bit(true);
+
+        int code = dictionary[currentBlock];
         bit_output.output_n_bits(code, codeword_size);
-        bit_output.output_n_bits((int) back, CHAR_BIT);
-
+        break;
     }
-    bit_output.output_n_bits(256, codeword_size);
 }
 
 
 
 void LZW::decode(std::istream& input, std::ostream& output){
 
+    // starting dictionary
     std::unordered_map<int, std::string> dictionary;
-
-    for (int i = 0; i < 256; ++i){
+    for (int i = 0; i < STARTING_DICT_SIZE; ++i){
         std::string str1(1, char(i));
         dictionary[i] = str1;
     }
 
-    int code_size = 9;
-    int codeword = 258;
+    int code_size = STARTING_CODE_SIZE;
+    int codeword = STARTING_CODEWORD;
     int codewordFound;
-    int max_codeword_size = 1<<9;
+    int max_codeword_size = 1<<STARTING_CODE_SIZE;
     char nextByte;
     BitInput bit_input(input);
 
+    // assume the file isn't empty
     codewordFound = bit_input.read_n_bits(code_size);
+    while(codewordFound!=EOF_CODEWORD){
 
-    while(codewordFound!=256){
-     
+        nextByte = char(bit_input.read_n_bits(CHAR_BIT));
 
-        if(input.eof()){
-            break;
-        }
-
-        nextByte = char(bit_input.read_n_bits(8));
-
-        if (codewordFound==257){
-            output << nextByte;
-            break;
-        }
+        // look up the codeword in the dictionary
         auto decodedCodeword = dictionary.find(codewordFound);
-        output << decodedCodeword->second << nextByte;    
+        
+        // output what we had in the dictionary and the byte following
+        output << decodedCodeword->second << nextByte; 
+
+        // add this new sequence to our dictionary   
         dictionary[codeword] = decodedCodeword->second + nextByte;
         codeword+=1;
 
+        // increment the codeword size if needed
         if (codeword == max_codeword_size){
             code_size += 1;
             max_codeword_size <<= 1;
         }
         
-    
         codewordFound = bit_input.read_n_bits(code_size);
+    }
     
+    // the two bits after eof are a code for the last portion of the encoded file
+    // either there is an extra codeword(1), extra byte (3), or nothing left (0)
+    int whats_left = bit_input.read_n_bits(2);
+    switch(whats_left){
+    case 1:
+        output << char(bit_input.read_n_bits(CHAR_BIT));
+        break;
+    case 3:
+        int last_codeword = bit_input.read_n_bits(code_size);
+        auto decodedCodeword = dictionary.find(last_codeword);
+        output << decodedCodeword->second; 
+        break;
     }
 
 }
