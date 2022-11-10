@@ -9,6 +9,8 @@ __pycache__
 *main
 *a.out
 /lzwcpp/lzw
-/lzwcpp/main
+/lzwcpp/test_bitio
 /lzwcpp/lzwencode
 /lzwcpp/lzwdecode
+/lzwcpp/test_lzw
+/lzwcpp/DNACorpus*

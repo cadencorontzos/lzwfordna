@@ -74,7 +74,7 @@ class TidyData:
     ### When you're done adding records, call save() to create the CSV file
     # and the accompanying .md description file.
     def save(self, rounding_digits = 3):
-        dir = "features/"
+        dir = ""
         round_values(self.__records, rounding_digits)
 
         with open(dir + self.__base + ".md", "w", encoding='utf-8') as f:

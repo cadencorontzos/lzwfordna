@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-    std::cout<<"Decompressing file "<<argv[1]<< std::endl; 
+    // std::cout<<"Decompressing:  "<<argv[1]<< std::endl; 
     std::ifstream input (argv[1], std::ios::binary);
     if (!input.is_open()){
         std::cout << "Unable to open " << argv[1] << ".\n";
@@ -38,8 +38,8 @@ int main(int argc, char* argv[]){
     // output statistics
     fs::path out =  std::string(argv[1])+".decompressed.lzw";
     auto output_size = fs::file_size(out);
-    std::cout << "Decompressed file size: " << output_size << " bytes" << std::endl;
-    std::cout << "Decompression Time: " << duration.count() << " ms" << std::endl;
+    std::cout << "Decompressed file size (bytes) : " << output_size << std::endl;
+    std::cout << "Decompression Time (ms) : " << duration.count() << std::endl;
     return 0;
 
 }

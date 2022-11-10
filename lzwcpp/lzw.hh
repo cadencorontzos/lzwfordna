@@ -5,13 +5,13 @@
 class LZW {
   public:
 
-    const static int STARTING_DICT_SIZE=256;
-    const static int STARTING_CODE_SIZE=9;
-    const static int EOF_CODEWORD = 256;
-    const static int STARTING_CODEWORD = 257;
+    const int STARTING_DICT_SIZE=256;
+    const int STARTING_CODE_SIZE=9;
+    const int EOF_CODEWORD = 256;
+    const int STARTING_CODEWORD = 257;
 
-    LZW();
-    ~LZW();
+    LZW() = default;
+    ~LZW() = default;
 
     void encode(std::istream& input, std::ostream& output);
     void decode(std::istream& input, std::ostream& output);

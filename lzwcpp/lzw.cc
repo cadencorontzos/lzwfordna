@@ -11,13 +11,10 @@
 
 namespace fs = std::filesystem;
 
-LZW::LZW() = default;
-
-LZW::~LZW() = default;
-
 void LZW::encode(std::istream& input, std::ostream& output){
     
     // initialize starter dictionary
+    // TODO: have a type for codeword, should be uint64t
     std::unordered_map<std::string, int> dictionary;
     for (int i = 0; i < STARTING_DICT_SIZE; ++i){
         std::string str1(1, char(i));
@@ -38,6 +35,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
     char next_character;
 
     next_character = input.get();
+    // don't use -1 use constant
     while(next_character != -1){
 
         // increment the codword size if the current codeword becomes too large
@@ -47,14 +45,17 @@ void LZW::encode(std::istream& input, std::ostream& output){
         }
 
         // if we've already seen the sequence, keep going
+        // TODO: use cend() and save this iterator
         if (dictionary.find(currentBlock + next_character) != dictionary.end()){
             currentBlock = currentBlock + next_character;
         }
         else{
 
             // lookup the current block in the dictionary and output it, along with the new character
+            // shouldn't look up again
             int code = dictionary[currentBlock];
             bit_output.output_n_bits(code, codeword_size);
+            // TODO: static cast to unsigned (uint8t)
             bit_output.output_n_bits((int) next_character, CHAR_BIT);
 
             // add this new sequence to our dictionary
