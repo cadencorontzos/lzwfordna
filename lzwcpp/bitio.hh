@@ -14,8 +14,6 @@ class BitInput {
 
   BitInput(const BitInput&) = default;
   BitInput(BitInput&&) = default;
-  BitInput& operator=(const BitInput&) = default;
-  BitInput& operator=(BitInput&&) = default;
 
   // bool eof();
   // Read a single bit (or trailing zero)
@@ -42,9 +40,6 @@ class BitOutput {
 
   BitOutput(const BitOutput&) = default;
   BitOutput(BitOutput&&) = default;
-  BitOutput& operator=(const BitOutput&) = default;
-  BitOutput& operator=(BitOutput&&) = default;
-
 
   // Output a single bit (buffered)
   void output_bit(bool bit);
