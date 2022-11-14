@@ -36,7 +36,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
 
     next_character = input.get();
     // don't use -1 use constant
-    while(next_character != -1){
+    while(next_character != EOF){
 
         // increment the codword size if the current codeword becomes too large
         if (codeword == max_codeword_size){

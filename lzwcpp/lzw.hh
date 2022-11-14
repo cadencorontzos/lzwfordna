@@ -9,7 +9,6 @@ class LZW {
     const int STARTING_CODE_SIZE=9;
     const int EOF_CODEWORD = 256;
     const int STARTING_CODEWORD = 257;
-    const int EOF_CHARACTER = -1;
 
     LZW() = default;
     ~LZW() = default;
