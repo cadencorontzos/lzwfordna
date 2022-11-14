@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++2a -pg -g
+CXXFLAGS=-std=c++2a -g -pg -O0 -Werror -Wall
 EXEC= test_lzw test_bitio lzwdecode lzwencode
 
 all: lzwencode lzwdecode test_lzw test_bitio
