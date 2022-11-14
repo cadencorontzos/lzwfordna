@@ -1,0 +1,42 @@
+---
+title: "Profiling"
+author: "Caden Corontzos"
+output:
+  pdf_document
+graphics: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+#!/c/R/R-3.2.2/bin/Rscript.exe
+# Do not modify this chunk.
+knitr::opts_chunk$set(echo = F, message=FALSE, warning = FALSE, fig.align = "center")
+library(knitr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(formattable)
+```
+
+
+I used callgrind to profile my code. Callgrind finds out how many instructions are associated with each line of code, which gives an indication of how long each line will take. I looked at some of the trouble spots that Eitan and I found to see if we could see a noticable difference in runtime before and after each change.
+
+I used the two groups of DNA I had found the other day as benchmarks. 
+
+Here is the data before any optimizations. 
+
+```{r, echo=F}
+df1 = read.csv("./DNACorpus1Run1.csv")
+df2 = read.csv("./DNACorpus2Run1.csv")
+kable(df1, caption = "Corpus 1")
+```
+
+\pagebreak
+
+```{r}
+kable(df2, caption = "Corpus 2")
+```
+
+I then tested my implementation with callgrind. I encoded HaHi from DNA Corpus 2 to see what lines are taking long.
+
+
