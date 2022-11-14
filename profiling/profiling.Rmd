@@ -26,8 +26,8 @@ I used the two groups of DNA I had found the other day as benchmarks.
 Here is the data before any optimizations. 
 
 ```{r, echo=F}
-df1 = read.csv("./DNACorpus1Run1.csv")
-df2 = read.csv("./DNACorpus2Run1.csv")
+df1 = read.csv("./DNACorpus1Run.csv")
+df2 = read.csv("./DNACorpus2Run.csv")
 kable(df1, caption = "Corpus 1")
 ```
 
@@ -39,4 +39,26 @@ kable(df2, caption = "Corpus 2")
 
 I then tested my implementation with callgrind. I encoded HaHi from DNA Corpus 2 to see what lines are taking long.
 
+The first change we want to make was to create a type for codewords. They were previously just int, but we want to make them fixed at uint64 and have a special type for them.
 
+I ran callgrind before and after making this change. I found that we were able to save a lot of instructions on dictionary accesses with the fixed type. For instance, this was the number of 
+
+
+```{c++, eval= F}
+  6,910,075 ( 0.01%)              dictionary[currentBlock + next_character] = codeword;
+```
+
+
+
+
+```{r, echo=F}
+df1 = read.csv("./DNACorpus1Run2.csv")
+df2 = read.csv("./DNACorpus2Run2.csv")
+kable(df1, caption = "Corpus 1")
+```
+
+\pagebreak
+
+```{r}
+kable(df2, caption = "Corpus 2")
+```

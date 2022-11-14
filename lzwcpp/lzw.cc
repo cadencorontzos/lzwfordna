@@ -14,12 +14,12 @@ namespace fs = std::filesystem;
 void LZW::encode(std::istream& input, std::ostream& output){
     
     // initialize starter dictionary
-    // TODO: have a type for codeword, should be uint64t
-    std::unordered_map<std::string, LZW::codeword_type> dictionary;
+    std::unordered_map<std::string, codeword_type> dictionary;
     for (int i = 0; i < STARTING_DICT_SIZE; ++i){
         std::string str1(1, char(i));
         dictionary[str1] = static_cast<codeword_type>(i);
     }
+    auto end = dictionary.cend();
  
     BitOutput bit_output(output);
 
@@ -47,7 +47,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
 
         // if we've already seen the sequence, keep going
         // TODO: use cend() and save this iterator
-        if (dictionary.find(currentBlock + next_character) != dictionary.end()){
+        if (dictionary.find(currentBlock + next_character) != end ){
             currentBlock = currentBlock + next_character;
         }
         else{
