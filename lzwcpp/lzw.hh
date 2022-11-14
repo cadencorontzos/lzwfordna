@@ -10,6 +10,8 @@ class LZW {
     const int EOF_CODEWORD = 256;
     const int STARTING_CODEWORD = 257;
 
+    typedef uint64_t codeword_type;
+
     LZW() = default;
     ~LZW() = default;
 

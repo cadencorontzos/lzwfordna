@@ -15,16 +15,17 @@ void LZW::encode(std::istream& input, std::ostream& output){
     
     // initialize starter dictionary
     // TODO: have a type for codeword, should be uint64t
-    std::unordered_map<std::string, int> dictionary;
+    std::unordered_map<std::string, LZW::codeword_type> dictionary;
     for (int i = 0; i < STARTING_DICT_SIZE; ++i){
         std::string str1(1, char(i));
-        dictionary[str1] = i;
+        dictionary[str1] = static_cast<codeword_type>(i);
     }
  
     BitOutput bit_output(output);
 
     // the current codeword we are using, and the size of the codewords
     // each time we use a codeword we will have to increment so all codewords are unique
+    // TODO: need to make sure our codewords don't go over the max size of codeword_type
     int codeword = STARTING_CODEWORD;
     int codeword_size = STARTING_CODE_SIZE;
     int max_codeword_size = 1<<STARTING_CODE_SIZE;
@@ -35,7 +36,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
     char next_character;
 
     next_character = input.get();
-    // don't use -1 use constant
+
     while(next_character != EOF){
 
         // increment the codword size if the current codeword becomes too large
@@ -98,10 +99,10 @@ void LZW::encode(std::istream& input, std::ostream& output){
 void LZW::decode(std::istream& input, std::ostream& output){
 
     // starting dictionary
-    std::unordered_map<int, std::string> dictionary;
+    std::unordered_map<codeword_type, std::string> dictionary;
     for (int i = 0; i < STARTING_DICT_SIZE; ++i){
         std::string str1(1, char(i));
-        dictionary[i] = str1;
+        dictionary[static_cast<codeword_type>(i)] = str1;
     }
 
     int code_size = STARTING_CODE_SIZE;

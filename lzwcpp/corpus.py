@@ -24,7 +24,6 @@ def parseDecodeOutput(output):
 
 def runFile(filename, td):
     
-    avgTime = 0
 
     compressionOutput = subprocess.run([LZW_ENCODE, filename], capture_output=True)
     decompressionOutput = subprocess.run([LZW_DECODE, filename + ".compressed.lzw"], capture_output=True)
