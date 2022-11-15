@@ -124,3 +124,5 @@ kable(df1, caption = "Corpus 1")
 ```{r}
 kable(df2, caption = "Corpus 2")
 ```
+
+As we can see, the compression is a good bit faster, especially for the larger files.
