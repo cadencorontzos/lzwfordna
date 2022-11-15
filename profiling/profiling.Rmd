@@ -41,15 +41,7 @@ I then tested my implementation with callgrind. I encoded HaHi from DNA Corpus 2
 
 The first change we want to make was to create a type for codewords. They were previously just int, but we want to make them fixed at uint64 and have a special type for them.
 
-I ran callgrind before and after making this change. I found that we were able to save a lot of instructions on dictionary accesses with the fixed type. For instance, this was the number of 
-
-
-```{c++, eval= F}
-  6,910,075 ( 0.01%)              dictionary[currentBlock + next_character] = codeword;
-```
-
-
-
+I ran callgrind before and after making this change. I found that the amount of instructions was virtually identical, which makes sense since we didn't really change the structure of the code. I think that having a fixed codeword size will show some time saved once we turn compiler optimizations back on, but without that it didn't change much. I rand the corpus again just to confirm. 
 
 ```{r, echo=F}
 df1 = read.csv("./DNACorpus1Run2.csv")
@@ -58,6 +50,44 @@ kable(df1, caption = "Corpus 1")
 ```
 
 \pagebreak
+
+```{r}
+kable(df2, caption = "Corpus 2")
+```
+
+These times look pretty similar to the first run.
+
+One thing I noticed in the callgrind output was that there was significant time being spent each time we check if something is in the dictionary.
+
+Here is the callgrind output for that line.
+
+```
+105,030,135 ( 0.18%)          if (dictionary.find(currentBlock + next_character) != dictionary.end()){
+13,537,450,317 (22.83%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, char) (3,890,005x)
+11,653,779,430 (19.65%)  => /usr/include/c++/9/bits/unordered_map.h:std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long> > >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (3,890,005x)
+2,108,383,120 ( 3.56%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (3,890,005x)
+956,941,242 ( 1.61%)  => /usr/include/c++/9/bits/unordered_map.h:std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long> > >::end() (3,890,005x)
+241,180,314 ( 0.41%)  => /usr/include/c++/9/bits/hashtable_policy.h:bool std::__detail::operator!=<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true>(std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&, std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&) (3,890,005x)
+```
+As shown, this line is taking a significant amount of instructions, and it needs to pull the end() of the dictionary each time it is ran. If we use cend() instead and save that iterator in a variable called end, we can save a significant amount of instructions.
+
+```
+89,470,115 ( 0.61%)          if (dictionary.find(currentBlock + next_character) != end ){
+3,353,009,053 (22.78%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, char) (3,890,005x)
+2,833,786,025 (19.26%)  => /usr/include/c++/9/bits/unordered_map.h:std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long> > >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (3,890,005x)
+420,120,704 ( 2.85%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (3,890,005x)
+50,570,065 ( 0.34%)  => /usr/include/c++/9/bits/hashtable_policy.h:bool std::__detail::operator!=<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true>(std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&, std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&) (3,890,005x)
+```
+
+As you can see, the line itself takes less instructions, and it no has to pull up the end of the dictionary every time. This significantly decreased the total instructions in the program run. I then ran the corpus again to check the times.
+\pagebreak
+
+```{r, echo=F}
+df1 = read.csv("./DNACorpus1Run3.csv")
+df2 = read.csv("./DNACorpus2Run3.csv")
+kable(df1, caption = "Corpus 1")
+```
+
 
 ```{r}
 kable(df2, caption = "Corpus 2")
