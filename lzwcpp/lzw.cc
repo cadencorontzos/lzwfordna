@@ -26,9 +26,9 @@ void LZW::encode(std::istream& input, std::ostream& output){
     // the current codeword we are using, and the size of the codewords
     // each time we use a codeword we will have to increment so all codewords are unique
     // TODO: need to make sure our codewords don't go over the max size of codeword_type
-    int codeword = STARTING_CODEWORD;
+    codeword_type codeword = STARTING_CODEWORD;
     int codeword_size = STARTING_CODE_SIZE;
-    int max_codeword_size = 1<<STARTING_CODE_SIZE;
+    codeword_type biggest_possible_codeword = 1<<STARTING_CODE_SIZE;
 
     // the pieces of the file we are reading
     // current string seen is a string that we've seen before (it is in the dictionary), next_character is the following character that we are looking at
@@ -40,9 +40,9 @@ void LZW::encode(std::istream& input, std::ostream& output){
     while(next_character != EOF){
 
         // increment the codword size if the current codeword becomes too large
-        if (codeword == max_codeword_size){
+        if (codeword == biggest_possible_codeword){
             codeword_size += 1;
-            max_codeword_size<<= 1;
+            biggest_possible_codeword<<= 1;
         }
 
         // if we've already seen the sequence, keep going
@@ -56,8 +56,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
             // shouldn't look up again
             int code = dictionary[current_string_seen];
             bit_output.output_n_bits(code, codeword_size);
-            // TODO: static cast to unsigned (uint8t)
-            bit_output.output_n_bits((int) next_character, CHAR_BIT);
+            bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
 
             // add this new sequence to our dictionary
             dictionary[string_seen_plus_new_char] = codeword;
@@ -82,7 +81,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
     case 1:
         bit_output.output_bit(false);
         bit_output.output_bit(true);
-        bit_output.output_n_bits((int) current_string_seen[0], CHAR_BIT);
+        bit_output.output_n_bits(static_cast<uint8_t>(current_string_seen[0]), CHAR_BIT);
         break;
     default:
         bit_output.output_bit(true);
@@ -106,9 +105,9 @@ void LZW::decode(std::istream& input, std::ostream& output){
     }
 
     int code_size = STARTING_CODE_SIZE;
-    int codeword = STARTING_CODEWORD;
+    codeword_type codeword = STARTING_CODEWORD;
     int codeword_found;
-    int max_codeword_size = 1<<STARTING_CODE_SIZE;
+    codeword_type biggest_possible_codeword = 1<<STARTING_CODE_SIZE;
     char next_byte;
     BitInput bit_input(input);
 
@@ -129,9 +128,9 @@ void LZW::decode(std::istream& input, std::ostream& output){
         codeword+=1;
 
         // increment the codeword size if needed
-        if (codeword == max_codeword_size){
+        if (codeword == biggest_possible_codeword){
             code_size += 1;
-            max_codeword_size <<= 1;
+            biggest_possible_codeword <<= 1;
         }
         
         codeword_found = bit_input.read_n_bits(code_size);
