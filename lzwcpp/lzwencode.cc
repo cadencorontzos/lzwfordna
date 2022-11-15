@@ -14,7 +14,6 @@ float compressionRatio( int output_size, int input_size){
 
 int main(int argc, char* argv[]){
 
-
     if (argc != 2){
         std::cerr<<"Please include the name of the file you would like to compress\n";
         return 1;
@@ -30,9 +29,9 @@ int main(int argc, char* argv[]){
 
     LZW compressor;
     std::ofstream output;
-    fs::path inputFilePath = fs::current_path() / argv[1];
+    fs::path input_file_path = fs::current_path() / argv[1];
 
-    auto input_size = fs::file_size(inputFilePath);
+    auto input_size = fs::file_size(input_file_path);
     std::cout << "Original File size (bytes) : " << input_size <<std::endl;
 
     output.open( std::string(argv[1])+".compressed.lzw", std::ios::binary);

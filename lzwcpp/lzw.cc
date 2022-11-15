@@ -19,8 +19,8 @@ void LZW::encode(std::istream& input, std::ostream& output){
         std::string str1(1, char(i));
         dictionary[str1] = static_cast<codeword_type>(i);
     }
-    auto end = dictionary.cend();
- 
+    auto not_in_dictionary = dictionary.cend();
+
     BitOutput bit_output(output);
 
     // the current codeword we are using, and the size of the codewords
@@ -46,9 +46,8 @@ void LZW::encode(std::istream& input, std::ostream& output){
         }
 
         // if we've already seen the sequence, keep going
-
         std::string string_seen_plus_new_char = current_string_seen + next_character;
-        if (dictionary.find(string_seen_plus_new_char) != end ){
+        if (dictionary.find(string_seen_plus_new_char) != not_in_dictionary ){
             current_string_seen = string_seen_plus_new_char;
         }
         else{

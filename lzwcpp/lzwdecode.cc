@@ -14,7 +14,6 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-    // std::cout<<"Decompressing:  "<<argv[1]<< std::endl; 
     std::ifstream input (argv[1], std::ios::binary);
     if (!input.is_open()){
         std::cout << "Unable to open " << argv[1] << ".\n";
@@ -23,7 +22,6 @@ int main(int argc, char* argv[]){
 
     LZW decompressor;
     std::ofstream output;
-    fs::path inputFilePath = fs::current_path() / argv[1];
 
     output.open( std::string(argv[1])+".decompressed.lzw", std::ios::binary);
     
