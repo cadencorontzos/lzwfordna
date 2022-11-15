@@ -92,3 +92,22 @@ kable(df1, caption = "Corpus 1")
 ```{r}
 kable(df2, caption = "Corpus 2")
 ```
+
+It's hard to see in the smaller files but if you look at the larger files in Corpus 2 you can see that the runtime has been reduced.
+
+Another thing that I noticed from the callgrind output was that a lot of time/instructions are being spent on string concatenation. Every time we have already seen a sequence, we have to concatenate a character. I also noticed that I was doing this concatenation multiple times without needing to.
+
+```c++
+
+        if (dictionary.find(currentBlock + next_character) != end ){
+            currentBlock = currentBlock + next_character;
+        }
+        else{
+
+            // other code here ommitted
+
+            dictionary[currentBlock + next_character] = codeword;
+        }
+```
+
+If I just concatenate them and save the output into a new string, that will save me from doing the concatenation 2 more times.
