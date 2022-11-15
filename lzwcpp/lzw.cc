@@ -31,7 +31,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
     int max_codeword_size = 1<<STARTING_CODE_SIZE;
 
     // the pieces of the file we are reading
-    // current block is a string that we've seen before (its in the dictionary), next_character is the following character that we are looking at
+    // current string seen is a string that we've seen before (it is in the dictionary), next_character is the following character that we are looking at
     std::string current_string_seen = "";
     char next_character;
 
@@ -46,9 +46,10 @@ void LZW::encode(std::istream& input, std::ostream& output){
         }
 
         // if we've already seen the sequence, keep going
-        // TODO: use cend() and save this iterator
-        if (dictionary.find(current_string_seen + next_character) != end ){
-            current_string_seen = current_string_seen + next_character;
+
+        std::string string_seen_plus_new_char = current_string_seen + next_character;
+        if (dictionary.find(string_seen_plus_new_char) != end ){
+            current_string_seen = string_seen_plus_new_char;
         }
         else{
 
@@ -60,7 +61,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
             bit_output.output_n_bits((int) next_character, CHAR_BIT);
 
             // add this new sequence to our dictionary
-            dictionary[current_string_seen + next_character] = codeword;
+            dictionary[string_seen_plus_new_char] = codeword;
             codeword += 1;
             current_string_seen = "";
         }
