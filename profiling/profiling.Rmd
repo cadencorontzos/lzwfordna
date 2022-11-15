@@ -111,3 +111,16 @@ Another thing that I noticed from the callgrind output was that a lot of time/in
 ```
 
 If I just concatenate them and save the output into a new string, that will save me from doing the concatenation 2 more times.
+
+After another run of the corpuses
+
+```{r, echo=F}
+df1 = read.csv("./DNACorpus1Run4.csv")
+df2 = read.csv("./DNACorpus2Run4.csv")
+kable(df1, caption = "Corpus 1")
+```
+
+
+```{r}
+kable(df2, caption = "Corpus 2")
+```
