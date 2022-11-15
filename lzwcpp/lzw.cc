@@ -32,7 +32,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
 
     // the pieces of the file we are reading
     // current block is a string that we've seen before (its in the dictionary), next_character is the following character that we are looking at
-    std::string currentBlock = "";
+    std::string current_string_seen = "";
     char next_character;
 
     next_character = input.get();
@@ -47,22 +47,22 @@ void LZW::encode(std::istream& input, std::ostream& output){
 
         // if we've already seen the sequence, keep going
         // TODO: use cend() and save this iterator
-        if (dictionary.find(currentBlock + next_character) != end ){
-            currentBlock = currentBlock + next_character;
+        if (dictionary.find(current_string_seen + next_character) != end ){
+            current_string_seen = current_string_seen + next_character;
         }
         else{
 
             // lookup the current block in the dictionary and output it, along with the new character
             // shouldn't look up again
-            int code = dictionary[currentBlock];
+            int code = dictionary[current_string_seen];
             bit_output.output_n_bits(code, codeword_size);
             // TODO: static cast to unsigned (uint8t)
             bit_output.output_n_bits((int) next_character, CHAR_BIT);
 
             // add this new sequence to our dictionary
-            dictionary[currentBlock + next_character] = codeword;
+            dictionary[current_string_seen + next_character] = codeword;
             codeword += 1;
-            currentBlock = "";
+            current_string_seen = "";
         }
         next_character = input.get();
     }
@@ -74,7 +74,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
     // no current block (case 0)
     // we have a current block that is a single character (case 1)
     // otherwise we have a current block > 1 byte (default)
-    switch (currentBlock.length()){
+    switch (current_string_seen.length()){
     case 0:
         bit_output.output_bit(false);
         bit_output.output_bit(false);
@@ -82,13 +82,13 @@ void LZW::encode(std::istream& input, std::ostream& output){
     case 1:
         bit_output.output_bit(false);
         bit_output.output_bit(true);
-        bit_output.output_n_bits((int) currentBlock[0], CHAR_BIT);
+        bit_output.output_n_bits((int) current_string_seen[0], CHAR_BIT);
         break;
     default:
         bit_output.output_bit(true);
         bit_output.output_bit(true);
 
-        int code = dictionary[currentBlock];
+        int code = dictionary[current_string_seen];
         bit_output.output_n_bits(code, codeword_size);
         break;
     }
@@ -107,25 +107,25 @@ void LZW::decode(std::istream& input, std::ostream& output){
 
     int code_size = STARTING_CODE_SIZE;
     int codeword = STARTING_CODEWORD;
-    int codewordFound;
+    int codeword_found;
     int max_codeword_size = 1<<STARTING_CODE_SIZE;
-    char nextByte;
+    char next_byte;
     BitInput bit_input(input);
 
     // assume the file isn't empty
-    codewordFound = bit_input.read_n_bits(code_size);
-    while(codewordFound!=EOF_CODEWORD){
+    codeword_found = bit_input.read_n_bits(code_size);
+    while(codeword_found!=EOF_CODEWORD){
 
-        nextByte = char(bit_input.read_n_bits(CHAR_BIT));
+        next_byte = char(bit_input.read_n_bits(CHAR_BIT));
 
         // look up the codeword in the dictionary
-        auto decodedCodeword = dictionary.find(codewordFound);
+        auto decodedCodeword = dictionary.find(codeword_found);
         
         // output what we had in the dictionary and the byte following
-        output << decodedCodeword->second << nextByte; 
+        output << decodedCodeword->second << next_byte; 
 
         // add this new sequence to our dictionary   
-        dictionary[codeword] = decodedCodeword->second + nextByte;
+        dictionary[codeword] = decodedCodeword->second + next_byte;
         codeword+=1;
 
         // increment the codeword size if needed
@@ -134,7 +134,7 @@ void LZW::decode(std::istream& input, std::ostream& output){
             max_codeword_size <<= 1;
         }
         
-        codewordFound = bit_input.read_n_bits(code_size);
+        codeword_found = bit_input.read_n_bits(code_size);
     }
     
     // the two bits after eof are a code for the last portion of the encoded file
@@ -146,8 +146,8 @@ void LZW::decode(std::istream& input, std::ostream& output){
         break;
     case 3:
         int last_codeword = bit_input.read_n_bits(code_size);
-        auto decodedCodeword = dictionary.find(last_codeword);
-        output << decodedCodeword->second; 
+        auto decoded_codeword = dictionary.find(last_codeword);
+        output << decoded_codeword->second; 
         break;
     }
 
