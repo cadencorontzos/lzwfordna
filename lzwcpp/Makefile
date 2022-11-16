@@ -4,16 +4,20 @@ EXEC= test_lzw test_bitio lzwdecode lzwencode
 
 all: lzwencode lzwdecode test_lzw test_bitio
 
-test_bitio: test_bitio.o bitio.o
+# unittests
+
+test_bitio: unittests/test_bitio.o bitio/bitio.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ 
 
-test_lzw: test_lzw.o bitio.o lzw.o
+test_lzw: unittests/test_lzw.o bitio/bitio.o lzw.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-lzwencode: lzwencode.o bitio.o lzw.o
+#executables
+
+lzwencode: lzwencode.o bitio/bitio.o lzw.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-lzwdecode: lzwdecode.o bitio.o lzw.o
+lzwdecode: lzwdecode.o bitio/bitio.o lzw.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 %.o: %.cpp %.hh

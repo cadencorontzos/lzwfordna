@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "bitio.hh"
+#include "bitio/bitio.hh"
 
 class LZW {
   public:

@@ -2,7 +2,7 @@
  * Unit tests for class BitIO
  */
 
-#include "bitio.hh"
+#include "../bitio/bitio.hh"
 #include <cassert>
 #include <sstream>
 #include <iostream>

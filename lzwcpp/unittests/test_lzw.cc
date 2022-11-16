@@ -1,5 +1,5 @@
-#include "lzw.hh"
-#include "bitio.hh"
+#include "../lzw.hh"
+#include "../bitio/bitio.hh"
 
 #include <cassert>
 #include <sstream>
