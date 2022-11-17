@@ -26,15 +26,15 @@ I used the two groups of DNA I had found the other day as benchmarks.
 Here is the data before any optimizations. 
 
 ```{r, echo=F}
-df1 = read.csv("./DNACorpus1Run.csv")
-df2 = read.csv("./DNACorpus2Run.csv")
-kable(df1, caption = "Corpus 1")
+df11 = read.csv("./DNACorpus1Run.csv")
+df21 = read.csv("./DNACorpus2Run.csv")
+kable(df11, caption = "Corpus 1")
 ```
 
 \pagebreak
 
 ```{r}
-kable(df2, caption = "Corpus 2")
+kable(df21, caption = "Corpus 2")
 ```
 
 I then tested my implementation with callgrind. I encoded HaHi from DNA Corpus 2 to see what lines are taking long.
@@ -44,15 +44,15 @@ The first change we want to make was to create a type for codewords. They were p
 I ran callgrind before and after making this change. I found that the amount of instructions was virtually identical, which makes sense since we didn't really change the structure of the code. I think that having a fixed codeword size will show some time saved once we turn compiler optimizations back on, but without that it didn't change much. I rand the corpus again just to confirm. 
 
 ```{r, echo=F}
-df1 = read.csv("./DNACorpus1Run2.csv")
-df2 = read.csv("./DNACorpus2Run2.csv")
-kable(df1, caption = "Corpus 1")
+df12 = read.csv("./DNACorpus1Run2.csv")
+df22 = read.csv("./DNACorpus2Run2.csv")
+kable(df12, caption = "Corpus 1")
 ```
 
 \pagebreak
 
 ```{r}
-kable(df2, caption = "Corpus 2")
+kable(df22, caption = "Corpus 2")
 ```
 
 These times look pretty similar to the first run.
@@ -83,14 +83,14 @@ As you can see, the line itself takes less instructions, and it no has to pull u
 \pagebreak
 
 ```{r, echo=F}
-df1 = read.csv("./DNACorpus1Run3.csv")
-df2 = read.csv("./DNACorpus2Run3.csv")
-kable(df1, caption = "Corpus 1")
+df13 = read.csv("./DNACorpus1Run3.csv")
+df23 = read.csv("./DNACorpus2Run3.csv")
+kable(df13, caption = "Corpus 1")
 ```
 
 
 ```{r}
-kable(df2, caption = "Corpus 2")
+kable(df23, caption = "Corpus 2")
 ```
 
 It's hard to see in the smaller files but if you look at the larger files in Corpus 2 you can see that the runtime has been reduced.
@@ -115,14 +115,104 @@ If I just concatenate them and save the output into a new string, that will save
 After another run of the corpuses
 
 ```{r, echo=F}
-df1 = read.csv("./DNACorpus1Run4.csv")
-df2 = read.csv("./DNACorpus2Run4.csv")
-kable(df1, caption = "Corpus 1")
+df14 = read.csv("./DNACorpus1Run4.csv")
+df24 = read.csv("./DNACorpus2Run4.csv")
+kable(df14, caption = "Corpus 1")
 ```
 
 
 ```{r}
-kable(df2, caption = "Corpus 2")
+kable(df24, caption = "Corpus 2")
 ```
 
-As we can see, the compression is a good bit faster, especially for the larger files.
+As we can see, the compression is a good bit faster, especially for the larger files. Let's look at the time improvement over the course of these changes.
+
+```{r}
+df11 <- df11 %>% 
+  mutate(
+    run = 1
+  )
+```
+
+```{r}
+df21<- df21 %>% 
+  mutate(
+    run = 1
+  )
+```
+
+```{r}
+df12 <-df12 %>% 
+  mutate(
+    run = 2
+  )
+```
+
+```{r}
+df22 <-df22 %>% 
+  mutate(
+    run = 2
+  )
+```
+
+```{r}
+df13 <- df13 %>% 
+  mutate(
+    run = 3
+  )
+```
+
+```{r}
+df23 <-df23 %>% 
+  mutate(
+    run = 3
+  )
+```
+
+```{r}
+df14<-df14 %>% 
+  mutate(
+    run = 4
+  )
+```
+
+```{r}
+df24<-df24 %>% 
+  mutate(
+    run = 4
+  )
+```
+
+
+```{r}
+d1 <- rbind(df11, df12)
+d2 <- rbind(df13, df14)
+corpus_1 <- rbind(d1,d2)
+
+```
+
+```{r}
+corpus_1 %>% 
+  ggplot(aes(x=run))+
+  geom_line(aes(y=Compresssion.Time, color = "blue"))+
+  geom_line(aes(y=Decompression.Time, color= "red"))+
+  facet_wrap(~File.Name, scale = "free", ncol=3)+
+  ggtitle("Time Changes for Corpus 1")
+```
+
+```{r}
+d1 <- rbind(df21, df22)
+d2 <- rbind(df23, df24)
+corpus_2 <- rbind(d1,d2)
+
+```
+
+```{r}
+corpus_2 %>% 
+  ggplot(aes(x=run))+
+  geom_line(aes(y=Compresssion.Time, color = "blue"))+
+  geom_line(height =1, aes(y=Decompression.Time, color= "red"))+
+  facet_wrap(~File.Name, ncol = 4, scale = "free")+
+  ggtitle("Time Changes for Corpus 2")
+```
+
