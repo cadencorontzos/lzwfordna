@@ -191,7 +191,7 @@ corpus_1 <- rbind(d1,d2)
 
 ```
 
-```{r}
+```{r, fig.height=12, fig.width=12}
 corpus_1 %>% 
   ggplot(aes(x=run))+
   geom_line(aes(y=Compresssion.Time, color = "blue"))+
@@ -207,7 +207,7 @@ corpus_2 <- rbind(d1,d2)
 
 ```
 
-```{r}
+```{r, fig.height=12, fig.width=12}
 corpus_2 %>% 
   ggplot(aes(x=run))+
   geom_line(aes(y=Compresssion.Time, color = "blue"))+
