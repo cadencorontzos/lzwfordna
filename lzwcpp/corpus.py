@@ -8,7 +8,7 @@ LZW_ENCODE = './lzwencode'
 LZW_DECODE = './lzwdecode'
 CORPUS_1 = 'DNACorpus1'
 CORPUS_2 = 'DNACorpus2'
-
+N = 5
 
 def parseEncodeOutput(output):
     output = output.split('\n')
@@ -23,30 +23,34 @@ def parseDecodeOutput(output):
     return output[0], output[1]
 
 def runFile(filename, td):
-    
 
-    compressionOutput = subprocess.run([LZW_ENCODE, filename], capture_output=True)
-    decompressionOutput = subprocess.run([LZW_DECODE, filename + ".compressed.lzw"], capture_output=True)
-    decompressedFileSize, decompressionTime = parseDecodeOutput(decompressionOutput.stdout.decode())
-    originalFileSize, compressedFileSize, compressionRatio, compressionTime = parseEncodeOutput(compressionOutput.stdout.decode())
+    totalCompTime = 0
+    totalDecompTime = 0
+    for i in range(N):
+        compressionOutput = subprocess.run([LZW_ENCODE, filename], capture_output=True)
+        decompressionOutput = subprocess.run([LZW_DECODE, filename + ".compressed.lzw"], capture_output=True)
+        decompressedFileSize, decompressionTime = parseDecodeOutput(decompressionOutput.stdout.decode())
+        originalFileSize, compressedFileSize, compressionRatio, compressionTime = parseEncodeOutput(compressionOutput.stdout.decode())
+        totalCompTime+=int(compressionTime[1])
+        totalDecompTime+=int(decompressionTime[1])
 
-    os.remove(filename + ".compressed.lzw")
-    os.remove(filename+ ".compressed.lzw.decompressed.lzw")
-    
-    
+        os.remove(filename + ".compressed.lzw")
+        os.remove(filename+ ".compressed.lzw.decompressed.lzw")
+
     assert(decompressedFileSize[1] == originalFileSize[1])
     td.add("File Name", "string", filename, "The name of the file")
     td.add("Original File Size", "int", int(originalFileSize[1]), originalFileSize[0])
     td.add("Compressed Size", "int", int(compressedFileSize[1]), compressedFileSize[0])
-    td.add("Compression Ratio", "float", float(compressionRatio[1]), compressionRatio[0])
-    td.add("Compresssion Time", "int", int(compressionTime[1]), compressionTime[0])
-    td.add("Decompression Time", "int", int(decompressionTime[1]), decompressionTime[0])
+    td.add("Compression Ratio", "flot", float(compressionRatio[1]), compressionRatio[0])
+    assert(N!=0)
+    td.add("Compresssion Time", "int", totalCompTime/N, compressionTime[0])
+    td.add("Decompression Time", "int", totalDecompTime/N, decompressionTime[0])
 
 
 def runCorpus(directoryName):
     # iterate over files in
     # that directory
-    td = TidyData(directoryName+"Run", "Run of a corpus" )
+    td = TidyData(directoryName+"Run"+sys.argv[-1], "Run of a corpus" )
     files = os.listdir(directoryName)
     for filename in files:
         td.start_record()
@@ -64,4 +68,7 @@ def runCorpuses():
 
 
 if __name__ == "__main__":
+    if len(sys.argv)!=2:
+        print("Please provide a number to label this run.")
+        sys.exit()
     runCorpuses()
