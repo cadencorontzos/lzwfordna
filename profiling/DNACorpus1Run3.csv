@@ -1,12 +1,12 @@
 File Name,Original File Size,Compressed Size,Compression Ratio,Compresssion Time,Decompression Time
-DNACorpus1/chmpxx,121024,43516,2.781,66,24
-DNACorpus1/chntxx,155844,58336,2.671,72,61
-DNACorpus1/hehcmv,229354,85526,2.682,127,65
-DNACorpus1/humdyst,38770,15300,2.534,25,5
-DNACorpus1/humghcs,66495,25552,2.602,30,20
-DNACorpus1/humhbb,73308,28134,2.606,47,19
-DNACorpus1/humhdab,58864,22699,2.593,41,14
-DNACorpus1/humprtb,56737,21902,2.59,26,14
-DNACorpus1/mpomtcg,186609,70254,2.656,110,34
-DNACorpus1/mtpacga,100314,36862,2.721,44,18
-DNACorpus1/vaccg,191737,70067,2.736,92,36
+DNACorpus1/humprtb,56737,21902,2.59,7.0,2.0
+DNACorpus1/humdyst,38770,15300,2.534,4.4,1.0
+DNACorpus1/vaccg,191737,70067,2.736,18.6,6.4
+DNACorpus1/hehcmv,229354,85526,2.682,21.4,9.0
+DNACorpus1/mpomtcg,186609,70254,2.656,19.4,6.8
+DNACorpus1/humhdab,58864,22699,2.593,6.6,2.0
+DNACorpus1/chmpxx,121024,43516,2.781,12.2,4.0
+DNACorpus1/mtpacga,100314,36862,2.721,10.2,3.8
+DNACorpus1/chntxx,155844,58336,2.671,15.6,6.0
+DNACorpus1/humghcs,66495,25552,2.602,8.6,2.4
+DNACorpus1/humhbb,73308,28134,2.606,9.2,2.8
