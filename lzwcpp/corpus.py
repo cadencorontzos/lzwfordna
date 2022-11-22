@@ -43,7 +43,7 @@ def runFile(filename, td):
     td.add("Compressed Size", "int", int(compressedFileSize[1]), compressedFileSize[0])
     td.add("Compression Ratio", "flot", float(compressionRatio[1]), compressionRatio[0])
     assert(N!=0)
-    td.add("Compresssion Time", "int", totalCompTime/N, compressionTime[0])
+    td.add("Compression Time", "int", totalCompTime/N, compressionTime[0])
     td.add("Decompression Time", "int", totalDecompTime/N, decompressionTime[0])
 
 
