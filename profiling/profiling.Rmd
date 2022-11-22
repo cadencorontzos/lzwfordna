@@ -26,8 +26,8 @@ I used the two groups of DNA I had found the other day as benchmarks.
 Here is the data before any optimizations. 
 
 ```{r, echo=F}
-df11 = read.csv("./DNACorpus1Run.csv")
-df21 = read.csv("./DNACorpus2Run.csv")
+df11 = read.csv("./DNACorpus1Run1.csv")
+df21 = read.csv("./DNACorpus2Run1.csv")
 kable(df11, caption = "Corpus 1")
 ```
 
@@ -128,91 +128,94 @@ kable(df24, caption = "Corpus 2")
 As we can see, the compression is a good bit faster, especially for the larger files. Let's look at the time improvement over the course of these changes.
 
 ```{r}
-df11 <- df11 %>% 
-  mutate(
-    run = 1
-  )
-```
-
-```{r}
-df21<- df21 %>% 
-  mutate(
-    run = 1
-  )
-```
-
-```{r}
-df12 <-df12 %>% 
-  mutate(
-    run = 2
-  )
-```
-
-```{r}
-df22 <-df22 %>% 
-  mutate(
-    run = 2
-  )
-```
-
-```{r}
-df13 <- df13 %>% 
-  mutate(
-    run = 3
-  )
-```
-
-```{r}
-df23 <-df23 %>% 
-  mutate(
-    run = 3
-  )
-```
-
-```{r}
-df14<-df14 %>% 
-  mutate(
-    run = 4
-  )
-```
-
-```{r}
-df24<-df24 %>% 
-  mutate(
-    run = 4
-  )
-```
-
-
-```{r}
-d1 <- rbind(df11, df12)
-d2 <- rbind(df13, df14)
-corpus_1 <- rbind(d1,d2)
+num_datasets<-4
+corpus_name <- function(corpus_number, run_number){
+  paste("DNACorpus", as.character(corpus_number),  "Run", as.character(run_number), ".csv", sep= "")
+}
+add_run_number <- function(dataset, thread_num){
+  dataset <-dataset %>% 
+    mutate(
+      run= thread_num
+    )
+}
+corpus1 <- data.frame()
+corpus2 <- data.frame()
+for( i in 1:num_datasets){
+  one_filename <- corpus_name(1, i)
+  two_filename <- corpus_name(2, i)
+  corpus_one_run <- add_run_number(read.csv(one_filename), i)
+  corpus_two_run <-  add_run_number(read.csv(two_filename), i)
+  corpus1 <- rbind(corpus_one_run, corpus1)
+  corpus2 <- rbind(corpus_two_run, corpus2)
+}
 
 ```
 
 ```{r, fig.height=12, fig.width=12}
-corpus_1 %>% 
+corpus1 %>% 
   ggplot(aes(x=run))+
-  geom_line(aes(y=Compresssion.Time, color = "blue"))+
-  geom_line(aes(y=Decompression.Time, color= "red"))+
+  geom_line(aes(y=Compression.Time, color = "blue"), linetype="dotted")+
+  geom_point(aes(y=Compression.Time, color = "blue"))+
+  geom_line(height =1, aes(y=Decompression.Time, color= "red"), linetype="dotted")+
+  geom_point(aes(y=Decompression.Time, color = "red"))+
   facet_wrap(~File.Name, scale = "free", ncol=3)+
   ggtitle("Time Changes for Corpus 1")
 ```
 
-```{r}
-d1 <- rbind(df21, df22)
-d2 <- rbind(df23, df24)
-corpus_2 <- rbind(d1,d2)
-
-```
 
 ```{r, fig.height=12, fig.width=12}
-corpus_2 %>% 
+corpus2 %>% 
   ggplot(aes(x=run))+
-  geom_line(aes(y=Compresssion.Time, color = "blue"))+
-  geom_line(height =1, aes(y=Decompression.Time, color= "red"))+
+  geom_line(aes(y=Compression.Time, color = "blue"), linetype="dotted")+
+  geom_point(aes(y=Compression.Time, color = "blue"))+
+  geom_line(height =1, aes(y=Decompression.Time, color= "red"), linetype="dotted")+
+  geom_point(aes(y=Decompression.Time, color = "red"))+
   facet_wrap(~File.Name, ncol = 4, scale = "free")+
   ggtitle("Time Changes for Corpus 2")
 ```
 
+
+and the harmonic averages
+
+```{r}
+harmonic_mean <- function(corpus){
+  num_files <-length(unique(corpus$File.Name))
+  corpus %>% 
+    mutate(
+      comp_recip = 1/Compression.Time,
+      decomp_recip = 1/Decompression.Time
+    ) %>% 
+    group_by(run) %>% 
+    summarize(
+      harmonic_mean_comp= num_files/sum(comp_recip),
+      harmonic_mean_decomp= num_files/sum(decomp_recip)
+    )
+    
+    
+}
+mean_corpus1<- harmonic_mean(corpus1)
+mean_corpus2<- harmonic_mean(corpus2)
+```
+
+```{r}
+mean_corpus1 %>% 
+  ggplot(aes(x=run))+
+  geom_line(aes(y=harmonic_mean_comp, color = "blue"), linetype="dotted")+
+  geom_point(aes(y=harmonic_mean_comp, color = "blue"))+
+    geom_line(aes(y=harmonic_mean_decomp, color="red"), linetype="dotted")+
+  geom_point(aes(y=harmonic_mean_decomp, color = "red"))+
+  scale_x_continuous(breaks = seq(1,4, 1))+
+  ggtitle("Harmonic Means for Corpus 1")
+```
+
+```{r}
+mean_corpus2 %>% 
+  ggplot(aes(x=run))+
+  geom_line(aes(y=harmonic_mean_comp, color = "blue"), linetype="dotted")+
+  geom_point(aes(y=harmonic_mean_comp, color = "blue"))+
+    geom_line(aes(y=harmonic_mean_decomp, color="red"), linetype="dotted")+
+  geom_point(aes(y=harmonic_mean_decomp, color = "red"))+
+  scale_x_continuous(breaks = seq(1,4, 1))+
+  ggtitle("Harmonic Means for Corpus 2")
+```
+```
