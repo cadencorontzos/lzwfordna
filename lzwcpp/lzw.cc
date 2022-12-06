@@ -47,6 +47,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
 
         // if we've already seen the sequence, keep going
         std::string string_seen_plus_new_char = current_string_seen + next_character;
+		// save this iterator`
         if (dictionary.find(string_seen_plus_new_char) != not_in_dictionary ){
             current_string_seen = string_seen_plus_new_char;
         }
