@@ -34,6 +34,8 @@ void LZW::encode(std::istream& input, std::ostream& output){
     // current string seen is a string that we've seen before (it is in the dictionary), next_character is the following character that we are looking at
     std::string current_string_seen = "";
     char next_character;
+	auto codeword_seen_previously = dictionary.end();
+	auto codeword_seen_now = dictionary.end();
 
     next_character = input.get();
 
@@ -47,15 +49,15 @@ void LZW::encode(std::istream& input, std::ostream& output){
 
         // if we've already seen the sequence, keep going
         std::string string_seen_plus_new_char = current_string_seen + next_character;
-		// save this iterator`
-        if (dictionary.find(string_seen_plus_new_char) != not_in_dictionary ){
+		codeword_seen_now = dictionary.find(string_seen_plus_new_char);
+        if (codeword_seen_now != not_in_dictionary ){
             current_string_seen = string_seen_plus_new_char;
+			codeword_seen_previously = codeword_seen_now;
         }
         else{
 
             // lookup the current block in the dictionary and output it, along with the new character
-            // shouldn't look up again
-            int code = dictionary[current_string_seen];
+            int code = codeword_seen_previously->second;
             bit_output.output_n_bits(code, codeword_size);
             bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
 
@@ -88,7 +90,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
         bit_output.output_bit(true);
         bit_output.output_bit(true);
 
-        int code = dictionary[current_string_seen];
+        int code = codeword_seen_previously->second;
         bit_output.output_n_bits(code, codeword_size);
         break;
     }
