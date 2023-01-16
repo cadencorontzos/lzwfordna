@@ -9,6 +9,7 @@ class LZW {
     const int STARTING_CODE_SIZE=9;
     const int EOF_CODEWORD = 256;
     const int STARTING_CODEWORD = 257;
+	const int SPACE_TO_RESERVE = 1000000;
 
     typedef uint64_t codeword_type;
 

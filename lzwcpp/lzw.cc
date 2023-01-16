@@ -15,6 +15,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
     
     // initialize starter dictionary
     std::unordered_map<std::string, codeword_type> dictionary;
+	dictionary.reserve(SPACE_TO_RESERVE);
     for (int i = 0; i < STARTING_DICT_SIZE; ++i){
         std::string str1(1, char(i));
         dictionary[str1] = static_cast<codeword_type>(i);
