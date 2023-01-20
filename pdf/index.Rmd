@@ -130,3 +130,4 @@ Alternatively, you can put that content in files like 00--prelim.Rmd and
 
 Lempel Ziv Welch (LZW) is a lossless compression algirthm used widely for a number of applications. 
 
+
