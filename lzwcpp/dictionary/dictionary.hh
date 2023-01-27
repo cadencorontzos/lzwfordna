@@ -6,6 +6,7 @@ template <typename value_type> struct Dictionary_Entry{
 		bool exists;
 		Dictionary_Entry(bool exist, value_type val) : value(val), exists(exist){};
 		Dictionary_Entry(bool exist) : exists(exist){};
+		Dictionary_Entry(){};
 };
 
 template <typename key_type, typename value_type> class Dictionary {
@@ -30,11 +31,12 @@ template <typename dict_type, typename codeword_type> class LZW_Encode_Dictionar
 			char next_character = input.get();
 			std::string current_string_seen = "";
 			std::string string_seen_plus_new_char;
-			Dictionary_Entry<codeword_type> seen_previously;
+			Dictionary_Entry<codeword_type> seen_previously(false, 0);
 			while( next_character != EOF){
 				
 				string_seen_plus_new_char = current_string_seen + next_character;
-				Dictionary_Entry<codeword_type> entry = dictionary.get_value(string_seen_plus_new_char);
+				Dictionary_Entry<codeword_type> entry;
+			   	entry	= dictionary.get_value(string_seen_plus_new_char);
 				if (entry.exists){
 					current_string_seen = string_seen_plus_new_char;
 					seen_previously = entry;
@@ -43,8 +45,13 @@ template <typename dict_type, typename codeword_type> class LZW_Encode_Dictionar
 					return longest; 
 
 				}
+				next_character = input.get();
 
 			}	
+			LZW_Dictionary_Entry<codeword_type> longest{ current_string_seen, seen_previously.value};
+			return longest; 
+
+
 			
 		}
 

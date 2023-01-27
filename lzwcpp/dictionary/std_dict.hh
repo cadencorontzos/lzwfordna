@@ -24,7 +24,7 @@ template <typename key_type, typename value_type> class Std_Dictionary: private 
 	}
 };
 
-template <typename codeword_type> class Std_Encode_Dictionary: public LZW_Encode_Dictionary <codeword_type, Std_Dictionary<std::string, codeword_type>>{
+template <typename codeword_type> class Std_Encode_Dictionary: public LZW_Encode_Dictionary <Std_Dictionary<std::string, codeword_type>, codeword_type>{
  public:
 
 	 Std_Encode_Dictionary (): LZW_Encode_Dictionary<Std_Dictionary<std::string, codeword_type>, codeword_type>(Std_Dictionary<std::string, codeword_type>()){};
