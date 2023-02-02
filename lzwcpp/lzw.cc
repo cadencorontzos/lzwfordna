@@ -97,10 +97,10 @@ void LZW::encode(std::istream& input, std::ostream& output){
 void LZW::decode(std::istream& input, std::ostream& output){
 
     // starting dictionary
-    std::unordered_map<codeword_type, std::string> dictionary;
+    Std_Decode_Dictionary<codeword_type> dictionary;
     for (int i = 0; i < STARTING_DICT_SIZE; ++i){
         std::string str1(1, char(i));
-        dictionary[static_cast<codeword_type>(i)] = str1;
+        dictionary.add_string(str1, static_cast<codeword_type>(i));
     }
 
     int code_size = STARTING_CODE_SIZE;
@@ -117,13 +117,14 @@ void LZW::decode(std::istream& input, std::ostream& output){
         next_byte = char(bit_input.read_n_bits(CHAR_BIT));
 
         // look up the codeword in the dictionary
-        auto decodedCodeword = dictionary.find(codeword_found);
+		std::string decodedCodeword = dictionary.str_of(codeword_found);
+		std::string new_string = decodedCodeword+ next_byte;
         
         // output what we had in the dictionary and the byte following
-        output << decodedCodeword->second << next_byte; 
+        output << new_string; 
 
         // add this new sequence to our dictionary   
-        dictionary[codeword] = decodedCodeword->second + next_byte;
+        dictionary.add_string(new_string, codeword);
         codeword+=1;
 
         // increment the codeword size if needed
@@ -144,8 +145,8 @@ void LZW::decode(std::istream& input, std::ostream& output){
         break;
     case 3:
         int last_codeword = bit_input.read_n_bits(code_size);
-        auto decoded_codeword = dictionary.find(last_codeword);
-        output << decoded_codeword->second; 
+        auto decoded_codeword = dictionary.str_of(last_codeword);
+        output << decoded_codeword; 
         break;
     }
 
