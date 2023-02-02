@@ -2,37 +2,35 @@
 #include "dictionary.hh"
 #include <unordered_map>
 
-using namespace std;
-template <typename key_type, typename value_type> class Std_Dictionary: private Dictionary <key_type, value_type>{
- public:
+template <typename codeword_type> class Std_Encode_Dictionary: private LZWDictionary<codeword_type>{
+	private:
+		std::unordered_map<std::string, codeword_type> dictionary;
+	public:
+		typedef LZWDictionary<codeword_type>::Dict_Entry Std_Dict_Entry;
+		typedef LZWDictionary<codeword_type>::Codeword_Found Codeword_Found;
+		Std_Encode_Dictionary(): LZWDictionary<codeword_type>(){};
+		Std_Dict_Entry find_longest_in_dict(std::istream& input) override{
 
-	unordered_map<key_type, value_type> map;
-	unordered_map<key_type, value_type>::const_iterator end;
-	Std_Dictionary (): Dictionary<key_type, value_type>(), end(map.cend()){}
-
-	void set_key(key_type key, value_type value){
-		map[key] = value;
-	}
-
-	Dictionary_Entry<value_type> get_value(key_type key){
-		auto lookup = map.find(key);
-		if (lookup == end) { 
-			return Dictionary_Entry<value_type>(false);
+				char f = input.get();
+				std::cout << f;
+				return Std_Dict_Entry{ "foo", 1};
 		}
-		return Dictionary_Entry<value_type>(true, lookup->second);
+	
 
-	}
+		void add_string(std::string str, codeword_type codeword) override{
+			dictionary[str] = codeword;
+		}
+
+		std::string str_of(codeword_type codeword) const override {
+			std::cout << codeword;
+			return "foo";
+		}
+
+		codeword_type code_of(std::string str, unsigned len) const override{
+			std::cout << len;
+			auto lookup = dictionary.find(str);
+			return lookup->second;
+		}
+
 };
 
-template <typename codeword_type> class Std_Encode_Dictionary: public LZW_Encode_Dictionary <Std_Dictionary<std::string, codeword_type>, codeword_type>{
- public:
-
-	 Std_Encode_Dictionary (): LZW_Encode_Dictionary<Std_Dictionary<std::string, codeword_type>, codeword_type>(Std_Dictionary<std::string, codeword_type>()){};
-};
-
-
-template <typename codeword_type> class Std_Decode_Dictionary: public LZW_Decode_Dictionary <Std_Dictionary<codeword_type, std::string>, codeword_type>{
- public:
-
-	Std_Decode_Dictionary (): LZW_Decode_Dictionary<Std_Dictionary<codeword_type, std::string>, codeword_type>(Std_Dictionary<codeword_type, std::string>()){};
-};
