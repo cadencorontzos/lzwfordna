@@ -12,6 +12,7 @@ template <typename codeword_type> class Std_Encode_Dictionary: private LZWDictio
 		Std_Encode_Dictionary(): LZWDictionary<codeword_type>(){ end = dictionary.cend();};
 		Std_Dict_Entry find_longest_in_dict(std::istream& input) override{
 			char next_character = input.get();
+
 			std::string current_string_seen = "";
 			std::string string_seen_plus_new_char;
 			auto seen_previously = end;
@@ -30,6 +31,12 @@ template <typename codeword_type> class Std_Encode_Dictionary: private LZWDictio
 				}
 				next_character = input.get();
 
+			}
+			if(current_string_seen == ""){
+
+
+
+				return Std_Dict_Entry{ current_string_seen, 0};
 			}
 			Std_Dict_Entry longest{ current_string_seen, seen_previously->second};
 			return longest;

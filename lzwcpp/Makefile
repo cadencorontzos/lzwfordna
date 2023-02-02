@@ -4,8 +4,12 @@ EXEC= test_lzw test_bitio lzwdecode lzwencode
 BITIO_PATH=bitio
 TEST_PATH=unittests
 
-all: lzwencode lzwdecode test_lzw test_bitio
+all: dictionary lzwencode lzwdecode test_lzw test_bitio
 
+#dict
+.PHONY: dictionary
+dictionary: 
+	$(MAKE) -C ./dictionary
 # unittests
 
 test_bitio: $(TEST_PATH)/test_bitio.o $(BITIO_PATH)/bitio.o
@@ -27,3 +31,4 @@ lzwdecode: lzwdecode.o $(BITIO_PATH)/bitio.o lzw.o
 
 clean:
 	rm  *.o */*.o $(EXEC) -f
+	$(MAKE) -C ./dictionary clean

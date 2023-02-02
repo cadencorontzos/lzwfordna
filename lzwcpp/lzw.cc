@@ -8,19 +8,18 @@
 #include <filesystem>
 #include <unordered_map>
 #include <climits>
+#include "./dictionary/std_dict.hh"
 
 namespace fs = std::filesystem;
 
 void LZW::encode(std::istream& input, std::ostream& output){
     
     // initialize starter dictionary
-    std::unordered_map<std::string, codeword_type> dictionary;
-	dictionary.reserve(SPACE_TO_RESERVE);
+	Std_Encode_Dictionary<codeword_type> dictionary;
     for (int i = 0; i < STARTING_DICT_SIZE; ++i){
         std::string str1(1, char(i));
-        dictionary[str1] = static_cast<codeword_type>(i);
+		dictionary.add_string(str1, static_cast<codeword_type>(i));
     }
-    auto not_in_dictionary = dictionary.cend();
 
     BitOutput bit_output(output);
 
@@ -33,42 +32,38 @@ void LZW::encode(std::istream& input, std::ostream& output){
 
     // the pieces of the file we are reading
     // current string seen is a string that we've seen before (it is in the dictionary), next_character is the following character that we are looking at
-    std::string current_string_seen = "";
-    char next_character;
-	auto codeword_seen_previously = dictionary.end();
-	auto codeword_seen_now = dictionary.end();
+	
 
-    next_character = input.get();
+	char next_character;
+	std::string new_string_seen;
+	std::string current_string_seen;
+	Std_Encode_Dictionary<codeword_type>::Std_Dict_Entry entry; 
+	while(true)
+	{
 
-    while(next_character != EOF){
+		entry = dictionary.find_longest_in_dict(input);
+		current_string_seen = entry.str;
+		next_character = input.get();	
+		if(next_character == EOF){
+			break;
 
-        // increment the codword size if the current codeword becomes too large
+		}
+			
+		bit_output.output_n_bits(entry.codeword, codeword_size);
+		bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
+		new_string_seen = current_string_seen + next_character;
+		dictionary.add_string(new_string_seen, codeword);
+		codeword+=1;
+	   // increment the codword size if the current codeword becomes too large
         if (codeword == biggest_possible_codeword){
             codeword_size += 1;
             biggest_possible_codeword<<= 1;
         }
 
-        // if we've already seen the sequence, keep going
-        std::string string_seen_plus_new_char = current_string_seen + next_character;
-		codeword_seen_now = dictionary.find(string_seen_plus_new_char);
-        if (codeword_seen_now != not_in_dictionary ){
-            current_string_seen = string_seen_plus_new_char;
-			codeword_seen_previously = codeword_seen_now;
-        }
-        else{
 
-            // lookup the current block in the dictionary and output it, along with the new character
-            int code = codeword_seen_previously->second;
-            bit_output.output_n_bits(code, codeword_size);
-            bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
+		current_string_seen = "";
 
-            // add this new sequence to our dictionary
-            dictionary[string_seen_plus_new_char] = codeword;
-            codeword += 1;
-            current_string_seen = "";
-        }
-        next_character = input.get();
-    }
+	}
 
     // output special eof character
     bit_output.output_n_bits(EOF_CODEWORD, codeword_size);
@@ -91,7 +86,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
         bit_output.output_bit(true);
         bit_output.output_bit(true);
 
-        int code = codeword_seen_previously->second;
+        int code = entry.codeword;
         bit_output.output_n_bits(code, codeword_size);
         break;
     }
