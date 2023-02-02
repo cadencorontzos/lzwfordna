@@ -24,6 +24,7 @@ template <typename codeword_type> class Std_Encode_Dictionary: private LZWDictio
 					seen_previously = entry;
 				}else{
 					Std_Dict_Entry longest{ current_string_seen, seen_previously->second};
+					input.putback(next_character);
 					return longest;
 
 				}

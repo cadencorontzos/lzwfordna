@@ -29,7 +29,7 @@ void test_find_longest_in_dict(){
 	f.add_string("ot3", 3);
 
 
-	std::string input = "ot3f";
+	std::string input = "ot3fv";
 	std::stringstream input_file(input);
 
 
@@ -37,14 +37,14 @@ void test_find_longest_in_dict(){
 	
 	assert(ret.str == "ot3");
 	assert(ret.codeword = 3);
-
+	char c = 'f';
+	assert(char(input_file.get()) == c); 
 
 }
 void test_std_dict(){
 	Std_Encode_Dictionary<int> f;
 
 	f.add_string("Cool", 1);
-	std::cout << f.code_of("Cool", 4);
 
 	assert(f.code_of("Cool", 4) == 1);
 }
