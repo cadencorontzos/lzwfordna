@@ -5,16 +5,37 @@
 template <typename codeword_type> class Std_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 		std::unordered_map<std::string, codeword_type> dictionary;
+		std::unordered_map<std::string, codeword_type>::const_iterator end;	
 	public:
 		typedef LZWDictionary<codeword_type>::Dict_Entry Std_Dict_Entry;
 		typedef LZWDictionary<codeword_type>::Codeword_Found Codeword_Found;
-		Std_Encode_Dictionary(): LZWDictionary<codeword_type>(){};
+		Std_Encode_Dictionary(): LZWDictionary<codeword_type>(){ end = dictionary.cend();};
 		Std_Dict_Entry find_longest_in_dict(std::istream& input) override{
+			char next_character = input.get();
+			std::string current_string_seen = "";
+			std::string string_seen_plus_new_char;
+			auto seen_previously = end;
+			while( next_character != EOF){
 
-				char f = input.get();
-				std::cout << f;
-				return Std_Dict_Entry{ "foo", 1};
+				string_seen_plus_new_char = current_string_seen + next_character;
+				auto entry = dictionary.find(string_seen_plus_new_char);
+				if (entry != end){
+					current_string_seen = string_seen_plus_new_char;
+					seen_previously = entry;
+				}else{
+					Std_Dict_Entry longest{ current_string_seen, seen_previously->second};
+					return longest;
+
+				}
+				next_character = input.get();
+
+			}
+			Std_Dict_Entry longest{ current_string_seen, seen_previously->second};
+			return longest;
+
+
 		}
+		
 	
 
 		void add_string(std::string str, codeword_type codeword) override{
@@ -22,14 +43,48 @@ template <typename codeword_type> class Std_Encode_Dictionary: private LZWDictio
 		}
 
 		std::string str_of(codeword_type codeword) const override {
-			std::cout << codeword;
+			int f = codeword+1;
+			f+=1;
 			return "foo";
 		}
 
 		codeword_type code_of(std::string str, unsigned len) const override{
-			std::cout << len;
+			int f = len +1;
+			f+=1;
 			auto lookup = dictionary.find(str);
 			return lookup->second;
+		}
+
+};
+
+template <typename codeword_type> class Std_Decode_Dictionary: private LZWDictionary<codeword_type>{
+	private:
+		std::unordered_map< codeword_type, std::string> dictionary;
+		std::unordered_map< codeword_type, std::string>::const_iterator end;	
+	public:
+		typedef LZWDictionary<codeword_type>::Dict_Entry Std_Dict_Entry;
+		typedef LZWDictionary<codeword_type>::Codeword_Found Codeword_Found;
+		Std_Decode_Dictionary(): LZWDictionary<codeword_type>(){ end = dictionary.cend();};
+		Std_Dict_Entry find_longest_in_dict(std::istream& input) override{
+			input.get();
+			Std_Dict_Entry longest;
+			return longest;
+		}
+		
+	
+
+		void add_string(std::string str, codeword_type codeword) override{
+			dictionary[codeword] = str;
+		}
+
+		std::string str_of(codeword_type codeword) const override {
+			auto lookup = dictionary.find(codeword);
+			return lookup->second;
+		}
+
+		codeword_type code_of(std::string str, unsigned len) const override{
+			std::cout << str;
+			return len;
 		}
 
 };
