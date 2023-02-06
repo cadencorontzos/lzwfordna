@@ -8,7 +8,7 @@
 
 void test_code_of(){
 	
-	Direct_Mapped_Dictionary<> f;
+	Direct_Mapped_Encode_Dictionary<> f;
 
 	f.add_string("A", 1);
 	f.add_string("AT", 2);
@@ -24,7 +24,7 @@ void test_code_of(){
 
 
 void test_find_longest_in_dict(){
-	Direct_Mapped_Dictionary<> f;
+	Direct_Mapped_Encode_Dictionary<> f;
 
 	f.add_string("A", 1);
 	f.add_string("AC", 2);
@@ -35,7 +35,7 @@ void test_find_longest_in_dict(){
 	std::stringstream input_file(input);
 
 
-	Direct_Mapped_Dictionary<>::Dict_Entry ret ;
+	Direct_Mapped_Encode_Dictionary<>::Dict_Entry ret ;
 	ret = f.find_longest_in_dict(input_file);
 	
 	assert(ret.str == "ACT");
@@ -44,17 +44,50 @@ void test_find_longest_in_dict(){
 	assert(char(input_file.get()) == c); 
 
 }
-void test_direct_dict(){
-	Direct_Mapped_Dictionary<> f;
+void test_add_string_encode(){
+	Direct_Mapped_Encode_Dictionary<> f;
 
 	f.add_string("ACTGC", 1);
 
 	assert(f.code_of("ACTGC", 5) == 1);
 }
 
-
-int main(){
-	test_direct_dict();
+void test_encode(){
+	test_add_string_encode();
 	test_code_of();
 	test_find_longest_in_dict();
+}
+
+
+void test_add_string_decode(){
+	Direct_Mapped_Decode_Dictionary<> f;
+	f.add_string("ACTGC", 1);
+	assert(f.str_of(1) == "ACTGC");
+}
+
+void test_str_of(){
+	Direct_Mapped_Decode_Dictionary<> f;
+
+	f.add_string("A", 1);
+	f.add_string("AT", 2);
+	f.add_string("ACT", 3);
+
+
+	assert(f.str_of(1) == "A");
+	assert(f.str_of(2) == "AT");
+	assert(f.str_of(3) == "ACT");
+
+
+
+}
+
+void test_decode(){
+	test_add_string_decode();
+	test_str_of();
+}
+int main(){
+
+	test_encode();
+	test_decode();
+	return 0;
 }

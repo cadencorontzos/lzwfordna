@@ -50,11 +50,6 @@ template <typename codeword_type> class Std_Encode_Dictionary: private LZWDictio
 			dictionary[str] = codeword;
 		}
 
-		std::string str_of(codeword_type codeword) const override {
-			int f = codeword+1;
-			f+=1;
-			return "foo";
-		}
 
 		codeword_type code_of(std::string str, unsigned len) const override{
 			int f = len +1;
@@ -90,10 +85,6 @@ template <typename codeword_type> class Std_Decode_Dictionary: private LZWDictio
 			return lookup->second;
 		}
 
-		codeword_type code_of(std::string str, unsigned len) const override{
-			std::cout << str;
-			return len;
-		}
 
 };
 

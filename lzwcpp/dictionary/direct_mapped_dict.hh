@@ -5,7 +5,7 @@
 #include <memory>
 #include <cmath>
 
-template <typename codeword_type = uint16_t> class Direct_Mapped_Dictionary: private LZWDictionary<codeword_type>{
+template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 
 		using index_type = uint32_t;
@@ -30,7 +30,6 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Dictionary: pri
 				auto entry = f.find(str[i]);
 				result = (result<<2) + entry->second;
 			}
-			std::cout << str << ":"<< result <<std::endl;
 
 			return result;
 
@@ -42,7 +41,7 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Dictionary: pri
 		std::array<std::unique_ptr<codeword_type[]>, 10> dictionary; 
 		typedef LZWDictionary<codeword_type>::Dict_Entry Dict_Entry; 
 		typedef LZWDictionary<codeword_type>::Codeword_Found Codeword_Found; 
-		Direct_Mapped_Dictionary() : LZWDictionary<codeword_type>(){ 
+		Direct_Mapped_Encode_Dictionary() : LZWDictionary<codeword_type>(){ 
 
 
 			for( int i = 0; i < MAX_STRING_LENGTH; i++){
@@ -108,4 +107,30 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Dictionary: pri
 			return lookup;
 		}
 
+};
+template <typename codeword_type = uint16_t> class Direct_Mapped_Decode_Dictionary: private LZWDictionary<codeword_type>{
+	private:
+
+		static constexpr int CODEWORD_SIZE=16;
+
+		const int MAX_CODEWORD = (1<<CODEWORD_SIZE)-1;
+		const int INDEX_BITS = 32;
+
+	public:
+		uint8_t MAX_STRING_LENGTH = 10;
+		std::array<std::string, (1<< CODEWORD_SIZE) -1 > dictionary; 
+		Direct_Mapped_Decode_Dictionary() : LZWDictionary<codeword_type>() {}; 
+	
+
+		void add_string(std::string str, codeword_type codeword) override{
+			assert(str.length() < MAX_STRING_LENGTH);
+			dictionary[codeword] = str;
+		}
+
+
+
+		std::string str_of(codeword_type codeword) const override {
+			assert(codeword < (1<< CODEWORD_SIZE));
+			return dictionary[codeword];
+		}
 };
