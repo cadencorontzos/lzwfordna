@@ -113,7 +113,7 @@
   \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 
 % To pass between YAML and LaTeX the dollar signs are added by CII
-\title{Some Witty Title}
+\title{Optimizing Lempel Ziv Welch for DNA Compression}
 \author{Caden Corontzos}
 % The month and year that you submit your FINAL draft TO THE LIBRARY (May or December)
 \date{May 2023}
@@ -252,312 +252,43 @@ The Lempel Ziv Welch compression algorithm is a lossless data compression algori
 \chapter*{Introduction}\label{introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
 
-Lempel Ziv Welch (LZW) is a lossless compression algirthm used widely for a number of applications.
+When dealing with DNA, it
 
-\hypertarget{rmd-basics}{%
-\chapter{R Markdown Basics}\label{rmd-basics}}
+\hypertarget{backround-and-motivations}{%
+\chapter{Backround and Motivations}\label{backround-and-motivations}}
 
-Here is a brief introduction into using \emph{R Markdown}. \emph{Markdown} is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. \emph{R Markdown} provides the flexibility of \emph{Markdown} with the implementation of \textbf{R} input and output. For more details on using \emph{R Markdown} see \url{https://rmarkdown.rstudio.com}.
+This thesis deals with some high level topics and uses language specific to compression research. This chapter tries to give brief summaries and examples of the relevant topics to be discussed so readers of all experience levels can put our results into context.
 
-Be careful with your spacing in \emph{Markdown} documents. While whitespace largely is ignored, it does at times give \emph{Markdown} signals as to how to proceed. As a habit, try to keep everything left aligned whenever possible, especially as you type a new paragraph. In other words, there is no need to indent basic text in the Rmd document (in fact, it might cause your text to do funny things if you do).
+\hypertarget{what-is-information}{%
+\section{What is information?}\label{what-is-information}}
 
-\hypertarget{lists}{%
-\section{Lists}\label{lists}}
+\hypertarget{compression-a-history}{%
+\section{Compression: A history}\label{compression-a-history}}
 
-It's easy to create a list. It can be unordered like
-\begin{itemize}
-\tightlist
-\item
-  Item 1
-\item
-  Item 2
-\end{itemize}
-or it can be ordered like
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Item 1
-\item
-  Item 2
-\end{enumerate}
-Notice that I intentionally mislabeled Item 2 as number 4. \emph{Markdown} automatically figures this out! You can put any numbers in the list and it will create the list. Check it out below.
+\hypertarget{lossless-vs.-lossy-compression}{%
+\section{Lossless vs.~Lossy Compression}\label{lossless-vs.-lossy-compression}}
 
-To create a sublist, just indent the values a bit (at least four spaces or a tab). (Here's one case where indentation is key!)
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Item 1
-\item
-  Item 2
-\item
-  Item 3
-  \begin{itemize}
-  \tightlist
-  \item
-    Item 3a
-  \item
-    Item 3b
-  \end{itemize}
-\end{enumerate}
-\hypertarget{line-breaks}{%
-\section{Line breaks}\label{line-breaks}}
+\hypertarget{lossless}{%
+\subsection{Lossless}\label{lossless}}
 
-Make sure to add white space between lines if you'd like to start a new paragraph. Look at what happens below in the outputted document if you don't:
+\hypertarget{lossy}{%
+\subsection{Lossy}\label{lossy}}
 
-Here is the first sentence. Here is another sentence. Here is the last sentence to end the paragraph.
-This should be a new paragraph.
+\hypertarget{examples-of-compression-algorithms}{%
+\section{Examples of Compression Algorithms}\label{examples-of-compression-algorithms}}
 
-\emph{Now for the correct way:}
+\hypertarget{run-length-encoding}{%
+\subsection{Run Length Encoding}\label{run-length-encoding}}
 
-Here is the first sentence. Here is another sentence. Here is the last sentence to end the paragraph.
+\hypertarget{huffman}{%
+\subsection{Huffman}\label{huffman}}
 
-This should be a new paragraph.
+\hypertarget{arithmetic}{%
+\subsection{Arithmetic}\label{arithmetic}}
 
-\hypertarget{r-chunks}{%
-\section{R chunks}\label{r-chunks}}
+\hypertarget{lempel-ziv-welch}{%
+\subsection{Lempel Ziv Welch}\label{lempel-ziv-welch}}
 
-When you click the \textbf{Knit} button above a document will be generated that includes both content as well as the output of any embedded \textbf{R} code chunks within the document. You can embed an \textbf{R} code chunk like this (\texttt{cars} is a built-in \textbf{R} dataset):
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{summary}\NormalTok{(cars)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-     speed           dist       
- Min.   : 4.0   Min.   :  2.00  
- 1st Qu.:12.0   1st Qu.: 26.00  
- Median :15.0   Median : 36.00  
- Mean   :15.4   Mean   : 42.98  
- 3rd Qu.:19.0   3rd Qu.: 56.00  
- Max.   :25.0   Max.   :120.00  
-\end{verbatim}
-\hypertarget{inline-code}{%
-\section{Inline code}\label{inline-code}}
-
-If you'd like to put the results of your analysis directly into your discussion, add inline code like this:
-\begin{quote}
-The \texttt{cos} of \(2 \pi\) is 1.
-\end{quote}
-Another example would be the direct calculation of the standard deviation:
-\begin{quote}
-The standard deviation of \texttt{speed} in \texttt{cars} is 5.2876444.
-\end{quote}
-One last neat feature is the use of the \texttt{ifelse} conditional statement which can be used to output text depending on the result of an \textbf{R} calculation:
-\begin{quote}
-The standard deviation is less than 6.
-\end{quote}
-Note the use of \texttt{\textgreater{}} here, which signifies a quotation environment that will be indented.
-
-As you see with \texttt{\$2\ \textbackslash{}pi\$} above, mathematics can be added by surrounding the mathematical text with dollar signs. More examples of this are in \protect\hyperlink{math-sci}{Mathematics and Science} if you uncomment the code in \protect\hyperlink{math}{Math}.
-
-\hypertarget{including-plots}{%
-\section{Including plots}\label{including-plots}}
-
-You can also embed plots. For example, here is a way to use the base \textbf{R} graphics package to produce a plot using the built-in \texttt{pressure} dataset:
-
-\includegraphics{thesis_files/figure-latex/pressure-1.pdf}
-
-Note that the \texttt{echo=FALSE} parameter was added to the code chunk to prevent printing of the \textbf{R} code that generated the plot. There are plenty of other ways to add chunk options (like \texttt{fig.height} and \texttt{fig.width} in the chunk above). More information is available at \url{https://yihui.org/knitr/options/}.
-
-Another useful chunk option is the setting of \texttt{cache=TRUE} as you see here. If document rendering becomes time consuming due to long computations or plots that are expensive to generate you can use knitr caching to improve performance. Later in this file, you'll see a way to reference plots created in \textbf{R} or external figures.
-
-\hypertarget{loading-and-exploring-data}{%
-\section{Loading and exploring data}\label{loading-and-exploring-data}}
-
-Included in this template is a file called \texttt{flights.csv}. This file includes a subset of the larger dataset of information about all flights that departed from Seattle and Portland in 2014. More information about this dataset and its \textbf{R} package is available at \url{https://github.com/ismayc/pnwflights14}. This subset includes only Portland flights and only rows that were complete with no missing values. Merges were also done with the \texttt{airports} and \texttt{airlines} data sets in the \texttt{pnwflights14} package to get more descriptive airport and airline names.
-
-We can load in this data set using the following commands:
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# flights.csv is in the data directory}
-\NormalTok{flights\_path }\OtherTok{\textless{}{-}}\NormalTok{ here}\SpecialCharTok{::}\FunctionTok{here}\NormalTok{(}\StringTok{"data"}\NormalTok{, }\StringTok{"flights.csv"}\NormalTok{)}
-\CommentTok{\# string columns will be read in as strings and not factors now}
-\NormalTok{flights }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(flights\_path, }\AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-The data is now stored in the data frame called \texttt{flights} in \textbf{R}. To get a better feel for the variables included in this dataset we can use a variety of functions. Here we can see the dimensions (rows by columns) and also the names of the columns.
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{dim}\NormalTok{(flights)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-[1] 12649    16
-\end{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{names}\NormalTok{(flights)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
- [1] "month"        "day"          "dep_time"     "dep_delay"   
- [5] "arr_time"     "arr_delay"    "carrier"      "tailnum"     
- [9] "flight"       "dest"         "air_time"     "distance"    
-[13] "hour"         "minute"       "carrier_name" "dest_name"   
-\end{verbatim}
-Another good idea is to take a look at the dataset in table form. With this dataset having more than 20,000 rows, we won't explicitly show the results of the command here. I recommend you enter the command into the Console \textbf{\emph{after}} you have run the \textbf{R} chunks above to load the data into \textbf{R}.
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{View}\NormalTok{(flights)}
-\end{Highlighting}
-\end{Shaded}
-While not required, it is highly recommended you use the \texttt{dplyr} package to manipulate and summarize your data set as needed. It uses a syntax that is easy to understand using chaining operations. Below I've created a few examples of using \texttt{dplyr} to get information about the Portland flights in 2014. You will also see the use of the \texttt{ggplot2} package, which produces beautiful, high-quality academic visuals.
-
-We begin by checking to ensure that needed packages are installed and then we load them into our current working environment:
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# List of packages required for this analysis}
-\NormalTok{pkg }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{, }\StringTok{"ggplot2"}\NormalTok{, }\StringTok{"knitr"}\NormalTok{, }\StringTok{"bookdown"}\NormalTok{)}
-\CommentTok{\# Check if packages are not installed and assign the}
-\CommentTok{\# names of the packages not installed to the variable new.pkg}
-\NormalTok{new.pkg }\OtherTok{\textless{}{-}}\NormalTok{ pkg[}\SpecialCharTok{!}\NormalTok{(pkg }\SpecialCharTok{\%in\%} \FunctionTok{installed.packages}\NormalTok{())]}
-\CommentTok{\# If there are any packages in the list that aren\textquotesingle{}t installed,}
-\CommentTok{\# install them}
-\ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(new.pkg)) \{}
-  \FunctionTok{install.packages}\NormalTok{(new.pkg, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{\}}
-\CommentTok{\# Load packages}
-\FunctionTok{library}\NormalTok{(thesisdown)}
-\FunctionTok{library}\NormalTok{(dplyr)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-Warning: package 'dplyr' was built under R version 4.2.2
-\end{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(ggplot2)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-Warning: package 'ggplot2' was built under R version 4.2.2
-\end{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(knitr)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-Warning: package 'knitr' was built under R version 4.2.2
-\end{verbatim}
-\clearpage
-
-The example we show here does the following:
-\begin{itemize}
-\item
-  Selects only the \texttt{carrier\_name} and \texttt{arr\_delay} from the \texttt{flights} dataset and then assigns this subset to a new variable called \texttt{flights2}.
-\item
-  Using \texttt{flights2}, we determine the largest arrival delay for each of the carriers.
-\end{itemize}
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{flights2 }\OtherTok{\textless{}{-}}\NormalTok{ flights }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(carrier\_name, arr\_delay)}
-\NormalTok{max\_delays }\OtherTok{\textless{}{-}}\NormalTok{ flights2 }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(carrier\_name) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{max\_arr\_delay =} \FunctionTok{max}\NormalTok{(arr\_delay, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-A useful function in the \texttt{knitr} package for making nice tables in \emph{R Markdown} is called \texttt{kable}. It is much easier to use than manually entering values into a table by copying and pasting values into Excel or LaTeX. This again goes to show how nice reproducible documents can be! (Note the use of \texttt{results="asis"}, which will produce the table instead of the code to create the table.) The \texttt{caption.short} argument is used to include a shorter title to appear in the List of Tables.
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{kable}\NormalTok{(max\_delays,}
-  \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Airline"}\NormalTok{, }\StringTok{"Max Arrival Delay"}\NormalTok{),}
-  \AttributeTok{caption =} \StringTok{"Maximum Delays by Airline"}\NormalTok{,}
-  \AttributeTok{caption.short =} \StringTok{"Max Delays by Airline"}\NormalTok{,}
-  \AttributeTok{longtable =} \ConstantTok{TRUE}\NormalTok{,}
-  \AttributeTok{booktabs =} \ConstantTok{TRUE}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-\begin{longtable}[t]{lr}
-\caption[Max Delays by Airline]{\label{tab:maxdelays}Maximum Delays by Airline}\\
-\toprule
-Airline & Max Arrival Delay\\
-\midrule
-Alaska Airlines Inc. & 338\\
-American Airlines Inc. & 1539\\
-Delta Air Lines Inc. & 371\\
-Frontier Airlines Inc. & 166\\
-Hawaiian Airlines Inc. & 116\\
-\addlinespace
-JetBlue Airways & 256\\
-SkyWest Airlines Inc. & 321\\
-Southwest Airlines Co. & 315\\
-United Air Lines Inc. & 319\\
-US Airways Inc. & 347\\
-\addlinespace
-Virgin America & 366\\
-\bottomrule
-\end{longtable}
-The last two options make the table a little easier-to-read.
-
-We can further look into the properties of the largest value here for American Airlines Inc.~To do so, we can isolate the row corresponding to the arrival delay of 1539 minutes for American in our original \texttt{flights} dataset.
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{flights }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{filter}\NormalTok{(}
-\NormalTok{    arr\_delay }\SpecialCharTok{==} \DecValTok{1539}\NormalTok{,}
-\NormalTok{    carrier\_name }\SpecialCharTok{==} \StringTok{"American Airlines Inc."}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}
-\NormalTok{    month, day, carrier, dest\_name, hour,}
-\NormalTok{    minute, carrier\_name, arr\_delay}
-\NormalTok{  ))}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-  dep_time dep_delay arr_time tailnum flight dest air_time distance
-1     1403      1553     1934  N595AA   1568  DFW      182     1616
-\end{verbatim}
-We see that the flight occurred on March 3rd and departed a little after 2 PM on its way to Dallas/Fort Worth. Lastly, we show how we can visualize the arrival delay of all departing flights from Portland on March 3rd against time of departure.
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{flights }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{filter}\NormalTok{(month }\SpecialCharTok{==} \DecValTok{3}\NormalTok{, day }\SpecialCharTok{==} \DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ dep\_time, }\AttributeTok{y =}\NormalTok{ arr\_delay)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_point}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-\includegraphics{thesis_files/figure-latex/march3plot-1.pdf}
-
-\hypertarget{additional-resources}{%
-\section{Additional resources}\label{additional-resources}}
-\begin{itemize}
-\item
-  \emph{Markdown} Cheatsheet - \url{https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet}
-\item
-  \emph{R Markdown}
-  \begin{itemize}
-  \tightlist
-  \item
-    Reference Guide - \url{https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf}
-  \item
-    Cheatsheet - \url{https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf}
-  \end{itemize}
-\item
-  \emph{RStudio IDE}
-  \begin{itemize}
-  \tightlist
-  \item
-    Cheatsheet - \url{https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf}
-  \item
-    Official website - \url{https://rstudio.com/products/rstudio/}
-  \end{itemize}
-\item
-  Introduction to \texttt{dplyr} - \url{https://cran.rstudio.com/web/packages/dplyr/vignettes/dplyr.html}
-\item
-  \texttt{ggplot2}
-  \begin{itemize}
-  \tightlist
-  \item
-    Documentation - \url{https://ggplot2.tidyverse.org/}
-  \item
-    Cheatsheet - \url{https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf}
-  \end{itemize}
-\end{itemize}
 \hypertarget{math-sci}{%
 \chapter{Mathematics and Science}\label{math-sci}}
 
