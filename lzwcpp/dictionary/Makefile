@@ -1,11 +1,14 @@
 
 CXX=g++
-CXXFLAGS=-Wall -Wextra -pedantic -std=c++2a -O3 -Werror
+CXXFLAGS=-Wall -Wextra -Werror -pedantic -std=c++2a -O3 
 EXEC= test_std_dict 
 
-all: test_std_dict 
+all: test_std_dict test_direct_dict
 
 test_std_dict: test_std_dict.cc std_dict.hh dictionary.hh
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+test_direct_dict: test_direct_map.cc direct_mapped_dict.hh dictionary.hh
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 %.o: %.cpp %.hh 
