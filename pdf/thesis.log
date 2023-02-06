@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.15)  7 FEB 2023 15:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.15)  7 FEB 2023 16:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -562,24 +562,27 @@ l.258 ...ations}\label{backround-and-motivations}}
 ]
 Chapter 1.
 
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.293 ...Mathematics and Science}\label{math-sci}}
-                                                   [3]
+l.288 
+       [3]
 pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.293 ...Mathematics and Science}\label{math-sci}}
-                                                   [4
-
-]
+l.303 ...Mathematics and Science}\label{math-sci}}
+                                                   [4]
 Chapter 2.
 
 Underfull \vbox (badness 1005) has occurred while \output is active []
 
-[5]
-Underfull \hbox (badness 7221) in paragraph at lines 345--346
+[5
+
+]
+Underfull \hbox (badness 7221) in paragraph at lines 355--356
 \T1/lmr/m/n/12 bol Guide ([]$\T1/lmtt/m/n/12 https : / / mirror . utexas . edu / ctan / info / symbols / comprehensive /
  []
 
@@ -588,18 +591,18 @@ Chapter 3.
 <figure/reed.jpg, id=309, 250.9375pt x 251.94125pt>
 File: figure/reed.jpg Graphic file (type jpg)
 <use figure/reed.jpg>
-Package pdftex.def Info: figure/reed.jpg  used on input line 368.
+Package pdftex.def Info: figure/reed.jpg  used on input line 378.
 (pdftex.def)             Requested size: 86.72267pt x 87.06975pt.
 [7
 
  <./figure/reed.jpg>] [8]
 
-LaTeX Warning: Reference `rmd-basics' on page 9 undefined on input line 378.
+LaTeX Warning: Reference `rmd-basics' on page 9 undefined on input line 388.
 
 <thesis_files/figure-latex/delaysboxplot-1.pdf, id=320, 433.62pt x 361.35pt>
 File: thesis_files/figure-latex/delaysboxplot-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/delaysboxplot-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/delaysboxplot-1.pdf  used on input line 390.
+Package pdftex.def Info: thesis_files/figure-latex/delaysboxplot-1.pdf  used on input line 400.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
 [9
 
@@ -607,22 +610,22 @@ Package pdftex.def Info: thesis_files/figure-latex/delaysboxplot-1.pdf  used on 
 <figure/subdivision.pdf, id=337, 220.825pt x 89.33376pt>
 File: figure/subdivision.pdf Graphic file (type pdf)
 <use figure/subdivision.pdf>
-Package pdftex.def Info: figure/subdivision.pdf  used on input line 401.
+Package pdftex.def Info: figure/subdivision.pdf  used on input line 411.
 (pdftex.def)             Requested size: 165.61833pt x 67.00014pt.
 File: figure/subdivision.pdf Graphic file (type pdf)
 <use figure/subdivision.pdf>
-Package pdftex.def Info: figure/subdivision.pdf  used on input line 409.
+Package pdftex.def Info: figure/subdivision.pdf  used on input line 419.
 (pdftex.def)             Requested size: 220.82445pt x 89.33353pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 416.
+(Font)              <10> on input line 426.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 416.
+(Font)              <7> on input line 426.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 416.
+(Font)              <5> on input line 426.
 [11
 
  <./figure/subdivision.pdf>]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 435.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 445.
 (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [12] [13] [14
@@ -632,16 +635,16 @@ File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ]
 Appendix A.
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 475.
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 476.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 485.
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 486.
 (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [17] [18]
-Underfull \vbox (badness 10000) detected at line 577
+Underfull \vbox (badness 10000) detected at line 587
  []
 
 
-Overfull \vbox (2.29527pt too high) detected at line 577
+Overfull \vbox (2.29527pt too high) detected at line 587
  []
 
 [19] [20]
@@ -668,7 +671,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  72i,12n,77p,836b,511s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}<c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on thesis.pdf (43 pages, 385763 bytes).
+Output written on thesis.pdf (43 pages, 388100 bytes).
 PDF statistics:
  566 PDF objects out of 1000 (max. 8388607)
  475 compressed objects within 5 object streams

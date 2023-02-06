@@ -12,7 +12,14 @@ This thesis deals with some high level topics and uses language specific to comp
 
 ## What is information?
 
+  Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? Or can it be part of the message? If someone asks you "Where library", despite the lack of prepositions you still understand what they mean. So did that person convey any less information than a person who asks "Where is the library?"
+  Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let us assume that information is something that can be interpreted to glean information that you didn't know before. 
+  
+
+
 ## Compression: A history
+
+
 
 ## Lossless vs. Lossy Compression
 
@@ -23,6 +30,14 @@ This thesis deals with some high level topics and uses language specific to comp
 ## Examples of Compression Algorithms
 
 ### Run Length Encoding
+
+Run Length Encoding (RLE) is on of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by just giving the number of times each character appears.
+  Suppose you want to send 
+  
+  <p style="text-align: center;">AAGCTTTTTTTTGGGGGCCCT</p>
+  
+  <p style="text-align: center;">2A1G1C8T5G3C1T</p>
+
 
 ### Huffman
 
