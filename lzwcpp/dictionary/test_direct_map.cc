@@ -22,6 +22,7 @@ void test_code_of(){
 
 }
 
+
 void test_find_longest_in_dict(){
 	Direct_Mapped_Dictionary<> f;
 
@@ -43,7 +44,7 @@ void test_find_longest_in_dict(){
 	assert(char(input_file.get()) == c); 
 
 }
-void test_std_dict(){
+void test_direct_dict(){
 	Direct_Mapped_Dictionary<> f;
 
 	f.add_string("ACTGC", 1);
@@ -53,7 +54,7 @@ void test_std_dict(){
 
 
 int main(){
-	test_std_dict();
+	test_direct_dict();
 	test_code_of();
 	test_find_longest_in_dict();
-	}
+}

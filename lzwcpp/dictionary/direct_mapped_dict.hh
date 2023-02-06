@@ -13,7 +13,6 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Dictionary: pri
 
 		const int MAX_CODEWORD = (1<<CODEWORD_SIZE)-1;
 		const int INDEX_BITS = 32;
-		int MAX_STRING_LENGTH = 10;
 		std::unordered_map<char, int> f{
 			{'A', 0},
 			{'T', 1},
@@ -39,6 +38,7 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Dictionary: pri
 
 		int starting_codeword;
 	public:
+		uint8_t MAX_STRING_LENGTH = 10;
 		std::array<std::unique_ptr<codeword_type[]>, 10> dictionary; 
 		typedef LZWDictionary<codeword_type>::Dict_Entry Dict_Entry; 
 		typedef LZWDictionary<codeword_type>::Codeword_Found Codeword_Found; 
@@ -97,18 +97,13 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Dictionary: pri
 	
 
 		void add_string(std::string str, codeword_type codeword) override{
+			assert(str.length() < MAX_STRING_LENGTH);
 			(dictionary[str.length()])[map_str(str)] = codeword;
 		}
 
-		std::string str_of(codeword_type codeword) const override {
-			int f = codeword+1;
-			f+=1;
-			return "foo";
-		}
 
 		codeword_type code_of(std::string str, unsigned len) const override{
-			int f= len+1;
-			f+=1;
+			assert(len < MAX_STRING_LENGTH);
 			codeword_type lookup = (dictionary[len])[map_str(str)];
 			return lookup;
 		}
