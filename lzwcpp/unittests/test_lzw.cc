@@ -39,12 +39,12 @@ int three_chars_encoded_length = 5;
 // encode unit tests 
 
 void test_encode(std::string decoded_string, char* encoded_chars, int encoded_chars_length){
-    std::stringstream input(decoded_string);
     std::stringstream output;
-
+	const char* input_file = decoded_string.c_str();
+	int file_size = decoded_string.length();
     {
         LZW lzw;
-        lzw.encode(input, output);
+        lzw.encode(input_file, file_size, output);
     }
     
     std::string expected_output(encoded_chars, encoded_chars_length);

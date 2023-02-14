@@ -11,8 +11,8 @@
 
 namespace fs = std::filesystem;
 
-void LZW::encode(std::istream& input, std::ostream& output){
-    
+void LZW::encode(const char* input_file, int file_size, std::ostream& output){
+   
     // initialize starter dictionary
     std::unordered_map<std::string, codeword_type> dictionary;
 	dictionary.reserve(SPACE_TO_RESERVE);
@@ -38,9 +38,11 @@ void LZW::encode(std::istream& input, std::ostream& output){
 	auto codeword_seen_previously = dictionary.end();
 	auto codeword_seen_now = dictionary.end();
 
-    next_character = input.get();
+	int index = 0;
 
-    while(next_character != EOF){
+    while(index < file_size){
+
+    	next_character = input_file[index];
 
         // increment the codword size if the current codeword becomes too large
         if (codeword == biggest_possible_codeword){
@@ -67,7 +69,7 @@ void LZW::encode(std::istream& input, std::ostream& output){
             codeword += 1;
             current_string_seen = "";
         }
-        next_character = input.get();
+		index++;
     }
 
     // output special eof character

@@ -16,7 +16,7 @@ class LZW {
     LZW() = default;
     ~LZW() = default;
 
-    void encode(std::istream& input, std::ostream& output);
+    void encode(const char* input_file, int file_size, std::ostream& output);
     void decode(std::istream& input, std::ostream& output);
 
 };
