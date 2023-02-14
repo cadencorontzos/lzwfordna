@@ -4,21 +4,41 @@
 #include <fstream>
 #include <chrono>
 #include <filesystem>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 namespace fs = std::filesystem;
 
 int main(int argc, char* argv[]){
 
     if (argc != 2){
-        std::cerr<<"Please include the name of the file you would like to compress\n";
+        std::cerr<<"Please include the name of the file you would like to compress" << std::endl;
         return 1;
     }
 
-    std::ifstream input (argv[1], std::ios::binary);
-    if (!input.is_open()){
-        std::cout << "Unable to open " << argv[1] << ".\n";
+	int input_file = open(argv[1], O_RDONLY, (mode_t)0600);
+	if (input_file == EOF){
+        std::cout << "Unable to open " << argv[1] << "." << std::endl;
         return 1;
-    }
+	}
+	
+	struct stat fileInfo;
+	fstat(input_file, &fileInfo);
+	const char* input = static_cast<char*>(mmap(0, fileInfo.st_size, PROT_READ, MAP_SHARED, input_file, 0));
+
+	if(input == MAP_FAILED){
+		std::cout << "MMap error with file " << argv[1] << "." << std::endl;
+		return 1;
+
+	}
+
+	if(fileInfo.st_size == 0){
+		std::cout << "File" << argv[1] << " is empty." << std::endl;
+		return 1;
+	}
 
     LZW decompressor;
     std::ofstream output;

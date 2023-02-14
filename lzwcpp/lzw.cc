@@ -101,7 +101,7 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 
 
 
-void LZW::decode(std::istream& input, std::ostream& output){
+void LZW::decode(const char* input, std::ostream& output){
 
     // starting dictionary
     std::unordered_map<codeword_type, std::string> dictionary;

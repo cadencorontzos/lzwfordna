@@ -64,12 +64,11 @@ void encode_tests(){
 
 void test_decode(char* encoded_chars, int encoded_length, std::string decoded_string){
     std::string encoded_string(encoded_chars, encoded_length);
-    std::stringstream input(encoded_string);
     std::stringstream output;
 
     {
         LZW lzw;
-        lzw.decode(input, output);
+        lzw.decode(encoded_chars, output);
     }
     
     std::string expected_output(decoded_string);

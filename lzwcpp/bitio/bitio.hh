@@ -10,7 +10,7 @@
 class BitInput {
  public:
   // Construct with an input stream
-  BitInput(std::istream& is);
+  BitInput(const char* input);
 
   BitInput(const BitInput&) = default;
   BitInput(BitInput&&) = default;
@@ -22,7 +22,8 @@ class BitInput {
 
   int read_n_bits(int n);
   private:
-    std::istream& input_stream;
+    const char* input_stream;
+	int is_index;
     int index;
     int buffer;
  
