@@ -7,7 +7,6 @@
 
 template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
-
 		using index_type = uint32_t;
 		const int CODEWORD_SIZE=16;
 
@@ -65,7 +64,9 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 			std::string current_string_seen = "";
 			std::string string_seen_plus_new_char;
 			codeword_type seen_previously = 0;
-			while( next_character != EOF && length< 10){
+			while( next_character != EOF && length< MAX_STRING_LENGTH-1){
+				length +=1;
+
 
 				string_seen_plus_new_char = current_string_seen + next_character;
 				int entry = (dictionary[string_seen_plus_new_char.length()])[map_str(string_seen_plus_new_char)];
@@ -79,6 +80,10 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 
 				}
 				next_character = input.get();
+
+			}
+			if(next_character != EOF){
+				input.putback(next_character);
 
 			}
 			if(current_string_seen == ""){
@@ -124,6 +129,7 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Decode_Dictiona
 
 		void add_string(std::string str, codeword_type codeword) override{
 			assert(str.length() < MAX_STRING_LENGTH);
+			assert(codeword < (1<< CODEWORD_SIZE)-1);
 			dictionary[codeword] = str;
 		}
 

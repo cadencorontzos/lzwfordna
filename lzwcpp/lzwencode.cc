@@ -34,8 +34,12 @@ int main(int argc, char* argv[]){
     auto input_size = fs::file_size(input_file_path);
     std::cout << "Original File size (bytes) : " << input_size <<std::endl;
 
-    output.open( std::string(argv[1])+".compressed.lzw", std::ios::binary);
-
+	std::string output_file_name = std::string(argv[1])+".compressed.lzw";
+    output.open( output_file_name, std::ios::binary);
+	if (!output.is_open()){
+        std::cout << "Unable to open " << output_file_name << ".\n";
+        return 1;
+    }
     // compress file
     auto start_time = std::chrono::high_resolution_clock::now();
     compressor.encode(input, output);

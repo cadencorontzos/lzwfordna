@@ -8,18 +8,21 @@
 #include <filesystem>
 #include <unordered_map>
 #include <climits>
-#include "./dictionary/std_dict.hh"
+#include "./dictionary/direct_mapped_dict.hh"
 
 namespace fs = std::filesystem;
 
 void LZW::encode(std::istream& input, std::ostream& output){
     
     // initialize starter dictionary
-	Std_Encode_Dictionary<codeword_type> dictionary;
-    for (int i = 0; i < STARTING_DICT_SIZE; ++i){
-        std::string str1(1, char(i));
-		dictionary.add_string(str1, static_cast<codeword_type>(i));
-    }
+	Direct_Mapped_Encode_Dictionary<> dictionary;
+    dictionary.add_string("A", 1);
+    
+    dictionary.add_string("T", 2);
+    dictionary.add_string("C", 3);
+    dictionary.add_string("G", 4);
+
+	
 
     BitOutput bit_output(output);
 
@@ -27,8 +30,8 @@ void LZW::encode(std::istream& input, std::ostream& output){
     // each time we use a codeword we will have to increment so all codewords are unique
     // TODO: need to make sure our codewords don't go over the max size of codeword_type
     codeword_type codeword = STARTING_CODEWORD;
-    int codeword_size = STARTING_CODE_SIZE;
-    codeword_type biggest_possible_codeword = 1<<STARTING_CODE_SIZE;
+	int codeword_size = STARTING_CODE_SIZE; 
+	int biggest_possible_codeword = (1<<STARTING_CODE_SIZE)-1;
 
     // the pieces of the file we are reading
     // current string seen is a string that we've seen before (it is in the dictionary), next_character is the following character that we are looking at
@@ -37,11 +40,12 @@ void LZW::encode(std::istream& input, std::ostream& output){
 	char next_character;
 	std::string new_string_seen;
 	std::string current_string_seen;
-	Std_Encode_Dictionary<codeword_type>::Std_Dict_Entry entry; 
+	Direct_Mapped_Encode_Dictionary<>::Dict_Entry entry; 
 	while(true)
 	{
 
 		entry = dictionary.find_longest_in_dict(input);
+		
 		current_string_seen = entry.str;
 		next_character = input.get();	
 		if(next_character == EOF){
@@ -49,19 +53,23 @@ void LZW::encode(std::istream& input, std::ostream& output){
 
 		}
 			
+		// std::cout << "cw:" << entry.codeword;
+		// std::cout << "->" << entry.str << "|" << next_character << std::endl;
 		bit_output.output_n_bits(entry.codeword, codeword_size);
 		bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
 		new_string_seen = current_string_seen + next_character;
 		dictionary.add_string(new_string_seen, codeword);
 		codeword+=1;
 	   // increment the codword size if the current codeword becomes too large
-        if (codeword == biggest_possible_codeword){
-            codeword_size += 1;
-            biggest_possible_codeword<<= 1;
+        if (codeword >= biggest_possible_codeword){
+			return;
+            // codeword_size += 1;
+            // biggest_possible_codeword<<= 1;
         }
 
 
 		current_string_seen = "";
+
 
 	}
 
@@ -97,16 +105,19 @@ void LZW::encode(std::istream& input, std::ostream& output){
 void LZW::decode(std::istream& input, std::ostream& output){
 
     // starting dictionary
-    Std_Decode_Dictionary<codeword_type> dictionary;
-    for (int i = 0; i < STARTING_DICT_SIZE; ++i){
-        std::string str1(1, char(i));
-        dictionary.add_string(str1, static_cast<codeword_type>(i));
-    }
+    Direct_Mapped_Decode_Dictionary<> dictionary;
+    
+    dictionary.add_string("A", 1);
+    
+    dictionary.add_string("T", 2);
+    dictionary.add_string("C", 3);
+    dictionary.add_string("G", 4);
+
 
     int code_size = STARTING_CODE_SIZE;
     codeword_type codeword = STARTING_CODEWORD;
     int codeword_found;
-    codeword_type biggest_possible_codeword = 1<<STARTING_CODE_SIZE;
+    int biggest_possible_codeword = (1<<STARTING_CODE_SIZE) -1;
     char next_byte;
     BitInput bit_input(input);
 
@@ -114,12 +125,17 @@ void LZW::decode(std::istream& input, std::ostream& output){
     codeword_found = bit_input.read_n_bits(code_size);
     while(codeword_found!=EOF_CODEWORD){
 
+		// std::cout << codeword_found << std::endl;
         next_byte = char(bit_input.read_n_bits(CHAR_BIT));
+		assert(next_byte == 'A' ||next_byte == 'C'||next_byte == 'T'||next_byte == 'G');
 
         // look up the codeword in the dictionary
 		std::string decodedCodeword = dictionary.str_of(codeword_found);
 		std::string new_string = decodedCodeword+ next_byte;
         
+		// std::cout << "cw:" << codeword_found;
+		// std::cout << "->" << decodedCodeword << "|" << next_byte << std::endl;
+		
         // output what we had in the dictionary and the byte following
         output << new_string; 
 
@@ -129,8 +145,10 @@ void LZW::decode(std::istream& input, std::ostream& output){
 
         // increment the codeword size if needed
         if (codeword == biggest_possible_codeword){
-            code_size += 1;
-            biggest_possible_codeword <<= 1;
+			// std::cout << "GREat googly moogly" << std::endl;
+			return;
+            // code_size += 1;
+            // biggest_possible_codeword <<= 1;
         }
         
         codeword_found = bit_input.read_n_bits(code_size);
