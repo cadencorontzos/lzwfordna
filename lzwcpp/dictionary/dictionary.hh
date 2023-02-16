@@ -18,7 +18,7 @@ template <typename codeword_type> class LZWDictionary {
 		~LZWDictionary() = default;
 
 
-		virtual Dict_Entry find_longest_in_dict(const char* , int , int ){
+		virtual int find_longest_in_dict(const char* , int , int ){
 			assert(0);
 		}
 

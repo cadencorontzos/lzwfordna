@@ -9,7 +9,6 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 	private:
 		using index_type = uint32_t;
 		const int CODEWORD_SIZE=16;
-
 		const int MAX_CODEWORD = (1<<CODEWORD_SIZE)-1;
 		const int INDEX_BITS = 32;
 		std::unordered_map<char, int> f{
@@ -63,49 +62,41 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 
 
 		} 
-		Dict_Entry find_longest_in_dict(const char* input, int input_start, int input_size) override{
+		codeword_type code_of(std::string str, unsigned len) const override{
+			if (len >= MAX_STRING_LENGTH){
+				auto lookup = longer_than_max.find(str);
+				if(lookup == end){ return 0;}
+				return lookup->second;
+			}else{
+				codeword_type lookup = (dictionary[len])[map_str(str)];
+				return lookup;
+			}
+		}
+	
+		int find_longest_in_dict(const char* input, int input_start, int input_size) override{
 			char next_character ;
 			int current_index = input_start;
 			std::string current_string_seen = "";
 			std::string string_seen_plus_new_char;
-			codeword_type seen_previously = 0;
 			int length = 0;
 			int entry = 0;
 			while(current_index < input_size) {
 				next_character = input[current_index];
 				length++;
 				string_seen_plus_new_char = current_string_seen + next_character;
-				if(length < MAX_STRING_LENGTH){
-				 	entry = (dictionary[string_seen_plus_new_char.length()])[map_str(string_seen_plus_new_char)];
-				}else{
-					auto lookup = longer_than_max.find(string_seen_plus_new_char);
-					
-					if(lookup ==end){
-						entry = 0;
-					}else{
-						entry = lookup->second;
-					}
-					
-				}
+				entry = code_of(string_seen_plus_new_char, length);
 				if (entry!= 0){
 					current_string_seen = string_seen_plus_new_char;
-					seen_previously = entry;
 				}else{
-					Dict_Entry longest{ current_string_seen, seen_previously};
-					return longest;
-
+					return length-1;
 				}
 				current_index ++;
-				
 
 			}
 			if(current_string_seen == ""){
-				return Dict_Entry{ current_string_seen, 0};
+				return 0;
 			}
-			Dict_Entry longest{ current_string_seen, seen_previously};
-			return longest;
-
-
+			return length;
 		}
 		
 	
@@ -123,15 +114,7 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 		}
 
 
-		codeword_type code_of(std::string str, unsigned len) const override{
-			if (len >= MAX_STRING_LENGTH){
-				auto lookup = longer_than_max.find(str);
-				return lookup->second;
-			}else{
-				codeword_type lookup = (dictionary[len])[map_str(str)];
-				return lookup;
-			}
-		}
+		
 
 };
 template <typename codeword_type = uint16_t> class Direct_Mapped_Decode_Dictionary: private LZWDictionary<codeword_type>{

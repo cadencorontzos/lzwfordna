@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <string.h>
 #include <fstream>
 #include <chrono>
 #include <filesystem>
@@ -40,22 +41,24 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 	std::string new_string_seen;
 	std::string current_string_seen;
 	int index = 0;
-	Direct_Mapped_Encode_Dictionary<>::Dict_Entry entry; 
+	int entry; 
+	int code;
 	while(true)
 	{
 
 		entry = dictionary.find_longest_in_dict(input_file, index, file_size);
-		current_string_seen = entry.str;
-		index += current_string_seen.length();
+		for(int i = index; i< index+entry;i++){
+			current_string_seen+= input_file[i];
+		}
+		index += entry;
+		code = dictionary.code_of(current_string_seen, entry);
 		if(index >= file_size){
 			break;
-
-
 		}
 		next_character = input_file[index];
 		
 			
-		bit_output.output_n_bits(entry.codeword, codeword_size);
+		bit_output.output_n_bits(code, codeword_size);
 		bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
 		new_string_seen = current_string_seen + next_character;
 		dictionary.add_string(new_string_seen, codeword);
@@ -87,7 +90,6 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
         bit_output.output_bit(true);
         bit_output.output_bit(true);
 
-        int code = entry.codeword;
         bit_output.output_n_bits(code, codeword_size);
         break;
     }

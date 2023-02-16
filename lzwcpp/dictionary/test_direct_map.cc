@@ -34,11 +34,11 @@ void test_find_longest_in_dict(){
 	std::string input = "ACTG";
 
 
-	Direct_Mapped_Encode_Dictionary<>::Dict_Entry ret ;
+	int ret ;
 	ret = f.find_longest_in_dict(input.c_str(), 0, 4);
-	
-	assert(ret.str == "ACT");
-	assert(ret.codeword = 3);
+	std::string output = input.substr(0,ret);
+	assert(output == "ACT");
+	assert(f.code_of(output, ret) == 3);
 
 }
 void test_add_string_encode(){
