@@ -1,23 +1,14 @@
-
 #include <iostream>
 #include <string>
 #include <cassert>
 
 template <typename codeword_type> class LZWDictionary {
 	public:
-		struct Dict_Entry {
-			std::string str;
-			codeword_type codeword;
-		};
-		struct Codeword_Found{
-
-			codeword_type value;
-			bool exists;
-		};
 		LZWDictionary() = default;
 		~LZWDictionary() = default;
 
-
+		// takes the input stream, pointer into stream, and input_size
+		// returns the longest string that is present in the dicitonary, starting from the pointer. Subject to size constraints
 		virtual int find_longest_in_dict(const char* , int , int ){
 			assert(0);
 		}
@@ -28,11 +19,8 @@ template <typename codeword_type> class LZWDictionary {
 			assert(0);
 		}
 
-
 		virtual std::string str_of(codeword_type ) const {
 			assert(0);
 		}
-
-		
 
 };
