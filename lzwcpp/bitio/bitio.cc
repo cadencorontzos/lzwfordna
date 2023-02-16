@@ -3,7 +3,7 @@
 #include <iostream>
 #include <climits>
 
-BitInput::BitInput(std::istream& is): input_stream(is), index(-1), buffer(0) {}
+BitInput::BitInput(const char* input): input_stream(input), is_index(0), index(-1), buffer(0) {}
 
 bool BitInput::input_bit(){
     // we are outputting bits right to left, so if we've gone past the right side of the byte, we've writtent the whole byte
@@ -11,7 +11,8 @@ bool BitInput::input_bit(){
     if(index == -1){
         index = CHAR_BIT-1;
         char b;
-        input_stream.get(b);
+        b = input_stream[is_index];
+		is_index+=1;
         buffer = int(b) ;
     }
 

@@ -45,17 +45,22 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 	while(true)
 	{
 
+		std::cout << "HERE1" << std::endl;
 		entry = dictionary.find_longest_in_dict(input_file, index, file_size);
 		current_string_seen = entry.str;
+		std::cout << "end: " << entry.str;
+		std::cout << index << std::endl;
 		index += current_string_seen.length();
-		if(index >= file_size){
+		next_character = input_file[index];
+		if(next_character == EOF || index >= file_size){
+		std::cout << "HERE2" << std::endl;
 			break;
 
 
 		}
-		next_character = input_file[index];
-		
 			
+		// std::cout << "cw:" << entry.codeword;
+		// std::cout << "->" << entry.str << "|" << next_character << std::endl;
 		bit_output.output_n_bits(entry.codeword, codeword_size);
 		bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
 		new_string_seen = current_string_seen + next_character;
@@ -70,7 +75,6 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 
 
 		current_string_seen = "";
-		index++;
 
 
 	}
@@ -83,15 +87,18 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
     // otherwise we have a current block > 1 byte (default)
     switch (current_string_seen.length()){
     case 0:
+		std::cout << "HERE4" << std::endl;
         bit_output.output_bit(false);
         bit_output.output_bit(false);
         break;
     case 1:
+		std::cout << "HERE3" << std::endl;
         bit_output.output_bit(false);
         bit_output.output_bit(true);
         bit_output.output_n_bits(static_cast<uint8_t>(current_string_seen[0]), CHAR_BIT);
         break;
     default:
+		std::cout << "HERE5" << std::endl;
         bit_output.output_bit(true);
         bit_output.output_bit(true);
 
@@ -126,6 +133,7 @@ void LZW::decode(const char* input, std::ostream& output){
     codeword_found = bit_input.read_n_bits(code_size);
     while(codeword_found!=EOF_CODEWORD){
 
+		// std::cout << codeword_found << std::endl;
         next_byte = char(bit_input.read_n_bits(CHAR_BIT));
 		assert(next_byte == 'A' ||next_byte == 'C'||next_byte == 'T'||next_byte == 'G');
 
@@ -133,6 +141,8 @@ void LZW::decode(const char* input, std::ostream& output){
 		std::string decodedCodeword = dictionary.str_of(codeword_found);
 		std::string new_string = decodedCodeword+ next_byte;
         
+		// std::cout << "cw:" << codeword_found;
+		// std::cout << "->" << decodedCodeword << "|" << next_byte << std::endl;
 		
         // output what we had in the dictionary and the byte following
         output << new_string; 
@@ -143,6 +153,7 @@ void LZW::decode(const char* input, std::ostream& output){
 
         // increment the codeword size if needed
         if (codeword == biggest_possible_codeword){
+			// std::cout << "GREat googly moogly" << std::endl;
 			return;
             // code_size += 1;
             // biggest_possible_codeword <<= 1;

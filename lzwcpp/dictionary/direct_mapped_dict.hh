@@ -57,17 +57,16 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 
 
 		} 
-		Dict_Entry find_longest_in_dict(std::istream& input) override{
-			char next_character = input.get();
-
-			int length = 1;
+		Dict_Entry find_longest_in_dict(const char* input, int input_start, int input_size) override{
+			char next_character ;
+			int length = 0;
+			int current_index = input_start;
 			std::string current_string_seen = "";
 			std::string string_seen_plus_new_char;
 			codeword_type seen_previously = 0;
-			while( next_character != EOF && length< MAX_STRING_LENGTH-1){
+			while(current_index < input_size && length< MAX_STRING_LENGTH-2){
+				next_character = input[current_index];
 				length +=1;
-
-
 				string_seen_plus_new_char = current_string_seen + next_character;
 				int entry = (dictionary[string_seen_plus_new_char.length()])[map_str(string_seen_plus_new_char)];
 				if (entry!= 0){
@@ -75,21 +74,14 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 					seen_previously = entry;
 				}else{
 					Dict_Entry longest{ current_string_seen, seen_previously};
-					input.putback(next_character);
 					return longest;
 
 				}
-				next_character = input.get();
-
-			}
-			if(next_character != EOF){
-				input.putback(next_character);
+				current_index ++;
+				
 
 			}
 			if(current_string_seen == ""){
-
-
-
 				return Dict_Entry{ current_string_seen, 0};
 			}
 			Dict_Entry longest{ current_string_seen, seen_previously};
@@ -101,6 +93,7 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 	
 
 		void add_string(std::string str, codeword_type codeword) override{
+			// std::cout << str << std::endl;
 			assert(str.length() < MAX_STRING_LENGTH);
 			(dictionary[str.length()])[map_str(str)] = codeword;
 		}

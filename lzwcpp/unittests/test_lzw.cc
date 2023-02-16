@@ -8,43 +8,43 @@
 
 // empty
 std::string empty_decoded = "";
-// | eof      | 0| trailing
-// |10000000 0|00|00000
-char empty_encoded[] = {char(128), char(0)};
-int empty_encoded_length = 2;
+// | eof              | 0| trailing
+// |00000000 00000101 |00|000000
+char empty_encoded[] = {char(0), char(5), char(0)};
+int empty_encoded_length = 3;
 
 // 01100110
-std::string single_char_decoded = "f";
-// eof       | 1| f       | trailing
-// 10000000 0|01|01100 110|00000
-char single_char_encoded[] = { char(128), char(44), char(192)};
-int single_char_encoded_length = 3;
+std::string single_char_decoded = "A";
+// eof       		 | 1| A       | trailing
+// 00000000 00000101 |01|010000 01|000000
+char single_char_encoded[] = { char(0), char(5), char(80), char(64) };
+int single_char_encoded_length = 4;
 
 // 01100001 01100010
-std::string two_chars_decoded = "ab";
-// | cw for a | b       | eof      | 0| trailing
-// |00110000 1|0110001 0|1000000 00|00|0000
-char two_chars_encoded[] = { char(48), char(177), char(64), char(0)};
-int two_chars_encoded_length = 4;
+std::string two_chars_decoded = "AG";
+// | cw for A         | G       | eof              | 0| trailing 
+// |00000000 00000001 |01000111 |00000000  00000101 00|000000
+char two_chars_encoded[] = { char(0), char(1), char(71), char(0), char(5), char(0)};
+int two_chars_encoded_length = 6;
 
 //01100001 01100010 01100110
-std::string three_chars_decoded = "abab";
-// | cw for a | b       | eof      | 3| cw for ab| trailing
-// |00110000 1|0110001 0|1000000 00|11|1000 00001|000
-char three_chars_encoded[] = { char(48), char(177), char(64), char(56), char(8)};
-int three_chars_encoded_length = 5;
+std::string three_chars_decoded = "AGAG";
+// | cw for A         | G       | eof              | 0| cw for AG        | trailing
+// |00000000 00000001 |01000111 |00000000  00000101 11|000000 00000001 10|000000
+char three_chars_encoded[] = { char(0), char(1), char(71), char(0), char(5), char(192), char(1), char(128) };
+int three_chars_encoded_length = 8;
 
 
 ////////////////////////////////////////////////////////////
 // encode unit tests 
 
 void test_encode(std::string decoded_string, char* encoded_chars, int encoded_chars_length){
-    std::stringstream input(decoded_string);
     std::stringstream output;
-
+	const char* input_file = decoded_string.c_str();
+	int file_size = decoded_string.length();
     {
         LZW lzw;
-        lzw.encode(input, output);
+        lzw.encode(input_file, file_size, output);
     }
     
     std::string expected_output(encoded_chars, encoded_chars_length);
@@ -64,12 +64,11 @@ void encode_tests(){
 
 void test_decode(char* encoded_chars, int encoded_length, std::string decoded_string){
     std::string encoded_string(encoded_chars, encoded_length);
-    std::stringstream input(encoded_string);
     std::stringstream output;
 
     {
         LZW lzw;
-        lzw.decode(input, output);
+        lzw.decode(encoded_chars, output);
     }
     
     std::string expected_output(decoded_string);

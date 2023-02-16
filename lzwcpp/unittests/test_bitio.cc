@@ -19,7 +19,10 @@ test_1_bit()
     bito.output_bit(1);
   } // Need to call bito's destructor here
 
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+
+  BitInput biti(input);
   assert(biti.input_bit() == true);
   assert(biti.input_bit() == false);  // Should just be a trailing zero
 }
@@ -39,7 +42,9 @@ test_4_bits()
     bito.output_bit(1);
   }
 
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
   assert(biti.input_bit() == false);
   assert(biti.input_bit() == true);
   assert(biti.input_bit() == false);
@@ -52,7 +57,6 @@ void
 test_8_bits()
 {
   std::stringstream bits0, bits1;
-  // std::cout << "hered" ;
   {
     BitOutput bito0(bits0);
     BitOutput bito1(bits1);
@@ -64,14 +68,16 @@ test_8_bits()
     }
   }
 
-  // std::cout << "hereagain";
-  BitInput biti0(bits0);
-  BitInput biti1(bits1);
+  const std::string& tmp0 = bits0.str();   
+  const char* input0 = tmp0.c_str();
+  BitInput biti0(input0);
+  const std::string& tmp1 = bits1.str();   
+  const char* input1 = tmp1.c_str();
+  BitInput biti1(input1);
   for (int i = 0; i < 8; ++i) {
     assert(!biti0.input_bit());
   }
   biti0.input_bit();
-  assert(bits0.eof()); // Should be no trailing zeros this time!
 
   for (int i = 0; i < 8; ++i) {
     assert(biti1.input_bit());
@@ -82,20 +88,22 @@ test_8_bits()
 void
 test_9_bits()
 {
-  std::stringstream bits0, bits1;
+  std::stringstream  bits;
 
   {
-    BitOutput bito1(bits1);
+    BitOutput bito(bits);
     for (int i = 0; i < 9; ++i) {
-      bito1.output_bit(1);
+      bito.output_bit(1);
     }
   }
 
-  BitInput biti1(bits1);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
   for (int i = 0; i < 9; ++i) {
-    assert(biti1.input_bit());
+    assert(biti.input_bit());
   }
-  assert(!biti1.input_bit());
+  assert(!biti.input_bit());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -111,13 +119,14 @@ test_16_bits()
     }
   }
 
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
   for (int i = 0; i < 16; ++i) {
     assert(biti.input_bit() == i % 2);
   }
 
   biti.input_bit();
-  assert(bits.eof()); // Should be no trailing zeros this time!
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -132,7 +141,9 @@ test_100_bits()
     }
   }
 
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
   for (int i = 0; i < 100; ++i) {
     assert(biti.input_bit() != i % 2);
   }
@@ -152,7 +163,9 @@ void test_many_zeros()
     }
   }
 
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
   for (int i = 0; i < 100; ++i) {
     assert(biti.input_bit() == false);
   }
@@ -172,7 +185,9 @@ void test_output_char(){
   }
 
   // we expect to find 01000001 with no trailing zeros
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
   assert(biti.input_bit() == false);
   assert(biti.input_bit() == true);
   for (int i = 0; i < 5; ++i) {
@@ -194,7 +209,9 @@ void test_output_int(){
   }
 
   // we expect to find 110100100 with seven trailing zeros
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
   assert(biti.input_bit() == true);
   assert(biti.input_bit() == true);
   assert(biti.input_bit() == false);
@@ -223,7 +240,9 @@ void test_output_char_and_int(){
   }
 
   // we expect to find 110100100, then 01000001  with seven trailing zeros
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
 
   //01000001
   assert(biti.input_bit() == false);
@@ -272,7 +291,9 @@ void test_read_byte(){
     bito.output_n_bits(65, CHAR_BIT);
   }
 
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
   char byte_found = (char) biti.read_n_bits(CHAR_BIT);
   assert(byte_found =='A');
   assert(!biti.input_bit());
@@ -288,7 +309,9 @@ void test_read_int(){
     bito.output_n_bits(420, CHAR_BIT+1);
   }
 
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
   int int_found = biti.read_n_bits(CHAR_BIT+1);
   assert(int_found == 420);
   assert(!biti.input_bit());
@@ -304,7 +327,9 @@ void test_read_byte_and_int(){
     bito.output_n_bits(420, CHAR_BIT+1);
   }
 
-  BitInput biti(bits);
+  const std::string& tmp = bits.str();   
+  const char* input = tmp.c_str();
+  BitInput biti(input);
 
   char byte_found = (char) biti.read_n_bits(CHAR_BIT);
   assert(byte_found =='A');
