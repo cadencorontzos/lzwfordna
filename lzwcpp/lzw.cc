@@ -120,7 +120,6 @@ void LZW::decode(const char* input, std::ostream& output){
     while(codeword_found!=EOF_CODEWORD){
 
         next_byte = char(bit_input.read_n_bits(CHAR_BIT));
-		assert(next_byte == 'A' ||next_byte == 'C'||next_byte == 'T'||next_byte == 'G');
 
         // look up the codeword in the dictionary
 		std::string decodedCodeword = dictionary.str_of(codeword_found);
