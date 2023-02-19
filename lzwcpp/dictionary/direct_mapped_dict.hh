@@ -6,10 +6,13 @@
 #include <cmath>
 #include <climits>
 
+constexpr uint8_t MAX_STRING_LENGTH = 10;
+const int STARTING_CODE_SIZE=16;
+const int EOF_CODEWORD = 5;
+const int STARTING_CODEWORD = 6;
+typedef uint16_t codeword_type;
 
-uint8_t MAX_STRING_LENGTH = 10;
-
-template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
+class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 		using index_type = uint32_t;
 		const int INDEX_BITS = CHAR_BIT*sizeof(index_type);
@@ -23,24 +26,19 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 		};
 
 		index_type map_str(std::string str) const{
-
-
 			index_type result = 0;
 			int len = str.length();
 			for(int i = 0; i < len;i++){
-
 				auto entry = f.find(str[i]);
 				result = (result<<2) + entry->second;
 			}
-
 			return result;
-
 		}
 
 		std::unordered_map<std::string, codeword_type> longer_than_max;
 		int starting_codeword;
 		std::unordered_map<std::string, codeword_type>::const_iterator end;	
-		std::array<std::unique_ptr<codeword_type[]>, 10> dictionary; 
+		std::array<std::unique_ptr<codeword_type[]>, MAX_STRING_LENGTH> dictionary; 
 		bool empty;
 	public:
 
@@ -53,13 +51,8 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 				if(!dictionary[i]){
 					std::cout << "Memory Failure. Exiting...." << std::endl;
 					abort();
-
-
 				}
-
 			}
-
-
 		} 
 
 		codeword_type code_of(std::string str, unsigned len) const override{
@@ -112,7 +105,8 @@ template <typename codeword_type = uint16_t> class Direct_Mapped_Encode_Dictiona
 		}
 
 };
-template <typename codeword_type = uint16_t> class Direct_Mapped_Decode_Dictionary: private LZWDictionary<codeword_type>{
+
+class Direct_Mapped_Decode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 		static constexpr int CODEWORD_SIZE= CHAR_BIT*sizeof(codeword_type);
 		const int MAX_CODEWORD = (1<<CODEWORD_SIZE)-1;

@@ -8,7 +8,7 @@
 
 void test_code_of(){
 	
-	Direct_Mapped_Encode_Dictionary<> f;
+	Direct_Mapped_Encode_Dictionary f;
 
 	f.add_string("A", 1);
 	f.add_string("AT", 2);
@@ -24,7 +24,7 @@ void test_code_of(){
 
 
 void test_find_longest_in_dict(){
-	Direct_Mapped_Encode_Dictionary<> f;
+	Direct_Mapped_Encode_Dictionary f;
 
 	f.add_string("A", 1);
 	f.add_string("AC", 2);
@@ -42,7 +42,7 @@ void test_find_longest_in_dict(){
 
 }
 void test_add_string_encode(){
-	Direct_Mapped_Encode_Dictionary<> f;
+	Direct_Mapped_Encode_Dictionary f;
 
 	f.add_string("ACTGC", 1);
 
@@ -57,13 +57,13 @@ void test_encode(){
 
 
 void test_add_string_decode(){
-	Direct_Mapped_Decode_Dictionary<> f;
+	Direct_Mapped_Decode_Dictionary f;
 	f.add_string("ACTGC", 1);
 	assert(f.str_of(1) == "ACTGC");
 }
 
 void test_str_of(){
-	Direct_Mapped_Decode_Dictionary<> f;
+	Direct_Mapped_Decode_Dictionary f;
 
 	f.add_string("A", 1);
 	f.add_string("AT", 2);

@@ -16,7 +16,7 @@ namespace fs = std::filesystem;
 void LZW::encode(const char* input_file, int file_size, std::ostream& output){
    
     // initialize starter dictionary
-	Direct_Mapped_Encode_Dictionary<> dictionary;
+	Direct_Mapped_Encode_Dictionary dictionary;
     dictionary.add_string("A", 1);
     
     dictionary.add_string("T", 2);
@@ -100,7 +100,7 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 void LZW::decode(const char* input, std::ostream& output){
 
     // starting dictionary
-    Direct_Mapped_Decode_Dictionary<> dictionary;
+    Direct_Mapped_Decode_Dictionary dictionary;
     
     dictionary.add_string("A", 1);
     
