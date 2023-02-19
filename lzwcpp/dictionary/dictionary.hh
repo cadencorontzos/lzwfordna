@@ -4,6 +4,7 @@
 
 template <typename codeword_type> class LZWDictionary {
 	public:
+		const int STARTING_CODE_SIZE = 16;
 		LZWDictionary() = default;
 		~LZWDictionary() = default;
 

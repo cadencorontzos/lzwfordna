@@ -7,10 +7,10 @@
 #include <climits>
 
 constexpr uint8_t MAX_STRING_LENGTH = 10;
-const int STARTING_CODE_SIZE=16;
-const int EOF_CODEWORD = 5;
-const int STARTING_CODEWORD = 6;
 typedef uint16_t codeword_type;
+const int STARTING_CODE_SIZE = 16;
+const int STARTING_CODEWORD = 6;
+const int EOF_CODEWORD = 5;
 
 class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
