@@ -16,11 +16,10 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		const int INDEX_BITS = CHAR_BIT*sizeof(index_type);
 		std::array<int, 1<<CHAR_BIT> values;
 
-		index_type map_str(std::string str) const{
+		index_type map_str(const char* input, unsigned len) const{
 			index_type result = 0;
-			int len = str.length();
-			for(int i = 0; i < len;i++){
-				result = (result<<2) + values[str[i]];
+			for(unsigned i = 0; i < len; i++){
+				result = (result<<2) + values[input[i]];
 			}
 			return result;
 		}
@@ -57,60 +56,52 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			
 		} 
 
-		codeword_type code_of(std::string str, unsigned len) const override{
+		codeword_type code_of(const char* input, unsigned len) const override{
 			if (len >= MAX_STRING_LENGTH){
+				std::string str(input, len);
 				auto lookup = longer_than_max.find(str);
 				if(lookup == end){ return 0;}
 				return lookup->second;
 			}else{
-				codeword_type lookup = (dictionary[len])[map_str(str)];
+				codeword_type lookup = (dictionary[len])[map_str(input, len)];
 				return lookup;
 			}
 		}
 	
-		int find_longest_in_dict(const char* input, int input_start, int input_size) override{
-			char next_character;
-			int current_index = input_start;
-			std::string current_string_seen = "";
-			std::string string_seen_plus_new_char;
+		int find_longest_in_dict(const char* input, const char* end_of_input) override{
 			int length = 0;
 			int entry = 0;
-			while(current_index < input_size) {
-				next_character = input[current_index];
+			while(input+length < end_of_input) {
 				length++;
-				string_seen_plus_new_char = current_string_seen + next_character;
-				entry = code_of(string_seen_plus_new_char, length);
-				if (entry!= 0){
-					current_string_seen = string_seen_plus_new_char;
-				}else{
+				entry = code_of(input, length);
+				if (entry == 0){
 					return length-1;
 				}
-				current_index ++;
-
 			}
-			if(current_string_seen == ""){
+			if(length == 0){
 				return 0;
 			}
 			return length;
 		}
 
-		void add_string(std::string str, codeword_type codeword) override{
+		void add_string(const char* input, int len, codeword_type codeword) override{
 			if(empty){return;}
 			if(codeword == MAX_CODEWORD){
 				empty = true;
 			}
-			if(str.length() < MAX_STRING_LENGTH){
-				(dictionary[str.length()])[map_str(str)] = codeword;
+			if(len < MAX_STRING_LENGTH){
+				(dictionary[len])[map_str(input, len)] = codeword;
 			}else{
+				std::string str(input, len);
 				longer_than_max[str] = codeword;
 			}
 		}
 
 		void load_starting_dictionary() override{
-			add_string("A", 1);
-			add_string("T", 2);
-			add_string("C", 3);
-			add_string("G", 4);
+			add_string("A", 1, 1);
+			add_string("T", 1, 2);
+			add_string("C", 1, 3);
+			add_string("G", 1, 4);
 		}
 
 };

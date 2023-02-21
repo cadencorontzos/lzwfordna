@@ -10,9 +10,9 @@ void test_code_of(){
 	
 	LZW_Encode_Dictionary f;
 
-	f.add_string("A", 1);
-	f.add_string("AT", 2);
-	f.add_string("ACT", 3);
+	f.add_string("A", 1, 1);
+	f.add_string("AT", 2, 2);
+	f.add_string("ACT", 3, 3);
 
 
 	assert(f.code_of("A", 1) == 1);
@@ -26,25 +26,24 @@ void test_code_of(){
 void test_find_longest_in_dict(){
 	LZW_Encode_Dictionary f;
 
-	f.add_string("A", 1);
-	f.add_string("AC", 2);
-	f.add_string("ACT", 3);
-
+	f.add_string("A", 1, 1);
+	f.add_string("AC", 2, 2);
+	f.add_string("ACT", 3, 3);
 
 	std::string input = "ACTG";
 
 
 	int ret ;
-	ret = f.find_longest_in_dict(input.c_str(), 0, 4);
+	ret = f.find_longest_in_dict(input.c_str(), input.c_str()+ input.length());
 	std::string output = input.substr(0,ret);
 	assert(output == "ACT");
-	assert(f.code_of(output, ret) == 3);
+	assert(f.code_of(output.c_str(), 3) == 3);
 
 }
 void test_add_string_encode(){
 	LZW_Encode_Dictionary f;
 
-	f.add_string("ACTGC", 1);
+	f.add_string("ACTGC", 5, 1);
 
 	assert(f.code_of("ACTGC", 5) == 1);
 }

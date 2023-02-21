@@ -18,15 +18,29 @@ template <typename codeword_type> class LZWDictionary {
 			assert(0);
 		}
 
-		virtual void add_string(std::string str, codeword_type codeword) = 0;
+		virtual int find_longest_in_dict(const char* , const char*){
+			assert(0);
+		}
+
+		virtual void add_string(std::string , codeword_type ){
+			assert(0);
+		}
+		virtual void add_string(const char*, int , codeword_type ){
+			assert(0);
+		}
 
 		virtual codeword_type code_of(std::string , unsigned ) const {
 			assert(0);
 		}
+		virtual codeword_type code_of(const char*, unsigned ) const{
+			assert(0);
+		}
+
 
 		virtual std::string str_of(codeword_type ) const {
 			assert(0);
 		}
+
 
 		virtual void load_starting_dictionary() = 0;
 

@@ -23,35 +23,28 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
     // current string seen is a string that we've seen before (it is in the dictionary), next_character is the following character that we are looking at
 
 	char next_character;
-	std::string new_string_seen;
-	std::string current_string_seen;
-	int index = 0;
 	int entry; 
 	int code;
+	const char* end_of_input = input_file + file_size;
+	int i = 0;
 	while(true)
 	{
 
-		entry = dictionary.find_longest_in_dict(input_file, index, file_size);
-		for(int i = index; i< index+entry;i++){
-			current_string_seen+= input_file[i];
-		}
-		index += entry;
-		code = dictionary.code_of(current_string_seen, entry);
-		if(index >= file_size){
+		i++;
+		entry = dictionary.find_longest_in_dict(input_file, end_of_input);
+		code = dictionary.code_of(input_file, entry);
+		if((input_file + entry)>= end_of_input){
 			break;
 		}
-		next_character = input_file[index];
-		
+		next_character = input_file[entry];
 			
 		bit_output.output_n_bits(code, codeword_helper.bits_per_codeword);
 		bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
-		new_string_seen = current_string_seen + next_character;
-		dictionary.add_string(new_string_seen, codeword);
+		dictionary.add_string(input_file, entry+1, codeword);
 		codeword = codeword_helper.get_next_codeword();
 	   
-		current_string_seen = "";
-		index++;
-
+		input_file+=entry+1;
+		entry = 0;
 
 	}
     // output special eof character
@@ -61,7 +54,7 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
     // no current block (case 0)
     // we have a current block that is a single character (case 1)
     // otherwise we have a current block > 1 byte (default)
-    switch (current_string_seen.length()){
+    switch (entry){
     case 0:
         bit_output.output_bit(false);
         bit_output.output_bit(false);
@@ -69,7 +62,7 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
     case 1:
         bit_output.output_bit(false);
         bit_output.output_bit(true);
-        bit_output.output_n_bits(static_cast<uint8_t>(current_string_seen[0]), CHAR_BIT);
+        bit_output.output_n_bits(static_cast<uint8_t>(input_file[0]), CHAR_BIT);
         break;
     default:
         bit_output.output_bit(true);
