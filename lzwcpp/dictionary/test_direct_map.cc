@@ -82,9 +82,29 @@ void test_decode(){
 	test_add_string_decode();
 	test_str_of();
 }
-int main(){
 
+
+// test for codeword_helper
+
+void test_codeword_helper(){
+
+	Codeword_Helper codeword_helper;
+
+	// check that it is set up correctly
+	assert(codeword_helper.EOF_CODEWORD == 5);
+	assert(codeword_helper.current_codeword = 6);
+
+	// check that helper increments correctly
+	for(int i = codeword_helper.current_codeword; i < (1<<codeword_helper.bits_per_codeword); i++){
+		assert(i == codeword_helper.get_next_codeword());
+	}
+	// make sure we didn't go over max
+	assert(codeword_helper.get_next_codeword() == (1<<codeword_helper.bits_per_codeword) -1);
+}
+
+int main(){
 	test_encode();
 	test_decode();
+	test_codeword_helper();
 	return 0;
 }

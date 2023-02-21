@@ -2,9 +2,13 @@
 #include <string>
 #include <cassert>
 
+
+// Parent class
+// Children should define LZW_Encode_Dictionary and LZW_Decode_Dictionary
 template <typename codeword_type> class LZWDictionary {
+
 	public:
-		const int STARTING_CODE_SIZE = 16;
+
 		LZWDictionary() = default;
 		~LZWDictionary() = default;
 
@@ -24,4 +28,17 @@ template <typename codeword_type> class LZWDictionary {
 			assert(0);
 		}
 
+};
+
+template <typename codeword_type> class CW_Tracker{
+	public:
+		codeword_type current_codeword;
+		const int EOF_CODEWORD;
+		int bits_per_codeword;
+		CW_Tracker(unsigned starting_codeword, unsigned eof, unsigned starting_codeword_size): 
+			current_codeword(starting_codeword), 
+			EOF_CODEWORD(eof), 
+			bits_per_codeword(starting_codeword_size){};
+		~CW_Tracker() = default;
+		virtual codeword_type get_next_codeword() = 0;
 };

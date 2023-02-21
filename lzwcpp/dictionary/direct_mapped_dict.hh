@@ -8,9 +8,7 @@
 
 constexpr uint8_t MAX_STRING_LENGTH = 10;
 typedef uint16_t codeword_type;
-const int STARTING_CODE_SIZE = 16;
-const int STARTING_CODEWORD = 6;
-const int EOF_CODEWORD = 5;
+const codeword_type MAX_CODEWORD = static_cast<codeword_type>((1<<(sizeof(codeword_type)*CHAR_BIT)) -1);
 
 class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
@@ -128,3 +126,18 @@ class Direct_Mapped_Decode_Dictionary: private LZWDictionary<codeword_type>{
 			return dictionary[codeword];
 		}
 };
+
+
+class Codeword_Helper: public CW_Tracker<codeword_type>{
+	public:
+		Codeword_Helper() : CW_Tracker<codeword_type>(6, 5, sizeof(codeword_type)*CHAR_BIT){};
+		codeword_type get_next_codeword(){
+			if(current_codeword == MAX_CODEWORD){
+				return MAX_CODEWORD;
+			}
+			else{
+				return current_codeword++;
+			}
+		}	
+};
+
