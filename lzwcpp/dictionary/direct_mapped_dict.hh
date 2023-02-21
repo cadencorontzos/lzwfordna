@@ -16,19 +16,13 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		const int INDEX_BITS = CHAR_BIT*sizeof(index_type);
 		const int CODEWORD_SIZE = INDEX_BITS/2;
 		const int MAX_CODEWORD = (1<<CODEWORD_SIZE)-1;
-		std::unordered_map<char, int> f{
-			{'A', 0},
-			{'T', 1},
-			{'C', 2},
-			{'G', 3}
-		};
+		std::array<int, 1<<CHAR_BIT> values;
 
 		index_type map_str(std::string str) const{
 			index_type result = 0;
 			int len = str.length();
 			for(int i = 0; i < len;i++){
-				auto entry = f.find(str[i]);
-				result = (result<<2) + entry->second;
+				result = (result<<2) + values[str[i]];
 			}
 			return result;
 		}
@@ -51,6 +45,13 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 					abort();
 				}
 			}
+
+			// load the code values for our neucleotides
+			values['A']	= 0;
+			values['T']	= 1;
+			values['C']	= 2;
+			values['G']	= 3;
+			
 		} 
 
 		codeword_type code_of(std::string str, unsigned len) const override{
