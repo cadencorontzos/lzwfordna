@@ -104,6 +104,10 @@ void test_codeword_helper(){
 	for(unsigned i = codeword_helper.current_codeword; i < MAX_CODEWORD; i++){
 
 		assert(i == codeword_helper.get_next_codeword());
+		// make sure bits per codeword is just right
+		bool less_than_upper = (i <  static_cast<unsigned>(1<< codeword_helper.bits_per_codeword)|| (codeword_helper.bits_per_codeword ==32 && i >= static_cast<unsigned>(1<<31)));
+		bool greater_than_lower = (i >= static_cast<unsigned>(1<<( codeword_helper.bits_per_codeword-1)));
+		assert(less_than_upper && greater_than_lower) ;
 	}
 	codeword_helper.get_next_codeword();
 	// make sure we didn't go over max
