@@ -1,39 +1,41 @@
-
-
 #include <iostream>
 #include "direct_mapped_dict.hh"
 #include <string>
 #include <cassert>
-#include <sstream>
+
+// tests for endcode dictionary
+//
+//
 
 void test_code_of(){
-	
-	LZW_Encode_Dictionary f;
 
+	LZW_Encode_Dictionary f;
+	
+	// load strings into dictionary
 	f.add_string("A", 1, 1);
 	f.add_string("AT", 2, 2);
 	f.add_string("ACT", 3, 3);
 
-
+	// make sure codes of those strings are right
 	assert(f.code_of("A", 1) == 1);
 	assert(f.code_of("AT", 2) == 2);
 	assert(f.code_of("ACT", 3) == 3);
-
-
 }
 
 
 void test_find_longest_in_dict(){
+
 	LZW_Encode_Dictionary f;
 
+	// load three strings, each building on last
 	f.add_string("A", 1, 1);
 	f.add_string("AC", 2, 2);
 	f.add_string("ACT", 3, 3);
 
+	// for this input, "ACT" should be the longest run in the dict
 	std::string input = "ACTG";
 
-
-	int ret ;
+	int ret;
 	ret = f.find_longest_in_dict(input.c_str(), input.c_str()+ input.length());
 	std::string output = input.substr(0,ret);
 	assert(output == "ACT");
@@ -54,6 +56,9 @@ void test_encode(){
 	test_find_longest_in_dict();
 }
 
+// tests for decode dictionary
+//
+//
 
 void test_add_string_decode(){
 	LZW_Decode_Dictionary f;
@@ -62,19 +67,18 @@ void test_add_string_decode(){
 }
 
 void test_str_of(){
+
 	LZW_Decode_Dictionary f;
 
+	// add strings into decode dict
 	f.add_string("A", 1);
 	f.add_string("AT", 2);
 	f.add_string("ACT", 3);
 
-
+	// make sure lookups are correct
 	assert(f.str_of(1) == "A");
 	assert(f.str_of(2) == "AT");
 	assert(f.str_of(3) == "ACT");
-
-
-
 }
 
 void test_decode(){
@@ -84,6 +88,8 @@ void test_decode(){
 
 
 // test for codeword_helper
+//
+//
 
 void test_codeword_helper(){
 
