@@ -1,17 +1,9 @@
 #include "lzw.hh"
-
 #include <iostream>
-#include <map>
 #include <string>
-#include <string.h>
 #include <fstream>
-#include <chrono>
-#include <filesystem>
-#include <unordered_map>
 #include <climits>
 #include "./dictionary/direct_mapped_dict.hh"
-
-namespace fs = std::filesystem;
 
 void LZW::encode(const char* input_file, int file_size, std::ostream& output){
    
