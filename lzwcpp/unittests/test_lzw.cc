@@ -39,7 +39,7 @@ int three_chars_encoded_length = 8;
 // encode unit tests 
 
 void test_encode(std::string decoded_string, char* encoded_chars, int encoded_chars_length){
-	// std::cout << "Testing string " << decoded_string << std::endl; // for debug
+	 std::cout << "Testing string " << decoded_string << std::endl; // for debug
     std::stringstream output;
 	const char* input_file = decoded_string.c_str();
 	int file_size = decoded_string.length();

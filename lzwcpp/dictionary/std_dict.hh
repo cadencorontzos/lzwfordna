@@ -1,90 +1,123 @@
+
 #include <iostream>
 #include "dictionary.hh"
-#include <unordered_map>
+#include <unordered_map> 
+#include <memory>
+#include <cmath>
+#include <climits>
+#include <limits>
 
-template <typename codeword_type> class Std_Encode_Dictionary: private LZWDictionary<codeword_type>{
+typedef uint32_t codeword_type;
+const codeword_type MAX_CODEWORD = std::numeric_limits<codeword_type>::max();
+const int CODEWORD_SIZE = std::numeric_limits<codeword_type>::digits;
+
+class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
-		std::unordered_map<std::string, codeword_type> dictionary;
+		// dictionary and end of dictionary 
+		std::unordered_map<std::string, codeword_type> dictionary; 
 		std::unordered_map<std::string, codeword_type>::const_iterator end;	
+
+		// track when we run out of codewords
+		bool empty;
 	public:
-		typedef LZWDictionary<codeword_type>::Dict_Entry Std_Dict_Entry;
-		typedef LZWDictionary<codeword_type>::Codeword_Found Codeword_Found;
-		Std_Encode_Dictionary(): LZWDictionary<codeword_type>(){ end = dictionary.cend();};
-		Std_Dict_Entry find_longest_in_dict(std::istream& input) override{
-			char next_character = input.get();
+		LZW_Encode_Dictionary() : 
+			LZWDictionary<codeword_type>(),
+			end(dictionary.cend()), 
+			empty(false){}
 
-			std::string current_string_seen = "";
-			std::string string_seen_plus_new_char;
-			auto seen_previously = end;
-			while( next_character != EOF){
-
-				string_seen_plus_new_char = current_string_seen + next_character;
-				auto entry = dictionary.find(string_seen_plus_new_char);
-				if (entry != end){
-					current_string_seen = string_seen_plus_new_char;
-					seen_previously = entry;
-				}else{
-					Std_Dict_Entry longest{ current_string_seen, seen_previously->second};
-					input.putback(next_character);
-					return longest;
-
-				}
-				next_character = input.get();
-
-			}
-			if(current_string_seen == ""){
-
-
-
-				return Std_Dict_Entry{ current_string_seen, 0};
-			}
-			Std_Dict_Entry longest{ current_string_seen, seen_previously->second};
-			return longest;
-
-
+		codeword_type code_of(const char* input, unsigned len) const override{
+			std::string str(input, len);
+			auto lookup = dictionary.find(str);
+			if(lookup == end){ return 0;}
+			return lookup->second;
 		}
-		
 	
+		int find_longest_in_dict(const char* input, const char* end_of_input) override{
+			int length = 0;
+			int entry = 0;
+			while(input+length < end_of_input) {
+				length++;
+				entry = code_of(input, length);
+				// if entry is non zero, it means we have seen that string before
+				if (entry == 0){
+					return length-1;
+				}
+			}
+			if(length == 0){
+				return 0;
+			}
+			return length;
+		}
 
-		void add_string(std::string str, codeword_type codeword) override{
+		void add_string(const char* input, unsigned len, codeword_type codeword) override{
+			// we want to prevent overflow, so when we reached our limit,
+			// allow this last addition then declare the dict empty.
+			if(empty){return;}
+			if(codeword == MAX_CODEWORD){
+				empty = true;
+			}
+			std::string str(input, len);
 			dictionary[str] = codeword;
 		}
 
-
-		codeword_type code_of(std::string str, unsigned len) const override{
-			int f = len +1;
-			f+=1;
-			auto lookup = dictionary.find(str);
-			return lookup->second;
+		void load_starting_dictionary() override{
+			add_string("A", 1, 1);
+			add_string("T", 1, 2);
+			add_string("C", 1, 3);
+			add_string("G", 1, 4);
 		}
 
 };
 
-template <typename codeword_type> class Std_Decode_Dictionary: private LZWDictionary<codeword_type>{
+// std Decode
+//
+// we simply have an array of strings long enough to accomodate every codeword.
+//
+// codewords index into the dictionary, and adding and searching are trivial from that fact
+class LZW_Decode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
-		std::unordered_map< codeword_type, std::string> dictionary;
-		std::unordered_map< codeword_type, std::string>::const_iterator end;	
+		// dictionary and end of dictionary 
+		std::unordered_map<codeword_type, std::string> dictionary; 
+		std::unordered_map<codeword_type, std::string>::const_iterator end;	
+		bool empty;
 	public:
-		typedef LZWDictionary<codeword_type>::Dict_Entry Std_Dict_Entry;
-		typedef LZWDictionary<codeword_type>::Codeword_Found Codeword_Found;
-		Std_Decode_Dictionary(): LZWDictionary<codeword_type>(){ end = dictionary.cend();};
-		Std_Dict_Entry find_longest_in_dict(std::istream& input) override{
-			input.get();
-			Std_Dict_Entry longest;
-			return longest;
-		}
-		
+		LZW_Decode_Dictionary() : 
+			LZWDictionary<codeword_type>(), 
+			end(dictionary.cend()), 
+			empty(false){}
 	
-
 		void add_string(std::string str, codeword_type codeword) override{
+			if(empty){return;}
+			if(codeword == MAX_CODEWORD){
+				empty = true;
+			}
 			dictionary[codeword] = str;
 		}
 
 		std::string str_of(codeword_type codeword) const override {
-			auto lookup = dictionary.find(codeword);
-			return lookup->second;
+			return dictionary.find(codeword)->second;
 		}
 
+		void load_starting_dictionary() override{
+			add_string("A", 1);
+			add_string("T", 2);
+			add_string("C", 3);
+			add_string("G", 4);
+		}
+};
 
+// Codeword_Helper for Direct Map:
+//
+// Since we have fixed length codeword, we only worry about overflow and incrementing the codeword
+//
+class Codeword_Helper: public CW_Tracker<codeword_type>{
+	public:
+		Codeword_Helper() : CW_Tracker<codeword_type>(6, 5, sizeof(codeword_type)*CHAR_BIT){};
+		codeword_type get_next_codeword(){
+			if(current_codeword == MAX_CODEWORD){
+				return MAX_CODEWORD;
+			}
+			return current_codeword++;
+		}	
 };
 

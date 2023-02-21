@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 #include <climits>
-#include "./dictionary/direct_mapped_dict.hh"
+#include "./dictionary/std_dict.hh"
 
 void LZW::encode(const char* input_file, int file_size, std::ostream& output){
    
@@ -28,6 +28,7 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 		length_of_next_run = dictionary.find_longest_in_dict(input_file, end_of_input);
 		codeword_to_output = dictionary.code_of(input_file, length_of_next_run);
 
+		std::cout << "here" << codeword_to_output << std::endl;
 		// make sure we haven't passed EOF
 		if((input_file + length_of_next_run)>= end_of_input){
 			break;
@@ -57,6 +58,7 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
     // otherwise we have a current block > 1 byte (default)
     switch (length_of_next_run){
     case 0:
+		std::cout << "HERE" << std::endl;
         bit_output.output_bit(false);
         bit_output.output_bit(false);
         break;
