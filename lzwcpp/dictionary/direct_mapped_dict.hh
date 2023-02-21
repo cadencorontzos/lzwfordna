@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include "dictionary.hh"
 #include <unordered_map> 
@@ -9,13 +8,12 @@
 constexpr uint8_t MAX_STRING_LENGTH = 10;
 typedef uint16_t codeword_type;
 const codeword_type MAX_CODEWORD = static_cast<codeword_type>((1<<(sizeof(codeword_type)*CHAR_BIT)) -1);
+const int CODEWORD_SIZE = sizeof(codeword_type)*CHAR_BIT;
 
 class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 		using index_type = uint32_t;
 		const int INDEX_BITS = CHAR_BIT*sizeof(index_type);
-		const int CODEWORD_SIZE = INDEX_BITS/2;
-		const int MAX_CODEWORD = (1<<CODEWORD_SIZE)-1;
 		std::array<int, 1<<CHAR_BIT> values;
 
 		index_type map_str(std::string str) const{
@@ -26,18 +24,23 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			}
 			return result;
 		}
-
-		std::unordered_map<std::string, codeword_type> longer_than_max;
-		int starting_codeword;
-		std::unordered_map<std::string, codeword_type>::const_iterator end;	
+		
+		// we will map the strings directly to memory in this array
 		std::array<std::unique_ptr<codeword_type[]>, MAX_STRING_LENGTH> dictionary; 
+		// track when we run out of codewords
 		bool empty;
-	public:
 
-		LZW_Encode_Dictionary() : LZWDictionary<codeword_type>(){ 
-			empty = false;
-			end = longer_than_max.cend();
-			for( int i = 0; i < MAX_STRING_LENGTH; i++){
+		// add a hashmap on top of our direct map for strings longer than our max
+		std::unordered_map<std::string, codeword_type> longer_than_max;
+		std::unordered_map<std::string, codeword_type>::const_iterator end;	
+
+	public:
+		LZW_Encode_Dictionary() : 
+			LZWDictionary<codeword_type>(),
+			empty(false),
+			end(longer_than_max.cend())
+		{ 
+			for(int i = 0; i < MAX_STRING_LENGTH; i++){
 				int size = pow(4, i+1);
 				dictionary[i] = std::unique_ptr<codeword_type[]>((codeword_type*)calloc(size, sizeof(codeword_type)));
 				if(!dictionary[i]){
@@ -93,7 +96,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 
 		void add_string(std::string str, codeword_type codeword) override{
 			if(empty){return;}
-			if(codeword ==(1<< CODEWORD_SIZE)-1){
+			if(codeword == MAX_CODEWORD){
 				empty = true;
 			}
 			if(str.length() < MAX_STRING_LENGTH){
@@ -115,22 +118,21 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 class LZW_Decode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 		static constexpr int CODEWORD_SIZE= CHAR_BIT*sizeof(codeword_type);
-		const int MAX_CODEWORD = (1<<CODEWORD_SIZE)-1;
 		bool empty;
 	public:
-		std::array<std::string, (1<< CODEWORD_SIZE)> dictionary; 
-		LZW_Decode_Dictionary() : LZWDictionary<codeword_type>(){empty = false;}
+		std::array<std::string, MAX_CODEWORD + 1> dictionary; 
+		LZW_Decode_Dictionary() : LZWDictionary<codeword_type>(), empty(false){}
 	
 		void add_string(std::string str, codeword_type codeword) override{
 			if(empty){return;}
-			if(codeword == (1<< CODEWORD_SIZE)-1){
+			if(codeword == MAX_CODEWORD){
 				empty = true;
 			}
 			dictionary[codeword] = str;
 		}
 
 		std::string str_of(codeword_type codeword) const override {
-			assert(codeword < (1<< CODEWORD_SIZE));
+			assert(codeword <= MAX_CODEWORD);
 			return dictionary[codeword];
 		}
 
@@ -150,9 +152,7 @@ class Codeword_Helper: public CW_Tracker<codeword_type>{
 			if(current_codeword == MAX_CODEWORD){
 				return MAX_CODEWORD;
 			}
-			else{
-				return current_codeword++;
-			}
+			return current_codeword++;
 		}	
 };
 
