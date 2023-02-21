@@ -10,7 +10,7 @@ constexpr uint8_t MAX_STRING_LENGTH = 10;
 typedef uint16_t codeword_type;
 const codeword_type MAX_CODEWORD = static_cast<codeword_type>((1<<(sizeof(codeword_type)*CHAR_BIT)) -1);
 
-class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
+class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 		using index_type = uint32_t;
 		const int INDEX_BITS = CHAR_BIT*sizeof(index_type);
@@ -40,7 +40,7 @@ class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		bool empty;
 	public:
 
-		Direct_Mapped_Encode_Dictionary() : LZWDictionary<codeword_type>(){ 
+		LZW_Encode_Dictionary() : LZWDictionary<codeword_type>(){ 
 			empty = false;
 			end = longer_than_max.cend();
 			for( int i = 0; i < MAX_STRING_LENGTH; i++){
@@ -65,7 +65,7 @@ class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		}
 	
 		int find_longest_in_dict(const char* input, int input_start, int input_size) override{
-			char next_character ;
+			char next_character;
 			int current_index = input_start;
 			std::string current_string_seen = "";
 			std::string string_seen_plus_new_char;
@@ -102,16 +102,23 @@ class Direct_Mapped_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			}
 		}
 
+		void load_starting_dictionary() override{
+			add_string("A", 1);
+			add_string("T", 2);
+			add_string("C", 3);
+			add_string("G", 4);
+		}
+
 };
 
-class Direct_Mapped_Decode_Dictionary: private LZWDictionary<codeword_type>{
+class LZW_Decode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 		static constexpr int CODEWORD_SIZE= CHAR_BIT*sizeof(codeword_type);
 		const int MAX_CODEWORD = (1<<CODEWORD_SIZE)-1;
 		bool empty;
 	public:
 		std::array<std::string, (1<< CODEWORD_SIZE)> dictionary; 
-		Direct_Mapped_Decode_Dictionary() : LZWDictionary<codeword_type>(){empty = false;}
+		LZW_Decode_Dictionary() : LZWDictionary<codeword_type>(){empty = false;}
 	
 		void add_string(std::string str, codeword_type codeword) override{
 			if(empty){return;}
@@ -124,6 +131,13 @@ class Direct_Mapped_Decode_Dictionary: private LZWDictionary<codeword_type>{
 		std::string str_of(codeword_type codeword) const override {
 			assert(codeword < (1<< CODEWORD_SIZE));
 			return dictionary[codeword];
+		}
+
+		void load_starting_dictionary() override{
+			add_string("A", 1);
+			add_string("T", 2);
+			add_string("C", 3);
+			add_string("G", 4);
 		}
 };
 

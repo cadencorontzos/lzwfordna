@@ -28,6 +28,8 @@ template <typename codeword_type> class LZWDictionary {
 			assert(0);
 		}
 
+		virtual void load_starting_dictionary() = 0;
+
 };
 
 template <typename codeword_type> class CW_Tracker{

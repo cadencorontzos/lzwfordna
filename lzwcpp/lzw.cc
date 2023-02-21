@@ -16,14 +16,8 @@ namespace fs = std::filesystem;
 void LZW::encode(const char* input_file, int file_size, std::ostream& output){
    
     // initialize starter dictionary
-	Direct_Mapped_Encode_Dictionary dictionary;
-    dictionary.add_string("A", 1);
-    
-    dictionary.add_string("T", 2);
-    dictionary.add_string("C", 3);
-    dictionary.add_string("G", 4);
-
-	
+	LZW_Encode_Dictionary dictionary;
+	dictionary.load_starting_dictionary();
 
     BitOutput bit_output(output);
 
@@ -35,7 +29,6 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 
     // the pieces of the file we are reading
     // current string seen is a string that we've seen before (it is in the dictionary), next_character is the following character that we are looking at
-	
 
 	char next_character;
 	std::string new_string_seen;
@@ -100,13 +93,8 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 void LZW::decode(const char* input, std::ostream& output){
 
     // starting dictionary
-    Direct_Mapped_Decode_Dictionary dictionary;
-    
-    dictionary.add_string("A", 1);
-    
-    dictionary.add_string("T", 2);
-    dictionary.add_string("C", 3);
-    dictionary.add_string("G", 4);
+    LZW_Decode_Dictionary dictionary;
+	dictionary.load_starting_dictionary();
 
 	Codeword_Helper codeword_helper;
     codeword_type codeword = codeword_helper.get_next_codeword();
