@@ -11,6 +11,10 @@ typedef uint32_t codeword_type;
 const codeword_type MAX_CODEWORD = std::numeric_limits<codeword_type>::max();
 const int CODEWORD_SIZE = std::numeric_limits<codeword_type>::digits;
 
+// Std Encode
+//
+// use a unordered map to track codewords
+//
 class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 		// dictionary and end of dictionary 
@@ -70,10 +74,8 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 };
 
 // std Decode
+// 
 //
-// we simply have an array of strings long enough to accomodate every codeword.
-//
-// codewords index into the dictionary, and adding and searching are trivial from that fact
 class LZW_Decode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
 		// dictionary and end of dictionary 
@@ -108,7 +110,7 @@ class LZW_Decode_Dictionary: private LZWDictionary<codeword_type>{
 
 // Codeword_Helper for Direct Map:
 //
-// Since we have fixed length codeword, we only worry about overflow and incrementing the codeword
+// track current codeword and use the minumum number of bits required to display said codeword
 //
 class Codeword_Helper: public CW_Tracker<codeword_type>{
 	private:
