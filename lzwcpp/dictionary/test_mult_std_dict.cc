@@ -98,7 +98,7 @@ void test_codeword_helper(){
 
 	// check that it is set up correctly
 	assert(codeword_helper.EOF_CODEWORD == 5);
-	assert(codeword_helper.current_codeword = 6);
+	assert(codeword_helper.current_codeword == 6);
 
 	// check that helper increments correctly
 	for(unsigned i = codeword_helper.current_codeword; i < MAX_CODEWORD; i++){
