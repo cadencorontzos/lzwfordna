@@ -21,27 +21,85 @@ This thesis deals with some high level topics and uses language specific to comp
 
 
 
+## Compression Metrics
+
+### Compression Ratio
+
+Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressd as a ratio of the size of the uncompressed data ($OS$) to the size of the compressed data ({CS}). 
+
+$$CR = \frac{OS}{CS}$$
+
+So a higher compression ratio means a more effective compression algorithm, and means that we were able to store more data in less space, allowing for easier storage and transfer.
+
+### Runtime
+
+The runtime is also an important part of evaluating the effectiveness of a compression algorithm. If you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15 but takes twice as long as the other, you may opt for a lower compression ratio to save time. 
+
+### Memory Usage
+
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to information that programs track as they are running on a computer. So do reduce our runtime and make a more effective compression algorithm, we want to be saving only the most important data that our algoritm needs in order to reduce our memory usage.
+
 ## Lossless vs. Lossy Compression
+
+### Lossy
+
+Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example
+
 
 ### Lossless
 
-### Lossy
+Lossless compression is the compression of data with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Examples of lossless compression algoritms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
 
 ## Examples of Compression Algorithms
 
 ### Run Length Encoding
 
 Run Length Encoding (RLE) is on of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by just giving the number of times each character appears.
-  Suppose you want to send 
+  Suppose you want to send the following message 
   
   <p style="text-align: center;">AAGCTTTTTTTTGGGGGCCCT</p>
   
+Even if this message did mean something, we can get the information across without repeating ourselves. When writing a grocery list, you don't write "egg egg egg egg", you say "4 eggs". RLE uses this same strategdy. 
+
   <p style="text-align: center;">2A1G1C8T5G3C1T</p>
 
+We could compress this even further if we omit the 1 on characters that only appear once. 
 
 ### Huffman
 
+Huffman Encoding is a strategdy that assigns variable length code to certain symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
+
+
+Put example here
+
 ### Arithmetic
 
+Arithmetic encoding is another lossless compression algorithm that uses probability to asssign codes to symbols in the message. Unlike Huffman, arithmetic enoding assins a single code to the whole message, rather than seperate codes for each symbol.
+
+
+
+
+Here is a simple example. Say we want to encode a string of characters "ACCGGGGTTT". The probability of each symbol in the message are
+ 
+* P(A) = 1/10
+* P(C) = 2/10
+* P(G) = 4/10
+* P(T) = 3/10
+
+We want to represent the message as a fractional number between 0 and 1. We will divide the interval [0,1] into sub intervals using the probabilities of each character in the message. That way, each symbol is reprsented by the sub-interval that corresponds to its probablity.
+
+
+Arithmetic encoding can have a better compression ratio that Huffman in some cases, but the computation time is often not worth the payoff.
+
 ### Lempel Ziv Welch
+
+Lempel Ziv Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords, where codewords represent strings previously seen in the message. As it compresses the message, the dictionary grows. The compression algorithm leaves behind the codewords and some of the original characters, allowing the decompression algorithm to build up the same dictionary as it decompresses the message.
+
+Here is a simple example. We may be sending messages with the characters {'A', 'C', 'T', 'G'}, so I will start with those in my dictionary. Say we want to send the message 
+
+"AAGGAATCC"
+
+When we compress, we start at the beginning of the message and scan through.
+
+
 

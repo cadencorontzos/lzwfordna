@@ -19,6 +19,10 @@ To remove the indentation of the first entry.
 -->
 \noindent
 
+    Huffman, D. A. (1952). A method for the construction of minimum-redundancy codes. Proceedings of the IRE, 40(9), 1098-1101.
+    Sayood, K. (2017). Introduction to data compression. Academic Press.
+	    Witten, I. H., Neal, R. M., & Cleary, J. G. (1987). Arithmetic coding for data compression. Communications of the ACM, 30(6), 520-540.
+    Sayood, K. (2017). Introduction to data compression. Academic Press.
 <!--
 To create a hanging indent and spacing between entries. This line may need 
 to be removed for styles that don't require the hanging indent.
