@@ -15,6 +15,8 @@ __pycache__
 /lzwcpp/test_lzw
 /lzwcpp/DNACorpus*
 /lzwcpp/dictionary/test_std_dict
+/lzwcpp/dictionary/test_mult_std_dict
+/lzwcpp/dictionary/test_direct_map
 # swap
 [._]*.s[a-w][a-z]
 [._]s[a-w][a-z]

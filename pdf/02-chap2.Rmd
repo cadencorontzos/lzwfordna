@@ -20,8 +20,6 @@ knitr::kable(df, "markdown", align= 'c')
 
 ```
 
-
-
 Another, newer paper aimed to create a corpus specifically for compressing DNA [@prataspinho]. They put together a corpus of DNA sequences for this purpose, as summarized below. Since the papers publishing, it has been cited by several DNA compression papers.
 
 ```{r, echo = FALSE}
@@ -139,6 +137,10 @@ We solved this issue by adding 2 extra bits after the EOF codeword. These bits d
 ```
 
 So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
+
+At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora. 
+
+9066eef
 
 ### Dictionary Accesses
 

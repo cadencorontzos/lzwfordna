@@ -48,10 +48,10 @@ def runFile(filename, td):
     td.add("Decompression Time", "int", statistics.median(totalDecompTime), decompressionTime[0])
 
 
-def runCorpus(directoryName):
+def runCorpus(directoryName,corpusNum):
     # iterate over files in
     # that directory
-    td = TidyData(directoryName+"Run"+sys.argv[-1], "Run of a corpus" )
+    td = TidyData("corpus_"+ str(corpusNum) "_"+sys.argv[-1], "Run of a corpus" )
     files = os.listdir(directoryName)
     for filename in files:
         td.start_record()
