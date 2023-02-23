@@ -6,19 +6,149 @@ To restate the goal of this thesis, we seek to optimize LZW for use in compressi
 
 There has been several attempts to optimize LZW by computer science researchers.
 
+There has also been attemps to generally improve performance of LZW
+
+## Corpora
+
+Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to ascess performance and to compare different algorithms to one another. 
+
+In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression [@grumbach].
+
+```{r, echo = FALSE} 
+df <- read.csv('data/corpus_1_summary.csv')
+knitr::kable(df, "markdown", align= 'c')
+
+```
+
+
+
+Another, newer paper aimed to create a corpus specifically for compressing DNA [@prataspinho]. They put together a corpus of DNA sequences for this purpose, as summarized below. Since the papers publishing, it has been cited by several DNA compression papers.
+
+```{r, echo = FALSE}
+df <- read.csv('data/corpus_2_summary.csv')
+knitr::kable(df, "markdown", align= 'c')
+```
+This particular dataset is publicly available at this [link](https://tinyurl.com/DNAcorpus).
+
 ## A Starting Point
 
+As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, opitmizing it for DNA. 
 
 
-## Techniques Used
+### Growing Codewords and Bit Output
 
-I used several programming tools in order to access and optimize my code.
+When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance `01000001` stands for the letter 'A' in ASCII encoding. Numbers are more simple to display, so `00000001` is 1, `00000010` is 2, and so on.
 
-### Valgrind and Callgrind
+But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, `1` is the same as `01` is the same as `00000000000001`. So when we are outputting codewords for LZW, we don't necessarily need to ouput a whole byte. We can have growing codewords.
 
-### gprof 
+As the number of codewords grows, the number of bits needed to represent it also grows. So if we are on codeword 8, we need 4 bits since 8 is `1000`. As our dictionary grows, we can grow the number of bits needed to display a codeword and save a lot of space in our compressed document.
 
-### perf
+So we needed a method of ouputting bits one by one, and reading in bits one by one. This is not something that is supported in C++ on its own. We were able to create this functionality bydefining a class.
+
+```c++
+// BitInput: Read a single bit at a time from an input stream.
+// Before reading any bits, ensure your input stream still has valid inputs.
+class BitInput {
+ public:
+  // Construct with an input stream
+  BitInput(const char* input);
+
+  BitInput(const BitInput&) = default;
+  BitInput(BitInput&&) = default;
+
+  // bool eof();
+  // Read a single bit (or trailing zero)
+  // Allowed to crash or throw an exception if called past end-of-file.
+  bool input_bit();
+
+  int read_n_bits(int n);
+}
+
+// BitOutput: Write a single bit at a time to an output stream
+// Make sure all bits are written out by the time the destructor is done.
+class BitOutput {
+ public:
+  // Construct with an input stream
+  BitOutput(std::ostream& os);
+
+  // Flushes out any remaining output bits and trailing zeros, if any:
+  ~BitOutput();
+
+  BitOutput(const BitOutput&) = default;
+  BitOutput(BitOutput&&) = default;
+
+  // Output a single bit (buffered)
+  void output_bit(bool bit);
+
+  void output_n_bits(int bits, int n);
+}
+
+```
+
+So when we are encoding and need to output a codeword, we can `output_n_bits`, where `n` is the number of bits needed to display our greatest codeword. When decoding, we can just `read_n_bits`.
+
+### Getting EOF to work
+
+One of the very early issues with the implementation was how to denote the end of a file. The early implementation would work for some files, but for others the very last part of the file would be lost after encoding and then decodeing.
+
+In theoretical implementations of LZW, computer scientists tend to denote the end of a message with a special character, one that isn't seen anywhere else in the file. In this initial implementation, that wasn't possible because we wanted to be able to compress any file with any characters.
+
+The solution was to reserve a codeword to mark the end of the file. So we start with a starting dictionary containint all ASCII characters.
+
+```c++
+	std::unordered_map<std::string, int> dictionary;
+   	for (int i = 0; i < 256; ++i){
+		std::string str1(1, char(i));
+		dictionary[str1] = i;
+	}
+```
+Then use the code 256 to denote the end of file. So the algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword. 
+
+
+The problem was, what about what is left over? Suppose we are reading a file, and the file ends with "ACCT". If "A" is in the dictionary, we see if "AC" is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
+
+1. "ACC" was in the dictionary but "ACCT" was not. This means we can output the codeword for "ACC", follow it by the character "T", and we are done. This is the ideal scenario, because nothing is left over when we output the EOF codeword
+2. "ACCT" was in the dictionary: This means we have one more codeword to output, but since we reached the end of the file, we never got to output it.
+3. "AC" was in the dictionary, but "ACC" was not: in this case, we would output the codeword for "AC" output the character "C", and then start looping again starting at "T". But we reach the end of the file, so we output EOF before outputting T.
+
+We solved this issue by adding 2 extra bits after the EOF codeword. These bits denote the case that occured
+
+```c++
+    // after we've encoded, we either have 
+    // no current block (case 0)
+    // we have a current block that is a single character (case 1)
+    // otherwise we have a current block > 1 byte (default)
+    switch (currentBlock.length()){
+    case 0:
+        bit_output.output_bit(false);
+        bit_output.output_bit(false);
+        break;
+    case 1:
+        bit_output.output_bit(false);
+        bit_output.output_bit(true);
+        bit_output.output_n_bits((int) currentBlock[0], CHAR_BIT);
+        break;
+    default:
+        bit_output.output_bit(true);
+        bit_output.output_bit(true);
+
+        int code = dictionary[currentBlock];
+        bit_output.output_n_bits(code, codeword_size);
+        break;
+    }
+```
+
+So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
+
+### Dictionary Accesses
+
+Another way that we 
+
+### Using Const Char *
+
+
+## Evaluating Performance
+
 
 ## Trying Different Dictionaries
 

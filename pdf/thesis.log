@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.15)  23 FEB 2023 10:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.15)  23 FEB 2023 16:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -582,91 +582,96 @@ File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 Chapter 2.
 [7
 
-] [8
-
 ]
+Underfull \vbox (badness 5490) has occurred while \output is active []
+
+[8]
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 445.
+[9] [10]
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 516.
+(c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
+File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) [11] [12]
 Chapter 3.
-<figure/reed.jpg, id=345, 250.9375pt x 251.94125pt>
+<figure/reed.jpg, id=383, 250.9375pt x 251.94125pt>
 File: figure/reed.jpg Graphic file (type jpg)
 <use figure/reed.jpg>
-Package pdftex.def Info: figure/reed.jpg  used on input line 414.
+Package pdftex.def Info: figure/reed.jpg  used on input line 578.
 (pdftex.def)             Requested size: 86.72267pt x 87.06975pt.
-[9 <./figure/reed.jpg>] [10]
+[13
 
-LaTeX Warning: Reference `rmd-basics' on page 11 undefined on input line 424.
+ <./figure/reed.jpg>] [14]
 
-<thesis_files/figure-latex/delaysboxplot-1.pdf, id=357, 433.62pt x 361.35pt>
+LaTeX Warning: Reference `rmd-basics' on page 15 undefined on input line 588.
+
+<thesis_files/figure-latex/delaysboxplot-1.pdf, id=395, 433.62pt x 361.35pt>
 File: thesis_files/figure-latex/delaysboxplot-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/delaysboxplot-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/delaysboxplot-1.pdf  used on input line 436.
+Package pdftex.def Info: thesis_files/figure-latex/delaysboxplot-1.pdf  used on input line 600.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
-[11
+[15
 
- <./thesis_files/figure-latex/delaysboxplot-1.pdf>] [12]
-<figure/subdivision.pdf, id=375, 220.825pt x 89.33376pt>
+ <./thesis_files/figure-latex/delaysboxplot-1.pdf>] [16]
+<figure/subdivision.pdf, id=413, 220.825pt x 89.33376pt>
 File: figure/subdivision.pdf Graphic file (type pdf)
 <use figure/subdivision.pdf>
-Package pdftex.def Info: figure/subdivision.pdf  used on input line 447.
+Package pdftex.def Info: figure/subdivision.pdf  used on input line 611.
 (pdftex.def)             Requested size: 165.61833pt x 67.00014pt.
 File: figure/subdivision.pdf Graphic file (type pdf)
 <use figure/subdivision.pdf>
-Package pdftex.def Info: figure/subdivision.pdf  used on input line 455.
+Package pdftex.def Info: figure/subdivision.pdf  used on input line 619.
 (pdftex.def)             Requested size: 220.82445pt x 89.33353pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 462.
+(Font)              <10> on input line 626.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 462.
+(Font)              <7> on input line 626.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 462.
-[13
+(Font)              <5> on input line 626.
+[17
 
- <./figure/subdivision.pdf>] [14] [15] [16
+ <./figure/subdivision.pdf>] [18] [19] [20
 
-] [17] [18
+] [21] [22
 
 ]
 Appendix A.
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 521.
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 522.
-(c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
-File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [19] [20]
-Underfull \vbox (badness 10000) detected at line 623
+[23] [24]
+Underfull \vbox (badness 10000) detected at line 787
  []
 
 
-Overfull \vbox (2.29527pt too high) detected at line 623
+Overfull \vbox (2.29527pt too high) detected at line 787
  []
 
-[21] [22]
+[25] [26]
 Appendix B.
-[23
+[27
 
-] [24
+] [28
 
-] [25
+] [29
 
 ] (./thesis.aux)
 
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 7631F4A51756804F44EFD0414E420D54;5337.
+(rerunfilecheck)             Checksum: A6A04FC998F872C6FD7F895F7786119A;5836.
  ) 
 Here is how much of TeX's memory you used:
- 12748 strings out of 478053
- 210400 string characters out of 5838816
+ 12771 strings out of 478053
+ 210727 string characters out of 5838816
  1860787 words of memory out of 5000000
- 32480 multiletter control sequences out of 15000+600000
- 580198 words of font info for 89 fonts, out of 8000000 for 9000
+ 32487 multiletter control sequences out of 15000+600000
+ 580505 words of font info for 90 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,12n,77p,836b,511s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,12n,77p,836b,567s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}<c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on thesis.pdf (45 pages, 373818 bytes).
+Output written on thesis.pdf (49 pages, 396098 bytes).
 PDF statistics:
- 591 PDF objects out of 1000 (max. 8388607)
- 504 compressed objects within 6 object streams
- 135 named destinations out of 1000 (max. 500000)
- 296 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 636 PDF objects out of 1000 (max. 8388607)
+ 544 compressed objects within 6 object streams
+ 150 named destinations out of 1000 (max. 500000)
+ 312 words of extra memory for PDF output out of 10000 (max. 10000000)
 

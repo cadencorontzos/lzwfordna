@@ -369,22 +369,186 @@ To restate the goal of this thesis, we seek to optimize LZW for use in compressi
 
 There has been several attempts to optimize LZW by computer science researchers.
 
+There has also been attemps to generally improve performance of LZW
+
+\hypertarget{corpora}{%
+\section{Corpora}\label{corpora}}
+
+Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to ascess performance and to compare different algorithms to one another.
+
+In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression (Grumbach \& Tahi, 1994).
+\begin{verbatim}
+Warning in read.table(file = file, header = header, sep = sep,
+quote = quote, : incomplete final line found by readTableHeader on
+'data/corpus_1_summary.csv'
+\end{verbatim}
+\begin{longtable}[]{@{}cc@{}}
+\toprule()
+Name & Size.bytes. \\
+\midrule()
+\endhead
+hehcmv & 229354 \\
+humdyst & 38770 \\
+humghcs & 66495 \\
+humhbb & 73308 \\
+humhdab & 58864 \\
+humprtb & 56737 \\
+mpomtcg & 186609 \\
+mtpacga & 100314 \\
+vaccg & 191737 \\
+\bottomrule()
+\end{longtable}
+Another, newer paper aimed to create a corpus specifically for compressing DNA (Pratas \& Pinho, 2018). They put together a corpus of DNA sequences for this purpose, as summarized below. Since the papers publishing, it has been cited by several DNA compression papers.
+\begin{longtable}[]{@{}cc@{}}
+\toprule()
+Name & Size.bytes. \\
+\midrule()
+\endhead
+AeCa & 1591049 \\
+AgPh & 43970 \\
+BuEb & 18940 \\
+DaRe & 62565020 \\
+DrMe & 32181429 \\
+EnIn & 26403087 \\
+EsCo & 4641652 \\
+GaGa & 148532294 \\
+HaHi & 3890005 \\
+HePy & 1667825 \\
+HoSa & 189752667 \\
+OrSa & 43262523 \\
+PlFa & 8986712 \\
+ScPo & 10652155 \\
+YeMi & 73689 \\
+\bottomrule()
+\end{longtable}
+This particular dataset is publicly available at this \href{https://tinyurl.com/DNAcorpus}{link}.
+
 \hypertarget{a-starting-point}{%
 \section{A Starting Point}\label{a-starting-point}}
 
-\hypertarget{techniques-used}{%
-\section{Techniques Used}\label{techniques-used}}
+As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, opitmizing it for DNA.
 
-I used several programming tools in order to access and optimize my code.
+\hypertarget{growing-codewords-and-bit-output}{%
+\subsection{Growing Codewords and Bit Output}\label{growing-codewords-and-bit-output}}
 
-\hypertarget{valgrind-and-callgrind}{%
-\subsection{Valgrind and Callgrind}\label{valgrind-and-callgrind}}
+When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance \texttt{01000001} stands for the letter `A' in ASCII encoding. Numbers are more simple to display, so \texttt{00000001} is 1, \texttt{00000010} is 2, and so on.
 
-\hypertarget{gprof}{%
-\subsection{gprof}\label{gprof}}
+But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, \texttt{1} is the same as \texttt{01} is the same as \texttt{00000000000001}. So when we are outputting codewords for LZW, we don't necessarily need to ouput a whole byte. We can have growing codewords.
 
-\hypertarget{perf}{%
-\subsection{perf}\label{perf}}
+As the number of codewords grows, the number of bits needed to represent it also grows. So if we are on codeword 8, we need 4 bits since 8 is \texttt{1000}. As our dictionary grows, we can grow the number of bits needed to display a codeword and save a lot of space in our compressed document.
+
+So we needed a method of ouputting bits one by one, and reading in bits one by one. This is not something that is supported in C++ on its own. We were able to create this functionality bydefining a class.
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// BitInput: Read a single bit at a time from an input stream.}
+\CommentTok{// Before reading any bits, ensure your input stream still has valid inputs.}
+\KeywordTok{class}\NormalTok{ BitInput }\OperatorTok{\{}
+ \KeywordTok{public}\OperatorTok{:}
+  \CommentTok{// Construct with an input stream}
+\NormalTok{  BitInput}\OperatorTok{(}\AttributeTok{const} \DataTypeTok{char}\OperatorTok{*}\NormalTok{ input}\OperatorTok{);}
+
+\NormalTok{  BitInput}\OperatorTok{(}\AttributeTok{const}\NormalTok{ BitInput}\OperatorTok{\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
+\NormalTok{  BitInput}\OperatorTok{(}\NormalTok{BitInput}\OperatorTok{\&\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
+
+  \CommentTok{// bool eof();}
+  \CommentTok{// Read a single bit (or trailing zero)}
+  \CommentTok{// Allowed to crash or throw an exception if called past end{-}of{-}file.}
+  \DataTypeTok{bool}\NormalTok{ input\_bit}\OperatorTok{();}
+
+  \DataTypeTok{int}\NormalTok{ read\_n\_bits}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ n}\OperatorTok{);}
+\OperatorTok{\}}
+
+\CommentTok{// BitOutput: Write a single bit at a time to an output stream}
+\CommentTok{// Make sure all bits are written out by the time the destructor is done.}
+\KeywordTok{class}\NormalTok{ BitOutput }\OperatorTok{\{}
+ \KeywordTok{public}\OperatorTok{:}
+  \CommentTok{// Construct with an input stream}
+\NormalTok{  BitOutput}\OperatorTok{(}\BuiltInTok{std::}\NormalTok{ostream}\OperatorTok{\&}\NormalTok{ os}\OperatorTok{);}
+
+  \CommentTok{// Flushes out any remaining output bits and trailing zeros, if any:}
+  \OperatorTok{\textasciitilde{}}\NormalTok{BitOutput}\OperatorTok{();}
+
+\NormalTok{  BitOutput}\OperatorTok{(}\AttributeTok{const}\NormalTok{ BitOutput}\OperatorTok{\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
+\NormalTok{  BitOutput}\OperatorTok{(}\NormalTok{BitOutput}\OperatorTok{\&\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
+
+  \CommentTok{// Output a single bit (buffered)}
+  \DataTypeTok{void}\NormalTok{ output\_bit}\OperatorTok{(}\DataTypeTok{bool}\NormalTok{ bit}\OperatorTok{);}
+
+  \DataTypeTok{void}\NormalTok{ output\_n\_bits}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ bits}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ n}\OperatorTok{);}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+So when we are encoding and need to output a codeword, we can \texttt{output\_n\_bits}, where \texttt{n} is the number of bits needed to display our greatest codeword. When decoding, we can just \texttt{read\_n\_bits}.
+
+\hypertarget{getting-eof-to-work}{%
+\subsection{Getting EOF to work}\label{getting-eof-to-work}}
+
+One of the very early issues with the implementation was how to denote the end of a file. The early implementation would work for some files, but for others the very last part of the file would be lost after encoding and then decodeing.
+
+In theoretical implementations of LZW, computer scientists tend to denote the end of a message with a special character, one that isn't seen anywhere else in the file. In this initial implementation, that wasn't possible because we wanted to be able to compress any file with any characters.
+
+The solution was to reserve a codeword to mark the end of the file. So we start with a starting dictionary containint all ASCII characters.
+\begin{Shaded}
+\begin{Highlighting}[]
+    \BuiltInTok{std::}\NormalTok{unordered\_map}\OperatorTok{\textless{}}\BuiltInTok{std::}\NormalTok{string}\OperatorTok{,} \DataTypeTok{int}\OperatorTok{\textgreater{}}\NormalTok{ dictionary}\OperatorTok{;}
+    \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}} \DecValTok{256}\OperatorTok{;} \OperatorTok{++}\NormalTok{i}\OperatorTok{)\{}
+        \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{str1}\OperatorTok{(}\DecValTok{1}\OperatorTok{,} \DataTypeTok{char}\OperatorTok{(}\NormalTok{i}\OperatorTok{));}
+\NormalTok{        dictionary}\OperatorTok{[}\NormalTok{str1}\OperatorTok{]} \OperatorTok{=}\NormalTok{ i}\OperatorTok{;}
+    \OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+Then use the code 256 to denote the end of file. So the algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword.
+
+The problem was, what about what is left over? Suppose we are reading a file, and the file ends with ``ACCT''. If ``A'' is in the dictionary, we see if ``AC'' is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  ``ACC'' was in the dictionary but ``ACCT'' was not. This means we can output the codeword for ``ACC'', follow it by the character ``T'', and we are done. This is the ideal scenario, because nothing is left over when we output the EOF codeword
+\item
+  ``ACCT'' was in the dictionary: This means we have one more codeword to output, but since we reached the end of the file, we never got to output it.
+\item
+  ``AC'' was in the dictionary, but ``ACC'' was not: in this case, we would output the codeword for ``AC'' output the character ``C'', and then start looping again starting at ``T''. But we reach the end of the file, so we output EOF before outputting T.
+\end{enumerate}
+We solved this issue by adding 2 extra bits after the EOF codeword. These bits denote the case that occured
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{// after we\textquotesingle{}ve encoded, we either have }
+    \CommentTok{// no current block (case 0)}
+    \CommentTok{// we have a current block that is a single character (case 1)}
+    \CommentTok{// otherwise we have a current block \textgreater{} 1 byte (default)}
+    \ControlFlowTok{switch} \OperatorTok{(}\NormalTok{currentBlock}\OperatorTok{.}\NormalTok{length}\OperatorTok{())\{}
+    \ControlFlowTok{case} \DecValTok{0}\OperatorTok{:}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
+        \ControlFlowTok{break}\OperatorTok{;}
+    \ControlFlowTok{case} \DecValTok{1}\OperatorTok{:}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_n\_bits}\OperatorTok{((}\DataTypeTok{int}\OperatorTok{)}\NormalTok{ currentBlock}\OperatorTok{[}\DecValTok{0}\OperatorTok{],}\NormalTok{ CHAR\_BIT}\OperatorTok{);}
+        \ControlFlowTok{break}\OperatorTok{;}
+    \ControlFlowTok{default}\OperatorTok{:}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
+
+        \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{[}\NormalTok{currentBlock}\OperatorTok{];}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_n\_bits}\OperatorTok{(}\NormalTok{code}\OperatorTok{,}\NormalTok{ codeword\_size}\OperatorTok{);}
+        \ControlFlowTok{break}\OperatorTok{;}
+    \OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
+
+\hypertarget{dictionary-accesses}{%
+\subsection{Dictionary Accesses}\label{dictionary-accesses}}
+
+Another way that we
+
+\hypertarget{using-const-char}{%
+\subsection{Using Const Char *}\label{using-const-char}}
+
+\hypertarget{evaluating-performance}{%
+\section{Evaluating Performance}\label{evaluating-performance}}
 
 \hypertarget{trying-different-dictionaries}{%
 \section{Trying Different Dictionaries}\label{trying-different-dictionaries}}
@@ -633,14 +797,15 @@ This first appendix includes all of the R chunks of code that were hidden throug
 \markboth{References}{References}
 
 \noindent
+
+\setlength{\parindent}{-0.20in}
 \begin{verbatim}
 Huffman, D. A. (1952). A method for the construction of minimum-redundancy codes. Proceedings of the IRE, 40(9), 1098-1101.
 Sayood, K. (2017). Introduction to data compression. Academic Press.
-    Witten, I. H., Neal, R. M., & Cleary, J. G. (1987). Arithmetic coding for data compression. Communications of the ACM, 30(6), 520-540.
+Witten, I. H., Neal, R. M., & Cleary, J. G. (1987). Arithmetic coding for data compression. Communications of the ACM, 30(6), 520-540.
 Sayood, K. (2017). Introduction to data compression. Academic Press.
+Pratas, Diogo & Pinho, Armando. (2018). A DNA Sequence Corpus for Compression Benchmark. 208-215. 10.1007/978-3-319-98702-6_25.
 \end{verbatim}
-\setlength{\parindent}{-0.20in}
-
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
 \leavevmode\vadjust pre{\hypertarget{ref-angel2000}{}}%
@@ -652,11 +817,17 @@ Angel, E. (2001a). \emph{Batch-file computer graphics : A bottom-up approach wit
 \leavevmode\vadjust pre{\hypertarget{ref-angel2002a}{}}%
 Angel, E. (2001b). \emph{Test second book by angel}. Boston, MA: Wesley Addison Longman.
 
+\leavevmode\vadjust pre{\hypertarget{ref-grumbach}{}}%
+Grumbach, S., \& Tahi, F. (1994). {A New Challenge for Compression Algorithms: Genetic Sequences}. \emph{{Information Processing and Management}}, \emph{30}. Retrieved from \url{https://hal.inria.fr/inria-00180949}
+
 \leavevmode\vadjust pre{\hypertarget{ref-Molina1994}{}}%
 Molina, S. T., \& Borkovec, T. D. (1994). The {P}enn {S}tate worry questionnaire: Psychometric properties and associated characteristics. In G. C. L. Davey \& F. Tallis (Eds.), \emph{Worrying: Perspectives on theory, assessment and treatment} (pp. 265--283). New York: Wiley.
 
 \leavevmode\vadjust pre{\hypertarget{ref-noble2002}{}}%
 Noble, S. G. (2002). \emph{Turning images into simple line-art} (Undergraduate thesis). Reed College.
+
+\leavevmode\vadjust pre{\hypertarget{ref-prataspinho}{}}%
+Pratas, D., \& Pinho, A. (2018). A DNA sequence corpus for compression benchmark. In (pp. 208--215). http://doi.org/\href{https://doi.org/10.1007/978-3-319-98702-6_25}{10.1007/978-3-319-98702-6\_25}
 
 \leavevmode\vadjust pre{\hypertarget{ref-reedweb2007}{}}%
 Reed~College. (2007). LaTeX your document. Retrieved from \url{https://web.reed.edu/cis/help/LaTeX/index.html}
