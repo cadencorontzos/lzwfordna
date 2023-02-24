@@ -383,6 +383,68 @@ stats_csv('data/stats/corpus_2_stringconcat_8963f64.csv')
 <!--
 34bf4e9a6233137b388323f810791687c2a0f823
 -->
+ 
+Dictionary accesses can be expensive, especially with the standard library. We learned from `callgrind` that along with string operations, our program spent a lot of time doing dictionary accesses. 
+
+We looked for ways to reduce the number of lookups. At the time, the way the algorithm worked was that it looked up the current string and the next character in the dictionary. If that string is in the dictionary, we keep going. If not, we output the codeword for the current string.
+
+But, the current string on this iteration is the current string from the last iteration, plus one character. So when we were on the previous iteration of the loop, we could save that lookup and prevent a second lookup.
+
+See the code below
+
+```c++
+    while(next_character != EOF){
+
+		// code omitted
+
+
+        // if we've already seen the sequence, keep going
+        std::string string_seen_plus_new_char = current_string_seen + next_character;
+		// save this iterator`
+        if (dictionary.find(string_seen_plus_new_char) != not_in_dictionary ){
+            current_string_seen = string_seen_plus_new_char;
+        }
+        else{
+
+            // shouldn't look up again
+            int code = dictionary[current_string_seen];
+
+
+			// code omitted
+        }
+        next_character = input.get();
+    }
+```
+
+We can save that lookup, like so.
+
+```c++
+
+    while(next_character != EOF){
+
+		// code ommitted
+
+        // if we've already seen the sequence, keep going
+        std::string string_seen_plus_new_char = current_string_seen + next_character;
+		codeword_seen_now = dictionary.find(string_seen_plus_new_char);
+        if (codeword_seen_now != not_in_dictionary ){
+            current_string_seen = string_seen_plus_new_char;
+			codeword_seen_previously = codeword_seen_now; // save codeword here
+        }
+        else{
+
+            // lookup the current block in the dictionary and output it, along with the new character
+
+            int code = codeword_seen_previously->second; // on the next iteration, we use it here
+
+			// code omitted
+
+        }
+        next_character = input.get();
+    }
+```
+
+Here are the stats of the version of the algorithm after this change.
 
 ```{r, echo = F}
 stats_csv('data/stats/corpus_1_dictaccesses_34bf4e9.csv')
@@ -393,7 +455,9 @@ stats_csv('data/stats/corpus_2_dictaccesses_34bf4e9.csv')
 a12a2901d87d723223b21a9c9115c1c9787a8966
 -->
 
+The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
+When reading a byte stream of the file, the file may not be in memory the way we want it. The `ifstream` class in C++ also has many extraneous feature that we don't need. 
 ```{r, echo = F}
 stats_csv('data/stats/corpus_1_charstar_a12a290.csv')
 stats_csv('data/stats/corpus_2_charstar_a12a290.csv')
@@ -407,10 +471,28 @@ compare_coprora(list(
   c('data/stats/corpus_1_charstar_a12a290.csv', 'data/stats/corpus_2_charstar_a12a290.csv', 'Character pointer')))
 ```
 
-
 ## Trying Different Dictionaries
 
+A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and placing others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program. 
+
+So the another step towards an efficient LZW seemed to be to abstract out the `std_map` and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
+
 ### Direct Map
+
+In our analysis of the two corpora, we found some interesting statistics in the redundancy of the data.
+
+Below is a table which shows stats on the runs lengths of the "runs" of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
+
+```{r, echo = F}
+stats_csv('data/corpus_1_run_stats.csv')
+stats_csv('data/corpus_2_run_stats.csv')
+```
+And here is the combined stats of both copora, along with a histogram of all the runs.
+
+```{r, echo= F}
+stats_csv('data/corpus_both_run_stats.csv')
+```
+	
 
 ### Multiple Indexed Dictionaries
 

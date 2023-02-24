@@ -789,6 +789,68 @@ DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
 \end{table}
 \hypertarget{dictionary-accesses}{%
 \subsection{Dictionary Accesses}\label{dictionary-accesses}}
+
+Dictionary accesses can be expensive, especially with the standard library. We learned from \texttt{callgrind} that along with string operations, our program spent a lot of time doing dictionary accesses.
+
+We looked for ways to reduce the number of lookups. At the time, the way the algorithm worked was that it looked up the current string and the next character in the dictionary. If that string is in the dictionary, we keep going. If not, we output the codeword for the current string.
+
+But, the current string on this iteration is the current string from the last iteration, plus one character. So when we were on the previous iteration of the loop, we could save that lookup and prevent a second lookup.
+
+See the code below
+\begin{Shaded}
+\begin{Highlighting}[]
+    \ControlFlowTok{while}\OperatorTok{(}\NormalTok{next\_character }\OperatorTok{!=}\NormalTok{ EOF}\OperatorTok{)\{}
+
+        \CommentTok{// code omitted}
+
+
+        \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
+        \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+        \CommentTok{// save this iterator\textasciigrave{}}
+        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ not\_in\_dictionary }\OperatorTok{)\{}
+\NormalTok{            current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
+        \OperatorTok{\}}
+        \ControlFlowTok{else}\OperatorTok{\{}
+
+            \CommentTok{// shouldn\textquotesingle{}t look up again}
+            \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{[}\NormalTok{current\_string\_seen}\OperatorTok{];}
+
+
+            \CommentTok{// code omitted}
+        \OperatorTok{\}}
+\NormalTok{        next\_character }\OperatorTok{=}\NormalTok{ input}\OperatorTok{.}\NormalTok{get}\OperatorTok{();}
+    \OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+We can save that lookup, like so.
+\begin{Shaded}
+\begin{Highlighting}[]
+
+    \ControlFlowTok{while}\OperatorTok{(}\NormalTok{next\_character }\OperatorTok{!=}\NormalTok{ EOF}\OperatorTok{)\{}
+
+        \CommentTok{// code ommitted}
+
+        \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
+        \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+\NormalTok{        codeword\_seen\_now }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{);}
+        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{codeword\_seen\_now }\OperatorTok{!=}\NormalTok{ not\_in\_dictionary }\OperatorTok{)\{}
+\NormalTok{            current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
+\NormalTok{            codeword\_seen\_previously }\OperatorTok{=}\NormalTok{ codeword\_seen\_now}\OperatorTok{;} \CommentTok{// save codeword here}
+        \OperatorTok{\}}
+        \ControlFlowTok{else}\OperatorTok{\{}
+
+            \CommentTok{// lookup the current block in the dictionary and output it, along with the new character}
+
+            \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ codeword\_seen\_previously}\OperatorTok{{-}\textgreater{}}\NormalTok{second}\OperatorTok{;} \CommentTok{// on the next iteration, we use it here}
+
+            \CommentTok{// code omitted}
+
+        \OperatorTok{\}}
+\NormalTok{        next\_character }\OperatorTok{=}\NormalTok{ input}\OperatorTok{.}\NormalTok{get}\OperatorTok{();}
+    \OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+Here are the stats of the version of the algorithm after this change.
 \begin{table}[H]
 \centering
 \resizebox{\linewidth}{!}{
@@ -841,6 +903,10 @@ DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
 \end{table}
 \hypertarget{using-const-char}{%
 \subsection{Using Const Char *}\label{using-const-char}}
+
+The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
+
+When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need.
 \begin{table}[H]
 \centering
 \resizebox{\linewidth}{!}{
@@ -896,16 +962,57 @@ DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 7 & 1\\
 \hypertarget{trying-different-dictionaries}{%
 \section{Trying Different Dictionaries}\label{trying-different-dictionaries}}
 
+A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and placing others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program.
+
+So the another step towards an efficient LZW seemed to be to abstract out the \texttt{std\_map} and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
+
 \hypertarget{direct-map}{%
 \subsection{Direct Map}\label{direct-map}}
 
+In our analysis of the two corpora, we found some interesting statistics in the redundancy of the data.
+
+Below is a table which shows stats on the runs lengths of the ``runs'' of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{rrrr}
+\toprule
+average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
+\midrule
+6.135398 & 17 & 6 & 1.237217\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{rrrr}
+\toprule
+average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
+\midrule
+10.96825 & 190 & 11 & 2.494305\\
+\bottomrule
+\end{tabular}}
+\end{table}
+And here is the combined stats of both copora, along with a histogram of all the runs.
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{rrrrr}
+\toprule
+X & average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
+\midrule
+1 & 10.95318 & 190 & 11 & 2.505904\\
+\bottomrule
+\end{tabular}}
+\end{table}
 \hypertarget{multiple-indexed-dictionaries}{%
 \subsection{Multiple Indexed Dictionaries}\label{multiple-indexed-dictionaries}}
 
 \hypertarget{comparison}{%
 \subsection{Comparison}\label{comparison}}
 
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-12-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-12-2.pdf}
+\includegraphics{thesis_files/figure-latex/unnamed-chunk-14-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-14-2.pdf}
 
 \hypertarget{ref-labels}{%
 \chapter{Graphics, References, and Labels}\label{ref-labels}}
