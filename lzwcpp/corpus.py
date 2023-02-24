@@ -3,6 +3,7 @@ import subprocess
 import sys
 sys.path.append(os.getcwd() + '/..')
 from tidydata import TidyData
+import statistics
 
 LZW_ENCODE = './lzwencode'
 LZW_DECODE = './lzwdecode'
@@ -24,15 +25,15 @@ def parseDecodeOutput(output):
 
 def runFile(filename, td):
 
-    totalCompTime = 0
-    totalDecompTime = 0
+    totalCompTime =[] 
+    totalDecompTime = [] 
     for i in range(N):
         compressionOutput = subprocess.run([LZW_ENCODE, filename], capture_output=True)
         decompressionOutput = subprocess.run([LZW_DECODE, filename + ".compressed.lzw"], capture_output=True)
         decompressedFileSize, decompressionTime = parseDecodeOutput(decompressionOutput.stdout.decode())
         originalFileSize, compressedFileSize, compressionRatio, compressionTime = parseEncodeOutput(compressionOutput.stdout.decode())
-        totalCompTime+=int(compressionTime[1])
-        totalDecompTime+=int(decompressionTime[1])
+        totalCompTime.append(int(compressionTime[1]))
+        totalDecompTime.append(int(decompressionTime[1]))
 
         os.remove(filename + ".compressed.lzw")
         os.remove(filename+ ".compressed.lzw.decompressed.lzw")
@@ -43,8 +44,8 @@ def runFile(filename, td):
     td.add("Compressed Size", "int", int(compressedFileSize[1]), compressedFileSize[0])
     td.add("Compression Ratio", "flot", float(compressionRatio[1]), compressionRatio[0])
     assert(N!=0)
-    td.add("Compression Time", "int", totalCompTime/N, compressionTime[0])
-    td.add("Decompression Time", "int", totalDecompTime/N, decompressionTime[0])
+    td.add("Compression Time", "int", statistics.median(totalCompTime), compressionTime[0])
+    td.add("Decompression Time", "int", statistics.median(totalDecompTime), decompressionTime[0])
 
 
 def runCorpus(directoryName):

@@ -1,44 +1,149 @@
 #include "../lzw.hh"
+#include "../dictionary/mult_std_dict.hh"
 #include "../bitio/bitio.hh"
-
 #include <cassert>
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <string.h>
+
+std::string to_bits(std::string str){
+	std::string res = "";
+	
+	for(unsigned index = 0; index < str.length(); index++){
+
+		for(int i = CHAR_BIT-1; i>=0; i--){
+			
+        	res += std::to_string(1&str[index]<<i);
+		}
+
+	}
+	return res;
+}
+
+void detailed_assert(std::string expected, std::string output){
+	if(expected!=output){
+		std::cout << "Test Failed: " << std::endl;
+		std::cout << "Expected: " << std::endl;
+		std::cout << "    literal string: " << expected << std::endl;
+		std::cout << "    bits " << to_bits(expected) << std::endl;
+		std::cout << "Found: " << std::endl;
+		std::cout << "    literal string: " << expected << std::endl;
+		std::cout << "    bits " << to_bits(output) << std::endl;
+
+	}
+	assert(expected==output);
+}
 
 // empty
 std::string empty_decoded = "";
-// | eof      | 0| trailing
-// |10000000 0|00|00000
-char empty_encoded[] = {char(128), char(0)};
-int empty_encoded_length = 2;
+// we expect
+// | eof              | 0| trailing
+int empty_encoded_length;
+std::string empty_expected_output(){
+	Codeword_Helper codeword_helper;
+	std::stringstream bits;
+	{
+		BitOutput bito(bits);
+		// eof
+		bito.output_n_bits(codeword_helper.EOF_CODEWORD, codeword_helper.bits_per_codeword);
+		// 00
+		bito.output_bit(0);
+		bito.output_bit(0);
+
+	}// trailing
+	const std::string& tmp = bits.str();   
+	return tmp;
+}
 
 // 01100110
-std::string single_char_decoded = "f";
-// eof       | 1| f       | trailing
-// 10000000 0|01|01100 110|00000
-char single_char_encoded[] = { char(128), char(44), char(192)};
-int single_char_encoded_length = 3;
+std::string single_char_decoded = "A";
+// we expect
+// eof       		 | 1| A       | trailing
+std::string single_char_expected_output(){
+
+	Codeword_Helper codeword_helper;
+	std::stringstream bits;
+	{
+		BitOutput bito(bits);
+		// eof
+		bito.output_n_bits(codeword_helper.EOF_CODEWORD, codeword_helper.bits_per_codeword);
+		// 01
+		bito.output_bit(0);
+		bito.output_bit(1);
+
+		//A
+		bito.output_n_bits('A', CHAR_BIT);
+
+	}// trailing
+	const std::string& tmp = bits.str();   
+
+	return tmp;
+}
 
 // 01100001 01100010
-std::string two_chars_decoded = "ab";
-// | cw for a | b       | eof      | 0| trailing
-// |00110000 1|0110001 0|1000000 00|00|0000
-char two_chars_encoded[] = { char(48), char(177), char(64), char(0)};
-int two_chars_encoded_length = 4;
+std::string two_chars_decoded = "AG";
+// | cw for A         | G       | eof              | 0| trailing 
+std::string two_chars_expected_output(){
+	
+	Codeword_Helper codeword_helper;
+	std::stringstream bits;
+	{
+		BitOutput bito(bits);
+		// cw for A 
+		bito.output_n_bits(1, codeword_helper.bits_per_codeword);
+		// G
+		bito.output_n_bits('G', CHAR_BIT);
+		// eof
+		bito.output_n_bits(codeword_helper.EOF_CODEWORD, codeword_helper.bits_per_codeword);
+
+		//00
+		bito.output_bit(0);
+		bito.output_bit(0);
+
+
+	}// trailing
+	const std::string& tmp = bits.str();   
+
+	return tmp;
+}
 
 //01100001 01100010 01100110
-std::string three_chars_decoded = "abab";
-// | cw for a | b       | eof      | 3| cw for ab| trailing
-// |00110000 1|0110001 0|1000000 00|11|1000 00001|000
-char three_chars_encoded[] = { char(48), char(177), char(64), char(56), char(8)};
-int three_chars_encoded_length = 5;
+std::string three_chars_decoded = "AGAG";
+// | cw for A         | G       | eof              | 11| cw for AG        | trailing
+std::string three_chars_expected_output(){
+
+	Codeword_Helper codeword_helper;
+	std::stringstream bits;
+	{
+		BitOutput bito(bits);
+		// cw for A 
+		bito.output_n_bits(1, codeword_helper.bits_per_codeword);
+		// G
+		bito.output_n_bits('G', CHAR_BIT);
+		// eof
+		bito.output_n_bits(codeword_helper.EOF_CODEWORD, codeword_helper.bits_per_codeword);
+
+		//11
+		bito.output_bit(1);
+		bito.output_bit(1);
+
+		// cw for AG
+		bito.output_n_bits(codeword_helper.get_next_codeword(), codeword_helper.bits_per_codeword);
+
+
+	}// trailing
+	const std::string& tmp = bits.str();   
+
+	return tmp;
+}
 
 
 ////////////////////////////////////////////////////////////
 // encode unit tests 
 
-void test_encode(std::string decoded_string, char* encoded_chars, int encoded_chars_length){
+void test_encode(std::string decoded_string, std::string expected_output){
+	 std::cout << "Testing string :" << decoded_string << std::endl; // for debug
     std::stringstream output;
 	const char* input_file = decoded_string.c_str();
 	int file_size = decoded_string.length();
@@ -47,45 +152,44 @@ void test_encode(std::string decoded_string, char* encoded_chars, int encoded_ch
         lzw.encode(input_file, file_size, output);
     }
     
-    std::string expected_output(encoded_chars, encoded_chars_length);
     std::string output_string = output.str();
-    assert(output_string == expected_output);
+    detailed_assert( expected_output, output_string);
 }
 
 void encode_tests(){
-    test_encode(empty_decoded, empty_encoded, empty_encoded_length);
-    test_encode(single_char_decoded, single_char_encoded, single_char_encoded_length);
-    test_encode(two_chars_decoded, two_chars_encoded, two_chars_encoded_length);
-    test_encode(three_chars_decoded, three_chars_encoded, three_chars_encoded_length);
+    test_encode(empty_decoded, empty_expected_output());
+	test_encode(single_char_decoded, single_char_expected_output());
+    test_encode(two_chars_decoded, two_chars_expected_output());
+    test_encode(three_chars_decoded, three_chars_expected_output());
 }
 
 ////////////////////////////////////////////////////////////
 // decode unit tests
 
-void test_decode(char* encoded_chars, int encoded_length, std::string decoded_string){
-    std::string encoded_string(encoded_chars, encoded_length);
+void test_decode(std::string encoded_string, std::string decoded_string){
     std::stringstream output;
 
     {
         LZW lzw;
-        lzw.decode(encoded_chars, output);
+        lzw.decode(encoded_string.c_str(), output);
     }
     
     std::string expected_output(decoded_string);
     std::string output_string = output.str();
-    assert(output_string == expected_output);
+    detailed_assert(expected_output, output_string);
 }
 
 void decode_tests(){
-    test_decode(empty_encoded, empty_encoded_length, empty_decoded);
-    test_decode(single_char_encoded, single_char_encoded_length, single_char_decoded);
-    test_decode(two_chars_encoded, two_chars_encoded_length, two_chars_decoded);
-    test_decode(three_chars_encoded, three_chars_encoded_length, three_chars_decoded);
+    test_decode(empty_expected_output(), empty_decoded);
+    test_decode(single_char_expected_output(), single_char_decoded);
+    test_decode(two_chars_expected_output(), two_chars_decoded);
+    test_decode(three_chars_expected_output(), three_chars_decoded);
 }
 
 ////////////////////////////////////////////////////////////
 
 int main(){
+	std::cout << "Testing LZW for max codeword size of  " << CODEWORD_SIZE<< std::endl;
     encode_tests();
     decode_tests();
 }

@@ -1,85 +1,61 @@
 #include "lzw.hh"
-
 #include <iostream>
-#include <map>
 #include <string>
 #include <fstream>
-#include <chrono>
-#include <filesystem>
-#include <unordered_map>
 #include <climits>
-
-namespace fs = std::filesystem;
+#include "./dictionary/mult_std_dict.hh"
 
 void LZW::encode(const char* input_file, int file_size, std::ostream& output){
    
     // initialize starter dictionary
-    std::unordered_map<std::string, codeword_type> dictionary;
-	dictionary.reserve(SPACE_TO_RESERVE);
-    for (int i = 0; i < STARTING_DICT_SIZE; ++i){
-        std::string str1(1, char(i));
-        dictionary[str1] = static_cast<codeword_type>(i);
-    }
-    auto not_in_dictionary = dictionary.cend();
+	LZW_Encode_Dictionary dictionary;
+	dictionary.load_starting_dictionary();
 
     BitOutput bit_output(output);
 
-    // the current codeword we are using, and the size of the codewords
-    // each time we use a codeword we will have to increment so all codewords are unique
-    // TODO: need to make sure our codewords don't go over the max size of codeword_type
-    codeword_type codeword = STARTING_CODEWORD;
-    int codeword_size = STARTING_CODE_SIZE;
-    codeword_type biggest_possible_codeword = 1<<STARTING_CODE_SIZE;
+    // track our codewords with a helper
+	Codeword_Helper codeword_helper;
+    codeword_type codeword = codeword_helper.get_next_codeword();
 
-    // the pieces of the file we are reading
-    // current string seen is a string that we've seen before (it is in the dictionary), next_character is the following character that we are looking at
-    std::string current_string_seen = "";
-    char next_character;
-	auto codeword_seen_previously = dictionary.end();
-	auto codeword_seen_now = dictionary.end();
+	char next_character;
+	int length_of_next_run; 
+	int codeword_to_output;
+	const char* end_of_input = input_file + file_size;
+	while(true)
+	{
 
-	int index = 0;
+		// find longest run of chars already in our dictionary and get the code for it
+		length_of_next_run = dictionary.find_longest_in_dict(input_file, end_of_input);
+		codeword_to_output = dictionary.code_of(input_file, length_of_next_run);
 
-    while(index < file_size){
+		// make sure we haven't passed EOF
+		if((input_file + length_of_next_run)>= end_of_input){
+			break;
+		}
 
-    	next_character = input_file[index];
+		// output codeword	
+		bit_output.output_n_bits(codeword_to_output, codeword_helper.bits_per_codeword);
 
-        // increment the codword size if the current codeword becomes too large
-        if (codeword == biggest_possible_codeword){
-            codeword_size += 1;
-            biggest_possible_codeword<<= 1;
-        }
+		// output next character
+		next_character = input_file[length_of_next_run];
+		bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
 
-        // if we've already seen the sequence, keep going
-        std::string string_seen_plus_new_char = current_string_seen + next_character;
-		codeword_seen_now = dictionary.find(string_seen_plus_new_char);
-        if (codeword_seen_now != not_in_dictionary ){
-            current_string_seen = string_seen_plus_new_char;
-			codeword_seen_previously = codeword_seen_now;
-        }
-        else{
+		// add the run we saw + the new character to our dict
+		dictionary.add_string(input_file, length_of_next_run+1, codeword);
 
-            // lookup the current block in the dictionary and output it, along with the new character
-            int code = codeword_seen_previously->second;
-            bit_output.output_n_bits(code, codeword_size);
-            bit_output.output_n_bits(static_cast<uint8_t>(next_character), CHAR_BIT);
+		codeword = codeword_helper.get_next_codeword();
+		input_file+=length_of_next_run+1;
+		length_of_next_run = 0;
 
-            // add this new sequence to our dictionary
-            dictionary[string_seen_plus_new_char] = codeword;
-            codeword += 1;
-            current_string_seen = "";
-        }
-		index++;
-    }
-
+	}
     // output special eof character
-    bit_output.output_n_bits(EOF_CODEWORD, codeword_size);
+    bit_output.output_n_bits(codeword_helper.EOF_CODEWORD, codeword_helper.bits_per_codeword);
 
     // after we've encoded, we either have 
     // no current block (case 0)
     // we have a current block that is a single character (case 1)
     // otherwise we have a current block > 1 byte (default)
-    switch (current_string_seen.length()){
+    switch (length_of_next_run){
     case 0:
         bit_output.output_bit(false);
         bit_output.output_bit(false);
@@ -87,14 +63,13 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
     case 1:
         bit_output.output_bit(false);
         bit_output.output_bit(true);
-        bit_output.output_n_bits(static_cast<uint8_t>(current_string_seen[0]), CHAR_BIT);
+        bit_output.output_n_bits(static_cast<uint8_t>(input_file[0]), CHAR_BIT);
         break;
     default:
         bit_output.output_bit(true);
         bit_output.output_bit(true);
 
-        int code = codeword_seen_previously->second;
-        bit_output.output_n_bits(code, codeword_size);
+        bit_output.output_n_bits(codeword_to_output, codeword_helper.bits_per_codeword);
         break;
     }
 }
@@ -103,43 +78,36 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 
 void LZW::decode(const char* input, std::ostream& output){
 
-    // starting dictionary
-    std::unordered_map<codeword_type, std::string> dictionary;
-    for (int i = 0; i < STARTING_DICT_SIZE; ++i){
-        std::string str1(1, char(i));
-        dictionary[static_cast<codeword_type>(i)] = str1;
-    }
+    // load starting dictionary
+    LZW_Decode_Dictionary dictionary;
+	dictionary.load_starting_dictionary();
 
-    int code_size = STARTING_CODE_SIZE;
-    codeword_type codeword = STARTING_CODEWORD;
+	// track our codewords with a helper
+	Codeword_Helper codeword_helper;
+    codeword_type codeword = codeword_helper.get_next_codeword();
+
     int codeword_found;
-    codeword_type biggest_possible_codeword = 1<<STARTING_CODE_SIZE;
     char next_byte;
     BitInput bit_input(input);
-
     // assume the file isn't empty
-    codeword_found = bit_input.read_n_bits(code_size);
-    while(codeword_found!=EOF_CODEWORD){
-
+	// read a codeword
+    codeword_found = bit_input.read_n_bits(codeword_helper.bits_per_codeword);
+    while(codeword_found!=codeword_helper.EOF_CODEWORD){
+		
+		// read the next character
         next_byte = char(bit_input.read_n_bits(CHAR_BIT));
 
-        // look up the codeword in the dictionary
-        auto decodedCodeword = dictionary.find(codeword_found);
-        
-        // output what we had in the dictionary and the byte following
-        output << decodedCodeword->second << next_byte; 
+        // look up the codeword in the dictionary and add on next character
+		std::string decodedCodeword = dictionary.str_of(codeword_found);
+		std::string new_string = decodedCodeword+ next_byte;
+		
+        // output the new string
+        output << new_string; 
 
-        // add this new sequence to our dictionary   
-        dictionary[codeword] = decodedCodeword->second + next_byte;
-        codeword+=1;
-
-        // increment the codeword size if needed
-        if (codeword == biggest_possible_codeword){
-            code_size += 1;
-            biggest_possible_codeword <<= 1;
-        }
-        
-        codeword_found = bit_input.read_n_bits(code_size);
+        // add this new string to our dictionary   
+        dictionary.add_string(new_string, codeword);
+		codeword = codeword_helper.get_next_codeword();
+        codeword_found = bit_input.read_n_bits(codeword_helper.bits_per_codeword);
     }
     
     // the two bits after eof are a code for the last portion of the encoded file
@@ -150,9 +118,9 @@ void LZW::decode(const char* input, std::ostream& output){
         output << char(bit_input.read_n_bits(CHAR_BIT));
         break;
     case 3:
-        int last_codeword = bit_input.read_n_bits(code_size);
-        auto decoded_codeword = dictionary.find(last_codeword);
-        output << decoded_codeword->second; 
+        int last_codeword = bit_input.read_n_bits(codeword_helper.bits_per_codeword);
+        auto decoded_codeword = dictionary.str_of(last_codeword);
+        output << decoded_codeword; 
         break;
     }
 

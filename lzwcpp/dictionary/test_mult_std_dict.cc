@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "std_dict.hh"
+#include "mult_std_dict.hh"
 #include <string>
 #include <cassert>
 

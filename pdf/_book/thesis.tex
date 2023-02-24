@@ -113,7 +113,7 @@
   \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 
 % To pass between YAML and LaTeX the dollar signs are added by CII
-\title{Some Witty Title}
+\title{Optimizing Lempel Ziv Welch for DNA Compression}
 \author{Caden Corontzos}
 % The month and year that you submit your FINAL draft TO THE LIBRARY (May or December)
 \date{May 2023}
@@ -252,371 +252,312 @@ The Lempel Ziv Welch compression algorithm is a lossless data compression algori
 \chapter*{Introduction}\label{introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
 
-Lempel Ziv Welch (LZW) is a lossless compression algirthm used widely for a number of applications.
+When dealing with DNA, it
 
-\hypertarget{rmd-basics}{%
-\chapter{R Markdown Basics}\label{rmd-basics}}
+\hypertarget{backround-and-motivations}{%
+\chapter{Backround and Motivations}\label{backround-and-motivations}}
 
-Here is a brief introduction into using \emph{R Markdown}. \emph{Markdown} is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. \emph{R Markdown} provides the flexibility of \emph{Markdown} with the implementation of \textbf{R} input and output. For more details on using \emph{R Markdown} see \url{https://rmarkdown.rstudio.com}.
+This thesis deals with some high level topics and uses language specific to compression research. This chapter tries to give brief summaries and examples of the relevant topics to be discussed so readers of all experience levels can put our results into context.
 
-Be careful with your spacing in \emph{Markdown} documents. While whitespace largely is ignored, it does at times give \emph{Markdown} signals as to how to proceed. As a habit, try to keep everything left aligned whenever possible, especially as you type a new paragraph. In other words, there is no need to indent basic text in the Rmd document (in fact, it might cause your text to do funny things if you do).
+\hypertarget{what-is-information}{%
+\section{What is information?}\label{what-is-information}}
 
-\hypertarget{lists}{%
-\section{Lists}\label{lists}}
+Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? Or can it be part of the message? If someone asks you ``Where library'', despite the lack of prepositions you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library?''
+Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let us assume that information is something that can be interpreted to glean information that you didn't know before.
 
-It's easy to create a list. It can be unordered like
+\hypertarget{compression-a-history}{%
+\section{Compression: A history}\label{compression-a-history}}
+
+\hypertarget{compression-metrics}{%
+\section{Compression Metrics}\label{compression-metrics}}
+
+\hypertarget{compression-ratio}{%
+\subsection{Compression Ratio}\label{compression-ratio}}
+
+Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressd as a ratio of the size of the uncompressed data (\(OS\)) to the size of the compressed data (\{CS\}).
+
+\[CR = \frac{OS}{CS}\]
+
+So a higher compression ratio means a more effective compression algorithm, and means that we were able to store more data in less space, allowing for easier storage and transfer.
+
+\hypertarget{runtime}{%
+\subsection{Runtime}\label{runtime}}
+
+The runtime is also an important part of evaluating the effectiveness of a compression algorithm. If you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15 but takes twice as long as the other, you may opt for a lower compression ratio to save time.
+
+\hypertarget{memory-usage}{%
+\subsection{Memory Usage}\label{memory-usage}}
+
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to information that programs track as they are running on a computer. So do reduce our runtime and make a more effective compression algorithm, we want to be saving only the most important data that our algoritm needs in order to reduce our memory usage.
+
+\hypertarget{lossless-vs.-lossy-compression}{%
+\section{Lossless vs.~Lossy Compression}\label{lossless-vs.-lossy-compression}}
+
+\hypertarget{lossy}{%
+\subsection{Lossy}\label{lossy}}
+
+Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example
+
+\hypertarget{lossless}{%
+\subsection{Lossless}\label{lossless}}
+
+Lossless compression is the compression of data with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Examples of lossless compression algoritms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
+
+\hypertarget{examples-of-compression-algorithms}{%
+\section{Examples of Compression Algorithms}\label{examples-of-compression-algorithms}}
+
+\hypertarget{run-length-encoding}{%
+\subsection{Run Length Encoding}\label{run-length-encoding}}
+
+Run Length Encoding (RLE) is on of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by just giving the number of times each character appears.
+Suppose you want to send the following message
+
+AAGCTTTTTTTTGGGGGCCCT
+
+Even if this message did mean something, we can get the information across without repeating ourselves. When writing a grocery list, you don't write ``egg egg egg egg'', you say ``4 eggs''. RLE uses this same strategdy.
+
+2A1G1C8T5G3C1T
+
+We could compress this even further if we omit the 1 on characters that only appear once.
+
+\hypertarget{huffman}{%
+\subsection{Huffman}\label{huffman}}
+
+Huffman Encoding is a strategdy that assigns variable length code to certain symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
+
+Put example here
+
+\hypertarget{arithmetic}{%
+\subsection{Arithmetic}\label{arithmetic}}
+
+Arithmetic encoding is another lossless compression algorithm that uses probability to asssign codes to symbols in the message. Unlike Huffman, arithmetic enoding assins a single code to the whole message, rather than seperate codes for each symbol.
+
+Here is a simple example. Say we want to encode a string of characters ``ACCGGGGTTT''. The probability of each symbol in the message are
 \begin{itemize}
 \tightlist
 \item
-  Item 1
+  P(A) = 1/10
 \item
-  Item 2
+  P(C) = 2/10
+\item
+  P(G) = 4/10
+\item
+  P(T) = 3/10
 \end{itemize}
-or it can be ordered like
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Item 1
-\item
-  Item 2
-\end{enumerate}
-Notice that I intentionally mislabeled Item 2 as number 4. \emph{Markdown} automatically figures this out! You can put any numbers in the list and it will create the list. Check it out below.
+We want to represent the message as a fractional number between 0 and 1. We will divide the interval {[}0,1{]} into sub intervals using the probabilities of each character in the message. That way, each symbol is reprsented by the sub-interval that corresponds to its probablity.
 
-To create a sublist, just indent the values a bit (at least four spaces or a tab). (Here's one case where indentation is key!)
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Item 1
-\item
-  Item 2
-\item
-  Item 3
-  \begin{itemize}
-  \tightlist
-  \item
-    Item 3a
-  \item
-    Item 3b
-  \end{itemize}
-\end{enumerate}
-\hypertarget{line-breaks}{%
-\section{Line breaks}\label{line-breaks}}
+Arithmetic encoding can have a better compression ratio that Huffman in some cases, but the computation time is often not worth the payoff.
 
-Make sure to add white space between lines if you'd like to start a new paragraph. Look at what happens below in the outputted document if you don't:
+\hypertarget{lempel-ziv-welch}{%
+\subsection{Lempel Ziv Welch}\label{lempel-ziv-welch}}
 
-Here is the first sentence. Here is another sentence. Here is the last sentence to end the paragraph.
-This should be a new paragraph.
+Lempel Ziv Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords, where codewords represent strings previously seen in the message. As it compresses the message, the dictionary grows. The compression algorithm leaves behind the codewords and some of the original characters, allowing the decompression algorithm to build up the same dictionary as it decompresses the message.
 
-\emph{Now for the correct way:}
+Here is a simple example. We may be sending messages with the characters \{`A', `C', `T', `G'\}, so I will start with those in my dictionary. Say we want to send the message
 
-Here is the first sentence. Here is another sentence. Here is the last sentence to end the paragraph.
+``AAGGAATCC''
 
-This should be a new paragraph.
+When we compress, we start at the beginning of the message and scan through.
 
-\hypertarget{r-chunks}{%
-\section{R chunks}\label{r-chunks}}
+\hypertarget{optimizing-lzw-approach}{%
+\chapter{Optimizing LZW: Approach}\label{optimizing-lzw-approach}}
 
-When you click the \textbf{Knit} button above a document will be generated that includes both content as well as the output of any embedded \textbf{R} code chunks within the document. You can embed an \textbf{R} code chunk like this (\texttt{cars} is a built-in \textbf{R} dataset):
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{summary}\NormalTok{(cars)}
-\end{Highlighting}
-\end{Shaded}
+To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++.
+
+\hypertarget{supporting-research}{%
+\section{Supporting Research}\label{supporting-research}}
+
+There has been several attempts to optimize LZW by computer science researchers.
+
+There has also been attemps to generally improve performance of LZW
+
+\hypertarget{corpora}{%
+\section{Corpora}\label{corpora}}
+
+Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to ascess performance and to compare different algorithms to one another.
+
+In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression (Grumbach \& Tahi, 1994).
 \begin{verbatim}
-     speed           dist       
- Min.   : 4.0   Min.   :  2.00  
- 1st Qu.:12.0   1st Qu.: 26.00  
- Median :15.0   Median : 36.00  
- Mean   :15.4   Mean   : 42.98  
- 3rd Qu.:19.0   3rd Qu.: 56.00  
- Max.   :25.0   Max.   :120.00  
+Warning in read.table(file = file, header = header, sep = sep,
+quote = quote, : incomplete final line found by readTableHeader on
+'data/corpus_1_summary.csv'
 \end{verbatim}
-\hypertarget{inline-code}{%
-\section{Inline code}\label{inline-code}}
-
-If you'd like to put the results of your analysis directly into your discussion, add inline code like this:
-\begin{quote}
-The \texttt{cos} of \(2 \pi\) is 1.
-\end{quote}
-Another example would be the direct calculation of the standard deviation:
-\begin{quote}
-The standard deviation of \texttt{speed} in \texttt{cars} is 5.2876444.
-\end{quote}
-One last neat feature is the use of the \texttt{ifelse} conditional statement which can be used to output text depending on the result of an \textbf{R} calculation:
-\begin{quote}
-The standard deviation is less than 6.
-\end{quote}
-Note the use of \texttt{\textgreater{}} here, which signifies a quotation environment that will be indented.
-
-As you see with \texttt{\$2\ \textbackslash{}pi\$} above, mathematics can be added by surrounding the mathematical text with dollar signs. More examples of this are in \protect\hyperlink{math-sci}{Mathematics and Science} if you uncomment the code in \protect\hyperlink{math}{Math}.
-
-\hypertarget{including-plots}{%
-\section{Including plots}\label{including-plots}}
-
-You can also embed plots. For example, here is a way to use the base \textbf{R} graphics package to produce a plot using the built-in \texttt{pressure} dataset:
-
-\includegraphics{thesis_files/figure-latex/pressure-1.pdf}
-
-Note that the \texttt{echo=FALSE} parameter was added to the code chunk to prevent printing of the \textbf{R} code that generated the plot. There are plenty of other ways to add chunk options (like \texttt{fig.height} and \texttt{fig.width} in the chunk above). More information is available at \url{https://yihui.org/knitr/options/}.
-
-Another useful chunk option is the setting of \texttt{cache=TRUE} as you see here. If document rendering becomes time consuming due to long computations or plots that are expensive to generate you can use knitr caching to improve performance. Later in this file, you'll see a way to reference plots created in \textbf{R} or external figures.
-
-\hypertarget{loading-and-exploring-data}{%
-\section{Loading and exploring data}\label{loading-and-exploring-data}}
-
-Included in this template is a file called \texttt{flights.csv}. This file includes a subset of the larger dataset of information about all flights that departed from Seattle and Portland in 2014. More information about this dataset and its \textbf{R} package is available at \url{https://github.com/ismayc/pnwflights14}. This subset includes only Portland flights and only rows that were complete with no missing values. Merges were also done with the \texttt{airports} and \texttt{airlines} data sets in the \texttt{pnwflights14} package to get more descriptive airport and airline names.
-
-We can load in this data set using the following commands:
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# flights.csv is in the data directory}
-\NormalTok{flights\_path }\OtherTok{\textless{}{-}}\NormalTok{ here}\SpecialCharTok{::}\FunctionTok{here}\NormalTok{(}\StringTok{"data"}\NormalTok{, }\StringTok{"flights.csv"}\NormalTok{)}
-\CommentTok{\# string columns will be read in as strings and not factors now}
-\NormalTok{flights }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(flights\_path, }\AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-The data is now stored in the data frame called \texttt{flights} in \textbf{R}. To get a better feel for the variables included in this dataset we can use a variety of functions. Here we can see the dimensions (rows by columns) and also the names of the columns.
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{dim}\NormalTok{(flights)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-[1] 12649    16
-\end{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{names}\NormalTok{(flights)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
- [1] "month"        "day"          "dep_time"     "dep_delay"   
- [5] "arr_time"     "arr_delay"    "carrier"      "tailnum"     
- [9] "flight"       "dest"         "air_time"     "distance"    
-[13] "hour"         "minute"       "carrier_name" "dest_name"   
-\end{verbatim}
-Another good idea is to take a look at the dataset in table form. With this dataset having more than 20,000 rows, we won't explicitly show the results of the command here. I recommend you enter the command into the Console \textbf{\emph{after}} you have run the \textbf{R} chunks above to load the data into \textbf{R}.
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{View}\NormalTok{(flights)}
-\end{Highlighting}
-\end{Shaded}
-While not required, it is highly recommended you use the \texttt{dplyr} package to manipulate and summarize your data set as needed. It uses a syntax that is easy to understand using chaining operations. Below I've created a few examples of using \texttt{dplyr} to get information about the Portland flights in 2014. You will also see the use of the \texttt{ggplot2} package, which produces beautiful, high-quality academic visuals.
-
-We begin by checking to ensure that needed packages are installed and then we load them into our current working environment:
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# List of packages required for this analysis}
-\NormalTok{pkg }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{, }\StringTok{"ggplot2"}\NormalTok{, }\StringTok{"knitr"}\NormalTok{, }\StringTok{"bookdown"}\NormalTok{)}
-\CommentTok{\# Check if packages are not installed and assign the}
-\CommentTok{\# names of the packages not installed to the variable new.pkg}
-\NormalTok{new.pkg }\OtherTok{\textless{}{-}}\NormalTok{ pkg[}\SpecialCharTok{!}\NormalTok{(pkg }\SpecialCharTok{\%in\%} \FunctionTok{installed.packages}\NormalTok{())]}
-\CommentTok{\# If there are any packages in the list that aren\textquotesingle{}t installed,}
-\CommentTok{\# install them}
-\ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(new.pkg)) \{}
-  \FunctionTok{install.packages}\NormalTok{(new.pkg, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{\}}
-\CommentTok{\# Load packages}
-\FunctionTok{library}\NormalTok{(thesisdown)}
-\FunctionTok{library}\NormalTok{(dplyr)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-Warning: package 'dplyr' was built under R version 4.2.2
-\end{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(ggplot2)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-Warning: package 'ggplot2' was built under R version 4.2.2
-\end{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(knitr)}
-\end{Highlighting}
-\end{Shaded}
-\begin{verbatim}
-Warning: package 'knitr' was built under R version 4.2.2
-\end{verbatim}
-\clearpage
-
-The example we show here does the following:
-\begin{itemize}
-\item
-  Selects only the \texttt{carrier\_name} and \texttt{arr\_delay} from the \texttt{flights} dataset and then assigns this subset to a new variable called \texttt{flights2}.
-\item
-  Using \texttt{flights2}, we determine the largest arrival delay for each of the carriers.
-\end{itemize}
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{flights2 }\OtherTok{\textless{}{-}}\NormalTok{ flights }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(carrier\_name, arr\_delay)}
-\NormalTok{max\_delays }\OtherTok{\textless{}{-}}\NormalTok{ flights2 }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(carrier\_name) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{max\_arr\_delay =} \FunctionTok{max}\NormalTok{(arr\_delay, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-A useful function in the \texttt{knitr} package for making nice tables in \emph{R Markdown} is called \texttt{kable}. It is much easier to use than manually entering values into a table by copying and pasting values into Excel or LaTeX. This again goes to show how nice reproducible documents can be! (Note the use of \texttt{results="asis"}, which will produce the table instead of the code to create the table.) The \texttt{caption.short} argument is used to include a shorter title to appear in the List of Tables.
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{kable}\NormalTok{(max\_delays,}
-  \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Airline"}\NormalTok{, }\StringTok{"Max Arrival Delay"}\NormalTok{),}
-  \AttributeTok{caption =} \StringTok{"Maximum Delays by Airline"}\NormalTok{,}
-  \AttributeTok{caption.short =} \StringTok{"Max Delays by Airline"}\NormalTok{,}
-  \AttributeTok{longtable =} \ConstantTok{TRUE}\NormalTok{,}
-  \AttributeTok{booktabs =} \ConstantTok{TRUE}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-\begin{longtable}[t]{lr}
-\caption[Max Delays by Airline]{\label{tab:maxdelays}Maximum Delays by Airline}\\
-\toprule
-Airline & Max Arrival Delay\\
-\midrule
-Alaska Airlines Inc. & 338\\
-American Airlines Inc. & 1539\\
-Delta Air Lines Inc. & 371\\
-Frontier Airlines Inc. & 166\\
-Hawaiian Airlines Inc. & 116\\
-\addlinespace
-JetBlue Airways & 256\\
-SkyWest Airlines Inc. & 321\\
-Southwest Airlines Co. & 315\\
-United Air Lines Inc. & 319\\
-US Airways Inc. & 347\\
-\addlinespace
-Virgin America & 366\\
-\bottomrule
+\begin{longtable}[]{@{}cc@{}}
+\toprule()
+Name & Size.bytes. \\
+\midrule()
+\endhead
+hehcmv & 229354 \\
+humdyst & 38770 \\
+humghcs & 66495 \\
+humhbb & 73308 \\
+humhdab & 58864 \\
+humprtb & 56737 \\
+mpomtcg & 186609 \\
+mtpacga & 100314 \\
+vaccg & 191737 \\
+\bottomrule()
 \end{longtable}
-The last two options make the table a little easier-to-read.
+Another, newer paper aimed to create a corpus specifically for compressing DNA (Pratas \& Pinho, 2018). They put together a corpus of DNA sequences for this purpose, as summarized below. Since the papers publishing, it has been cited by several DNA compression papers.
+\begin{longtable}[]{@{}cc@{}}
+\toprule()
+Name & Size.bytes. \\
+\midrule()
+\endhead
+AeCa & 1591049 \\
+AgPh & 43970 \\
+BuEb & 18940 \\
+DaRe & 62565020 \\
+DrMe & 32181429 \\
+EnIn & 26403087 \\
+EsCo & 4641652 \\
+GaGa & 148532294 \\
+HaHi & 3890005 \\
+HePy & 1667825 \\
+HoSa & 189752667 \\
+OrSa & 43262523 \\
+PlFa & 8986712 \\
+ScPo & 10652155 \\
+YeMi & 73689 \\
+\bottomrule()
+\end{longtable}
+This particular dataset is publicly available at this \href{https://tinyurl.com/DNAcorpus}{link}.
 
-We can further look into the properties of the largest value here for American Airlines Inc.~To do so, we can isolate the row corresponding to the arrival delay of 1539 minutes for American in our original \texttt{flights} dataset.
+\hypertarget{a-starting-point}{%
+\section{A Starting Point}\label{a-starting-point}}
+
+As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, opitmizing it for DNA.
+
+\hypertarget{growing-codewords-and-bit-output}{%
+\subsection{Growing Codewords and Bit Output}\label{growing-codewords-and-bit-output}}
+
+When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance \texttt{01000001} stands for the letter `A' in ASCII encoding. Numbers are more simple to display, so \texttt{00000001} is 1, \texttt{00000010} is 2, and so on.
+
+But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, \texttt{1} is the same as \texttt{01} is the same as \texttt{00000000000001}. So when we are outputting codewords for LZW, we don't necessarily need to ouput a whole byte. We can have growing codewords.
+
+As the number of codewords grows, the number of bits needed to represent it also grows. So if we are on codeword 8, we need 4 bits since 8 is \texttt{1000}. As our dictionary grows, we can grow the number of bits needed to display a codeword and save a lot of space in our compressed document.
+
+So we needed a method of ouputting bits one by one, and reading in bits one by one. This is not something that is supported in C++ on its own. We were able to create this functionality bydefining a class.
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{flights }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{filter}\NormalTok{(}
-\NormalTok{    arr\_delay }\SpecialCharTok{==} \DecValTok{1539}\NormalTok{,}
-\NormalTok{    carrier\_name }\SpecialCharTok{==} \StringTok{"American Airlines Inc."}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}
-\NormalTok{    month, day, carrier, dest\_name, hour,}
-\NormalTok{    minute, carrier\_name, arr\_delay}
-\NormalTok{  ))}
+\CommentTok{// BitInput: Read a single bit at a time from an input stream.}
+\CommentTok{// Before reading any bits, ensure your input stream still has valid inputs.}
+\KeywordTok{class}\NormalTok{ BitInput }\OperatorTok{\{}
+ \KeywordTok{public}\OperatorTok{:}
+  \CommentTok{// Construct with an input stream}
+\NormalTok{  BitInput}\OperatorTok{(}\AttributeTok{const} \DataTypeTok{char}\OperatorTok{*}\NormalTok{ input}\OperatorTok{);}
+
+\NormalTok{  BitInput}\OperatorTok{(}\AttributeTok{const}\NormalTok{ BitInput}\OperatorTok{\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
+\NormalTok{  BitInput}\OperatorTok{(}\NormalTok{BitInput}\OperatorTok{\&\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
+
+  \CommentTok{// bool eof();}
+  \CommentTok{// Read a single bit (or trailing zero)}
+  \CommentTok{// Allowed to crash or throw an exception if called past end{-}of{-}file.}
+  \DataTypeTok{bool}\NormalTok{ input\_bit}\OperatorTok{();}
+
+  \DataTypeTok{int}\NormalTok{ read\_n\_bits}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ n}\OperatorTok{);}
+\OperatorTok{\}}
+
+\CommentTok{// BitOutput: Write a single bit at a time to an output stream}
+\CommentTok{// Make sure all bits are written out by the time the destructor is done.}
+\KeywordTok{class}\NormalTok{ BitOutput }\OperatorTok{\{}
+ \KeywordTok{public}\OperatorTok{:}
+  \CommentTok{// Construct with an input stream}
+\NormalTok{  BitOutput}\OperatorTok{(}\BuiltInTok{std::}\NormalTok{ostream}\OperatorTok{\&}\NormalTok{ os}\OperatorTok{);}
+
+  \CommentTok{// Flushes out any remaining output bits and trailing zeros, if any:}
+  \OperatorTok{\textasciitilde{}}\NormalTok{BitOutput}\OperatorTok{();}
+
+\NormalTok{  BitOutput}\OperatorTok{(}\AttributeTok{const}\NormalTok{ BitOutput}\OperatorTok{\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
+\NormalTok{  BitOutput}\OperatorTok{(}\NormalTok{BitOutput}\OperatorTok{\&\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
+
+  \CommentTok{// Output a single bit (buffered)}
+  \DataTypeTok{void}\NormalTok{ output\_bit}\OperatorTok{(}\DataTypeTok{bool}\NormalTok{ bit}\OperatorTok{);}
+
+  \DataTypeTok{void}\NormalTok{ output\_n\_bits}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ bits}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ n}\OperatorTok{);}
+\OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
-\begin{verbatim}
-  dep_time dep_delay arr_time tailnum flight dest air_time distance
-1     1403      1553     1934  N595AA   1568  DFW      182     1616
-\end{verbatim}
-We see that the flight occurred on March 3rd and departed a little after 2 PM on its way to Dallas/Fort Worth. Lastly, we show how we can visualize the arrival delay of all departing flights from Portland on March 3rd against time of departure.
+So when we are encoding and need to output a codeword, we can \texttt{output\_n\_bits}, where \texttt{n} is the number of bits needed to display our greatest codeword. When decoding, we can just \texttt{read\_n\_bits}.
+
+\hypertarget{getting-eof-to-work}{%
+\subsection{Getting EOF to work}\label{getting-eof-to-work}}
+
+One of the very early issues with the implementation was how to denote the end of a file. The early implementation would work for some files, but for others the very last part of the file would be lost after encoding and then decodeing.
+
+In theoretical implementations of LZW, computer scientists tend to denote the end of a message with a special character, one that isn't seen anywhere else in the file. In this initial implementation, that wasn't possible because we wanted to be able to compress any file with any characters.
+
+The solution was to reserve a codeword to mark the end of the file. So we start with a starting dictionary containint all ASCII characters.
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{flights }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{filter}\NormalTok{(month }\SpecialCharTok{==} \DecValTok{3}\NormalTok{, day }\SpecialCharTok{==} \DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ dep\_time, }\AttributeTok{y =}\NormalTok{ arr\_delay)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_point}\NormalTok{()}
+    \BuiltInTok{std::}\NormalTok{unordered\_map}\OperatorTok{\textless{}}\BuiltInTok{std::}\NormalTok{string}\OperatorTok{,} \DataTypeTok{int}\OperatorTok{\textgreater{}}\NormalTok{ dictionary}\OperatorTok{;}
+    \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}} \DecValTok{256}\OperatorTok{;} \OperatorTok{++}\NormalTok{i}\OperatorTok{)\{}
+        \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{str1}\OperatorTok{(}\DecValTok{1}\OperatorTok{,} \DataTypeTok{char}\OperatorTok{(}\NormalTok{i}\OperatorTok{));}
+\NormalTok{        dictionary}\OperatorTok{[}\NormalTok{str1}\OperatorTok{]} \OperatorTok{=}\NormalTok{ i}\OperatorTok{;}
+    \OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
-\includegraphics{thesis_files/figure-latex/march3plot-1.pdf}
+Then use the code 256 to denote the end of file. So the algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword.
 
-\hypertarget{additional-resources}{%
-\section{Additional resources}\label{additional-resources}}
-\begin{itemize}
+The problem was, what about what is left over? Suppose we are reading a file, and the file ends with ``ACCT''. If ``A'' is in the dictionary, we see if ``AC'' is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
 \item
-  \emph{Markdown} Cheatsheet - \url{https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet}
+  ``ACC'' was in the dictionary but ``ACCT'' was not. This means we can output the codeword for ``ACC'', follow it by the character ``T'', and we are done. This is the ideal scenario, because nothing is left over when we output the EOF codeword
 \item
-  \emph{R Markdown}
-  \begin{itemize}
-  \tightlist
-  \item
-    Reference Guide - \url{https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf}
-  \item
-    Cheatsheet - \url{https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf}
-  \end{itemize}
+  ``ACCT'' was in the dictionary: This means we have one more codeword to output, but since we reached the end of the file, we never got to output it.
 \item
-  \emph{RStudio IDE}
-  \begin{itemize}
-  \tightlist
-  \item
-    Cheatsheet - \url{https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf}
-  \item
-    Official website - \url{https://rstudio.com/products/rstudio/}
-  \end{itemize}
-\item
-  Introduction to \texttt{dplyr} - \url{https://cran.rstudio.com/web/packages/dplyr/vignettes/dplyr.html}
-\item
-  \texttt{ggplot2}
-  \begin{itemize}
-  \tightlist
-  \item
-    Documentation - \url{https://ggplot2.tidyverse.org/}
-  \item
-    Cheatsheet - \url{https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf}
-  \end{itemize}
-\end{itemize}
-\hypertarget{math-sci}{%
-\chapter{Mathematics and Science}\label{math-sci}}
+  ``AC'' was in the dictionary, but ``ACC'' was not: in this case, we would output the codeword for ``AC'' output the character ``C'', and then start looping again starting at ``T''. But we reach the end of the file, so we output EOF before outputting T.
+\end{enumerate}
+We solved this issue by adding 2 extra bits after the EOF codeword. These bits denote the case that occured
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{// after we\textquotesingle{}ve encoded, we either have }
+    \CommentTok{// no current block (case 0)}
+    \CommentTok{// we have a current block that is a single character (case 1)}
+    \CommentTok{// otherwise we have a current block \textgreater{} 1 byte (default)}
+    \ControlFlowTok{switch} \OperatorTok{(}\NormalTok{currentBlock}\OperatorTok{.}\NormalTok{length}\OperatorTok{())\{}
+    \ControlFlowTok{case} \DecValTok{0}\OperatorTok{:}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
+        \ControlFlowTok{break}\OperatorTok{;}
+    \ControlFlowTok{case} \DecValTok{1}\OperatorTok{:}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_n\_bits}\OperatorTok{((}\DataTypeTok{int}\OperatorTok{)}\NormalTok{ currentBlock}\OperatorTok{[}\DecValTok{0}\OperatorTok{],}\NormalTok{ CHAR\_BIT}\OperatorTok{);}
+        \ControlFlowTok{break}\OperatorTok{;}
+    \ControlFlowTok{default}\OperatorTok{:}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
 
-\hypertarget{math}{%
-\section{Math}\label{math}}
+        \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{[}\NormalTok{currentBlock}\OperatorTok{];}
+\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_n\_bits}\OperatorTok{(}\NormalTok{code}\OperatorTok{,}\NormalTok{ codeword\_size}\OperatorTok{);}
+        \ControlFlowTok{break}\OperatorTok{;}
+    \OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
-\TeX~is the best way to typeset mathematics. Donald Knuth designed \TeX~when he got frustrated at how long it was taking the typesetters to finish his book, which contained a lot of mathematics. One nice feature of \emph{R Markdown} is its ability to read LaTeX code directly.
+\hypertarget{dictionary-accesses}{%
+\subsection{Dictionary Accesses}\label{dictionary-accesses}}
 
-If you are doing a thesis that will involve lots of math, you will want to read the following section which has been commented out. If you're not going to use math, skip over or delete this next commented section.
+Another way that we
 
-\hypertarget{chemistry-101-symbols}{%
-\section{Chemistry 101: Symbols}\label{chemistry-101-symbols}}
+\hypertarget{using-const-char}{%
+\subsection{Using Const Char *}\label{using-const-char}}
 
-Chemical formulas will look best if they are not italicized. Get around math mode's automatic italicizing in LaTeX by using the argument \texttt{\$\textbackslash{}mathrm\{formula\ here\}\$}, with your formula inside the curly brackets. (Notice the use of the backticks here which enclose text that acts as code.)
+\hypertarget{evaluating-performance}{%
+\section{Evaluating Performance}\label{evaluating-performance}}
 
-So, \(\mathrm{Fe_2^{2+}Cr_2O_4}\) is written \texttt{\$\textbackslash{}mathrm\{Fe\_2\^{}\{2+\}Cr\_2O\_4\}\$}.
+\hypertarget{trying-different-dictionaries}{%
+\section{Trying Different Dictionaries}\label{trying-different-dictionaries}}
 
-\noindent Exponent or Superscript: \(\mathrm{O^-}\)
+\hypertarget{direct-map}{%
+\subsection{Direct Map}\label{direct-map}}
 
-\noindent Subscript: \(\mathrm{CH_4}\)
-
-To stack numbers or letters as in \(\mathrm{Fe_2^{2+}}\), the subscript is defined first, and then the superscript is defined.
-
-\noindent Bullet: CuCl \(\bullet\) \(\mathrm{7H_{2}O}\)
-
-\noindent Delta: \(\Delta\)
-
-\noindent Reaction Arrows: \(\longrightarrow\) or \(\xrightarrow{solution}\)
-
-\noindent Resonance Arrows: \(\leftrightarrow\)
-
-\noindent Reversible Reaction Arrows: \(\rightleftharpoons\)
-
-\hypertarget{typesetting-reactions}{%
-\subsection{Typesetting reactions}\label{typesetting-reactions}}
-
-You may wish to put your reaction in an equation environment, which means that LaTeX will place the reaction where it fits and will number the equations for you.
-\begin{equation}
-  \mathrm{C_6H_{12}O_6  + 6O_2} \longrightarrow \mathrm{6CO_2 + 6H_2O}
-  \label{eq:reaction}
-\end{equation}
-We can reference this combustion of glucose reaction via Equation \eqref{eq:reaction}.
-
-\hypertarget{other-examples-of-reactions}{%
-\subsection{Other examples of reactions}\label{other-examples-of-reactions}}
-
-\(\mathrm{NH_4Cl_{(s)}}\) \(\rightleftharpoons\) \(\mathrm{NH_{3(g)}+HCl_{(g)}}\)
-
-\noindent \(\mathrm{MeCH_2Br + Mg}\) \(\xrightarrow[below]{above}\) \(\mathrm{MeCH_2\bullet Mg \bullet Br}\)
-
-\hypertarget{physics}{%
-\section{Physics}\label{physics}}
-
-Many of the symbols you will need can be found on the math page \url{https://web.reed.edu/cis/help/latex/math.html} and the Comprehensive LaTeX Symbol Guide (\url{https://mirror.utexas.edu/ctan/info/symbols/comprehensive/symbols-letter.pdf}).
-
-\hypertarget{biology}{%
-\section{Biology}\label{biology}}
-
-You will probably find the resources at \url{https://www.lecb.ncifcrf.gov/~toms/latex.html} helpful, particularly the links to bsts for various journals. You may also be interested in TeXShade for nucleotide typesetting (\url{https://homepages.uni-tuebingen.de/beitz/txe.html}). Be sure to read the proceeding chapter on graphics and tables.
+\hypertarget{multiple-indexed-dictionaries}{%
+\subsection{Multiple Indexed Dictionaries}\label{multiple-indexed-dictionaries}}
 
 \hypertarget{ref-labels}{%
 \chapter{Graphics, References, and Labels}\label{ref-labels}}
@@ -858,7 +799,13 @@ This first appendix includes all of the R chunks of code that were hidden throug
 \noindent
 
 \setlength{\parindent}{-0.20in}
-
+\begin{verbatim}
+Huffman, D. A. (1952). A method for the construction of minimum-redundancy codes. Proceedings of the IRE, 40(9), 1098-1101.
+Sayood, K. (2017). Introduction to data compression. Academic Press.
+Witten, I. H., Neal, R. M., & Cleary, J. G. (1987). Arithmetic coding for data compression. Communications of the ACM, 30(6), 520-540.
+Sayood, K. (2017). Introduction to data compression. Academic Press.
+Pratas, Diogo & Pinho, Armando. (2018). A DNA Sequence Corpus for Compression Benchmark. 208-215. 10.1007/978-3-319-98702-6_25.
+\end{verbatim}
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
 \leavevmode\vadjust pre{\hypertarget{ref-angel2000}{}}%
@@ -870,11 +817,17 @@ Angel, E. (2001a). \emph{Batch-file computer graphics : A bottom-up approach wit
 \leavevmode\vadjust pre{\hypertarget{ref-angel2002a}{}}%
 Angel, E. (2001b). \emph{Test second book by angel}. Boston, MA: Wesley Addison Longman.
 
+\leavevmode\vadjust pre{\hypertarget{ref-grumbach}{}}%
+Grumbach, S., \& Tahi, F. (1994). {A New Challenge for Compression Algorithms: Genetic Sequences}. \emph{{Information Processing and Management}}, \emph{30}. Retrieved from \url{https://hal.inria.fr/inria-00180949}
+
 \leavevmode\vadjust pre{\hypertarget{ref-Molina1994}{}}%
 Molina, S. T., \& Borkovec, T. D. (1994). The {P}enn {S}tate worry questionnaire: Psychometric properties and associated characteristics. In G. C. L. Davey \& F. Tallis (Eds.), \emph{Worrying: Perspectives on theory, assessment and treatment} (pp. 265--283). New York: Wiley.
 
 \leavevmode\vadjust pre{\hypertarget{ref-noble2002}{}}%
 Noble, S. G. (2002). \emph{Turning images into simple line-art} (Undergraduate thesis). Reed College.
+
+\leavevmode\vadjust pre{\hypertarget{ref-prataspinho}{}}%
+Pratas, D., \& Pinho, A. (2018). A DNA sequence corpus for compression benchmark. In (pp. 208--215). http://doi.org/\href{https://doi.org/10.1007/978-3-319-98702-6_25}{10.1007/978-3-319-98702-6\_25}
 
 \leavevmode\vadjust pre{\hypertarget{ref-reedweb2007}{}}%
 Reed~College. (2007). LaTeX your document. Retrieved from \url{https://web.reed.edu/cis/help/LaTeX/index.html}

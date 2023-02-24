@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include "dictionary.hh"
 #include <unordered_map> 
@@ -10,29 +9,43 @@
 typedef uint32_t codeword_type;
 const codeword_type MAX_CODEWORD = std::numeric_limits<codeword_type>::max();
 const int CODEWORD_SIZE = std::numeric_limits<codeword_type>::digits;
+const int MAX_STRING_LENGTH = 10;
 
-// Std Encode
+// Std Mult dict Encode
 //
-// use a unordered map to track codewords
+// use an array of unordered map to track codewords
 //
 class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	private:
-		// dictionary and end of dictionary 
-		std::unordered_map<std::string, codeword_type> dictionary; 
-		std::unordered_map<std::string, codeword_type>::const_iterator end;	
+		// array of dictionaries
+		// we need one for every string length up to our max, plus another for all strings longer than that max
+		// we also don't want weird indexing so we will have one dict at the bottom that is empty
+		std::array<std::unordered_map<std::string, codeword_type>, MAX_STRING_LENGTH+2> dictionary_array; 
+		std::array<std::unordered_map<std::string, codeword_type>::const_iterator, MAX_STRING_LENGTH+2> dictionary_ends;	
 
 		// track when we run out of codewords
 		bool empty;
+
+		int len_to_index(unsigned len) const{
+			if(len <= MAX_STRING_LENGTH){
+				return len;
+			}
+			return MAX_STRING_LENGTH;
+		}
 	public:
 		LZW_Encode_Dictionary() : 
 			LZWDictionary<codeword_type>(),
-			end(dictionary.cend()), 
-			empty(false){}
+			empty(false){
+				for(unsigned i = 0; i < dictionary_ends.size(); i++){
+					dictionary_ends[i] = dictionary_array[i].cend();
+				} 
+			}
 
 		codeword_type code_of(const char* input, unsigned len) const override{
+	
 			std::string str(input, len);
-			auto lookup = dictionary.find(str);
-			if(lookup == end){ return 0;}
+			auto lookup = dictionary_array[len_to_index(len)].find(str);
+			if(lookup == dictionary_ends[len_to_index(len)]){ return 0;}
 			return lookup->second;
 		}
 	
@@ -61,7 +74,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 				empty = true;
 			}
 			std::string str(input, len);
-			dictionary[str] = codeword;
+			dictionary_array[len_to_index(len)][str] = codeword;
 		}
 
 		void load_starting_dictionary() override{
@@ -108,7 +121,7 @@ class LZW_Decode_Dictionary: private LZWDictionary<codeword_type>{
 		}
 };
 
-// Codeword_Helper for Direct Map:
+// Codeword_Helper for mult_dicts:
 //
 // track current codeword and use the minumum number of bits required to display said codeword
 //

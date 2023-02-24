@@ -1,123 +1,158 @@
-# Mathematics and Science {#math-sci}
+# Optimizing LZW: Approach 
 
-<!-- Required to number equations in HTML files -->
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
-});
-</script>
+To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++.
 
-## Math
+## Supporting Research
 
-\TeX\ is the best way to typeset mathematics. Donald Knuth designed \TeX\ when he got frustrated at how long it was taking the typesetters to finish his book, which contained a lot of mathematics.  One nice feature of _R Markdown_ is its ability to read LaTeX code directly.
+There has been several attempts to optimize LZW by computer science researchers.
 
-If you are doing a thesis that will involve lots of math, you will want to read the following section which has been commented out. If you're not going to use math, skip over or delete this next commented section.
+There has also been attemps to generally improve performance of LZW
 
+## Corpora
 
-<!-- MATH and PHYSICS majors: Uncomment the following section -->
-<!--
-$$\sum_{j=1}^n (\delta\theta_j)^2 \leq {{\beta_i^2}\over{\delta_i^2 + \rho_i^2}}
-\left[ 2\rho_i^2 + {\delta_i^2\beta_i^2\over{\delta_i^2 + \rho_i^2}} \right] \equiv \omega_i^2
-$$
+Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to ascess performance and to compare different algorithms to one another. 
 
-From Informational Dynamics, we have the following (Dave Braden):
+In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression [@grumbach].
 
-After _n_ such encounters the posterior density for $\theta$ is
+```{r, echo = FALSE} 
+df <- read.csv('data/corpus_1_summary.csv')
+knitr::kable(df, "markdown", align= 'c')
 
-$$
-\pi(\theta|X_1< y_1,\dots,X_n<y_n) \varpropto \pi(\theta) \prod_{i=1}^n\int_{-\infty}^{y_i}
-   \exp\left(-{(x-\theta)^2\over{2\sigma^2}}\right)\ dx
-$$
-
-Another equation:
-
-$$\det\left|\,\begin{matrix}%
-c_0&c_1\hfill&c_2\hfill&\ldots&c_n\hfill\cr
-c_1&c_2\hfill&c_3\hfill&\ldots&c_{n+1}\hfill\cr
-c_2&c_3\hfill&c_4\hfill&\ldots&c_{n+2}\hfill\cr
-\,\vdots\hfill&\,\vdots\hfill&
-  \,\vdots\hfill&&\,\vdots\hfill\cr
-c_n&c_{n+1}\hfill&c_{n+2}\hfill&\ldots&c_{2n}\hfill\cr
-\end{matrix}\right|>0$$
+```
 
 
-Lapidus and Pindar, Numerical Solution of Partial Differential Equations in Science and
-Engineering.  Page 54
 
-$$
-\int_t\left\{\sum_{j=1}^3 T_j \left({d\phi_j\over dt}+k\phi_j\right)-kT_e\right\}w_i(t)\ dt=0,
-   \qquad\quad i=1,2,3.
-$$
+Another, newer paper aimed to create a corpus specifically for compressing DNA [@prataspinho]. They put together a corpus of DNA sequences for this purpose, as summarized below. Since the papers publishing, it has been cited by several DNA compression papers.
 
-L\&P  Galerkin method weighting functions.  Page 55
+```{r, echo = FALSE}
+df <- read.csv('data/corpus_2_summary.csv')
+knitr::kable(df, "markdown", align= 'c')
+```
+This particular dataset is publicly available at this [link](https://tinyurl.com/DNAcorpus).
 
-$$
-\sum_{j=1}^3 T_j\int_0^1\left\{{d\phi_j\over dt} + k\phi_j\right\} \phi_i\ dt
-   = \int_{0}^1k\,T_e\phi_idt, \qquad i=1,2,3 $$
+## A Starting Point
 
-Another L\&P (p145)
-
-$$
-\int_{-1}^1\!\int_{-1}^1\!\int_{-1}^1 f\big(\xi,\eta,\zeta\big)
-   = \sum_{k=1}^n\sum_{j=1}^n\sum_{i=1}^n w_i w_j w_k f\big( \xi,\eta,\zeta\big).
-$$
-
-Another L\&P (p126)
-
-$$
-\int_{A_e} (\,\cdot\,) dx dy = \int_{-1}^1\!\int_{-1}^1 (\,\cdot\,) \det[J] d\xi d\eta.
-$$
--->
-
-## Chemistry 101: Symbols
-
-Chemical formulas will look best if they are not italicized. Get around math mode's automatic italicizing in LaTeX by using the argument `$\mathrm{formula here}$`, with your formula inside the curly brackets.  (Notice the use of the backticks here which enclose text that acts as code.)
-
-So, $\mathrm{Fe_2^{2+}Cr_2O_4}$ is written `$\mathrm{Fe_2^{2+}Cr_2O_4}$`.
-
-<!--
-The \noindent command below does what you'd expect:  it forces the current line/paragraph to not indent. This was done here to match the format of the LaTeX thesis PDF.
--->
-
-\noindent Exponent or Superscript: $\mathrm{O^-}$
-
-\noindent Subscript: $\mathrm{CH_4}$
-
-To stack numbers or letters as in $\mathrm{Fe_2^{2+}}$, the subscript is defined first, and then the superscript is defined.
-
-\noindent Bullet: CuCl $\bullet$ $\mathrm{7H_{2}O}$
+As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, opitmizing it for DNA. 
 
 
-\noindent Delta: $\Delta$
+### Growing Codewords and Bit Output
 
-\noindent Reaction Arrows: $\longrightarrow$ or  $\xrightarrow{solution}$
+When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance `01000001` stands for the letter 'A' in ASCII encoding. Numbers are more simple to display, so `00000001` is 1, `00000010` is 2, and so on.
 
-\noindent Resonance Arrows: $\leftrightarrow$
+But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, `1` is the same as `01` is the same as `00000000000001`. So when we are outputting codewords for LZW, we don't necessarily need to ouput a whole byte. We can have growing codewords.
 
-\noindent Reversible Reaction Arrows: $\rightleftharpoons$
+As the number of codewords grows, the number of bits needed to represent it also grows. So if we are on codeword 8, we need 4 bits since 8 is `1000`. As our dictionary grows, we can grow the number of bits needed to display a codeword and save a lot of space in our compressed document.
 
-### Typesetting reactions
+So we needed a method of ouputting bits one by one, and reading in bits one by one. This is not something that is supported in C++ on its own. We were able to create this functionality bydefining a class.
 
-You may wish to put your reaction in an equation environment, which means that LaTeX will place the reaction where it fits and will number the equations for you. 
+```c++
+// BitInput: Read a single bit at a time from an input stream.
+// Before reading any bits, ensure your input stream still has valid inputs.
+class BitInput {
+ public:
+  // Construct with an input stream
+  BitInput(const char* input);
 
-\begin{equation}
-  \mathrm{C_6H_{12}O_6  + 6O_2} \longrightarrow \mathrm{6CO_2 + 6H_2O}
-  (\#eq:reaction)
-\end{equation}
+  BitInput(const BitInput&) = default;
+  BitInput(BitInput&&) = default;
 
-We can reference this combustion of glucose reaction via Equation \@ref(eq:reaction).
+  // bool eof();
+  // Read a single bit (or trailing zero)
+  // Allowed to crash or throw an exception if called past end-of-file.
+  bool input_bit();
 
-### Other examples of reactions
+  int read_n_bits(int n);
+}
 
-$\mathrm{NH_4Cl_{(s)}}$ $\rightleftharpoons$ $\mathrm{NH_{3(g)}+HCl_{(g)}}$
+// BitOutput: Write a single bit at a time to an output stream
+// Make sure all bits are written out by the time the destructor is done.
+class BitOutput {
+ public:
+  // Construct with an input stream
+  BitOutput(std::ostream& os);
 
-\noindent $\mathrm{MeCH_2Br + Mg}$ $\xrightarrow[below]{above}$ $\mathrm{MeCH_2\bullet Mg \bullet Br}$
+  // Flushes out any remaining output bits and trailing zeros, if any:
+  ~BitOutput();
 
-## Physics
+  BitOutput(const BitOutput&) = default;
+  BitOutput(BitOutput&&) = default;
 
-Many of the symbols you will need can be found on the math page <https://web.reed.edu/cis/help/latex/math.html> and the Comprehensive LaTeX Symbol Guide (<https://mirror.utexas.edu/ctan/info/symbols/comprehensive/symbols-letter.pdf>).
+  // Output a single bit (buffered)
+  void output_bit(bool bit);
 
-## Biology
+  void output_n_bits(int bits, int n);
+}
 
-You will probably find the resources at <https://www.lecb.ncifcrf.gov/~toms/latex.html> helpful, particularly the links to bsts for various journals. You may also be interested in TeXShade for nucleotide typesetting (<https://homepages.uni-tuebingen.de/beitz/txe.html>).  Be sure to read the proceeding chapter on graphics and tables.
+```
+
+So when we are encoding and need to output a codeword, we can `output_n_bits`, where `n` is the number of bits needed to display our greatest codeword. When decoding, we can just `read_n_bits`.
+
+### Getting EOF to work
+
+One of the very early issues with the implementation was how to denote the end of a file. The early implementation would work for some files, but for others the very last part of the file would be lost after encoding and then decodeing.
+
+In theoretical implementations of LZW, computer scientists tend to denote the end of a message with a special character, one that isn't seen anywhere else in the file. In this initial implementation, that wasn't possible because we wanted to be able to compress any file with any characters.
+
+The solution was to reserve a codeword to mark the end of the file. So we start with a starting dictionary containint all ASCII characters.
+
+```c++
+	std::unordered_map<std::string, int> dictionary;
+   	for (int i = 0; i < 256; ++i){
+		std::string str1(1, char(i));
+		dictionary[str1] = i;
+	}
+```
+Then use the code 256 to denote the end of file. So the algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword. 
+
+
+The problem was, what about what is left over? Suppose we are reading a file, and the file ends with "ACCT". If "A" is in the dictionary, we see if "AC" is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
+
+1. "ACC" was in the dictionary but "ACCT" was not. This means we can output the codeword for "ACC", follow it by the character "T", and we are done. This is the ideal scenario, because nothing is left over when we output the EOF codeword
+2. "ACCT" was in the dictionary: This means we have one more codeword to output, but since we reached the end of the file, we never got to output it.
+3. "AC" was in the dictionary, but "ACC" was not: in this case, we would output the codeword for "AC" output the character "C", and then start looping again starting at "T". But we reach the end of the file, so we output EOF before outputting T.
+
+We solved this issue by adding 2 extra bits after the EOF codeword. These bits denote the case that occured
+
+```c++
+    // after we've encoded, we either have 
+    // no current block (case 0)
+    // we have a current block that is a single character (case 1)
+    // otherwise we have a current block > 1 byte (default)
+    switch (currentBlock.length()){
+    case 0:
+        bit_output.output_bit(false);
+        bit_output.output_bit(false);
+        break;
+    case 1:
+        bit_output.output_bit(false);
+        bit_output.output_bit(true);
+        bit_output.output_n_bits((int) currentBlock[0], CHAR_BIT);
+        break;
+    default:
+        bit_output.output_bit(true);
+        bit_output.output_bit(true);
+
+        int code = dictionary[currentBlock];
+        bit_output.output_n_bits(code, codeword_size);
+        break;
+    }
+```
+
+So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
+
+### Dictionary Accesses
+
+Another way that we 
+
+### Using Const Char *
+
+
+## Evaluating Performance
+
+
+## Trying Different Dictionaries
+
+### Direct Map
+
+### Multiple Indexed Dictionaries
 

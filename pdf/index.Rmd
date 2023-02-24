@@ -1,5 +1,5 @@
 ---
-title: 'Some Witty Title'
+title: 'Optimizing Lempel Ziv Welch for DNA Compression'
 author: 'Caden Corontzos'
 date: 'May 2023'
 institution: 'Reed College'
@@ -128,6 +128,6 @@ Alternatively, you can put that content in files like 00--prelim.Rmd and
 
 # Introduction {.unnumbered}
 
-Lempel Ziv Welch (LZW) is a lossless compression algirthm used widely for a number of applications. 
+When dealing with DNA, it 
 
 
