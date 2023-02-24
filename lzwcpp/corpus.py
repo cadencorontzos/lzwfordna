@@ -51,7 +51,7 @@ def runFile(filename, td):
 def runCorpus(directoryName,corpusNum):
     # iterate over files in
     # that directory
-    td = TidyData("corpus_"+ str(corpusNum) "_"+sys.argv[-1], "Run of a corpus" )
+    td = TidyData("corpus_"+ str(corpusNum)+ "_"+sys.argv[-1], "Run of a corpus" )
     files = os.listdir(directoryName)
     for filename in files:
         td.start_record()
@@ -63,8 +63,8 @@ def runCorpus(directoryName,corpusNum):
 def runCorpuses():
     if not os.path.exists(LZW_ENCODE) or not os.path.exists(LZW_DECODE):
         print("Executables not available. Please run 'make all' before running this script.")
-    runCorpus(CORPUS_1)
-    runCorpus(CORPUS_2)
+    runCorpus(CORPUS_1, 1)
+    runCorpus(CORPUS_2, 2)
 
 
 
