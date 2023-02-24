@@ -205,6 +205,20 @@ The Lempel Ziv Welch compression algorithm is a lossless data compression algori
 }
 
 	\usepackage{setspace}\onehalfspacing
+	\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 % End of CII addition
 %%
 %% End Preamble
@@ -369,24 +383,21 @@ To restate the goal of this thesis, we seek to optimize LZW for use in compressi
 
 There has been several attempts to optimize LZW by computer science researchers.
 
-There has also been attemps to generally improve performance of LZW
+There has also been attempts to generally improve performance of LZW
 
 \hypertarget{corpora}{%
 \section{Corpora}\label{corpora}}
 
-Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to ascess performance and to compare different algorithms to one another.
+Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare different algorithms to one another.
 
 In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression (Grumbach \& Tahi, 1994).
-\begin{verbatim}
-Warning in read.table(file = file, header = header, sep = sep,
-quote = quote, : incomplete final line found by readTableHeader on
-'data/corpus_1_summary.csv'
-\end{verbatim}
 \begin{longtable}[]{@{}cc@{}}
 \toprule()
 Name & Size.bytes. \\
 \midrule()
 \endhead
+chmpxx & 121024 \\
+chntxx & 155844 \\
 hehcmv & 229354 \\
 humdyst & 38770 \\
 humghcs & 66495 \\
@@ -423,21 +434,28 @@ YeMi & 73689 \\
 \end{longtable}
 This particular dataset is publicly available at this \href{https://tinyurl.com/DNAcorpus}{link}.
 
+\hypertarget{evaluating-performance}{%
+\section{Evaluating Performance}\label{evaluating-performance}}
+
+Evaluating performance of a program is difficult. There is a notion of theoretical run time, but on an actual computer there are many processes running in the background, so it can be hard to get a consistent reading on performance.
+
+To attempt to counteract this, we ran the function on the same file
+
 \hypertarget{a-starting-point}{%
 \section{A Starting Point}\label{a-starting-point}}
 
-As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, opitmizing it for DNA.
+As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, optimizing it for DNA.
 
 \hypertarget{growing-codewords-and-bit-output}{%
 \subsection{Growing Codewords and Bit Output}\label{growing-codewords-and-bit-output}}
 
 When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance \texttt{01000001} stands for the letter `A' in ASCII encoding. Numbers are more simple to display, so \texttt{00000001} is 1, \texttt{00000010} is 2, and so on.
 
-But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, \texttt{1} is the same as \texttt{01} is the same as \texttt{00000000000001}. So when we are outputting codewords for LZW, we don't necessarily need to ouput a whole byte. We can have growing codewords.
+But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, \texttt{1} is the same as \texttt{01} is the same as \texttt{00000000000001}. So when we are outputting codewords for LZW, we don't necessarily need to output a whole byte. We can have growing codewords.
 
 As the number of codewords grows, the number of bits needed to represent it also grows. So if we are on codeword 8, we need 4 bits since 8 is \texttt{1000}. As our dictionary grows, we can grow the number of bits needed to display a codeword and save a lot of space in our compressed document.
 
-So we needed a method of ouputting bits one by one, and reading in bits one by one. This is not something that is supported in C++ on its own. We were able to create this functionality bydefining a class.
+So we needed a method of outputting bits one by one, and reading in bits one by one. This is not something that is supported in C++ on its own. We were able to create this functionality by defining a class.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{// BitInput: Read a single bit at a time from an input stream.}
@@ -483,11 +501,11 @@ So when we are encoding and need to output a codeword, we can \texttt{output\_n\
 \hypertarget{getting-eof-to-work}{%
 \subsection{Getting EOF to work}\label{getting-eof-to-work}}
 
-One of the very early issues with the implementation was how to denote the end of a file. The early implementation would work for some files, but for others the very last part of the file would be lost after encoding and then decodeing.
+One of the very early issues with the implementation was how to denote the end of a file. The early implementation would work for some files, but for others the very last part of the file would be lost after encoding and then decoding.
 
 In theoretical implementations of LZW, computer scientists tend to denote the end of a message with a special character, one that isn't seen anywhere else in the file. In this initial implementation, that wasn't possible because we wanted to be able to compress any file with any characters.
 
-The solution was to reserve a codeword to mark the end of the file. So we start with a starting dictionary containint all ASCII characters.
+The solution was to reserve a codeword to mark the end of the file. So we start with a starting dictionary containing all ASCII characters.
 \begin{Shaded}
 \begin{Highlighting}[]
     \BuiltInTok{std::}\NormalTok{unordered\_map}\OperatorTok{\textless{}}\BuiltInTok{std::}\NormalTok{string}\OperatorTok{,} \DataTypeTok{int}\OperatorTok{\textgreater{}}\NormalTok{ dictionary}\OperatorTok{;}
@@ -510,7 +528,7 @@ The problem was, what about what is left over? Suppose we are reading a file, an
 \item
   ``AC'' was in the dictionary, but ``ACC'' was not: in this case, we would output the codeword for ``AC'' output the character ``C'', and then start looping again starting at ``T''. But we reach the end of the file, so we output EOF before outputting T.
 \end{enumerate}
-We solved this issue by adding 2 extra bits after the EOF codeword. These bits denote the case that occured
+We solved this issue by adding 2 extra bits after the EOF codeword. These bits denote the case that occurred
 \begin{Shaded}
 \begin{Highlighting}[]
     \CommentTok{// after we\textquotesingle{}ve encoded, we either have }
@@ -539,17 +557,340 @@ We solved this issue by adding 2 extra bits after the EOF codeword. These bits d
 \end{Shaded}
 So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
+At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora.
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 7 & 2\\
+DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 5 & 1\\
+DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 18 & 7\\
+DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 23 & 9\\
+DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 18 & 7\\
+\addlinespace
+DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 8 & 2\\
+DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 13 & 4\\
+DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 4\\
+DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 16 & 6\\
+DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
+\addlinespace
+DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 8 & 3\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 9 & 3\\
+DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 15034 & 1898\\
+DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 5427 & 781\\
+DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 145 & 40\\
+DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 9790 & 1350\\
+\addlinespace
+DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 569 & 121\\
+DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 40810 & 4773\\
+DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1761 & 295\\
+DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 445 & 97\\
+DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 53818 & 5913\\
+\addlinespace
+DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 141 & 40\\
+DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 7190 & 1015\\
+DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 2 & 0\\
+DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1367 & 238\\
+DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 6 & 2\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\hypertarget{using-constants}{%
+\subsection{Using Constants}\label{using-constants}}
+
+The early version of the code was not clean. There were hard coded variables, unspecified integer types, and generally messy naming conventions that made the code difficult to read and debug.
+
+The next major step in the code was to start using constants for everything, including
+\begin{itemize}
+\tightlist
+\item
+  \texttt{STARTING\_CODEWORD}: What codeword we should start at
+\item
+  \texttt{EOF\_CODEWORD}: What we should output when we reach end of file
+\item
+  \texttt{STARTING\_DICT\_SIZE}: At this stage, we had a starting dict size of 256 to hold all possible bytes, but later we will specialize for DNA
+\end{itemize}
+It also made sense to start using a specific type for codewords. At this stage, we opted for a 32 bit integer.
+
+There are several tools at a developers disposal when looking to debug and optimize code. One tool used for this thesis was \texttt{callgrind} which is a tool of \texttt{valgrind} a profiling tool. Profiling tools are used to look at how your code works, where the bottlenecks are, and what can be changed/improved for the performance of your code.
+
+Callgrind in particular is a profiling tool which associates assembly instructions to lines of code, indicating to the programmer which lines take a lot of instructions and which take less. For those unfamiliar, assembly instructions are what code is turned into so that it can be ran on your computer's processor. In general, more instructions means that code takes longer to run.
+
+The callgrind output drew attention to one particular part of the code. A C++ \texttt{unordered\_map} uses iterators, basically pointers into the dictionary. If an entry is not present in the dictionary, the \texttt{find()} function will return a iterator to the end of the dictionary.
+
+The check for this in our algorithm looked like this.
+\begin{Shaded}
+\begin{Highlighting}[]
+        \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
+        \CommentTok{// }\AlertTok{TODO}\CommentTok{: use cend() and save this iterator}
+        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ dictionary}\OperatorTok{.}\NormalTok{end}\OperatorTok{())\{}
+\NormalTok{            currentBlock }\OperatorTok{=}\NormalTok{ currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+        \OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+Here is the callgrind output for that line.
+\begin{verbatim}
+105,030,135 ( 0.18%)          if (dictionary.find(currentBlock + next_character) != dictionary.end()){
+13,537,450,317 (22.83%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, char) (3,890,005x)
+11,653,779,430 (19.65%)  => /usr/include/c++/9/bits/unordered_map.h:std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long> > >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (3,890,005x)
+2,108,383,120 ( 3.56%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (3,890,005x)
+956,941,242 ( 1.61%)  => /usr/include/c++/9/bits/unordered_map.h:std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long> > >::end() (3,890,005x)
+241,180,314 ( 0.41%)  => /usr/include/c++/9/bits/hashtable_policy.h:bool std::__detail::operator!=<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true>(std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&, std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&) (3,890,005x)
+\end{verbatim}
+As shown, this line is taking a significant amount of instructions, and it needs to pull the end() of the dictionary each time it is ran. If we use cend() instead and save that iterator in a variable called end, we can save a significant amount of instructions.
+\begin{verbatim}
+89,470,115 ( 0.61%)          if (dictionary.find(currentBlock + next_character) != end ){
+3,353,009,053 (22.78%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, char) (3,890,005x)
+2,833,786,025 (19.26%)  => /usr/include/c++/9/bits/unordered_map.h:std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long> > >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (3,890,005x)
+420,120,704 ( 2.85%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (3,890,005x)
+50,570,065 ( 0.34%)  => /usr/include/c++/9/bits/hashtable_policy.h:bool std::__detail::operator!=<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true>(std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&, std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&) (3,890,005x)
+\end{verbatim}
+Of course, there are several issues with this method. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Another thing is that compliers are very advanced, and sometimes small optimizations like this are done by the compiler automatically.
+
+Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of callgrind, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
+
+Here are the runs after this optimization.
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 7 & 2\\
+DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 5 & 1\\
+DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 19 & 7\\
+DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 23 & 9\\
+DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 19 & 7\\
+\addlinespace
+DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 7 & 2\\
+DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 12 & 4\\
+DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 4\\
+DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 16 & 6\\
+DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
+\addlinespace
+DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 10 & 3\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 9 & 3\\
+DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14940 & 1880\\
+DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 5401 & 769\\
+DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 144 & 40\\
+DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 9782 & 1344\\
+\addlinespace
+DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 569 & 118\\
+DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 41060 & 4787\\
+DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1738 & 292\\
+DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 444 & 97\\
+DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 53774 & 5854\\
+\addlinespace
+DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 139 & 40\\
+DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 7188 & 1009\\
+DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 2 & 1\\
+DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1352 & 237\\
+DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\hypertarget{extraneous-string-concatenations}{%
+\subsection{Extraneous String Concatenations}\label{extraneous-string-concatenations}}
+
+The LZW algorithm is build on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over.
+
+Another thing that I noticed from the callgrind output was that a lot of time/instructions are being spent on string concatenation. Every time we have already seen a sequence, we have to concatenate a character. I also noticed that I was doing this concatenation multiple times without needing to.
+\begin{Shaded}
+\begin{Highlighting}[]
+        \CommentTok{// we concatenate the strings here}
+        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end }\OperatorTok{)\{}
+            \CommentTok{// and here}
+\NormalTok{            currentBlock }\OperatorTok{=}\NormalTok{ currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+        \OperatorTok{\}}
+        \ControlFlowTok{else}\OperatorTok{\{}
+
+            \CommentTok{// other code here ommitted}
+
+
+            \CommentTok{// and here! }
+\NormalTok{            dictionary}\OperatorTok{[}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{]} \OperatorTok{=}\NormalTok{ codeword}\OperatorTok{;}
+        \OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+If I just concatenate them and save the output into a new string, that will save me from doing the concatenation 2 more times.
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 6 & 2\\
+DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 4 & 1\\
+DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 16 & 7\\
+DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 20 & 9\\
+DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 17 & 7\\
+\addlinespace
+DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 6 & 2\\
+DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 12 & 4\\
+DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 10 & 4\\
+DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 15 & 6\\
+DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 8 & 2\\
+\addlinespace
+DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 8 & 3\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 8 & 3\\
+DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14450 & 1876\\
+DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 5186 & 762\\
+DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 129 & 38\\
+DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 9392 & 1329\\
+\addlinespace
+DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 525 & 119\\
+DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 39700 & 4741\\
+DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1640 & 289\\
+DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 410 & 96\\
+DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 51901 & 5848\\
+\addlinespace
+DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 126 & 40\\
+DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 6861 & 1001\\
+DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 2 & 0\\
+DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1258 & 234\\
+DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
+\bottomrule
+\end{tabular}}
+\end{table}
 \hypertarget{dictionary-accesses}{%
 \subsection{Dictionary Accesses}\label{dictionary-accesses}}
-
-Another way that we
-
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 5 & 2\\
+DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 4 & 1\\
+DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 17 & 7\\
+DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 20 & 9\\
+DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 17 & 7\\
+\addlinespace
+DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 6 & 2\\
+DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 11 & 4\\
+DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 3\\
+DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 16 & 6\\
+DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
+\addlinespace
+DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 8 & 3\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 7 & 3\\
+DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14146 & 1869\\
+DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 5087 & 758\\
+DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 127 & 39\\
+DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 9278 & 1329\\
+\addlinespace
+DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 519 & 115\\
+DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 39265 & 4702\\
+DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1610 & 290\\
+DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 405 & 97\\
+DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 50936 & 5833\\
+\addlinespace
+DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 125 & 39\\
+DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 6773 & 999\\
+DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 2 & 0\\
+DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1254 & 231\\
+DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
+\bottomrule
+\end{tabular}}
+\end{table}
 \hypertarget{using-const-char}{%
 \subsection{Using Const Char *}\label{using-const-char}}
-
-\hypertarget{evaluating-performance}{%
-\section{Evaluating Performance}\label{evaluating-performance}}
-
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 7 & 2\\
+DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 7 & 1\\
+DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 15 & 6\\
+DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 15 & 8\\
+DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 16 & 6\\
+\addlinespace
+DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 9 & 2\\
+DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 12 & 4\\
+DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 10 & 3\\
+DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 14 & 5\\
+DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
+\addlinespace
+DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 9 & 2\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 9 & 2\\
+DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 12264 & 1764\\
+DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 4070 & 708\\
+DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 96 & 35\\
+DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 7627 & 1252\\
+\addlinespace
+DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 348 & 109\\
+DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 32906 & 4456\\
+DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1205 & 265\\
+DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 271 & 88\\
+DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 44733 & 5517\\
+\addlinespace
+DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 92 & 35\\
+DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 5266 & 940\\
+DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 5 & 0\\
+DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 879 & 220\\
+DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 7 & 1\\
+\bottomrule
+\end{tabular}}
+\end{table}
 \hypertarget{trying-different-dictionaries}{%
 \section{Trying Different Dictionaries}\label{trying-different-dictionaries}}
 
@@ -586,20 +927,7 @@ Here is a reference to the Reed logo: Figure \ref{fig:reedlogo}. Note the use of
 \clearpage
 
 Below we will investigate how to save the output of an \textbf{R} plot and label it in a way similar to that done above. Recall the \texttt{flights} dataset from Chapter \ref{rmd-basics}. (Note that we've shown a different way to reference a section or chapter here.) We will next explore a bar graph with the mean flight departure delays by airline from Portland for 2014.
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{mean\_delay\_by\_carrier }\OtherTok{\textless{}{-}}\NormalTok{ flights }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(carrier) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{mean\_dep\_delay =} \FunctionTok{mean}\NormalTok{(dep\_delay))}
-\FunctionTok{ggplot}\NormalTok{(mean\_delay\_by\_carrier, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ carrier, }\AttributeTok{y =}\NormalTok{ mean\_dep\_delay)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{position =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"red"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-\begin{figure}
-\centering
-\includegraphics{thesis_files/figure-latex/delaysboxplot-1.pdf}
-\caption{\label{fig:delaysboxplot}Mean Delays by Airline}
-\end{figure}
+
 Here is a reference to this image: Figure \ref{fig:delaysboxplot}.
 
 A table linking these carrier codes to airline names is available at \url{https://github.com/ismayc/pnwflights14/blob/master/data/airlines.csv}.
@@ -711,80 +1039,7 @@ This first appendix includes all of the R chunks of code that were hidden throug
 \end{Highlighting}
 \end{Shaded}
 \textbf{In Chapter \ref{ref-labels}:}
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# This chunk ensures that the thesisdown package is}
-\CommentTok{\# installed and loaded. This thesisdown package includes}
-\CommentTok{\# the template files for the thesis and also two functions}
-\CommentTok{\# used for labeling and referencing}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(remotes)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"remotes"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{\textquotesingle{}You need to run install.packages("remotes")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(dplyr)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{\textquotesingle{}You need to run install.packages("dplyr")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(ggplot2)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{\textquotesingle{}You need to run install.packages("ggplot2")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(bookdown)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"bookdown"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{\textquotesingle{}You need to run install.packages("bookdown")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(thesisdown)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-\NormalTok{    remotes}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"ismayc/thesisdown"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{"You need to run"}\NormalTok{,}
-        \StringTok{\textquotesingle{}remotes::install\_github("ismayc/thesisdown")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-\FunctionTok{library}\NormalTok{(thesisdown)}
-\FunctionTok{library}\NormalTok{(dplyr)}
-\FunctionTok{library}\NormalTok{(ggplot2)}
-\FunctionTok{library}\NormalTok{(knitr)}
-\NormalTok{flights }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"data/flights.csv"}\NormalTok{, }\AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+
 \hypertarget{the-second-appendix-for-fun}{%
 \chapter{The Second Appendix, for Fun}\label{the-second-appendix-for-fun}}
 

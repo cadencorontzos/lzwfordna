@@ -60,6 +60,7 @@ lot: true
 lof: true
 ---
 
+
 <!--
 Above is the YAML (YAML Ain't Markup Language) header that includes a lot of 
 metadata used to produce the document.  Be careful with spacing in this header!
@@ -125,7 +126,6 @@ Alternatively, you can put that content in files like 00--prelim.Rmd and
 <!-- The {.unnumbered} option here means that the introduction will be 
 "Chapter 0." You can also use {-} for no numbers on chapters.
 -->
-
 # Introduction {.unnumbered}
 
 When dealing with DNA, it 
