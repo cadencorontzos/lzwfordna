@@ -279,8 +279,12 @@ This thesis deals with some high level topics and uses language specific to comp
 Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? Or can it be part of the message? If someone asks you ``Where library'', despite the lack of prepositions you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library?''
 Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let us assume that information is something that can be interpreted to glean information that you didn't know before.
 
+\textbf{TODO}: Continue Explanation into an explanation of compression
+
 \hypertarget{compression-a-history}{%
 \section{Compression: A history}\label{compression-a-history}}
+
+\textbf{TODO}
 
 \hypertarget{compression-metrics}{%
 \section{Compression Metrics}\label{compression-metrics}}
@@ -302,7 +306,7 @@ The runtime is also an important part of evaluating the effectiveness of a compr
 \hypertarget{memory-usage}{%
 \subsection{Memory Usage}\label{memory-usage}}
 
-Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to information that programs track as they are running on a computer. So do reduce our runtime and make a more effective compression algorithm, we want to be saving only the most important data that our algoritm needs in order to reduce our memory usage.
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to information that programs track as they are running on a computer. So do reduce our runtime and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage.
 
 \hypertarget{lossless-vs.-lossy-compression}{%
 \section{Lossless vs.~Lossy Compression}\label{lossless-vs.-lossy-compression}}
@@ -312,10 +316,14 @@ Memory usage is closely tied with runtime when it comes to compression algorithm
 
 Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example
 
+\textbf{TODO}: Continue examples
+
 \hypertarget{lossless}{%
 \subsection{Lossless}\label{lossless}}
 
 Lossless compression is the compression of data with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Examples of lossless compression algoritms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
+
+\textbf{TODO}: Elaborate more here
 
 \hypertarget{examples-of-compression-algorithms}{%
 \section{Examples of Compression Algorithms}\label{examples-of-compression-algorithms}}
@@ -339,7 +347,7 @@ We could compress this even further if we omit the 1 on characters that only app
 
 Huffman Encoding is a strategdy that assigns variable length code to certain symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
 
-Put example here
+\textbf{TODO}: Put example here
 
 \hypertarget{arithmetic}{%
 \subsection{Arithmetic}\label{arithmetic}}
@@ -362,6 +370,8 @@ We want to represent the message as a fractional number between 0 and 1. We will
 
 Arithmetic encoding can have a better compression ratio that Huffman in some cases, but the computation time is often not worth the payoff.
 
+\textbf{TODO}: Finish Example
+
 \hypertarget{lempel-ziv-welch}{%
 \subsection{Lempel Ziv Welch}\label{lempel-ziv-welch}}
 
@@ -373,24 +383,32 @@ Here is a simple example. We may be sending messages with the characters \{`A', 
 
 When we compress, we start at the beginning of the message and scan through.
 
+\textbf{TODO}: Finish example, maybe add some pseudo code as well
+
 \hypertarget{optimizing-lzw-approach}{%
 \chapter{Optimizing LZW: Approach}\label{optimizing-lzw-approach}}
 
 To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++.
 
+\textbf{TODO}: Elaborate here
+
 \hypertarget{supporting-research}{%
 \section{Supporting Research}\label{supporting-research}}
 
-There has been several attempts to optimize LZW by computer science researchers.
+There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple, rather than a single large dictionary, have multiple dictionaries, one for each possible string size. That way, the dictionaries grow more slowly and accesses are faster. This paper also used Genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this paper.
 
-There has also been attempts to generally improve performance of LZW
+Another paper used simple parallelization techniques to improve compression speed (Pani, Mishra, \& Mishra, 2012). Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
+
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without comprimising compression ratio, although these results could not be verified.
+
+\textbf{TODO}: Talk about how we tried to get in touch with the authors.
 
 \hypertarget{corpora}{%
 \section{Corpora}\label{corpora}}
 
 Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare different algorithms to one another.
 
-In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression (Grumbach \& Tahi, 1994).
+In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications (Grumbach \& Tahi, 1994).
 \begin{longtable}[]{@{}cc@{}}
 \toprule()
 Name & Size.bytes. \\
@@ -439,12 +457,12 @@ This particular dataset is publicly available at this \href{https://tinyurl.com/
 
 Evaluating performance of a program is difficult. There is a notion of theoretical run time, but on an actual computer there are many processes running in the background, so it can be hard to get a consistent reading on performance.
 
-To attempt to counteract this, we ran the function on the same file
+To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs.
 
 \hypertarget{a-starting-point}{%
 \section{A Starting Point}\label{a-starting-point}}
 
-As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, optimizing it for DNA.
+As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, optimizing it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon.
 
 \hypertarget{growing-codewords-and-bit-output}{%
 \subsection{Growing Codewords and Bit Output}\label{growing-codewords-and-bit-output}}
@@ -718,7 +736,9 @@ DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
 
 The LZW algorithm is build on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over.
 
-Another thing that I noticed from the callgrind output was that a lot of time/instructions are being spent on string concatenation. Every time we have already seen a sequence, we have to concatenate a character. I also noticed that I was doing this concatenation multiple times without needing to.
+Another thing that I noticed from the callgrind output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most language, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing string, which can have a significant performance penalty.
+
+In the version of the algorithm at the time, every time we have already seen a sequence, we have to concatenate a character. I noticed that I was doing this concatenation multiple times without needing to.
 \begin{Shaded}
 \begin{Highlighting}[]
         \CommentTok{// we concatenate the strings here}
@@ -737,6 +757,22 @@ Another thing that I noticed from the callgrind output was that a lot of time/in
 \end{Highlighting}
 \end{Shaded}
 If I just concatenate them and save the output into a new string, that will save me from doing the concatenation 2 more times.
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{// save concatenation here}
+      \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end }\OperatorTok{)\{}
+\NormalTok{            current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
+        \OperatorTok{\}}
+        \ControlFlowTok{else}\OperatorTok{\{}
+
+    \CommentTok{// other code omitted here}
+
+\NormalTok{            dictionary}\OperatorTok{[}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{]} \OperatorTok{=}\NormalTok{ codeword}\OperatorTok{;}
+        \OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+Here are the statistics on the version of the algorithm after this change.
 \begin{table}[H]
 \centering
 \resizebox{\linewidth}{!}{
@@ -906,7 +942,9 @@ DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
 
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
-When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need.
+When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time.
+
+\textbf{TODO}: Need to talk about getting rid of string concatenation at some point.
 \begin{table}[H]
 \centering
 \resizebox{\linewidth}{!}{
@@ -1006,13 +1044,138 @@ X & average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\
 \bottomrule
 \end{tabular}}
 \end{table}
+\textbf{TODO}: style and put histogram here. Too large to include it programatically
+
+Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 20.
+
+To achieve this, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters (`A', `C', `T', and `G'), we can represent the characters with two bits. So for a length \texttt{n} string, we can represent it with \texttt{2n} bits.
+
+So we can create an indexed dictionary directly in memory for all strings below a certain length. We can use the \texttt{2n} bit representation of the string
+to index into an array of codewords.
+
+For each strings size 1 to n , we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap on top to handle those.
+
+Here is the data for this version of the dictionary.
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus1/humprtb & 56737 & 25883 & 2.192 & 1 & 2\\
+DNACorpus1/humdyst & 38770 & 18437 & 2.103 & 1 & 1\\
+DNACorpus1/vaccg & 191737 & 77120 & 2.486 & 4 & 4\\
+DNACorpus1/hehcmv & 229354 & 93251 & 2.460 & 2 & 5\\
+DNACorpus1/mpomtcg & 186609 & 77315 & 2.414 & 4 & 4\\
+\addlinespace
+DNACorpus1/humhdab & 58864 & 26752 & 2.200 & 1 & 2\\
+DNACorpus1/chmpxx & 121024 & 49414 & 2.449 & 3 & 3\\
+DNACorpus1/mtpacga & 100314 & 42203 & 2.377 & 2 & 2\\
+DNACorpus1/chntxx & 155844 & 64879 & 2.402 & 3 & 3\\
+DNACorpus1/humghcs & 66495 & 29864 & 2.227 & 1 & 2\\
+\addlinespace
+DNACorpus1/humhbb & 73308 & 32681 & 2.243 & 1 & 2\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus2/YeMi & 73689 & 31700 & 2.325 & 1 & 2\\
+DNACorpus2/DaRe & 62565020 & 21182510 & 2.954 & 656 & 442\\
+DNACorpus2/EnIn & 26403087 & 8986109 & 2.938 & 271 & 184\\
+DNACorpus2/HePy & 1667825 & 572507 & 2.913 & 26 & 17\\
+DNACorpus2/OrSa & 43262523 & 15008736 & 2.882 & 431 & 319\\
+\addlinespace
+DNACorpus2/EsCo & 4641652 & 1621508 & 2.863 & 51 & 42\\
+DNACorpus2/GaGa & 148532294 & 52441876 & 2.832 & 1475 & 1080\\
+DNACorpus2/ScPo & 10652155 & 3691943 & 2.885 & 108 & 83\\
+DNACorpus2/HaHi & 3890005 & 1324571 & 2.937 & 51 & 32\\
+DNACorpus2/HoSa & 189752667 & 63973137 & 2.966 & 2035 & 1319\\
+\addlinespace
+DNACorpus2/AeCa & 1591049 & 561527 & 2.833 & 22 & 18\\
+DNACorpus2/DrMe & 32181429 & 11150498 & 2.886 & 332 & 237\\
+DNACorpus2/BuEb & 18940 & 9894 & 1.914 & 0 & 1\\
+DNACorpus2/PlFa & 8986712 & 2972072 & 3.024 & 106 & 67\\
+DNACorpus2/AgPh & 43970 & 20885 & 2.105 & 1 & 1\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\textbf{TODO}: Have data for multiple different direct map sizes. Also talk about the fixed codeword size and what happens when we run out.
+
 \hypertarget{multiple-indexed-dictionaries}{%
 \subsection{Multiple Indexed Dictionaries}\label{multiple-indexed-dictionaries}}
+
+As stated before, there have been research papers about the
+
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary.
+
+Here are the results for this dictionary.
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus1/humprtb & 56737 & 21687 & 2.616 & 5 & 2\\
+DNACorpus1/humdyst & 38770 & 15116 & 2.565 & 3 & 1\\
+DNACorpus1/vaccg & 191737 & 69820 & 2.746 & 14 & 6\\
+DNACorpus1/hehcmv & 229354 & 85279 & 2.689 & 16 & 7\\
+DNACorpus1/mpomtcg & 186609 & 70007 & 2.666 & 15 & 6\\
+\addlinespace
+DNACorpus1/humhdab & 58864 & 22484 & 2.618 & 5 & 2\\
+DNACorpus1/chmpxx & 121024 & 43269 & 2.797 & 10 & 4\\
+DNACorpus1/mtpacga & 100314 & 36647 & 2.737 & 8 & 3\\
+DNACorpus1/chntxx & 155844 & 58089 & 2.683 & 12 & 5\\
+DNACorpus1/humghcs & 66495 & 25336 & 2.625 & 6 & 2\\
+\addlinespace
+DNACorpus1/humhbb & 73308 & 27918 & 2.626 & 7 & 2\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
+\midrule
+DNACorpus2/YeMi & 73689 & 27019 & 2.727 & 7 & 2\\
+DNACorpus2/DaRe & 62565020 & 19585959 & 3.194 & 8878 & 1721\\
+DNACorpus2/EnIn & 26403087 & 8609527 & 3.067 & 3347 & 696\\
+DNACorpus2/HePy & 1667825 & 566631 & 2.943 & 94 & 34\\
+DNACorpus2/OrSa & 43262523 & 14147605 & 3.058 & 5551 & 1223\\
+\addlinespace
+DNACorpus2/EsCo & 4641652 & 1593032 & 2.914 & 364 & 105\\
+DNACorpus2/GaGa & 148532294 & 46851235 & 3.170 & 22817 & 4323\\
+DNACorpus2/ScPo & 10652155 & 3590421 & 2.967 & 1099 & 258\\
+DNACorpus2/HaHi & 3890005 & 1306336 & 2.978 & 302 & 86\\
+DNACorpus2/HoSa & 189752667 & 57199679 & 3.317 & 31978 & 5449\\
+\addlinespace
+DNACorpus2/AeCa & 1591049 & 556194 & 2.861 & 91 & 34\\
+DNACorpus2/DrMe & 32181429 & 10618575 & 3.031 & 3865 & 905\\
+DNACorpus2/BuEb & 18940 & 7740 & 2.447 & 1 & 0\\
+DNACorpus2/PlFa & 8986712 & 2895340 & 3.104 & 892 & 211\\
+DNACorpus2/AgPh & 43970 & 17258 & 2.548 & 4 & 1\\
+\bottomrule
+\end{tabular}}
+\end{table}
+Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
+
+\includegraphics{thesis_files/figure-latex/unnamed-chunk-16-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-16-2.pdf}
 
 \hypertarget{comparison}{%
 \subsection{Comparison}\label{comparison}}
 
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-14-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-14-2.pdf}
+Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
+
+\includegraphics{thesis_files/figure-latex/unnamed-chunk-17-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-17-2.pdf}
 
 \hypertarget{ref-labels}{%
 \chapter{Graphics, References, and Labels}\label{ref-labels}}
@@ -1189,11 +1352,20 @@ Angel, E. (2001b). \emph{Test second book by angel}. Boston, MA: Wesley Addison 
 \leavevmode\vadjust pre{\hypertarget{ref-grumbach}{}}%
 Grumbach, S., \& Tahi, F. (1994). {A New Challenge for Compression Algorithms: Genetic Sequences}. \emph{{Information Processing and Management}}, \emph{30}. Retrieved from \url{https://hal.inria.fr/inria-00180949}
 
+\leavevmode\vadjust pre{\hypertarget{ref-ibrahimgbolagade}{}}%
+Ibrahim, M., \& Gbolagade, K. (2020). Enhancing computational time of lempel-ziv-welch-based text compression with chinese remainder theorem. \emph{Journal of Computer Science and Its Application}, \emph{27}. http://doi.org/\href{https://doi.org/10.4314/jcsia.v27i1.9}{10.4314/jcsia.v27i1.9}
+
+\leavevmode\vadjust pre{\hypertarget{ref-KeerthyMID}{}}%
+Keerthy, P. (2019). Genomic sequence data compression using lempel-ziv-welch algorithm with indexed multiple dictionary. \emph{International Journal of Engineering and Advanced Technology}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-Molina1994}{}}%
 Molina, S. T., \& Borkovec, T. D. (1994). The {P}enn {S}tate worry questionnaire: Psychometric properties and associated characteristics. In G. C. L. Davey \& F. Tallis (Eds.), \emph{Worrying: Perspectives on theory, assessment and treatment} (pp. 265--283). New York: Wiley.
 
 \leavevmode\vadjust pre{\hypertarget{ref-noble2002}{}}%
 Noble, S. G. (2002). \emph{Turning images into simple line-art} (Undergraduate thesis). Reed College.
+
+\leavevmode\vadjust pre{\hypertarget{ref-panialok}{}}%
+Pani, A., Mishra, M., \& Mishra, T. (2012). Parallel lempel-ziv-welch (PLZW) technique for data compression. \emph{International Journal of Computer Science and Information Technology}, \emph{3}, 4038--4040.
 
 \leavevmode\vadjust pre{\hypertarget{ref-prataspinho}{}}%
 Pratas, D., \& Pinho, A. (2018). A DNA sequence corpus for compression benchmark. In (pp. 208--215). http://doi.org/\href{https://doi.org/10.1007/978-3-319-98702-6_25}{10.1007/978-3-319-98702-6\_25}

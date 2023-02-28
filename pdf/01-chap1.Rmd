@@ -15,11 +15,11 @@ This thesis deals with some high level topics and uses language specific to comp
   Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? Or can it be part of the message? If someone asks you "Where library", despite the lack of prepositions you still understand what they mean. So did that person convey any less information than a person who asks "Where is the library?"
   Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let us assume that information is something that can be interpreted to glean information that you didn't know before. 
   
-
+**TODO**: Continue Explanation into an explanation of compression
 
 ## Compression: A history
 
-
+**TODO**
 
 ## Compression Metrics
 
@@ -37,7 +37,7 @@ The runtime is also an important part of evaluating the effectiveness of a compr
 
 ### Memory Usage
 
-Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to information that programs track as they are running on a computer. So do reduce our runtime and make a more effective compression algorithm, we want to be saving only the most important data that our algoritm needs in order to reduce our memory usage.
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to information that programs track as they are running on a computer. So do reduce our runtime and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage.
 
 ## Lossless vs. Lossy Compression
 
@@ -45,10 +45,13 @@ Memory usage is closely tied with runtime when it comes to compression algorithm
 
 Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example
 
+**TODO**: Continue examples
 
 ### Lossless
 
 Lossless compression is the compression of data with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Examples of lossless compression algoritms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
+
+**TODO**: Elaborate more here
 
 ## Examples of Compression Algorithms
 
@@ -70,7 +73,7 @@ We could compress this even further if we omit the 1 on characters that only app
 Huffman Encoding is a strategdy that assigns variable length code to certain symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
 
 
-Put example here
+**TODO**: Put example here
 
 ### Arithmetic
 
@@ -91,6 +94,8 @@ We want to represent the message as a fractional number between 0 and 1. We will
 
 Arithmetic encoding can have a better compression ratio that Huffman in some cases, but the computation time is often not worth the payoff.
 
+**TODO**: Finish Example
+
 ### Lempel Ziv Welch
 
 Lempel Ziv Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords, where codewords represent strings previously seen in the message. As it compresses the message, the dictionary grows. The compression algorithm leaves behind the codewords and some of the original characters, allowing the decompression algorithm to build up the same dictionary as it decompresses the message.
@@ -102,4 +107,5 @@ Here is a simple example. We may be sending messages with the characters {'A', '
 When we compress, we start at the beginning of the message and scan through.
 
 
+**TODO**: Finish example, maybe add some pseudo code as well
 

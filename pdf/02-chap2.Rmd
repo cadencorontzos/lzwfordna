@@ -134,22 +134,27 @@ compare_coprora <- function(array){
 
 ```
 
-# Optimizing LZW: Approach 
-
+# Optimizing LZW: Approach
 
 To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++.
 
+**TODO**: Elaborate here
+
 ## Supporting Research
 
-There has been several attempts to optimize LZW by computer science researchers.
+There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process [@KeerthyMID]. The concept is simple, rather than a single large dictionary, have multiple dictionaries, one for each possible string size. That way, the dictionaries grow more slowly and accesses are faster. This paper also used Genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this paper.
 
-There has also been attempts to generally improve performance of LZW
+Another paper used simple parallelization techniques to improve compression speed [@panialok]. Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
+
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch [@ibrahimgbolagade]. They saw great reduction in compression time without comprimising compression ratio, although these results could not be verified.
+
+**TODO**: Talk about how we tried to get in touch with the authors.
 
 ## Corpora
 
 Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare different algorithms to one another. 
 
-In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression [@grumbach].
+In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications [@grumbach].
 
 ```{r, echo = FALSE} 
 csv_to_table('data/corpus_1_summary.csv')
@@ -166,11 +171,11 @@ This particular dataset is publicly available at this [link](https://tinyurl.com
 
 Evaluating performance of a program is difficult. There is a notion of theoretical run time, but on an actual computer there are many processes running in the background, so it can be hard to get a consistent reading on performance.
 
-To attempt to counteract this, we ran the function on the same file 
+To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs.
 
 ## A Starting Point
 
-As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, optimizing it for DNA. 
+As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, optimizing it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon.
 
 
 ### Growing Codewords and Bit Output
@@ -354,7 +359,9 @@ stats_csv('data/stats/corpus_2_usingconstants_2c3f782.csv')
 
 The LZW algorithm is build on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over. 
 
-Another thing that I noticed from the callgrind output was that a lot of time/instructions are being spent on string concatenation. Every time we have already seen a sequence, we have to concatenate a character. I also noticed that I was doing this concatenation multiple times without needing to.
+Another thing that I noticed from the callgrind output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most language, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing string, which can have a significant performance penalty.
+
+In the version of the algorithm at the time, every time we have already seen a sequence, we have to concatenate a character. I noticed that I was doing this concatenation multiple times without needing to.
 
 ```c++
 		// we concatenate the strings here
@@ -374,7 +381,24 @@ Another thing that I noticed from the callgrind output was that a lot of time/in
 
 If I just concatenate them and save the output into a new string, that will save me from doing the concatenation 2 more times.
 
+```c++
+	// save concatenation here
+      std::string string_seen_plus_new_char = current_string_seen + next_character;
+        if (dictionary.find(string_seen_plus_new_char) != end ){
+            current_string_seen = string_seen_plus_new_char;
+        }
+        else{
+
+	// other code omitted here
+
+            dictionary[string_seen_plus_new_char] = codeword;
+        }
+```
+
+Here are the statistics on the version of the algorithm after this change.
+
 ```{r, echo = F}
+
 stats_csv('data/stats/corpus_1_stringconcat_8963f64.csv')
 stats_csv('data/stats/corpus_2_stringconcat_8963f64.csv')
 ```
@@ -457,7 +481,11 @@ a12a2901d87d723223b21a9c9115c1c9787a8966
 
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
-When reading a byte stream of the file, the file may not be in memory the way we want it. The `ifstream` class in C++ also has many extraneous feature that we don't need. 
+When reading a byte stream of the file, the file may not be in memory the way we want it. The `ifstream` class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using `mmap` and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a `char*` opens the possibility to getting rid of `std::string` entirely, which means way less overhead and decreased compression time.
+
+
+**TODO**: Need to talk about getting rid of string concatenation at some point.
+
 ```{r, echo = F}
 stats_csv('data/stats/corpus_1_charstar_a12a290.csv')
 stats_csv('data/stats/corpus_2_charstar_a12a290.csv')
@@ -492,11 +520,55 @@ And here is the combined stats of both copora, along with a histogram of all the
 ```{r, echo= F}
 stats_csv('data/corpus_both_run_stats.csv')
 ```
-	
+
+**TODO**: style and put histogram here. Too large to include it programatically
+
+
+Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 20.
+
+To achieve this, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters ('A', 'C', 'T', and 'G'), we can represent the characters with two bits. So for a length `n` string, we can represent it with `2n` bits. 
+
+So we can create an indexed dictionary directly in memory for all strings below a certain length. We can use the `2n` bit representation of the string
+to index into an array of codewords. 
+
+For each strings size 1 to n , we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size $4^3$, since there are $4^3$ possible strings. In each of those $4^3$ slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent $2^6=4^3$ values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than `n`, we can just use a hashmap on top to handle those.
+
+Here is the data for this version of the dictionary.
+
+```{r, echo = F}
+stats_csv('data/stats/corpus_1_directmap_154fed4.csv')
+stats_csv('data/stats/corpus_2_directmap_154fed4.csv')
+```
+
+**TODO**: Have data for multiple different direct map sizes. Also talk about the fixed codeword size and what happens when we run out.
 
 ### Multiple Indexed Dictionaries
 
+As stated before, there have been research papers about the 
+
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. 
+
+Here are the results for this dictionary. 
+
+```{r, echo = F}
+stats_csv('data/stats/corpus_1_multstddict_154fed4.csv')
+stats_csv('data/stats/corpus_2_multstddict_154fed4.csv')
+```
+
+Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
+
+```{r, echo = F}
+
+compare_coprora(list(
+  c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
+  c('data/stats/corpus_1_multstddict_154fed4.csv', 'data/stats/corpus_2_multstddict_154fed4.csv', 'Multiple Indexed Dictionaries')
+  ))
+
+```
+
 ### Comparison
+
+Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
 
 ```{r, echo = F}
 
@@ -507,7 +579,4 @@ compare_coprora(list(
   ))
 
 ```
-
-
-
 
