@@ -14,13 +14,16 @@ This thesis deals with some high level topics and uses language specific to comp
 
   Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? Or can it be part of the message? If someone asks you "Where library", despite the lack of prepositions you still understand what they mean. So did that person convey any less information than a person who asks "Where is the library?"
   Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let us assume that information is something that can be interpreted to glean information that you didn't know before. 
-  
-**TODO**: Continue Explanation into an explanation of compression
 
+Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
+  
 ## Compression: A history
 
-**TODO**
+The idea of compressing data to make transmission easier has been around for a long time. One of the earliest uses of compression was the use of Morse code, developed by Samuel Morse in the 1830s, used to transmit messages over telegraph. Morse uses a binary code, where dots and dashes represent different letters and numbers of the message to be transmitted.
 
+In the 1970s, researchers began to develop more sophisticated compression algoritms, such as Huffman encoding and Lempel-Ziv compression. Both LZW and Huffman use codes to represent different characters in a message.
+
+TODO: Elaborate
 ## Compression Metrics
 
 ### Compression Ratio

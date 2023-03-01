@@ -132,6 +132,34 @@ compare_coprora <- function(array){
   print(plot2)
 }
 
+
+
+compare_max_string_lengths <- function(array){
+	df <- data.frame()
+	for(corpus_pair in array){
+		cp1 <- read.csv(corpus_pair[1])
+		cp2 <- read.csv(corpus_pair[2])
+		comb <- bind_rows(cp1, cp2)
+		means <- harmonic_mean(comb)
+
+		comb<- comb %>% summarize(
+		  comp_throughput = sum(Original.File.Size)/sum(Compression.Time),
+		  hm_comp = means$harmonic_mean_comp,
+		  size = corpus_pair[3],
+		)
+		df <- bind_rows(comb, df)
+	}
+  plot1<- df %>% 
+    ggplot(aes(x = size, y = comp_throughput, fill = size))+
+    geom_col()+
+    labs(x="Max String Length", y = "Throughput(bytes/ms)")
+  print(plot1)
+  plot2 <- df %>% 
+    ggplot(aes(x = size, y = hm_comp, fill = size))+
+    geom_col()+
+    labs(x="Max String Length", y = "Mean Compression Time (ms)")	
+  print(plot2)
+}
 ```
 
 # Optimizing LZW: Approach
@@ -146,9 +174,7 @@ There has been several attempts to optimize LZW by computer science researchers.
 
 Another paper used simple parallelization techniques to improve compression speed [@panialok]. Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
 
-Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch [@ibrahimgbolagade]. They saw great reduction in compression time without comprimising compression ratio, although these results could not be verified.
-
-**TODO**: Talk about how we tried to get in touch with the authors.
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch [@ibrahimgbolagade]. They saw great reduction in compression time without comprimising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the method is not used in this thesis.
 
 ## Corpora
 
@@ -533,11 +559,21 @@ to index into an array of codewords.
 
 For each strings size 1 to n , we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size $4^3$, since there are $4^3$ possible strings. In each of those $4^3$ slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent $2^6=4^3$ values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than `n`, we can just use a hashmap on top to handle those.
 
-Here is the data for this version of the dictionary.
+Here is the data for this version of the dictionary of length 10.
 
 ```{r, echo = F}
-stats_csv('data/stats/corpus_1_directmap_154fed4.csv')
-stats_csv('data/stats/corpus_2_directmap_154fed4.csv')
+stats_csv('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv')
+stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv')
+```
+
+Here is a comparison for different max string lengths
+
+
+```{r, echo = F}
+compare_max_string_lengths(list(
+	c('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv', 'data/stats/directmap/corpus_2_directmap_154fed4_len10.csv', 10),
+	c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 15)
+))
 ```
 
 **TODO**: Have data for multiple different direct map sizes. Also talk about the fixed codeword size and what happens when we run out.
@@ -546,22 +582,30 @@ stats_csv('data/stats/corpus_2_directmap_154fed4.csv')
 
 As stated before, there have been research papers about the 
 
-Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. 
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length.
 
 Here are the results for this dictionary. 
 
 ```{r, echo = F}
-stats_csv('data/stats/corpus_1_multstddict_154fed4.csv')
-stats_csv('data/stats/corpus_2_multstddict_154fed4.csv')
+stats_csv('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv')
+stats_csv('data/stats/multdict/corpus_2_multdict_154fed4_len10.csv')
 ```
 
+```{r, echo = F}
+compare_max_string_lengths(list(
+	c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 10),
+	c('data/stats/multdict/corpus_1_multdict_6d73501_len15.csv', 'data/stats/multdict/corpus_2_multdict_6d73501_len15.csv', 15),
+	c('data/stats/multdict/corpus_1_multdict_80d2016_len20.csv', 'data/stats/multdict/corpus_2_multdict_80d2016_len20.csv', 20),
+	c('data/stats/multdict/corpus_1_multdict_06f9a20_len25.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len25.csv', 25)
+))
+```
 Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
 
 ```{r, echo = F}
 
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
-  c('data/stats/corpus_1_multstddict_154fed4.csv', 'data/stats/corpus_2_multstddict_154fed4.csv', 'Multiple Indexed Dictionaries')
+  c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 'Multiple Indexed Dictionaries')
   ))
 
 ```
@@ -574,8 +618,8 @@ Here is a comparison of all three techniques: Standard Dictionary, Multiple Stan
 
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
-  c('data/stats/corpus_1_directmap_154fed4.csv', 'data/stats/corpus_2_directmap_154fed4.csv', 'Direct Map'),
-  c('data/stats/corpus_1_multstddict_154fed4.csv', 'data/stats/corpus_2_multstddict_154fed4.csv', 'Multiple Indexed Dictionaries')
+  c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Direct Map Dictionary'),
+  c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 'Multiple Indexed Dictionaries')
   ))
 
 ```

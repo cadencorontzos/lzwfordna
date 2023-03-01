@@ -279,15 +279,17 @@ This thesis deals with some high level topics and uses language specific to comp
 Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? Or can it be part of the message? If someone asks you ``Where library'', despite the lack of prepositions you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library?''
 Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let us assume that information is something that can be interpreted to glean information that you didn't know before.
 
-\textbf{TODO}: Continue Explanation into an explanation of compression
+Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
 
 \hypertarget{compression-a-history}{%
 \section{Compression: A history}\label{compression-a-history}}
 
-\textbf{TODO}
+The idea of compressing data to make transmission easier has been around for a long time. One of the earliest uses of compression was the use of Morse code, developed by Samuel Morse in the 1830s, used to transmit messages over telegraph. Morse uses a binary code, where dots and dashes represent different letters and numbers of the message to be transmitted.
 
-\hypertarget{compression-metrics}{%
-\section{Compression Metrics}\label{compression-metrics}}
+In the 1970s, researchers began to develop more sophisticated compression algoritms, such as Huffman encoding and Lempel-Ziv compression. Both LZW and Huffman use codes to represent different characters in a message.
+
+TODO: Elaborate
+\#\# Compression Metrics
 
 \hypertarget{compression-ratio}{%
 \subsection{Compression Ratio}\label{compression-ratio}}
@@ -399,9 +401,7 @@ There has been several attempts to optimize LZW by computer science researchers.
 
 Another paper used simple parallelization techniques to improve compression speed (Pani, Mishra, \& Mishra, 2012). Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
 
-Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without comprimising compression ratio, although these results could not be verified.
-
-\textbf{TODO}: Talk about how we tried to get in touch with the authors.
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without comprimising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the method is not used in this thesis.
 
 \hypertarget{corpora}{%
 \section{Corpora}\label{corpora}}
@@ -1055,7 +1055,7 @@ to index into an array of codewords.
 
 For each strings size 1 to n , we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap on top to handle those.
 
-Here is the data for this version of the dictionary.
+Here is the data for this version of the dictionary of length 10.
 \begin{table}[H]
 \centering
 \resizebox{\linewidth}{!}{
@@ -1106,6 +1106,10 @@ DNACorpus2/AgPh & 43970 & 20885 & 2.105 & 1 & 1\\
 \bottomrule
 \end{tabular}}
 \end{table}
+Here is a comparison for different max string lengths
+
+\includegraphics{thesis_files/figure-latex/unnamed-chunk-15-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-15-2.pdf}
+
 \textbf{TODO}: Have data for multiple different direct map sizes. Also talk about the fixed codeword size and what happens when we run out.
 
 \hypertarget{multiple-indexed-dictionaries}{%
@@ -1113,7 +1117,7 @@ DNACorpus2/AgPh & 43970 & 20885 & 2.105 & 1 & 1\\
 
 As stated before, there have been research papers about the
 
-Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary.
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length.
 
 Here are the results for this dictionary.
 \begin{table}[H]
@@ -1166,16 +1170,17 @@ DNACorpus2/AgPh & 43970 & 17258 & 2.548 & 4 & 1\\
 \bottomrule
 \end{tabular}}
 \end{table}
+\includegraphics{thesis_files/figure-latex/unnamed-chunk-17-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-17-2.pdf}
 Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
 
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-16-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-16-2.pdf}
+\includegraphics{thesis_files/figure-latex/unnamed-chunk-18-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-18-2.pdf}
 
 \hypertarget{comparison}{%
 \subsection{Comparison}\label{comparison}}
 
 Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
 
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-17-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-17-2.pdf}
+\includegraphics{thesis_files/figure-latex/unnamed-chunk-19-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-19-2.pdf}
 
 \hypertarget{ref-labels}{%
 \chapter{Graphics, References, and Labels}\label{ref-labels}}
