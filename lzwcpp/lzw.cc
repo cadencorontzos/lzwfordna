@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 #include <climits>
-#include "./dictionary/mult_std_dict.hh"
+#include "./dictionary/direct_mapped_dict.hh"
 
 void LZW::encode(const char* input_file, int file_size, std::ostream& output){
    

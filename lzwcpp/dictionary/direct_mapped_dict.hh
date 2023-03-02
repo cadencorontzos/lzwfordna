@@ -5,7 +5,7 @@
 #include <cmath>
 #include <climits>
 
-constexpr uint8_t MAX_STRING_LENGTH = 10;
+constexpr uint8_t MAX_STRING_LENGTH = 15;
 typedef uint16_t codeword_type;
 const codeword_type MAX_CODEWORD = static_cast<codeword_type>((1<<(sizeof(codeword_type)*CHAR_BIT)) -1);
 const int CODEWORD_SIZE = sizeof(codeword_type)*CHAR_BIT;
