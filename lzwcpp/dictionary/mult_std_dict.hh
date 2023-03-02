@@ -9,7 +9,7 @@
 typedef uint32_t codeword_type;
 const codeword_type MAX_CODEWORD = std::numeric_limits<codeword_type>::max();
 const int CODEWORD_SIZE = std::numeric_limits<codeword_type>::digits;
-const int MAX_STRING_LENGTH = 10;
+const int MAX_STRING_LENGTH = 15;
 
 // Std Mult dict Encode
 //
