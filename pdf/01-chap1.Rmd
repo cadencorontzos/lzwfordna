@@ -69,35 +69,72 @@ Even if this message did mean something, we can get the information across witho
 
   <p style="text-align: center;">2A1G1C8T5G3C1T</p>
 
-We could compress this even further if we omit the 1 on characters that only appear once. 
+We could compress this even further if we omit the 1 on characters that only appear once. Although not as sophisticated as other methods, RLE is effective when used on texts that have a lot of repeating characters.
 
 ### Huffman
 
-Huffman Encoding is a strategdy that assigns variable length code to certain symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
+Huffman Encoding is a strategy that assigns variable length code to certain symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
+
+Suppose we have a message "ACAGGATGGC". We can calculate the frequency of each letter by counting the number of times each letter shows up and dividing by the total number of letters 
+
+```{r, echo=F}
+letters <- c('A', 'C', 'T', 'G')
+frequencies <- c(0.3, 0.2, 0.1, 0.4)
+df =  data.frame(letters, frequencies)
+
+```
+Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters. 
 
 
-**TODO**: Put example here
+\begin{center}
+
+\tikzset{iv/.style={draw,fill=red!50,circle,minimum size=20pt,inner
+sep=0pt,text=black},ev/.style={draw,fill=yellow,rectangle,minimum
+size=20pt,inner sep=0pt,text=black}}
+
+\begin{forest}
+for tree={where n children={0}{ev}{iv},l+=8mm,
+if n=1{edge label={node [midway, left] {0} } }{edge label={node [midway, right] {1} } },}
+[
+ [G]  
+ [
+  [A]
+  [
+	[C]
+	[T]
+  ]
+ ] 
+] 
+\end{forest}
+
+\end{center}
+
+So $G=0$, $A = 10$, $T=111$ and $C=110$. Notice that none of the encodings are prefixes of one another, which makes it unambiguous in decoding.
+
+So our message would be encoded to $1011010001011100110$.
+
 
 ### Arithmetic
 
-Arithmetic encoding is another lossless compression algorithm that uses probability to asssign codes to symbols in the message. Unlike Huffman, arithmetic enoding assins a single code to the whole message, rather than seperate codes for each symbol.
+Arithmetic encoding is another lossless compression algorithm that uses probability to assign codes to symbols in the message. Unlike Huffman, arithmetic encoding assigns a single code to the whole message, rather than separate codes for each symbol.
 
 
+Here is a simple example. Say we want to encode a string of characters "ACGT". Arithmetic Encoding also requires the encoder and decoder know the probabilities of each of the characters that could possibly be in the message. Let's say the probability of each symbol in the message are
 
-
-Here is a simple example. Say we want to encode a string of characters "ACCGGGGTTT". The probability of each symbol in the message are
- 
 * P(A) = 1/10
 * P(C) = 2/10
 * P(G) = 4/10
 * P(T) = 3/10
 
-We want to represent the message as a fractional number between 0 and 1. We will divide the interval [0,1] into sub intervals using the probabilities of each character in the message. That way, each symbol is reprsented by the sub-interval that corresponds to its probablity.
+We want to represent the message as a fractional number between 0 and 1. We will divide the interval [0,1] into sub intervals using the probabilities of each character in the message. That way, each symbol is represented by the sub-interval that corresponds to its probability.
 
+So since 'A' comes first, we divide [0,1] into [0.0,0.1). Since 'C' is next, we go from [0.0,0.1] to [0.01, 0.03). Then since 'G is next, we go from [0.01, 0.03) to [0.016, 0.02). Finally, since 'T' is last, we go from [0.016, 0.02) to [0.0188, 0.02).
+
+So any number in the interval can be used to represent our message. 
 
 Arithmetic encoding can have a better compression ratio that Huffman in some cases, but the computation time is often not worth the payoff.
 
-**TODO**: Finish Example
+**TODO**: Add graphic
 
 ### Lempel Ziv Welch
 

@@ -16,6 +16,8 @@ site: bookdown::bookdown_site
 # switch out \onehalfspacing with \singlespacing or \doublespacing, if desired.
 header-includes:
     - \usepackage{setspace}\onehalfspacing
+    - \usepackage[edges]{forest}
+    - \usepackage{tikz}
 
 # This will automatically install the {remotes} package and {thesisdown}
 # Change this to FALSE if you'd like to install them manually on your own.
@@ -25,7 +27,8 @@ params:
 # Remove the hashtag to specify which version of output you would like.
 # Can only choose one at a time.
 output:
-  thesisdown::thesis_pdf: default 
+  thesisdown::thesis_pdf: 
+    extra_dependencies: ['forest', 'tikz']
 #  thesisdown::thesis_gitbook: default         
 #  thesisdown::thesis_word: default
 #  thesisdown::thesis_epub: default
@@ -102,6 +105,10 @@ if (!require(thesisdown)) {
   }
 }
 library(thesisdown)
+if (!require(DiagrammeR)) {
+  install.packages("DiagrammeR")
+}
+library(DiagrammeR)
 # Set how wide the R output will go
 options(width = 70)
 ```
