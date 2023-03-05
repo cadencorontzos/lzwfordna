@@ -42,6 +42,66 @@ void test_find_longest_in_dict(){
 	assert(f.code_of(output.c_str(), 3) == 3);
 
 }
+
+
+void test_find_longest_looping_down(){
+
+	LZW_Encode_Dictionary f;
+
+	// load three strings, each building on last
+	f.add_string("A", 1, 1);
+	f.add_string("AC", 2, 2);
+
+	// for this input, "ACT" should be the longest run in the dict
+	std::string input = "ACTG";
+
+	int ret;
+	ret = f.find_longest_looping_down(input.c_str(), 3);
+	std::string output = input.substr(0,ret);
+	assert(output == "AC");
+	assert(f.code_of(output.c_str(), 2) == 2);
+
+}
+
+void test_find_longest_looping_up(){
+
+	LZW_Encode_Dictionary f;
+
+	// load three strings, each building on last
+	f.add_string("A", 1, 1);
+	f.add_string("AC", 2, 2);
+	f.add_string("ACT", 3, 3);
+
+	// for this input, "ACT" should be the longest run in the dict
+	std::string input = "ACTG";
+
+	int ret;
+	ret = f.find_longest_looping_up(input.c_str(), input.c_str()+ input.length(), 0);
+	std::string output = input.substr(0,ret);
+	assert(output == "ACT");
+	assert(f.code_of(output.c_str(), 3) == 3);
+
+}
+
+void test_find_longest_binary_search(){
+
+	LZW_Encode_Dictionary f;
+
+	// load three strings, each building on last
+	f.add_string("A", 1, 1);
+	f.add_string("AC", 2, 2);
+	f.add_string("ACT", 3, 3);
+
+	// for this input, "ACT" should be the longest run in the dict
+	std::string input = "ACTGACTGACTGACTGACTG";
+
+	int ret;
+	ret = f.find_longest_binary_search(input.c_str());
+	std::string output = input.substr(0,ret);
+	assert(output == "ACT");
+	assert(f.code_of(output.c_str(), 3) == 3);
+
+}
 void test_add_string_encode(){
 	LZW_Encode_Dictionary f;
 
@@ -54,6 +114,9 @@ void test_encode(){
 	test_add_string_encode();
 	test_code_of();
 	test_find_longest_in_dict();
+	test_find_longest_looping_down();
+	test_find_longest_looping_up();
+	test_find_longest_binary_search();
 }
 
 // tests for decode dictionary

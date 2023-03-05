@@ -88,6 +88,81 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			}
 		}
 	
+		// allow the caller to provide the string already mapped. 
+		// allows for the mapped string to be produced on the fly in some cases
+		codeword_type code_of_manual(const char* input, unsigned len, int mapped_string) const{
+
+			// if we are over our max, just throw it in the hashmap
+			if (len >= MAX_STRING_LENGTH){
+				std::string str(input, len);
+				auto lookup = longer_than_max.find(str);
+				if(lookup == end){ return 0;}
+				return lookup->second;
+			}else{
+				codeword_type lookup = (dictionary[len])[mapped_string];
+				return lookup;
+			}
+		}
+
+		// We assume that the start is already in the dictionary, and loop up from there
+		int find_longest_looping_up(const char* input, const char* end_of_input, int start){
+			int length = start;
+			int entry = 0;
+			while(input+length < end_of_input) {
+				length++;
+				entry = code_of(input, length);
+				// if entry is non zero, it means we have seen that string before
+				if (entry == 0){
+					return length-1;
+				}
+			}
+			if(length == 0){
+				return 0;
+			}
+			return length;
+		}
+
+		// Assumes we already have the starting characters in the dictionary
+		// should never return 0
+		int find_longest_looping_down(const char* input, int start){
+			int length = start;
+			int entry;
+			while(length > 0) {
+				entry = code_of(input, length);
+				// if entry is non zero, it means we have seen that string before
+				if (entry != 0){
+					return length;
+				}
+				length--;
+			}
+			return length;
+		}
+
+
+		int find_longest_binary_search(const char* input){
+			int left = 0;
+			int middle = std::floor(MAX_STRING_LENGTH/2); 
+			int right = MAX_STRING_LENGTH;
+			int entry;
+			while(true) {
+				std::cout << "left: " << left << std::endl;
+				std::cout << "middle: " << middle << std::endl;
+				std::cout << "right: " << right << std::endl;
+				entry = code_of(input, middle);
+				if (entry == 0){
+					right = middle;
+					middle = left + std::floor((right-left)/2);
+				}
+				else if(code_of(input, middle+1) == 0){
+					return middle;
+				}
+				else{
+					right = middle;
+					middle = left + std::floor((right-left)/2);
+				}
+			}
+		}
+
 		int find_longest_in_dict(const char* input, const char* end_of_input) override{
 			int length = 0;
 			int entry = 0;
