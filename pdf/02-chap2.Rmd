@@ -549,6 +549,10 @@ stats_csv('data/corpus_both_run_stats.csv')
 
 ```{r, echo = F}
 all_runs <- read.csv('data/all_corpus_run_counts.csv')
+all_runs %>% 
+  ggplot(aes(x=Run.Length, y=count))+
+  geom_bar(stat="identity")+
+  labs(title="Run Distribution for Corpora", x = "Run Length")
 ```
 
 Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 20.

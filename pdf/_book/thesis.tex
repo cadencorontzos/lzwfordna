@@ -1077,6 +1077,8 @@ X & average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\
 \bottomrule
 \end{tabular}}
 \end{table}
+\includegraphics{thesis_files/figure-latex/unnamed-chunk-15-1.pdf}
+
 Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 20.
 
 To achieve this, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters (`A', `C', `T', and `G'), we can represent the characters with two bits. So for a length \texttt{n} string, we can represent it with \texttt{2n} bits.
