@@ -547,8 +547,9 @@ And here is the combined stats of both copora, along with a histogram of all the
 stats_csv('data/corpus_both_run_stats.csv')
 ```
 
-**TODO**: style and put histogram here. Too large to include it programatically
-
+```{r, echo = F}
+all_runs <- read.csv('data/all_corpus_run_counts.csv')
+```
 
 Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 20.
 

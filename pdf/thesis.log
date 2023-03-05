@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.2)  2 MAR 2023 16:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.2)  4 MAR 2023 14:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1147,26 +1147,26 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [24 <./thesis_files/figure-latex/unnamed-chunk-12-1.pdf>] [25 <./thesis_files/figure-latex/unnamed-chunk-12-2.pdf>]
-Underfull \vbox (badness 3058) has occurred while \output is active []
+Underfull \vbox (badness 6542) has occurred while \output is active []
 
 [26]
-<thesis_files/figure-latex/unnamed-chunk-16-1.pdf, id=478, 469.755pt x 325.215pt>
-File: thesis_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type pdf)
-<use thesis_files/figure-latex/unnamed-chunk-16-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-16-1.pdf  used on input line 1144.
+<thesis_files/figure-latex/unnamed-chunk-17-1.pdf, id=478, 469.755pt x 325.215pt>
+File: thesis_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file (type pdf)
+<use thesis_files/figure-latex/unnamed-chunk-17-1.pdf>
+Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-17-1.pdf  used on input line 1142.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<thesis_files/figure-latex/unnamed-chunk-16-2.pdf, id=479, 469.755pt x 325.215pt>
-File: thesis_files/figure-latex/unnamed-chunk-16-2.pdf Graphic file (type pdf)
-<use thesis_files/figure-latex/unnamed-chunk-16-2.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-16-2.pdf  used on input line 1144.
+<thesis_files/figure-latex/unnamed-chunk-17-2.pdf, id=479, 469.755pt x 325.215pt>
+File: thesis_files/figure-latex/unnamed-chunk-17-2.pdf Graphic file (type pdf)
+<use thesis_files/figure-latex/unnamed-chunk-17-2.pdf>
+Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-17-2.pdf  used on input line 1142.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Overfull \hbox (53.75868pt too wide) in paragraph at lines 1144--1145
+Overfull \hbox (53.75868pt too wide) in paragraph at lines 1142--1143
 [][]
  []
 
 
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1144--1145
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1142--1143
 [] 
  []
 
@@ -1176,27 +1176,27 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [27]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[28 <./thesis_files/figure-latex/unnamed-chunk-16-1.pdf>]
+[28 <./thesis_files/figure-latex/unnamed-chunk-17-1.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[29 <./thesis_files/figure-latex/unnamed-chunk-16-2.pdf>]
-<thesis_files/figure-latex/unnamed-chunk-18-1.pdf, id=506, 469.755pt x 325.215pt>
-File: thesis_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (type pdf)
-<use thesis_files/figure-latex/unnamed-chunk-18-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-18-1.pdf  used on input line 1206.
+[29 <./thesis_files/figure-latex/unnamed-chunk-17-2.pdf>]
+<thesis_files/figure-latex/unnamed-chunk-19-1.pdf, id=506, 469.755pt x 325.215pt>
+File: thesis_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (type pdf)
+<use thesis_files/figure-latex/unnamed-chunk-19-1.pdf>
+Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-19-1.pdf  used on input line 1204.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<thesis_files/figure-latex/unnamed-chunk-18-2.pdf, id=507, 469.755pt x 325.215pt>
-File: thesis_files/figure-latex/unnamed-chunk-18-2.pdf Graphic file (type pdf)
-<use thesis_files/figure-latex/unnamed-chunk-18-2.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-18-2.pdf  used on input line 1206.
+<thesis_files/figure-latex/unnamed-chunk-19-2.pdf, id=507, 469.755pt x 325.215pt>
+File: thesis_files/figure-latex/unnamed-chunk-19-2.pdf Graphic file (type pdf)
+<use thesis_files/figure-latex/unnamed-chunk-19-2.pdf>
+Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-19-2.pdf  used on input line 1204.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Overfull \hbox (53.75868pt too wide) in paragraph at lines 1206--1208
+Overfull \hbox (53.75868pt too wide) in paragraph at lines 1204--1206
 [][]
  []
 
 
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1206--1208
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1204--1206
 []
  []
 
@@ -1206,84 +1206,84 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [30]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[31 <./thesis_files/figure-latex/unnamed-chunk-18-1.pdf>]
-<thesis_files/figure-latex/unnamed-chunk-19-1.pdf, id=523, 469.755pt x 325.215pt>
-File: thesis_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (type pdf)
-<use thesis_files/figure-latex/unnamed-chunk-19-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-19-1.pdf  used on input line 1209.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<thesis_files/figure-latex/unnamed-chunk-19-2.pdf, id=524, 469.755pt x 325.215pt>
-File: thesis_files/figure-latex/unnamed-chunk-19-2.pdf Graphic file (type pdf)
-<use thesis_files/figure-latex/unnamed-chunk-19-2.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-19-2.pdf  used on input line 1209.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-Overfull \hbox (53.75868pt too wide) in paragraph at lines 1209--1210
-[][]
- []
-
-
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1209--1210
-[] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-[32 <./thesis_files/figure-latex/unnamed-chunk-18-2.pdf>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-[33 <./thesis_files/figure-latex/unnamed-chunk-19-1.pdf>]
-<thesis_files/figure-latex/unnamed-chunk-20-1.pdf, id=543, 469.755pt x 325.215pt>
+[31 <./thesis_files/figure-latex/unnamed-chunk-19-1.pdf>]
+<thesis_files/figure-latex/unnamed-chunk-20-1.pdf, id=523, 469.755pt x 325.215pt>
 File: thesis_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/unnamed-chunk-20-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-20-1.pdf  used on input line 1216.
+Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-20-1.pdf  used on input line 1207.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<thesis_files/figure-latex/unnamed-chunk-20-2.pdf, id=544, 469.755pt x 325.215pt>
+<thesis_files/figure-latex/unnamed-chunk-20-2.pdf, id=524, 469.755pt x 325.215pt>
 File: thesis_files/figure-latex/unnamed-chunk-20-2.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/unnamed-chunk-20-2.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-20-2.pdf  used on input line 1216.
+Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-20-2.pdf  used on input line 1207.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Overfull \hbox (53.75868pt too wide) in paragraph at lines 1216--1217
+Overfull \hbox (53.75868pt too wide) in paragraph at lines 1207--1208
 [][]
  []
 
 
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1216--1217
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1207--1208
 [] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[34 <./thesis_files/figure-latex/unnamed-chunk-19-2.pdf>]
+[32 <./thesis_files/figure-latex/unnamed-chunk-19-2.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[35 <./thesis_files/figure-latex/unnamed-chunk-20-1.pdf>] [36 <./thesis_files/figure-latex/unnamed-chunk-20-2.pdf>]
+[33 <./thesis_files/figure-latex/unnamed-chunk-20-1.pdf>]
+<thesis_files/figure-latex/unnamed-chunk-21-1.pdf, id=543, 469.755pt x 325.215pt>
+File: thesis_files/figure-latex/unnamed-chunk-21-1.pdf Graphic file (type pdf)
+<use thesis_files/figure-latex/unnamed-chunk-21-1.pdf>
+Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-21-1.pdf  used on input line 1214.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<thesis_files/figure-latex/unnamed-chunk-21-2.pdf, id=544, 469.755pt x 325.215pt>
+File: thesis_files/figure-latex/unnamed-chunk-21-2.pdf Graphic file (type pdf)
+<use thesis_files/figure-latex/unnamed-chunk-21-2.pdf>
+Package pdftex.def Info: thesis_files/figure-latex/unnamed-chunk-21-2.pdf  used on input line 1214.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+
+Overfull \hbox (53.75868pt too wide) in paragraph at lines 1214--1215
+[][]
+ []
+
+
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1214--1215
+[] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[34 <./thesis_files/figure-latex/unnamed-chunk-20-2.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[35 <./thesis_files/figure-latex/unnamed-chunk-21-1.pdf>] [36 <./thesis_files/figure-latex/unnamed-chunk-21-2.pdf>]
 Chapter 3.
 
-Package xcolor Warning: Incompatible color definition on input line 1227.
+Package xcolor Warning: Incompatible color definition on input line 1225.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1231.
+Package xcolor Warning: Incompatible color definition on input line 1229.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1231.
+Package xcolor Warning: Incompatible color definition on input line 1229.
 
 <figure/reed.jpg, id=576, 250.9375pt x 251.94125pt>
 File: figure/reed.jpg Graphic file (type jpg)
 <use figure/reed.jpg>
-Package pdftex.def Info: figure/reed.jpg  used on input line 1234.
+Package pdftex.def Info: figure/reed.jpg  used on input line 1232.
 (pdftex.def)             Requested size: 86.72267pt x 87.06975pt.
 [37
 
  <./figure/reed.jpg>] [38]
 
-LaTeX Warning: Reference `rmd-basics' on page 39 undefined on input line 1244.
+LaTeX Warning: Reference `rmd-basics' on page 39 undefined on input line 1242.
 
 
-LaTeX Warning: Reference `fig:delaysboxplot' on page 39 undefined on input line 1246.
+LaTeX Warning: Reference `fig:delaysboxplot' on page 39 undefined on input line 1244.
 
 [39
 
@@ -1291,18 +1291,18 @@ LaTeX Warning: Reference `fig:delaysboxplot' on page 39 undefined on input line 
 <figure/subdivision.pdf, id=594, 220.825pt x 89.33376pt>
 File: figure/subdivision.pdf Graphic file (type pdf)
 <use figure/subdivision.pdf>
-Package pdftex.def Info: figure/subdivision.pdf  used on input line 1254.
+Package pdftex.def Info: figure/subdivision.pdf  used on input line 1252.
 (pdftex.def)             Requested size: 165.61833pt x 67.00014pt.
 File: figure/subdivision.pdf Graphic file (type pdf)
 <use figure/subdivision.pdf>
-Package pdftex.def Info: figure/subdivision.pdf  used on input line 1262.
+Package pdftex.def Info: figure/subdivision.pdf  used on input line 1260.
 (pdftex.def)             Requested size: 220.82445pt x 89.33353pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 1269.
+(Font)              <10> on input line 1267.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 1269.
+(Font)              <7> on input line 1267.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 1269.
+(Font)              <5> on input line 1267.
 [40
 
  <./figure/subdivision.pdf>] [41] [42] [43
@@ -1312,23 +1312,23 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 ]
 Appendix A.
 
-Package xcolor Warning: Incompatible color definition on input line 1323.
+Package xcolor Warning: Incompatible color definition on input line 1321.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1359.
+Package xcolor Warning: Incompatible color definition on input line 1357.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1359.
+Package xcolor Warning: Incompatible color definition on input line 1357.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1359.
+Package xcolor Warning: Incompatible color definition on input line 1357.
 
 [45]
 
-Package xcolor Warning: Incompatible color definition on input line 1359.
+Package xcolor Warning: Incompatible color definition on input line 1357.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1359.
+Package xcolor Warning: Incompatible color definition on input line 1357.
 
 [46]
 Appendix B.
@@ -1354,7 +1354,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  132i,12n,132p,1599b,1522s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}<c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on thesis.pdf (70 pages, 469722 bytes).
+Output written on thesis.pdf (70 pages, 469660 bytes).
 PDF statistics:
  823 PDF objects out of 1000 (max. 8388607)
  690 compressed objects within 7 object streams
