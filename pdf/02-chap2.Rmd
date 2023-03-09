@@ -77,8 +77,8 @@ harmonic_mean <- function(corpus){
   num_files <-length(unique(corpus$File.Name))
   means <- corpus %>% 
     mutate(
-      comp_recip = 1/Compression.Time,
-      decomp_recip = 1/Decompression.Time
+      comp_recip = 1/max(Compression.Time,1),
+      decomp_recip = 1/max(Decompression.Time,1)
     ) %>% 
     summarize(
       harmonic_mean_comp= num_files/sum(comp_recip),
@@ -100,13 +100,17 @@ stats_csv <- function(filename){
 }
 
 
-compare_coprora <- function(array){
+compare_coprora <- function(array, per_corpus = FALSE){
 	df <- data.frame()
   ord <- 1
 	for(corpus_pair in array){
 		cp1 <- read.csv(corpus_pair[1])
 		cp2 <- read.csv(corpus_pair[2])
+				cbind(corpus = 1, cp1)
+		cp1["corpus"] <- 1
+		cp2["corpus"] <- 2
 		comb <- bind_rows(cp1, cp2)
+
 		means <- harmonic_mean(comb)
 
 		comb<- comb %>% summarize(
@@ -114,21 +118,25 @@ compare_coprora <- function(array){
 		  hm_comp = means$harmonic_mean_comp,
 		  description = corpus_pair[3],
 		  order = ord,
+		  corpus = corpus
 		)
 		ord<- ord+1
 		df <- bind_rows(comb, df)
 	}
 
-
   plot1<- df %>% 
     ggplot(aes(x = reorder(description, order), y = comp_throughput, fill = description))+
     geom_col()+
-    labs(x="Milestone", y = "Throughput(bytes/ms)")
+    {if(per_corpus)facet_wrap(~corpus)}+
+    labs(x="Milestone", y = "Throughput(bytes/ms)")+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
   print(plot1)
   plot2 <- df %>% 
     ggplot(aes(x = reorder(description, order), y = hm_comp, fill = description))+
     geom_col()+
-    labs(x="Milestone", y = "Mean Compression Time (ms)")	
+    {if(per_corpus)facet_wrap(~corpus)}+
+    labs(x="Milestone", y = "Mean Compression Time (ms)")+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
   print(plot2)
 }
 
@@ -629,3 +637,25 @@ compare_coprora(list(
 
 ```
 
+## Optimizing Direct Map Even more
+
+
+Since the Direct map dictionary was a standout in performance, we decided to focus on optimizing it even further.
+
+### Get Longest
+
+Our dictionary data structures all have a `get_longest_in_dict` function. This function does the boring work of iterating through the input from the start, checking if each substring is in the dictionary. 
+
+Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by starting from the bottom. 
+
+```{r, echo = F}
+compare_coprora(list(
+  c('data/stats/ddict/corpus_1_ddictbinarysearch_e196a55.csv', 'data/stats/ddict/corpus_2_ddictbinarysearch_e196a55.csv', 'Binary search'),
+  c('data/stats/ddict/corpus_1_ddictbinarysearchflyindex_94305a5.csv', 'data/stats/ddict/corpus_2_ddictbinarysearchflyindex_94305a5.csv', 'Binary Fly Index'),
+  c('data/stats/ddict/corpus_1_ddictloopdownflyindex_7ae114e.csv', 'data/stats/ddict/corpus_2_ddictloopdownflyindex_7ae114e.csv', 'Loop Down Fly Index'),
+  c('data/stats/ddict/corpus_1_ddictloopdown_2d0c8b8.csv', 'data/stats/ddict/corpus_2_ddictloopdown_2d0c8b8.csv', 'Loop Down'),
+  c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Direct Map Dictionary')
+), TRUE)
+
+
+```

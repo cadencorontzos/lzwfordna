@@ -146,6 +146,37 @@ Here is a simple example. We may be sending messages with the characters {'A', '
 
 When we compress, we start at the beginning of the message and scan through.
 
+Here is some example pseudo code on what this algorithm would look like.
+
+```
+LZW(input):
+
+	Dictionary dictionary;
+	dictionary.inititalize; // initialzie the dictionary with single characters
+
+	codeword;
+	output;
+
+	currentBlock = first character of input;
+	for every nextCharacter in the input:
+
+		currentBlock.add(nextCharacter);
+
+		if currentBlock and the nextCharacter is in dictionary:
+			currentBlock.add(nextCharacter);
+			
+		else:
+			code = dictionary.lookup(currentBlock);
+			output(code);
+			output(nextCharacter);
+			dictionary.add(currentBlock + nextCharacter, map it to codeword);
+
+			codeword = codeword + 1;
+
+
+	output(special end of file character);
+
+```
 
 **TODO**: Finish example, maybe add some pseudo code as well
 

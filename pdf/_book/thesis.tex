@@ -418,6 +418,35 @@ Here is a simple example. We may be sending messages with the characters \{`A', 
 
 When we compress, we start at the beginning of the message and scan through.
 
+Here is some example pseudo code on what this algorithm would look like.
+\begin{verbatim}
+LZW(input):
+
+    Dictionary dictionary;
+    dictionary.inititalize; // initialzie the dictionary with single characters
+
+    codeword;
+    output;
+
+    currentBlock = first character of input;
+    for every nextCharacter in the input:
+
+        currentBlock.add(nextCharacter);
+
+        if currentBlock and the nextCharacter is in dictionary:
+            currentBlock.add(nextCharacter);
+            
+        else:
+            code = dictionary.lookup(currentBlock);
+            output(code);
+            output(nextCharacter);
+            dictionary.add(currentBlock + nextCharacter, map it to codeword);
+
+            codeword = codeword + 1;
+
+
+    output(special end of file character);
+\end{verbatim}
 \textbf{TODO}: Finish example, maybe add some pseudo code as well
 
 \hypertarget{optimizing-lzw-approach}{%
@@ -1214,6 +1243,20 @@ Here is a comparison of the Multiple Dictionaries versus one standard dictionary
 Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
 
 \includegraphics{thesis_files/figure-latex/unnamed-chunk-21-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-21-2.pdf}
+
+\hypertarget{optimizing-direct-map-even-more}{%
+\section{Optimizing Direct Map Even more}\label{optimizing-direct-map-even-more}}
+
+Since the Direct map dictionary was a standout in performance, we decided to focus on optimizing it even further.
+
+\hypertarget{get-longest}{%
+\subsection{Get Longest}\label{get-longest}}
+
+Our dictionary data structures all have a \texttt{get\_longest\_in\_dict} function. This function does the boring work of iterating through the input from the start, checking if each substring is in the dictionary.
+
+Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by starting from the bottom.
+
+\includegraphics{thesis_files/figure-latex/unnamed-chunk-22-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-22-2.pdf}
 
 \hypertarget{ref-labels}{%
 \chapter{Graphics, References, and Labels}\label{ref-labels}}
