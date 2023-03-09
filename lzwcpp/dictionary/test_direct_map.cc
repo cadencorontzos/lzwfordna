@@ -145,7 +145,7 @@ void test_find_longest_looping_up(){
 	std::string input = "ACTG";
 
 	int ret;
-	ret = f.find_longest_looping_up(input.c_str(), input.c_str()+ input.length(), 0);
+	ret = f.find_longest_looping_up(input.c_str(), input.c_str()+ input.length(), 0,0);
 	std::string output = input.substr(0,ret);
 	assert(output == "ACT");
 	assert(f.code_of(output.c_str(), 3) == 3);
