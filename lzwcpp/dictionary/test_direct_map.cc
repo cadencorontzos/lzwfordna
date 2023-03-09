@@ -123,9 +123,9 @@ void test_find_longest_looping_down(){
 
 	// for this input, "ACT" should be the longest run in the dict
 	std::string input = "ACTG";
-
+	int index = (0<<6) + (2 << 4) + (1<<2) + 3;
 	int ret;
-	ret = f.find_longest_looping_down(input.c_str(), 3);
+	ret = f.find_longest_looping_down(input.c_str(), 4, index);
 	std::string output = input.substr(0,ret);
 	assert(output == "AC");
 	assert(f.code_of(output.c_str(), 2) == 2);

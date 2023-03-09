@@ -126,16 +126,17 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 
 		// Assumes we already have the starting characters in the dictionary
 		// should never return 0
-		int find_longest_looping_down(const char* input, int start){
+		int find_longest_looping_down(const char* input, int start, index_type index){
 			int length = start;
 			int entry;
 			while(length > 0) {
-				entry = code_of(input, length);
+				entry = code_of_manual(input, length, index);
 				// if entry is non zero, it means we have seen that string before
 				if (entry != 0){
 					return length;
 				}
 				length--;
+				index = (index >> 2);
 			}
 			return length;
 		}
@@ -176,7 +177,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			int index = map_str(input, MAX_STRING_LENGTH);
 			int entry = code_of_manual(input, MAX_STRING_LENGTH, index);
 			if(entry == 0){
-				return find_longest_looping_down(input, MAX_STRING_LENGTH);
+				return find_longest_looping_down(input, MAX_STRING_LENGTH, index);
 			}
 			return find_longest_looping_up(input, end_of_input, MAX_STRING_LENGTH, index);
 
