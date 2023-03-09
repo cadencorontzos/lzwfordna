@@ -168,8 +168,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	
 		int find_longest_in_dict(const char* input, const char* end_of_input) override{
 			
-			// start at max and binary search
-			// if we don't have enough input left, loop up from 0
+			// start at max and loop up or down
 			if(input+MAX_STRING_LENGTH > end_of_input){
 				return find_longest_looping_up(input, end_of_input, 0, 0);
 			}
@@ -177,9 +176,23 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			int index = map_str(input, MAX_STRING_LENGTH);
 			int entry = code_of_manual(input, MAX_STRING_LENGTH, index);
 			if(entry == 0){
-				return find_longest_binary_search(input);
+				return find_longest_looping_down(input, MAX_STRING_LENGTH);
 			}
 			return find_longest_looping_up(input, end_of_input, MAX_STRING_LENGTH, index);
+
+			// start at max and binary search
+			//
+			// if we don't have enough input left, loop up from 0
+			/* if(input+MAX_STRING_LENGTH > end_of_input){ */
+			/* 	return find_longest_looping_up(input, end_of_input, 0, 0); */
+			/* } */
+			/* // check the longest possible string */
+			/* int index = map_str(input, MAX_STRING_LENGTH); */
+			/* int entry = code_of_manual(input, MAX_STRING_LENGTH, index); */
+			/* if(entry == 0){ */
+			/* 	return find_longest_binary_search(input); */
+			/* } */
+			/* return find_longest_looping_up(input, end_of_input, MAX_STRING_LENGTH, index); */
 			
 
 			// loop up from 0 
