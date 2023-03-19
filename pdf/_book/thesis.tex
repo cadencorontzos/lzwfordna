@@ -320,16 +320,12 @@ Memory usage is closely tied with runtime when it comes to compression algorithm
 \hypertarget{lossy}{%
 \subsection{Lossy}\label{lossy}}
 
-Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example
-
-\textbf{TODO}: Continue examples
+Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another exampleis MP3 auido files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorables for small devices like MP3 players and cellphones.
 
 \hypertarget{lossless}{%
 \subsection{Lossless}\label{lossless}}
 
-Lossless compression is the compression of data with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Examples of lossless compression algoritms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
-
-\textbf{TODO}: Elaborate more here
+Lossless compression is the compression of dat a with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be perserved, like scientific data, archiving (think a .zip folder), and high end audio recording.Examples of lossless compression algoritms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
 
 \hypertarget{examples-of-compression-algorithms}{%
 \section{Examples of Compression Algorithms}\label{examples-of-compression-algorithms}}
@@ -472,6 +468,11 @@ Most compression papers make use of a Corpus, which is a collection of files to 
 
 In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications (Grumbach \& Tahi, 1994).
 \begin{longtable}[]{@{}cc@{}}
+\caption{\label{tab:corpus1filesfig}Corpus 1}\tabularnewline
+\toprule()
+Name & Size.bytes. \\
+\midrule()
+\endfirsthead
 \toprule()
 Name & Size.bytes. \\
 \midrule()
@@ -491,6 +492,11 @@ vaccg & 191737 \\
 \end{longtable}
 Another, newer paper aimed to create a corpus specifically for compressing DNA (Pratas \& Pinho, 2018). They put together a corpus of DNA sequences for this purpose, as summarized below. Since the papers publishing, it has been cited by several DNA compression papers.
 \begin{longtable}[]{@{}cc@{}}
+\caption{\label{tab:corpus2filesfig}Corpus 2}\tabularnewline
+\toprule()
+Name & Size.bytes. \\
+\midrule()
+\endfirsthead
 \toprule()
 Name & Size.bytes. \\
 \midrule()
@@ -639,9 +645,11 @@ So when the decoded is reading and encounters the EOF codeword, it can look at t
 
 At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora.
 \begin{table}[H]
+
+\caption{\label{tab:fixedeofstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -662,9 +670,11 @@ DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 8 & 3\\
 \end{tabular}}
 \end{table}
 \begin{table}[H]
+
+\caption{\label{tab:fixedeofstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -744,9 +754,11 @@ Despite these issues, this change was still worth making, if not to save time th
 
 Here are the runs after this optimization.
 \begin{table}[H]
+
+\caption{\label{tab:usingconstantsstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -767,9 +779,11 @@ DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 10 & 3\\
 \end{tabular}}
 \end{table}
 \begin{table}[H]
+
+\caption{\label{tab:usingconstantsstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -836,9 +850,11 @@ If I just concatenate them and save the output into a new string, that will save
 \end{Shaded}
 Here are the statistics on the version of the algorithm after this change.
 \begin{table}[H]
+
+\caption{\label{tab:stringconcatstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -859,9 +875,11 @@ DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 8 & 3\\
 \end{tabular}}
 \end{table}
 \begin{table}[H]
+
+\caption{\label{tab:stringconcatstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -950,9 +968,11 @@ We can save that lookup, like so.
 \end{Shaded}
 Here are the stats of the version of the algorithm after this change.
 \begin{table}[H]
+
+\caption{\label{tab:dictaccessesstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -973,9 +993,11 @@ DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 8 & 3\\
 \end{tabular}}
 \end{table}
 \begin{table}[H]
+
+\caption{\label{tab:dictaccessesstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -1008,9 +1030,11 @@ When reading a byte stream of the file, the file may not be in memory the way we
 
 \textbf{TODO}: Need to talk about getting rid of string concatenation at some point.
 \begin{table}[H]
+
+\caption{\label{tab:charstarstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -1031,9 +1055,11 @@ DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 9 & 2\\
 \end{tabular}}
 \end{table}
 \begin{table}[H]
+
+\caption{\label{tab:charstarstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -1057,8 +1083,11 @@ DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 7 & 1\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-12-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-12-2.pdf}
-
+\begin{figure}
+\centering
+\includegraphics{thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf}
+\caption{\label{fig:comparecorporaoptimizingfig}Comparison of the performance of the different milestones}
+\end{figure}
 \hypertarget{trying-different-dictionaries}{%
 \section{Trying Different Dictionaries}\label{trying-different-dictionaries}}
 
@@ -1073,9 +1102,11 @@ In our analysis of the two corpora, we found some interesting statistics in the 
 
 Below is a table which shows stats on the runs lengths of the ``runs'' of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
 \begin{table}[H]
+
+\caption{\label{tab:runstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{rrrr}
+\begin{tabular}[t]{rrrr}
 \toprule
 average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
 \midrule
@@ -1084,9 +1115,11 @@ average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_len
 \end{tabular}}
 \end{table}
 \begin{table}[H]
+
+\caption{\label{tab:runstatsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{rrrr}
+\begin{tabular}[t]{rrrr}
 \toprule
 average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
 \midrule
@@ -1096,9 +1129,11 @@ average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_len
 \end{table}
 And here is the combined stats of both copora, along with a histogram of all the runs.
 \begin{table}[H]
+
+\caption{\label{tab:bothrunsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{rrrrr}
+\begin{tabular}[t]{rrrrr}
 \toprule
 X & average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
 \midrule
@@ -1106,8 +1141,11 @@ X & average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\
 \bottomrule
 \end{tabular}}
 \end{table}
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-15-1.pdf}
-
+\begin{figure}
+\centering
+\includegraphics{thesis_files/figure-latex/allrunshistfig-1.pdf}
+\caption{\label{fig:allrunshistfig}A histogram showing the lengths of runs for both copora.}
+\end{figure}
 Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 20.
 
 To achieve this, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters (`A', `C', `T', and `G'), we can represent the characters with two bits. So for a length \texttt{n} string, we can represent it with \texttt{2n} bits.
@@ -1119,9 +1157,11 @@ For each strings size 1 to n , we have an array with enough slots for every poss
 
 Here is the data for this version of the dictionary of length 10.
 \begin{table}[H]
+
+\caption{\label{tab:directmaplength10statsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -1142,9 +1182,11 @@ DNACorpus1/humhbb & 73308 & 32681 & 2.243 & 1 & 2\\
 \end{tabular}}
 \end{table}
 \begin{table}[H]
+
+\caption{\label{tab:directmaplength10statsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -1169,9 +1211,11 @@ DNACorpus2/AgPh & 43970 & 20885 & 2.105 & 1 & 1\\
 \end{tabular}}
 \end{table}
 Here is a comparison for different max string lengths
-
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-17-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-17-2.pdf}
-
+\begin{figure}
+\centering
+\includegraphics{thesis_files/figure-latex/directmaplenthcompfig-1.pdf}
+\caption{\label{fig:directmaplenthcompfig}Comparing different max lengths for Direct Map}
+\end{figure}
 \textbf{TODO}: Have data for multiple different direct map sizes. Also talk about the fixed codeword size and what happens when we run out.
 
 \hypertarget{multiple-indexed-dictionaries}{%
@@ -1183,9 +1227,11 @@ Similar to the Direct Mapped approach, we use dictionaries for each string size 
 
 Here are the results for this dictionary.
 \begin{table}[H]
+
+\caption{\label{tab:multdictlength10statsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -1206,9 +1252,11 @@ DNACorpus1/humhbb & 73308 & 27918 & 2.626 & 7 & 2\\
 \end{tabular}}
 \end{table}
 \begin{table}[H]
+
+\caption{\label{tab:multdictlength10statsfig}F}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrr}
+\begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
@@ -1232,17 +1280,19 @@ DNACorpus2/AgPh & 43970 & 17258 & 2.548 & 4 & 1\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-19-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-19-2.pdf}
+\includegraphics{thesis_files/figure-latex/multdictlengthcompfig-1.pdf}
 Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
-
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-20-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-20-2.pdf}
-
+\begin{figure}
+\centering
+\includegraphics{thesis_files/figure-latex/multvsonedictfig-1.pdf}
+\caption{\label{fig:multvsonedictfig}Comparing one Dict to Mult Dict}
+\end{figure}
 \hypertarget{comparison}{%
 \subsection{Comparison}\label{comparison}}
 
 Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
 
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-21-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-21-2.pdf}
+\includegraphics{thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf}
 
 \hypertarget{optimizing-direct-map-even-more}{%
 \section{Optimizing Direct Map Even more}\label{optimizing-direct-map-even-more}}
@@ -1256,8 +1306,12 @@ Our dictionary data structures all have a \texttt{get\_longest\_in\_dict} functi
 
 Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by starting from the bottom.
 
-\includegraphics{thesis_files/figure-latex/unnamed-chunk-22-1.pdf} \includegraphics{thesis_files/figure-latex/unnamed-chunk-22-2.pdf}
-
+Another strategy would be to start from the maximum string length of the dictionary. We can check if the next string of the max length in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down or binary search down from the max. Here is a table showing the performance of these different strategies.
+\begin{figure}
+\centering
+\includegraphics{thesis_files/figure-latex/findlongestfrommaxfig-1.pdf}
+\caption{\label{fig:findlongestfrommaxfig}foo}
+\end{figure}
 \hypertarget{ref-labels}{%
 \chapter{Graphics, References, and Labels}\label{ref-labels}}
 

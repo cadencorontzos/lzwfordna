@@ -1,4 +1,4 @@
-```{r include_packages_2, include = FALSE}
+```{r includepackages2, include = FALSE}
 # This chunk ensures that the thesisdown package is
 # installed and loaded. This thesisdown package includes
 # the template files for the thesis and also two functions
@@ -51,6 +51,20 @@ if (!require(bookdown)) {
     )
   }
 }
+
+if (!require(patchwork)) {
+  if (params$`Install needed packages for {thesisdown}`) {
+    install.packages("patchwork", repos = "https://cran.rstudio.com")
+  } else {
+    stop(
+      paste(
+        'You need to run install.packages("patchwork")',
+        "first in the Console."
+      )
+    )
+  }
+}
+
 if (!require(thesisdown)) {
   if (params$`Install needed packages for {thesisdown}`) {
     remotes::install_github("ismayc/thesisdown")
@@ -69,10 +83,11 @@ library(dplyr)
 library(ggplot2)
 library(knitr)
 library(kableExtra)
+library(patchwork)
 ```
 
 
-```{r, echo = F}
+```{r harmonicmeanfunc, echo = F}
 harmonic_mean <- function(corpus){
   num_files <-length(unique(corpus$File.Name))
   means <- corpus %>% 
@@ -87,19 +102,24 @@ harmonic_mean <- function(corpus){
   return(means)
 }
 
+```
 
-csv_to_table <- function(filename){
+```{r csvtotablefunc, echo = F}
+csv_to_table <- function(filename, caption = "f"){
 df <- read.csv(filename)
-knitr::kable(df, "markdown", align= 'c')
+knitr::kable(df, "markdown", align= 'c', caption = caption)
 }
+```
 
+```{r statscsvfunc, echo = F}
 stats_csv <- function(filename){
   df <- read.csv(filename)
-  knitr::kable(df, format="latex", booktabs=TRUE) %>% 
+  knitr::kable(df, format="latex", booktabs=TRUE, caption = "F") %>% 
   kable_styling(latex_options=c("scale_down", "HOLD_position"))
 }
+```
 
-
+```{r comparecorporafunc, echo = F}
 compare_coprora <- function(array, per_corpus = FALSE){
 	df <- data.frame()
   ord <- 1
@@ -107,8 +127,8 @@ compare_coprora <- function(array, per_corpus = FALSE){
 		cp1 <- read.csv(corpus_pair[1])
 		cp2 <- read.csv(corpus_pair[2])
 				cbind(corpus = 1, cp1)
-		cp1["corpus"] <- 1
-		cp2["corpus"] <- 2
+		cp1["corpus"] <- "Corpus 1"
+		cp2["corpus"] <- "Corpus 2"
 		comb <- bind_rows(cp1, cp2)
 
 		means <- harmonic_mean(comb)
@@ -126,22 +146,21 @@ compare_coprora <- function(array, per_corpus = FALSE){
 
   plot1<- df %>% 
     ggplot(aes(x = reorder(description, order), y = comp_throughput, fill = description))+
-    geom_col()+
+    geom_col(show.legend = F)+
     {if(per_corpus)facet_wrap(~corpus)}+
-    labs(x="Milestone", y = "Throughput(bytes/ms)")+
-    theme(axis.text.x = element_text(angle = 90, hjust = 1))
-  print(plot1)
+    labs(x="Milestone", y = "Throughput(bytes/ms)", title = "Throughput")+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
   plot2 <- df %>% 
     ggplot(aes(x = reorder(description, order), y = hm_comp, fill = description))+
-    geom_col()+
+    geom_col(show.legend = F)+
     {if(per_corpus)facet_wrap(~corpus)}+
-    labs(x="Milestone", y = "Mean Compression Time (ms)")+
-    theme(axis.text.x = element_text(angle = 90, hjust = 1))
-  print(plot2)
+    labs(x="Milestone", y = "Mean Compression Time (ms)", title = "Average Compression Time")+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  plot1/plot2
 }
+```
 
-
-
+```{r comparemaxstringlengthsfunc, echo = F}
 compare_max_string_lengths <- function(array){
 	df <- data.frame()
 	for(corpus_pair in array){
@@ -161,13 +180,13 @@ compare_max_string_lengths <- function(array){
     ggplot(aes(x = size, y = comp_throughput, fill = size))+
     geom_col()+
     labs(x="Max String Length", y = "Throughput(bytes/ms)")
-  print(plot1)
   plot2 <- df %>% 
     ggplot(aes(x = size, y = hm_comp, fill = size))+
     geom_col()+
     labs(x="Max String Length", y = "Mean Compression Time (ms)")	
-  print(plot2)
+  plot1/plot2
 }
+
 ```
 
 # Optimizing LZW: Approach
@@ -190,14 +209,14 @@ Most compression papers make use of a Corpus, which is a collection of files to 
 
 In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications [@grumbach].
 
-```{r, echo = FALSE} 
-csv_to_table('data/corpus_1_summary.csv')
+```{r corpus1filesfig, warnings= F, messages = F, fig.cap = "Corpus 1", fig.height = 7, echo = FALSE} 
+csv_to_table('data/corpus_1_summary.csv', "Corpus 1")
 ```
 
 Another, newer paper aimed to create a corpus specifically for compressing DNA [@prataspinho]. They put together a corpus of DNA sequences for this purpose, as summarized below. Since the papers publishing, it has been cited by several DNA compression papers.
 
-```{r, echo = FALSE}
-csv_to_table('data/corpus_2_summary.csv')
+```{r corpus2filesfig, warnings= F, messages = F, fig.cap = "Corpus 2", fig.height = 7, echo = FALSE}
+csv_to_table('data/corpus_2_summary.csv', "Corpus 2")
 ```
 This particular dataset is publicly available at this [link](https://tinyurl.com/DNAcorpus).
 
@@ -320,7 +339,7 @@ At this point, there was a working implementation that was able to compress and 
 <!---
 9066eef
 -->
-```{r, echo = F}
+```{r fixedeofstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corpora after fixing EOF.", fig.height = 7,  echo = F}
 stats_csv('data/stats/corpus_1_stats_fixedeof_9066eef.csv')
 stats_csv('data/stats/corpus_2_stats_fixedeof_9066eef.csv')
 ```
@@ -380,7 +399,7 @@ Despite these issues, this change was still worth making, if not to save time th
 
 Here are the runs after this optimization.
 
-```{r, echo = F}
+```{r usingconstantsstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corproa after switching some constants", fig.height = 7, echo = F}
 stats_csv('data/stats/corpus_1_usingconstants_2c3f782.csv')
 stats_csv('data/stats/corpus_2_usingconstants_2c3f782.csv')
 ```
@@ -431,7 +450,7 @@ If I just concatenate them and save the output into a new string, that will save
 
 Here are the statistics on the version of the algorithm after this change.
 
-```{r, echo = F}
+```{r stringconcatstatsfig, warnings= F, messages = F, fig.cap = "Stats after eliminating excess string concatenations", fig.height = 7, echo = F}
 
 stats_csv('data/stats/corpus_1_stringconcat_8963f64.csv')
 stats_csv('data/stats/corpus_2_stringconcat_8963f64.csv')
@@ -504,7 +523,7 @@ We can save that lookup, like so.
 
 Here are the stats of the version of the algorithm after this change.
 
-```{r, echo = F}
+```{r dictaccessesstatsfig, warnings= F, messages = F, fig.cap = "Stats after reducing dictionary accesses", fig.height = 7, echo = F}
 stats_csv('data/stats/corpus_1_dictaccesses_34bf4e9.csv')
 stats_csv('data/stats/corpus_2_dictaccesses_34bf4e9.csv')
 ```
@@ -520,11 +539,11 @@ When reading a byte stream of the file, the file may not be in memory the way we
 
 **TODO**: Need to talk about getting rid of string concatenation at some point.
 
-```{r, echo = F}
+```{r charstarstatsfig, warnings= F, messages = F, fig.cap = "Stats after using character pointer", fig.height = 7, echo = F}
 stats_csv('data/stats/corpus_1_charstar_a12a290.csv')
 stats_csv('data/stats/corpus_2_charstar_a12a290.csv')
 ```
-```{r, echo = F}
+```{r comparecorporaoptimizingfig, warnings= F, messages = F, fig.cap = "Comparison of the performance of the different milestones", fig.height = 7, echo = F}
 compare_coprora(list(
   c('data/stats/corpus_1_stats_fixedeof_9066eef.csv', 'data/stats/corpus_2_stats_fixedeof_9066eef.csv', 'Fixed EOF'),
   c('data/stats/corpus_1_usingconstants_2c3f782.csv', 'data/stats/corpus_2_usingconstants_2c3f782.csv', 'Using constants'),
@@ -545,17 +564,17 @@ In our analysis of the two corpora, we found some interesting statistics in the 
 
 Below is a table which shows stats on the runs lengths of the "runs" of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
 
-```{r, echo = F}
+```{r runstatsfig, warnings= F, messages = F, fig.cap = "The counts for runs of each length", fig.height = 7, echo = F}
 stats_csv('data/corpus_1_run_stats.csv')
 stats_csv('data/corpus_2_run_stats.csv')
 ```
 And here is the combined stats of both copora, along with a histogram of all the runs.
 
-```{r, echo= F}
+```{r bothrunsfig, warnings= F, messages = F, fig.cap =  "Run counts for both corpora", fig.height = 7, echo= F}
 stats_csv('data/corpus_both_run_stats.csv')
 ```
 
-```{r, echo = F}
+```{r allrunshistfig, warnings= F, messages = F, fig.cap = "A histogram showing the lengths of runs for both copora.", fig.height = 7, echo = F}
 all_runs <- read.csv('data/all_corpus_run_counts.csv')
 all_runs %>% 
   ggplot(aes(x=Run.Length, y=count))+
@@ -574,7 +593,7 @@ For each strings size 1 to n , we have an array with enough slots for every poss
 
 Here is the data for this version of the dictionary of length 10.
 
-```{r, echo = F}
+```{r directmaplength10statsfig, warnings= F, messages = F, fig.cap = "Stats for direct map with max length of 10", fig.height = 7, echo = F}
 stats_csv('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv')
 stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv')
 ```
@@ -582,7 +601,7 @@ stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv')
 Here is a comparison for different max string lengths
 
 
-```{r, echo = F}
+```{r directmaplenthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 7, echo = F}
 compare_max_string_lengths(list(
 	c('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv', 'data/stats/directmap/corpus_2_directmap_154fed4_len10.csv', 10),
 	c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 15)
@@ -599,12 +618,12 @@ Similar to the Direct Mapped approach, we use dictionaries for each string size 
 
 Here are the results for this dictionary. 
 
-```{r, echo = F}
+```{r multdictlength10statsfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Multiple Dictionaries", fig.height = 7, echo = F}
 stats_csv('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv')
 stats_csv('data/stats/multdict/corpus_2_multdict_154fed4_len10.csv')
 ```
 
-```{r, echo = F}
+```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 7, echo = F}
 compare_max_string_lengths(list(
 	c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 10),
 	c('data/stats/multdict/corpus_1_multdict_6d73501_len15.csv', 'data/stats/multdict/corpus_2_multdict_6d73501_len15.csv', 15),
@@ -614,7 +633,7 @@ compare_max_string_lengths(list(
 ```
 Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
 
-```{r, echo = F}
+```{r multvsonedictfig, warnings= F, messages = F, fig.cap = "Comparing one Dict to Mult Dict", fig.height = 7, echo = F}
 
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
@@ -627,7 +646,7 @@ compare_coprora(list(
 
 Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
 
-```{r, echo = F}
+```{r dictionarytechniquecompfig, echo = F, fig.height=7}
 
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
@@ -648,7 +667,9 @@ Our dictionary data structures all have a `get_longest_in_dict` function. This f
 
 Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by starting from the bottom. 
 
-```{r, echo = F}
+Another strategy would be to start from the maximum string length of the dictionary. We can check if the next string of the max length in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down or binary search down from the max. Here is a table showing the performance of these different strategies. 
+
+```{r findlongestfrommaxfig, warnings= F, messages = F, fig.cap = "foo", echo = F, fig.height = 10}
 compare_coprora(list(
   c('data/stats/ddict/corpus_1_ddictbinarysearch_e196a55.csv', 'data/stats/ddict/corpus_2_ddictbinarysearch_e196a55.csv', 'Binary search'),
   c('data/stats/ddict/corpus_1_ddictbinarysearchflyindex_94305a5.csv', 'data/stats/ddict/corpus_2_ddictbinarysearchflyindex_94305a5.csv', 'Binary Fly Index'),

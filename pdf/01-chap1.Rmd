@@ -46,15 +46,12 @@ Memory usage is closely tied with runtime when it comes to compression algorithm
 
 ### Lossy
 
-Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example
+Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another exampleis MP3 auido files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorables for small devices like MP3 players and cellphones.
 
-**TODO**: Continue examples
 
 ### Lossless
 
-Lossless compression is the compression of data with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Examples of lossless compression algoritms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
-
-**TODO**: Elaborate more here
+Lossless compression is the compression of dat a with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be perserved, like scientific data, archiving (think a .zip folder), and high end audio recording.Examples of lossless compression algoritms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
 
 ## Examples of Compression Algorithms
 
