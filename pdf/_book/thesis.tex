@@ -646,55 +646,55 @@ So when the decoded is reading and encounters the EOF codeword, it can look at t
 At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora.
 \begin{table}[H]
 
-\caption{\label{tab:fixedeofstatsfig}F}
+\caption{\label{tab:fixedeofstatsfig} Corpus 1 Stats after fixing EOF}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 7 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
 DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 5 & 1\\
-DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 18 & 7\\
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{18} & \cellcolor{gray!6}{7}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 23 & 9\\
-DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 18 & 7\\
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{18} & \cellcolor{gray!6}{7}\\
 \addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 8 & 2\\
-DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 13 & 4\\
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{13} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 4\\
-DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 16 & 6\\
+\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
 \addlinespace
-DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 8 & 3\\
+\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \begin{table}[H]
 
-\caption{\label{tab:fixedeofstatsfig}F}
+\caption{\label{tab:fixedeofstatsfig}Corpus 2 stats after fixing EOF}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 9 & 3\\
+\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{9} & \cellcolor{gray!6}{3}\\
 DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 15034 & 1898\\
-DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 5427 & 781\\
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5427} & \cellcolor{gray!6}{781}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 145 & 40\\
-DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 9790 & 1350\\
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9790} & \cellcolor{gray!6}{1350}\\
 \addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 569 & 121\\
-DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 40810 & 4773\\
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{40810} & \cellcolor{gray!6}{4773}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1761 & 295\\
-DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 445 & 97\\
+\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{445} & \cellcolor{gray!6}{97}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 53818 & 5913\\
 \addlinespace
-DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 141 & 40\\
+\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{141} & \cellcolor{gray!6}{40}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 7190 & 1015\\
-DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 2 & 0\\
+\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1367 & 238\\
-DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 6 & 2\\
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{6} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -755,55 +755,55 @@ Despite these issues, this change was still worth making, if not to save time th
 Here are the runs after this optimization.
 \begin{table}[H]
 
-\caption{\label{tab:usingconstantsstatsfig}F}
+\caption{\label{tab:usingconstantsstatsfig}Corpus 1 Stats after changing constants}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 7 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
 DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 5 & 1\\
-DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 19 & 7\\
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{19} & \cellcolor{gray!6}{7}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 23 & 9\\
-DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 19 & 7\\
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{19} & \cellcolor{gray!6}{7}\\
 \addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 7 & 2\\
-DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 12 & 4\\
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 4\\
-DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 16 & 6\\
+\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
 \addlinespace
-DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 10 & 3\\
+\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{10} & \cellcolor{gray!6}{3}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \begin{table}[H]
 
-\caption{\label{tab:usingconstantsstatsfig}F}
+\caption{\label{tab:usingconstantsstatsfig}Corpus 2 Stats after changing constants}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 9 & 3\\
+\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{9} & \cellcolor{gray!6}{3}\\
 DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14940 & 1880\\
-DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 5401 & 769\\
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5401} & \cellcolor{gray!6}{769}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 144 & 40\\
-DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 9782 & 1344\\
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9782} & \cellcolor{gray!6}{1344}\\
 \addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 569 & 118\\
-DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 41060 & 4787\\
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{41060} & \cellcolor{gray!6}{4787}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1738 & 292\\
-DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 444 & 97\\
+\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{444} & \cellcolor{gray!6}{97}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 53774 & 5854\\
 \addlinespace
-DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 139 & 40\\
+\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{139} & \cellcolor{gray!6}{40}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 7188 & 1009\\
-DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 2 & 1\\
+\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{1}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1352 & 237\\
-DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -851,55 +851,55 @@ If I just concatenate them and save the output into a new string, that will save
 Here are the statistics on the version of the algorithm after this change.
 \begin{table}[H]
 
-\caption{\label{tab:stringconcatstatsfig}F}
+\caption{\label{tab:stringconcatstatsfig}Corpus 1 Stats after reducing string concatenations}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 6 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{6} & \cellcolor{gray!6}{2}\\
 DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 4 & 1\\
-DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 16 & 7\\
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{7}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 20 & 9\\
-DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 17 & 7\\
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{7}\\
 \addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 6 & 2\\
-DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 12 & 4\\
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 10 & 4\\
-DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 15 & 6\\
+\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{15} & \cellcolor{gray!6}{6}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 8 & 2\\
 \addlinespace
-DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 8 & 3\\
+\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \begin{table}[H]
 
-\caption{\label{tab:stringconcatstatsfig}F}
+\caption{\label{tab:stringconcatstatsfig}Corpus 2 Stats after reducing string concatenations}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 8 & 3\\
+\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
 DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14450 & 1876\\
-DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 5186 & 762\\
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5186} & \cellcolor{gray!6}{762}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 129 & 38\\
-DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 9392 & 1329\\
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9392} & \cellcolor{gray!6}{1329}\\
 \addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 525 & 119\\
-DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 39700 & 4741\\
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{39700} & \cellcolor{gray!6}{4741}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1640 & 289\\
-DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 410 & 96\\
+\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{410} & \cellcolor{gray!6}{96}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 51901 & 5848\\
 \addlinespace
-DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 126 & 40\\
+\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{126} & \cellcolor{gray!6}{40}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 6861 & 1001\\
-DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 2 & 0\\
+\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1258 & 234\\
-DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -969,55 +969,55 @@ We can save that lookup, like so.
 Here are the stats of the version of the algorithm after this change.
 \begin{table}[H]
 
-\caption{\label{tab:dictaccessesstatsfig}F}
+\caption{\label{tab:dictaccessesstatsfig}Corpus 1 Stats after reducing dictionary accesses}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 5 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
 DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 4 & 1\\
-DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 17 & 7\\
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{7}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 20 & 9\\
-DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 17 & 7\\
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{7}\\
 \addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 6 & 2\\
-DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 11 & 4\\
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{11} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 3\\
-DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 16 & 6\\
+\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
 \addlinespace
-DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 8 & 3\\
+\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \begin{table}[H]
 
-\caption{\label{tab:dictaccessesstatsfig}F}
+\caption{\label{tab:dictaccessesstatsfig}Corpus 2 Stats after reducing dictionary accesses}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 7 & 3\\
+\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{3}\\
 DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14146 & 1869\\
-DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 5087 & 758\\
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5087} & \cellcolor{gray!6}{758}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 127 & 39\\
-DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 9278 & 1329\\
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9278} & \cellcolor{gray!6}{1329}\\
 \addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 519 & 115\\
-DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 39265 & 4702\\
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{39265} & \cellcolor{gray!6}{4702}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1610 & 290\\
-DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 405 & 97\\
+\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{405} & \cellcolor{gray!6}{97}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 50936 & 5833\\
 \addlinespace
-DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 125 & 39\\
+\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{125} & \cellcolor{gray!6}{39}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 6773 & 999\\
-DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 2 & 0\\
+\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1254 & 231\\
-DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 5 & 2\\
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -1031,55 +1031,55 @@ When reading a byte stream of the file, the file may not be in memory the way we
 \textbf{TODO}: Need to talk about getting rid of string concatenation at some point.
 \begin{table}[H]
 
-\caption{\label{tab:charstarstatsfig}F}
+\caption{\label{tab:charstarstatsfig}Corpus 1 Stats after using character pointers}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus1/humprtb & 56737 & 21902 & 2.590 & 7 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
 DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 7 & 1\\
-DNACorpus1/vaccg & 191737 & 70067 & 2.736 & 15 & 6\\
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{15} & \cellcolor{gray!6}{6}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 15 & 8\\
-DNACorpus1/mpomtcg & 186609 & 70254 & 2.656 & 16 & 6\\
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
 \addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 9 & 2\\
-DNACorpus1/chmpxx & 121024 & 43516 & 2.781 & 12 & 4\\
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 10 & 3\\
-DNACorpus1/chntxx & 155844 & 58336 & 2.671 & 14 & 5\\
+\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{14} & \cellcolor{gray!6}{5}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
 \addlinespace
-DNACorpus1/humhbb & 73308 & 28134 & 2.606 & 9 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{9} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \begin{table}[H]
 
-\caption{\label{tab:charstarstatsfig}F}
+\caption{\label{tab:charstarstatsfig}Corpus 2 Stats after using character pointers}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus2/YeMi & 73689 & 27235 & 2.706 & 9 & 2\\
+\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{9} & \cellcolor{gray!6}{2}\\
 DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 12264 & 1764\\
-DNACorpus2/EnIn & 26403087 & 8609993 & 3.067 & 4070 & 708\\
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{4070} & \cellcolor{gray!6}{708}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 96 & 35\\
-DNACorpus2/OrSa & 43262523 & 14148071 & 3.058 & 7627 & 1252\\
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{7627} & \cellcolor{gray!6}{1252}\\
 \addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 348 & 109\\
-DNACorpus2/GaGa & 148532294 & 46851765 & 3.170 & 32906 & 4456\\
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{32906} & \cellcolor{gray!6}{4456}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1205 & 265\\
-DNACorpus2/HaHi & 3890005 & 1306708 & 2.977 & 271 & 88\\
+\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{271} & \cellcolor{gray!6}{88}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 44733 & 5517\\
 \addlinespace
-DNACorpus2/AeCa & 1591049 & 556535 & 2.859 & 92 & 35\\
+\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{92} & \cellcolor{gray!6}{35}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 5266 & 940\\
-DNACorpus2/BuEb & 18940 & 7893 & 2.400 & 5 & 0\\
+\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 879 & 220\\
-DNACorpus2/AgPh & 43970 & 17442 & 2.521 & 7 & 1\\
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{1}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -1103,41 +1103,41 @@ In our analysis of the two corpora, we found some interesting statistics in the 
 Below is a table which shows stats on the runs lengths of the ``runs'' of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
 \begin{table}[H]
 
-\caption{\label{tab:runstatsfig}F}
+\caption{\label{tab:runstatsfig}Run Lengths for Corpus 1}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{rrrr}
 \toprule
 average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
 \midrule
-6.135398 & 17 & 6 & 1.237217\\
+\cellcolor{gray!6}{6.135398} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{6} & \cellcolor{gray!6}{1.237217}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \begin{table}[H]
 
-\caption{\label{tab:runstatsfig}F}
+\caption{\label{tab:runstatsfig}Run Lengths for Corpus 2}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{rrrr}
 \toprule
 average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
 \midrule
-10.96825 & 190 & 11 & 2.494305\\
+\cellcolor{gray!6}{10.96825} & \cellcolor{gray!6}{190} & \cellcolor{gray!6}{11} & \cellcolor{gray!6}{2.494305}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 And here is the combined stats of both copora, along with a histogram of all the runs.
 \begin{table}[H]
 
-\caption{\label{tab:bothrunsfig}F}
+\caption{\label{tab:bothrunsfig}Run lengths for both corpora}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{rrrrr}
 \toprule
 X & average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
 \midrule
-1 & 10.95318 & 190 & 11 & 2.505904\\
+\cellcolor{gray!6}{1} & \cellcolor{gray!6}{10.95318} & \cellcolor{gray!6}{190} & \cellcolor{gray!6}{11} & \cellcolor{gray!6}{2.505904}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -1158,55 +1158,55 @@ For each strings size 1 to n , we have an array with enough slots for every poss
 Here is the data for this version of the dictionary of length 10.
 \begin{table}[H]
 
-\caption{\label{tab:directmaplength10statsfig}F}
+\caption{\label{tab:directmaplength10statsfig}Corpus 1 Stats for Direct Map of max length 10}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus1/humprtb & 56737 & 25883 & 2.192 & 1 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{25883} & \cellcolor{gray!6}{2.192} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{2}\\
 DNACorpus1/humdyst & 38770 & 18437 & 2.103 & 1 & 1\\
-DNACorpus1/vaccg & 191737 & 77120 & 2.486 & 4 & 4\\
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{77120} & \cellcolor{gray!6}{2.486} & \cellcolor{gray!6}{4} & \cellcolor{gray!6}{4}\\
 DNACorpus1/hehcmv & 229354 & 93251 & 2.460 & 2 & 5\\
-DNACorpus1/mpomtcg & 186609 & 77315 & 2.414 & 4 & 4\\
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{77315} & \cellcolor{gray!6}{2.414} & \cellcolor{gray!6}{4} & \cellcolor{gray!6}{4}\\
 \addlinespace
 DNACorpus1/humhdab & 58864 & 26752 & 2.200 & 1 & 2\\
-DNACorpus1/chmpxx & 121024 & 49414 & 2.449 & 3 & 3\\
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{49414} & \cellcolor{gray!6}{2.449} & \cellcolor{gray!6}{3} & \cellcolor{gray!6}{3}\\
 DNACorpus1/mtpacga & 100314 & 42203 & 2.377 & 2 & 2\\
-DNACorpus1/chntxx & 155844 & 64879 & 2.402 & 3 & 3\\
+\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{64879} & \cellcolor{gray!6}{2.402} & \cellcolor{gray!6}{3} & \cellcolor{gray!6}{3}\\
 DNACorpus1/humghcs & 66495 & 29864 & 2.227 & 1 & 2\\
 \addlinespace
-DNACorpus1/humhbb & 73308 & 32681 & 2.243 & 1 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{32681} & \cellcolor{gray!6}{2.243} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \begin{table}[H]
 
-\caption{\label{tab:directmaplength10statsfig}F}
+\caption{\label{tab:directmaplength10statsfig}Corpus 2 Stats for Direct Map of max length 10}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus2/YeMi & 73689 & 31700 & 2.325 & 1 & 2\\
+\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{31700} & \cellcolor{gray!6}{2.325} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{2}\\
 DNACorpus2/DaRe & 62565020 & 21182510 & 2.954 & 656 & 442\\
-DNACorpus2/EnIn & 26403087 & 8986109 & 2.938 & 271 & 184\\
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8986109} & \cellcolor{gray!6}{2.938} & \cellcolor{gray!6}{271} & \cellcolor{gray!6}{184}\\
 DNACorpus2/HePy & 1667825 & 572507 & 2.913 & 26 & 17\\
-DNACorpus2/OrSa & 43262523 & 15008736 & 2.882 & 431 & 319\\
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{15008736} & \cellcolor{gray!6}{2.882} & \cellcolor{gray!6}{431} & \cellcolor{gray!6}{319}\\
 \addlinespace
 DNACorpus2/EsCo & 4641652 & 1621508 & 2.863 & 51 & 42\\
-DNACorpus2/GaGa & 148532294 & 52441876 & 2.832 & 1475 & 1080\\
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{52441876} & \cellcolor{gray!6}{2.832} & \cellcolor{gray!6}{1475} & \cellcolor{gray!6}{1080}\\
 DNACorpus2/ScPo & 10652155 & 3691943 & 2.885 & 108 & 83\\
-DNACorpus2/HaHi & 3890005 & 1324571 & 2.937 & 51 & 32\\
+\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1324571} & \cellcolor{gray!6}{2.937} & \cellcolor{gray!6}{51} & \cellcolor{gray!6}{32}\\
 DNACorpus2/HoSa & 189752667 & 63973137 & 2.966 & 2035 & 1319\\
 \addlinespace
-DNACorpus2/AeCa & 1591049 & 561527 & 2.833 & 22 & 18\\
+\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{561527} & \cellcolor{gray!6}{2.833} & \cellcolor{gray!6}{22} & \cellcolor{gray!6}{18}\\
 DNACorpus2/DrMe & 32181429 & 11150498 & 2.886 & 332 & 237\\
-DNACorpus2/BuEb & 18940 & 9894 & 1.914 & 0 & 1\\
+\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{9894} & \cellcolor{gray!6}{1.914} & \cellcolor{gray!6}{0} & \cellcolor{gray!6}{1}\\
 DNACorpus2/PlFa & 8986712 & 2972072 & 3.024 & 106 & 67\\
-DNACorpus2/AgPh & 43970 & 20885 & 2.105 & 1 & 1\\
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{20885} & \cellcolor{gray!6}{2.105} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{1}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -1223,63 +1223,63 @@ Here is a comparison for different max string lengths
 
 As stated before, there have been research papers about the
 
-Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length.
-
-Here are the results for this dictionary.
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary.
 \begin{table}[H]
 
-\caption{\label{tab:multdictlength10statsfig}F}
+\caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus1/humprtb & 56737 & 21687 & 2.616 & 5 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21687} & \cellcolor{gray!6}{2.616} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
 DNACorpus1/humdyst & 38770 & 15116 & 2.565 & 3 & 1\\
-DNACorpus1/vaccg & 191737 & 69820 & 2.746 & 14 & 6\\
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{69820} & \cellcolor{gray!6}{2.746} & \cellcolor{gray!6}{14} & \cellcolor{gray!6}{6}\\
 DNACorpus1/hehcmv & 229354 & 85279 & 2.689 & 16 & 7\\
-DNACorpus1/mpomtcg & 186609 & 70007 & 2.666 & 15 & 6\\
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70007} & \cellcolor{gray!6}{2.666} & \cellcolor{gray!6}{15} & \cellcolor{gray!6}{6}\\
 \addlinespace
 DNACorpus1/humhdab & 58864 & 22484 & 2.618 & 5 & 2\\
-DNACorpus1/chmpxx & 121024 & 43269 & 2.797 & 10 & 4\\
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43269} & \cellcolor{gray!6}{2.797} & \cellcolor{gray!6}{10} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36647 & 2.737 & 8 & 3\\
-DNACorpus1/chntxx & 155844 & 58089 & 2.683 & 12 & 5\\
+\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58089} & \cellcolor{gray!6}{2.683} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{5}\\
 DNACorpus1/humghcs & 66495 & 25336 & 2.625 & 6 & 2\\
 \addlinespace
-DNACorpus1/humhbb & 73308 & 27918 & 2.626 & 7 & 2\\
+\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{27918} & \cellcolor{gray!6}{2.626} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \begin{table}[H]
 
-\caption{\label{tab:multdictlength10statsfig}F}
+\caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
 \midrule
-DNACorpus2/YeMi & 73689 & 27019 & 2.727 & 7 & 2\\
+\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27019} & \cellcolor{gray!6}{2.727} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
 DNACorpus2/DaRe & 62565020 & 19585959 & 3.194 & 8878 & 1721\\
-DNACorpus2/EnIn & 26403087 & 8609527 & 3.067 & 3347 & 696\\
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609527} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{3347} & \cellcolor{gray!6}{696}\\
 DNACorpus2/HePy & 1667825 & 566631 & 2.943 & 94 & 34\\
-DNACorpus2/OrSa & 43262523 & 14147605 & 3.058 & 5551 & 1223\\
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14147605} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{5551} & \cellcolor{gray!6}{1223}\\
 \addlinespace
 DNACorpus2/EsCo & 4641652 & 1593032 & 2.914 & 364 & 105\\
-DNACorpus2/GaGa & 148532294 & 46851235 & 3.170 & 22817 & 4323\\
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851235} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{22817} & \cellcolor{gray!6}{4323}\\
 DNACorpus2/ScPo & 10652155 & 3590421 & 2.967 & 1099 & 258\\
-DNACorpus2/HaHi & 3890005 & 1306336 & 2.978 & 302 & 86\\
+\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306336} & \cellcolor{gray!6}{2.978} & \cellcolor{gray!6}{302} & \cellcolor{gray!6}{86}\\
 DNACorpus2/HoSa & 189752667 & 57199679 & 3.317 & 31978 & 5449\\
 \addlinespace
-DNACorpus2/AeCa & 1591049 & 556194 & 2.861 & 91 & 34\\
+\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556194} & \cellcolor{gray!6}{2.861} & \cellcolor{gray!6}{91} & \cellcolor{gray!6}{34}\\
 DNACorpus2/DrMe & 32181429 & 10618575 & 3.031 & 3865 & 905\\
-DNACorpus2/BuEb & 18940 & 7740 & 2.447 & 1 & 0\\
+\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7740} & \cellcolor{gray!6}{2.447} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895340 & 3.104 & 892 & 211\\
-DNACorpus2/AgPh & 43970 & 17258 & 2.548 & 4 & 1\\
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17258} & \cellcolor{gray!6}{2.548} & \cellcolor{gray!6}{4} & \cellcolor{gray!6}{1}\\
 \bottomrule
 \end{tabular}}
 \end{table}
+\pagebreak
+
 \includegraphics{thesis_files/figure-latex/multdictlengthcompfig-1.pdf}
 Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
 \begin{figure}
@@ -1291,9 +1291,11 @@ Here is a comparison of the Multiple Dictionaries versus one standard dictionary
 \subsection{Comparison}\label{comparison}}
 
 Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
-
+\begin{figure}
+\centering
 \includegraphics{thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf}
-
+\caption{\label{fig:dictionarytechniquecompfig}Comparing the three types of dictionaries. The Direct Map has a max length of 15 and the Mult Dict has a max length of 10.}
+\end{figure}
 \hypertarget{optimizing-direct-map-even-more}{%
 \section{Optimizing Direct Map Even more}\label{optimizing-direct-map-even-more}}
 
@@ -1310,7 +1312,7 @@ Another strategy would be to start from the maximum string length of the diction
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/findlongestfrommaxfig-1.pdf}
-\caption{\label{fig:findlongestfrommaxfig}foo}
+\caption{\label{fig:findlongestfrommaxfig}Comparing the different ways of finding the longest run}
 \end{figure}
 \hypertarget{ref-labels}{%
 \chapter{Graphics, References, and Labels}\label{ref-labels}}

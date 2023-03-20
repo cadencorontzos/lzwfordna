@@ -112,10 +112,10 @@ knitr::kable(df, "markdown", align= 'c', caption = caption)
 ```
 
 ```{r statscsvfunc, echo = F}
-stats_csv <- function(filename){
+stats_csv <- function(filename, caption = "Foo"){
   df <- read.csv(filename)
-  knitr::kable(df, format="latex", booktabs=TRUE, caption = "F") %>% 
-  kable_styling(latex_options=c("scale_down", "HOLD_position"))
+  knitr::kable(df, format="latex", booktabs=TRUE, caption = caption) %>% 
+  kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 }
 ```
 
@@ -332,7 +332,6 @@ We solved this issue by adding 2 extra bits after the EOF codeword. These bits d
         break;
     }
 ```
-
 So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
 At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora. 
@@ -340,8 +339,8 @@ At this point, there was a working implementation that was able to compress and 
 9066eef
 -->
 ```{r fixedeofstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corpora after fixing EOF.", fig.height = 7,  echo = F}
-stats_csv('data/stats/corpus_1_stats_fixedeof_9066eef.csv')
-stats_csv('data/stats/corpus_2_stats_fixedeof_9066eef.csv')
+stats_csv('data/stats/corpus_1_stats_fixedeof_9066eef.csv', caption = " Corpus 1 Stats after fixing EOF")
+stats_csv('data/stats/corpus_2_stats_fixedeof_9066eef.csv', caption = "Corpus 2 stats after fixing EOF")
 ```
 ### Using Constants
 <!--
@@ -400,8 +399,8 @@ Despite these issues, this change was still worth making, if not to save time th
 Here are the runs after this optimization.
 
 ```{r usingconstantsstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corproa after switching some constants", fig.height = 7, echo = F}
-stats_csv('data/stats/corpus_1_usingconstants_2c3f782.csv')
-stats_csv('data/stats/corpus_2_usingconstants_2c3f782.csv')
+stats_csv('data/stats/corpus_1_usingconstants_2c3f782.csv', caption = "Corpus 1 Stats after changing constants")
+stats_csv('data/stats/corpus_2_usingconstants_2c3f782.csv', caption = "Corpus 2 Stats after changing constants")
 ```
 
 ### Extraneous String Concatenations
@@ -452,8 +451,8 @@ Here are the statistics on the version of the algorithm after this change.
 
 ```{r stringconcatstatsfig, warnings= F, messages = F, fig.cap = "Stats after eliminating excess string concatenations", fig.height = 7, echo = F}
 
-stats_csv('data/stats/corpus_1_stringconcat_8963f64.csv')
-stats_csv('data/stats/corpus_2_stringconcat_8963f64.csv')
+stats_csv('data/stats/corpus_1_stringconcat_8963f64.csv', caption = "Corpus 1 Stats after reducing string concatenations")
+stats_csv('data/stats/corpus_2_stringconcat_8963f64.csv', caption = "Corpus 2 Stats after reducing string concatenations")
 ```
 
 ### Dictionary Accesses
@@ -520,12 +519,10 @@ We can save that lookup, like so.
         next_character = input.get();
     }
 ```
-
 Here are the stats of the version of the algorithm after this change.
-
 ```{r dictaccessesstatsfig, warnings= F, messages = F, fig.cap = "Stats after reducing dictionary accesses", fig.height = 7, echo = F}
-stats_csv('data/stats/corpus_1_dictaccesses_34bf4e9.csv')
-stats_csv('data/stats/corpus_2_dictaccesses_34bf4e9.csv')
+stats_csv('data/stats/corpus_1_dictaccesses_34bf4e9.csv', caption = "Corpus 1 Stats after reducing dictionary accesses")
+stats_csv('data/stats/corpus_2_dictaccesses_34bf4e9.csv', caption = "Corpus 2 Stats after reducing dictionary accesses")
 ```
 ### Using Const Char *
 <!--
@@ -540,8 +537,8 @@ When reading a byte stream of the file, the file may not be in memory the way we
 **TODO**: Need to talk about getting rid of string concatenation at some point.
 
 ```{r charstarstatsfig, warnings= F, messages = F, fig.cap = "Stats after using character pointer", fig.height = 7, echo = F}
-stats_csv('data/stats/corpus_1_charstar_a12a290.csv')
-stats_csv('data/stats/corpus_2_charstar_a12a290.csv')
+stats_csv('data/stats/corpus_1_charstar_a12a290.csv', caption = "Corpus 1 Stats after using character pointers")
+stats_csv('data/stats/corpus_2_charstar_a12a290.csv', caption = "Corpus 2 Stats after using character pointers")
 ```
 ```{r comparecorporaoptimizingfig, warnings= F, messages = F, fig.cap = "Comparison of the performance of the different milestones", fig.height = 7, echo = F}
 compare_coprora(list(
@@ -565,13 +562,13 @@ In our analysis of the two corpora, we found some interesting statistics in the 
 Below is a table which shows stats on the runs lengths of the "runs" of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
 
 ```{r runstatsfig, warnings= F, messages = F, fig.cap = "The counts for runs of each length", fig.height = 7, echo = F}
-stats_csv('data/corpus_1_run_stats.csv')
-stats_csv('data/corpus_2_run_stats.csv')
+stats_csv('data/corpus_1_run_stats.csv', caption = "Run Lengths for Corpus 1")
+stats_csv('data/corpus_2_run_stats.csv', caption = "Run Lengths for Corpus 2")
 ```
 And here is the combined stats of both copora, along with a histogram of all the runs.
 
 ```{r bothrunsfig, warnings= F, messages = F, fig.cap =  "Run counts for both corpora", fig.height = 7, echo= F}
-stats_csv('data/corpus_both_run_stats.csv')
+stats_csv('data/corpus_both_run_stats.csv', caption = "Run lengths for both corpora")
 ```
 
 ```{r allrunshistfig, warnings= F, messages = F, fig.cap = "A histogram showing the lengths of runs for both copora.", fig.height = 7, echo = F}
@@ -594,8 +591,8 @@ For each strings size 1 to n , we have an array with enough slots for every poss
 Here is the data for this version of the dictionary of length 10.
 
 ```{r directmaplength10statsfig, warnings= F, messages = F, fig.cap = "Stats for direct map with max length of 10", fig.height = 7, echo = F}
-stats_csv('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv')
-stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv')
+stats_csv('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv', caption = "Corpus 1 Stats for Direct Map of max length 10")
+stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv', caption = "Corpus 2 Stats for Direct Map of max length 10")
 ```
 
 Here is a comparison for different max string lengths
@@ -614,15 +611,13 @@ compare_max_string_lengths(list(
 
 As stated before, there have been research papers about the 
 
-Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length.
-
-Here are the results for this dictionary. 
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary. 
 
 ```{r multdictlength10statsfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Multiple Dictionaries", fig.height = 7, echo = F}
-stats_csv('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv')
-stats_csv('data/stats/multdict/corpus_2_multdict_154fed4_len10.csv')
+stats_csv('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', caption = "Corpus 1 Stats for Multiple Dictionaries of max length 10")
+stats_csv('data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', caption = "Corpus 1 Stats for Multiple Dictionaries of max length 10")
 ```
-
+\pagebreak
 ```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 7, echo = F}
 compare_max_string_lengths(list(
 	c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 10),
@@ -646,7 +641,7 @@ compare_coprora(list(
 
 Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
 
-```{r dictionarytechniquecompfig, echo = F, fig.height=7}
+```{r dictionarytechniquecompfig, warnings= F, messages = F, fig.cap = "Comparing the three types of dictionaries. The Direct Map has a max length of 15 and the Mult Dict has a max length of 10.",echo = F, fig.height=7}
 
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
@@ -658,18 +653,16 @@ compare_coprora(list(
 
 ## Optimizing Direct Map Even more
 
-
 Since the Direct map dictionary was a standout in performance, we decided to focus on optimizing it even further.
 
 ### Get Longest
-
 Our dictionary data structures all have a `get_longest_in_dict` function. This function does the boring work of iterating through the input from the start, checking if each substring is in the dictionary. 
 
 Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by starting from the bottom. 
 
 Another strategy would be to start from the maximum string length of the dictionary. We can check if the next string of the max length in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down or binary search down from the max. Here is a table showing the performance of these different strategies. 
 
-```{r findlongestfrommaxfig, warnings= F, messages = F, fig.cap = "foo", echo = F, fig.height = 10}
+```{r findlongestfrommaxfig, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 7}
 compare_coprora(list(
   c('data/stats/ddict/corpus_1_ddictbinarysearch_e196a55.csv', 'data/stats/ddict/corpus_2_ddictbinarysearch_e196a55.csv', 'Binary search'),
   c('data/stats/ddict/corpus_1_ddictbinarysearchflyindex_94305a5.csv', 'data/stats/ddict/corpus_2_ddictbinarysearchflyindex_94305a5.csv', 'Binary Fly Index'),
