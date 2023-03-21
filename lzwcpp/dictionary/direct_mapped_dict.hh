@@ -32,6 +32,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		using index_type = uint32_t;
 		const int INDEX_BITS = CHAR_BIT*sizeof(index_type);
 		std::array<int, 1<<CHAR_BIT> values;
+		const int FIND_LONGEST_START = 7;
 
 		index_type map_str(const char* input, unsigned len) const{
 			index_type result = 0;
@@ -169,17 +170,17 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 	
 		int find_longest_in_dict(const char* input, const char* end_of_input) override{
 			
-			// start at max and loop up or down
-			if(input+MAX_STRING_LENGTH > end_of_input){
+			// start at start and loop up or down
+			if(input+FIND_LONGEST_START > end_of_input){
 				return find_longest_looping_up(input, end_of_input, 0, 0);
 			}
-			// check the longest possible string
-			int index = map_str(input, MAX_STRING_LENGTH);
-			int entry = code_of_manual(input, MAX_STRING_LENGTH, index);
+			// check the starting length
+			int index = map_str(input, FIND_LONGEST_START);
+			int entry = code_of_manual(input, FIND_LONGEST_START, index);
 			if(entry == 0){
-				return find_longest_looping_down(input, MAX_STRING_LENGTH, index);
+				return find_longest_looping_down(input, FIND_LONGEST_START, index);
 			}
-			return find_longest_looping_up(input, end_of_input, MAX_STRING_LENGTH, index);
+			return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START, index);
 
 			// start at max and binary search
 			//
