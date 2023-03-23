@@ -673,3 +673,14 @@ compare_coprora(list(
 
 
 ```
+
+
+```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at the average", echo = F, fig.height = 7}
+compare_coprora(list(
+  c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down'),
+  c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search'),
+  c('data/stats/ddict/corpus_1_ogddict_266bcb7.csv', 'data/stats/ddict/corpus_2_ogddict_266bcb7.csv', 'Original DDict')
+), TRUE)
+
+
+```

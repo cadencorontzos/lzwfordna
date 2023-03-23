@@ -644,7 +644,7 @@ We solved this issue by adding 2 extra bits after the EOF codeword. These bits d
 So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
 At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:fixedeofstatsfig} Corpus 1 Stats after fixing EOF}
 \centering
@@ -669,7 +669,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:fixedeofstatsfig}Corpus 2 stats after fixing EOF}
 \centering
@@ -753,7 +753,7 @@ Of course, there are several issues with this method. It is difficult to associa
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of callgrind, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
 
 Here are the runs after this optimization.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:usingconstantsstatsfig}Corpus 1 Stats after changing constants}
 \centering
@@ -778,7 +778,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:usingconstantsstatsfig}Corpus 2 Stats after changing constants}
 \centering
@@ -849,7 +849,7 @@ If I just concatenate them and save the output into a new string, that will save
 \end{Highlighting}
 \end{Shaded}
 Here are the statistics on the version of the algorithm after this change.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:stringconcatstatsfig}Corpus 1 Stats after reducing string concatenations}
 \centering
@@ -874,7 +874,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 8 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:stringconcatstatsfig}Corpus 2 Stats after reducing string concatenations}
 \centering
@@ -967,7 +967,7 @@ We can save that lookup, like so.
 \end{Highlighting}
 \end{Shaded}
 Here are the stats of the version of the algorithm after this change.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:dictaccessesstatsfig}Corpus 1 Stats after reducing dictionary accesses}
 \centering
@@ -992,7 +992,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:dictaccessesstatsfig}Corpus 2 Stats after reducing dictionary accesses}
 \centering
@@ -1029,7 +1029,7 @@ The algorithm works by reading through the entire file, so we know that at some 
 When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time.
 
 \textbf{TODO}: Need to talk about getting rid of string concatenation at some point.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:charstarstatsfig}Corpus 1 Stats after using character pointers}
 \centering
@@ -1054,7 +1054,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:charstarstatsfig}Corpus 2 Stats after using character pointers}
 \centering
@@ -1101,7 +1101,7 @@ So the another step towards an efficient LZW seemed to be to abstract out the \t
 In our analysis of the two corpora, we found some interesting statistics in the redundancy of the data.
 
 Below is a table which shows stats on the runs lengths of the ``runs'' of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:runstatsfig}Run Lengths for Corpus 1}
 \centering
@@ -1114,7 +1114,7 @@ average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_len
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:runstatsfig}Run Lengths for Corpus 2}
 \centering
@@ -1128,7 +1128,7 @@ average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_len
 \end{tabular}}
 \end{table}
 And here is the combined stats of both copora, along with a histogram of all the runs.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:bothrunsfig}Run lengths for both corpora}
 \centering
@@ -1156,7 +1156,7 @@ to index into an array of codewords.
 For each strings size 1 to n , we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap on top to handle those.
 
 Here is the data for this version of the dictionary of length 10.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:directmaplength10statsfig}Corpus 1 Stats for Direct Map of max length 10}
 \centering
@@ -1181,7 +1181,7 @@ DNACorpus1/humghcs & 66495 & 29864 & 2.227 & 1 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:directmaplength10statsfig}Corpus 2 Stats for Direct Map of max length 10}
 \centering
@@ -1224,7 +1224,7 @@ Here is a comparison for different max string lengths
 As stated before, there have been research papers about the
 
 Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
 \centering
@@ -1249,7 +1249,7 @@ DNACorpus1/humghcs & 66495 & 25336 & 2.625 & 6 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
 \centering
@@ -1313,6 +1313,11 @@ Another strategy would be to start from the maximum string length of the diction
 \centering
 \includegraphics{thesis_files/figure-latex/findlongestfrommaxfig-1.pdf}
 \caption{\label{fig:findlongestfrommaxfig}Comparing the different ways of finding the longest run}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics{thesis_files/figure-latex/findlongestfromavg-1.pdf}
+\caption{\label{fig:findlongestfromavg}Comparing the different ways of finding the longest run starting at the average}
 \end{figure}
 \hypertarget{ref-labels}{%
 \chapter{Graphics, References, and Labels}\label{ref-labels}}
