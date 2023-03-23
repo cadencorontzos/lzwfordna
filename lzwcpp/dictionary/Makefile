@@ -1,21 +1,32 @@
-
 CXX=g++
-CXXFLAGS= -Wall -Wextra -Werror -pedantic -std=c++2a -O3 
-EXEC= test_std_dict test_direct_map
+CXXFLAGS= -Wall -Wextra -pedantic -std=c++2a -O3  -Werror
+EXEC= test_std_dict test_direct_map test_mult_std_dict
 
-all: test_direct_map test_std_dict test_mult_std_dict
+all: $(EXEC)
 
-test_std_dict: test_std_dict.cc std_dict.hh dictionary.hh
-	$(CXX) $(CXXFLAGS) -o $@ $^
+# executables
+test_std_dict: test_std_dict.o
+        $(CXX) $(CXXFLAGS) -o $@ $^
 
-test_direct_map: test_direct_map.cc direct_mapped_dict.hh dictionary.hh
-	$(CXX) $(CXXFLAGS) -o $@ $^
+test_direct_map: test_direct_map.o
+        $(CXX) $(CXXFLAGS) -o $@ $^
 
-test_mult_std_dict: test_mult_std_dict.cc mult_std_dict.hh dictionary.hh
-	$(CXX) $(CXXFLAGS) -o $@ $^
+test_mult_std_dict: test_mult_std_dict.o
+        $(CXX) $(CXXFLAGS) -o $@ $^
 
-%.o: %.cpp %.hh 
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+# objects 
+test_std_dict.o: test_std_dict.cc std_dict.hh dictionary.hh
+        $(CXX) $(CXXFLAGS) -c -o $@ $<
+
+test_direct_map.o: test_direct_map.cc direct_mapped_dict.hh dictionary.hh
+        $(CXX) $(CXXFLAGS) -c -o $@ $<
+
+test_mult_std_dict.o: test_mult_std_dict.cc mult_std_dict.hh dictionary.hh
+        $(CXX) $(CXXFLAGS) -c -o $@ $<
+
+
+%.o: %.cpp %.hh
+        $(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	rm  *.o */*.o $(EXEC) -f
+        rm  *.o */*.o $(EXEC) -f
