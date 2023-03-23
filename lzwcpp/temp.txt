@@ -1,0 +1,14 @@
+
+			// pext shenanigans
+			/* if(!(input+MAX_STRING_LENGTH > end_of_input)){ */
+			/* 	// 00000110 00000110 00000110 00000110 00000110 00000110 00000110 00000110 */
+			/* 	uint64_t mask = 434041037028460038; */
+			/* 	const uint64_t*  input_ints = reinterpret_cast<const uint64_t*>(input); */
+			/* 	uint64_t swapped = _bswap64(input_ints[0]); */
+			/* 	uint64_t swapped2 = _bswap64(input_ints[1]); */
+			/* 	uint64_t first_half = _pext_u64(swapped, mask); */
+			/* 	uint64_t second_half = _pext_u64(swapped2, mask); */
+			/* 	unsigned result = (first_half << 16) + second_half; */
+			/* 	assert(result == map_str(input, MAX_STRING_LENGTH+1)); */
+			/* } */
+
