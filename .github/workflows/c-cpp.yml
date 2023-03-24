@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: cd 
-      run: .cd ./lzwcpp
+      run: cd ./lzwcpp
     - name: make all
       run: make all
     - name: lzw tests
