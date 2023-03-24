@@ -85,7 +85,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 				if(lookup == end){ return 0;}
 				return lookup->second;
 			}else{
-				codeword_type lookup = (dictionary[len])[map_str(input, len)];
+				codeword_type lookup = (dictionary[len-1])[map_str(input, len)];
 				return lookup;
 			}
 		}
@@ -100,7 +100,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 				if(lookup == end){ return 0;}
 				return lookup->second;
 			}else{
-				codeword_type lookup = (dictionary[len])[mapped_string];
+				codeword_type lookup = (dictionary[len-1])[mapped_string];
 				return lookup;
 			}
 		}
@@ -222,7 +222,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 				empty = true;
 			}
 			if(len < MAX_STRING_LENGTH){
-				(dictionary[len])[map_str(input, len)] = codeword;
+				(dictionary[len-1])[map_str(input, len)] = codeword;
 			}else{
 				std::string str(input, len);
 				longer_than_max[str] = codeword;

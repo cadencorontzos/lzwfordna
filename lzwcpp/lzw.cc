@@ -24,14 +24,16 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 	while(true)
 	{
 
-		// find longest run of chars already in our dictionary and get the code for it
+		// find longest run of chars already in our dictionary 
 		length_of_next_run = dictionary.find_longest_in_dict(input_file, end_of_input);
-		codeword_to_output = dictionary.code_of(input_file, length_of_next_run);
 
 		// make sure we haven't passed EOF
 		if((input_file + length_of_next_run)>= end_of_input){
 			break;
 		}
+
+		// look up code of longest run
+		codeword_to_output = dictionary.code_of(input_file, length_of_next_run);
 
 		// output codeword	
 		bit_output.output_n_bits(codeword_to_output, codeword_helper.bits_per_codeword);
@@ -69,6 +71,7 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
         bit_output.output_bit(true);
         bit_output.output_bit(true);
 
+		codeword_to_output = dictionary.code_of(input_file, length_of_next_run);
         bit_output.output_n_bits(codeword_to_output, codeword_helper.bits_per_codeword);
         break;
     }

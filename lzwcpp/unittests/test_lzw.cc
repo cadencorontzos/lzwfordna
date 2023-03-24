@@ -5,18 +5,14 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <bitset>
 #include <string.h>
 
 std::string to_bits(std::string str){
 	std::string res = "";
 	
 	for(unsigned index = 0; index < str.length(); index++){
-
-		for(int i = CHAR_BIT-1; i>=0; i--){
-			
-        	res += std::to_string(1&str[index]<<i);
-		}
-
+        	res += std::bitset<8>(str[index]).to_string();
 	}
 	return res;
 }
