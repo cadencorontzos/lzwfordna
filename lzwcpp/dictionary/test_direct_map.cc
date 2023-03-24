@@ -69,24 +69,25 @@ void test_find_longest_in_dict(){
 	// test string longer than max string length
 	// We assume the max is shorter than 20 here
 
-	{
-		LZW_Encode_Dictionary f;
+	// we are not letting in strings longer than max length so we don't need this 
+	/* { */
+	/* 	LZW_Encode_Dictionary f; */
 
 
-		// for this input, "ACT" should be the longest run in the dict
-		std::string input = "ACTGACTGACTGACTGACTGACTG";
+	/* 	// for this input, "ACT" should be the longest run in the dict */
+	/* 	std::string input = "ACTGACTGACTGACTGACTGACTG"; */
 		
-		// load all substrings into the the dictionary
-		for(unsigned i = 1; i < input.length()-1; i++){
-			f.add_string(input.substr(0,i).c_str(), i, i);
-		}
-		int ret;
-		ret = f.find_longest_in_dict(input.c_str(), input.c_str()+ input.length());
-		std::string output = input.substr(0,ret);
+	/* 	// load all substrings into the the dictionary */
+	/* 	for(unsigned i = 1; i < input.length()-1; i++){ */
+	/* 		f.add_string(input.substr(0,i).c_str(), i, i); */
+	/* 	} */
+	/* 	int ret; */
+	/* 	ret = f.find_longest_in_dict(input.c_str(), input.c_str()+ input.length()); */
+	/* 	std::string output = input.substr(0,ret); */
 	
-		assert(output == input.substr(0, input.length()-2));
-		assert(f.code_of(output.c_str(), input.length()-2) == input.length()-2);
-	}
+	/* 	assert(output == input.substr(0, input.length()-2)); */
+	/* 	assert(f.code_of(output.c_str(), input.length()-2) == input.length()-2); */
+	/* } */
 
 
 	// test string equal to max string length 
@@ -125,7 +126,7 @@ void test_find_longest_looping_down(){
 	std::string input = "ACTG";
 	int index = (0<<6) + (2 << 4) + (1<<2) + 3;
 	int ret;
-	ret = f.find_longest_looping_down(input.c_str(), 4, index);
+	ret = f.find_longest_looping_down(4, index);
 	std::string output = input.substr(0,ret);
 	assert(output == "AC");
 	assert(f.code_of(output.c_str(), 2) == 2);

@@ -78,40 +78,24 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		} 
 
 		codeword_type code_of(const char* input, unsigned len) const override{
-			// if we are over our max, just throw it in the hashmap
-			if (len >= MAX_STRING_LENGTH){
-				std::string str(input, len);
-				auto lookup = longer_than_max.find(str);
-				if(lookup == end){ return 0;}
-				return lookup->second;
-			}else{
-				codeword_type lookup = (dictionary[len-1])[map_str(input, len)];
-				return lookup;
-			}
+			codeword_type lookup = (dictionary[len-1])[map_str(input, len)];
+			return lookup;
 		}
 	
 		// allow the caller to provide the string already mapped. 
 		// allows for the mapped string to be produced on the fly in some cases
-		codeword_type code_of_manual(const char* input, unsigned len, int mapped_string) const{
-			// if we are over our max, just throw it in the hashmap
-			if (len >= MAX_STRING_LENGTH){
-				std::string str(input, len);
-				auto lookup = longer_than_max.find(str);
-				if(lookup == end){ return 0;}
-				return lookup->second;
-			}else{
-				codeword_type lookup = (dictionary[len-1])[mapped_string];
-				return lookup;
-			}
+		codeword_type code_of_manual(unsigned len, int mapped_string) const{
+			codeword_type lookup = (dictionary[len-1])[mapped_string];
+			return lookup;
 		}
 
 		// We assume that the start is already in the dictionary, and loop up from there
 		int find_longest_looping_up(const char* input, const char* end_of_input, int start, int index){
 			int length = start;
 			int entry = 0;
-			while(input+length < end_of_input) {
+			while(input+length < end_of_input && length < MAX_STRING_LENGTH) {
 				index = (index<<2) + values[input[length]];
-				entry = code_of_manual(input, length+1, index);
+				entry = code_of_manual(length+1, index);
 				// if entry is non zero, it means we have seen that string before
 				if (entry == 0){
 					return length;
@@ -127,11 +111,11 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 
 		// Assumes we already have the starting characters in the dictionary
 		// should never return 0
-		int find_longest_looping_down(const char* input, int start, index_type index){
+		int find_longest_looping_down(int start, index_type index){
 			int length = start;
 			int entry;
 			while(length > 0) {
-				entry = code_of_manual(input, length, index);
+				entry = code_of_manual(length, index);
 				// if entry is non zero, it means we have seen that string before
 				if (entry != 0){
 					return length;
@@ -176,7 +160,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			/* } */
 			/* // check the starting length */
 			/* int index = map_str(input, FIND_LONGEST_START); */
-			/* int entry = code_of_manual(input, FIND_LONGEST_START, index); */
+			/* int entry = code_of_manual(FIND_LONGEST_START, index); */
 			/* if(entry == 0){ */
 			/* 	return find_longest_looping_down(input, FIND_LONGEST_START, index); */
 			/* } */
@@ -190,7 +174,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			}
 			// check the starting string
 			int index = map_str(input, FIND_LONGEST_START);
-			int entry = code_of_manual(input, FIND_LONGEST_START, index);
+			int entry = code_of_manual(FIND_LONGEST_START, index);
 			if(entry == 0){
 				return find_longest_binary_search(input);
 			}
@@ -221,12 +205,12 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			if(codeword == MAX_CODEWORD){
 				empty = true;
 			}
-			if(len < MAX_STRING_LENGTH){
-				(dictionary[len-1])[map_str(input, len)] = codeword;
-			}else{
-				std::string str(input, len);
-				longer_than_max[str] = codeword;
+
+			// we just don't add anything longer to the dict
+			if(len > MAX_STRING_LENGTH){
+				return;
 			}
+			(dictionary[len-1])[map_str(input, len)] = codeword;
 		}
 
 		void load_starting_dictionary() override{
