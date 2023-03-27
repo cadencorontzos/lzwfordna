@@ -5,16 +5,19 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    
+defaults:
+  run:
+    shell: bash
+    working-directory: scripts
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v3
-    - name: cd 
-      run: cd ./lzwcpp
     - name: make all
       run: make all
     - name: lzw tests
