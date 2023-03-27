@@ -95,7 +95,7 @@ harmonic_mean <- function(corpus){
       comp_recip = 1/max(Compression.Time,1),
       decomp_recip = 1/max(Decompression.Time,1)
     ) %>% 
-    summarize(
+    reframe(
       harmonic_mean_comp= num_files/sum(comp_recip),
       harmonic_mean_decomp= num_files/sum(decomp_recip)
     )
@@ -115,7 +115,7 @@ knitr::kable(df, "markdown", align= 'c', caption = caption)
 stats_csv <- function(filename, caption = "Foo"){
   df <- read.csv(filename)
   knitr::kable(df, format="latex", booktabs=TRUE, caption = caption) %>% 
-  kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
+  kable_styling(latex_options=c("scale_down", "HOLD_position", "striped"))
 }
 ```
 
@@ -133,7 +133,7 @@ compare_coprora <- function(array, per_corpus = FALSE){
 
 		means <- harmonic_mean(comb)
 
-		comb<- comb %>% summarize(
+		comb<- comb %>% reframe(
 		  comp_throughput = sum(Original.File.Size)/sum(Compression.Time),
 		  hm_comp = means$harmonic_mean_comp,
 		  description = corpus_pair[3],
@@ -169,7 +169,7 @@ compare_max_string_lengths <- function(array){
 		comb <- bind_rows(cp1, cp2)
 		means <- harmonic_mean(comb)
 
-		comb<- comb %>% summarize(
+		comb<- comb %>% reframe(
 		  comp_throughput = sum(Original.File.Size)/sum(Compression.Time),
 		  hm_comp = means$harmonic_mean_comp,
 		  size = corpus_pair[3],
@@ -398,10 +398,14 @@ Despite these issues, this change was still worth making, if not to save time th
 
 Here are the runs after this optimization.
 
+
+
 ```{r usingconstantsstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corproa after switching some constants", fig.height = 7, echo = F}
 stats_csv('data/stats/corpus_1_usingconstants_2c3f782.csv', caption = "Corpus 1 Stats after changing constants")
 stats_csv('data/stats/corpus_2_usingconstants_2c3f782.csv', caption = "Corpus 2 Stats after changing constants")
 ```
+
+
 
 ### Extraneous String Concatenations
 
@@ -677,9 +681,21 @@ compare_coprora(list(
 
 ```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at the average", echo = F, fig.height = 7}
 compare_coprora(list(
-  c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down'),
+  c('data/stats/ddict/corpus_1_ddictdownavg_edafb16.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down'),
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search'),
   c('data/stats/ddict/corpus_1_ogddict_266bcb7.csv', 'data/stats/ddict/corpus_2_ogddict_266bcb7.csv', 'Original DDict')
+), TRUE)
+
+
+```
+
+
+```{r findlongestwmax, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at average with strings over max not accepted", echo = F, fig.height = 7}
+compare_coprora(list(
+  c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down'),
+  c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max'),
+  c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search'),
+  c('data/stats/ddict/corpus_1_ddictbswmax_588ee0d.csv', 'data/stats/ddict/corpus_2_ddictbswmax_588ee0d.csv', 'Binary Search with Max')
 ), TRUE)
 
 
