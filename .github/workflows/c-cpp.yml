@@ -1,0 +1,32 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+defaults:
+  run:
+    shell: bash
+    working-directory: lzwcpp
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: make all
+      run: make all
+    - name: lzw tests
+      run: ./test_lzw
+    - name: bito tests
+      run: ./test_bitio
+    - name: std dict test
+      run: ./dictionary/test_std_dict
+    - name: direct dict test
+      run: ./dictionary/test_direct_map
+    - name: mult dict tests
+      run: ./dictionary/test_mult_std_dict
