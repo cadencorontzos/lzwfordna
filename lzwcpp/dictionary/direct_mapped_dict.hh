@@ -153,30 +153,30 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		int find_longest_in_dict(const char* input, const char* end_of_input) override{
 			
 			// start at start and loop up or down
-			/* if(input+FIND_LONGEST_START > end_of_input){ */
-			/* 	return find_longest_looping_up(input, end_of_input, 0, 0); */
-			/* } */
-			/* // check the starting length */
-			/* int index = map_str(input, FIND_LONGEST_START); */
-			/* int entry = code_of_manual(FIND_LONGEST_START, index); */
-			/* if(entry == 0){ */
-			/* 	return find_longest_looping_down(input, FIND_LONGEST_START, index); */
-			/* } */
-			/* return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START, index); */
+			if(input+FIND_LONGEST_START > end_of_input){
+				return find_longest_looping_up(input, end_of_input, 0, 0);
+			}
+			// check the starting length
+			int index = map_str(input, FIND_LONGEST_START);
+			int entry = code_of_manual(FIND_LONGEST_START, index);
+			if(entry == 0){
+				return find_longest_looping_down(FIND_LONGEST_START, index);
+			}
+			return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START, index);
 
 			// start at start and binary search
 			//
 			// if we don't have enough input left, loop up from 0
-			if(input+MAX_STRING_LENGTH> end_of_input){
-				return find_longest_looping_up(input, end_of_input, 0, 0);
-			}
-			// check the starting string
-			int index = map_str(input, FIND_LONGEST_START);
-			int entry = code_of_manual(FIND_LONGEST_START, index);
-			if(entry == 0){
-				return find_longest_binary_search(input, 1, FIND_LONGEST_START-1);
-			}
-			return find_longest_binary_search(input, FIND_LONGEST_START+1, MAX_STRING_LENGTH);
+			/* if(input+MAX_STRING_LENGTH> end_of_input){ */
+			/* 	return find_longest_looping_up(input, end_of_input, 0, 0); */
+			/* } */
+			/* // check the starting string */
+			/* int index = map_str(input, FIND_LONGEST_START); */
+			/* int entry = code_of_manual(FIND_LONGEST_START, index); */
+			/* if(entry == 0){ */
+			/* 	return find_longest_binary_search(input, 1, FIND_LONGEST_START-1); */
+			/* } */
+			/* return find_longest_binary_search(input, FIND_LONGEST_START+1, MAX_STRING_LENGTH); */
 			
 
 			// loop up from 0 
