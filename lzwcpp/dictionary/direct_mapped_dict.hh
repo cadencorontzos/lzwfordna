@@ -130,26 +130,24 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		// find longest using binary search.
 		// assumes that the longest run < max
 		// assumes that all characters are in starting dictionary
-		int find_longest_binary_search(const char* input){
-			int left = 1;
-			int middle = std::floor(FIND_LONGEST_START/2); 
-			int right = FIND_LONGEST_START;
+		int find_longest_binary_search(const char* input, int left, int right){
+			int middle = left + ((right-left)/2);
 			int entry;
 			while(left <= right){
 				entry = code_of(input, middle);
 				if (entry == 0){
-					right = middle;
-					middle = left + std::floor((right-left)/2);
+					right = middle - 1;
+					middle = left + ((right-left)/2);
 				}
 				else if(code_of(input, middle+1) == 0){
 					return middle;
 				}
 				else{
-					left = middle;
-					middle = left + std::floor((right-left)/2);
+					left = middle + 1;
+					middle = left + ((right-left)/2);
 				}
 			}
-			return 0;
+			return 1;
 		}
 	
 		int find_longest_in_dict(const char* input, const char* end_of_input) override{
@@ -169,16 +167,16 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			// start at start and binary search
 			//
 			// if we don't have enough input left, loop up from 0
-			if(input+FIND_LONGEST_START> end_of_input){
+			if(input+MAX_STRING_LENGTH> end_of_input){
 				return find_longest_looping_up(input, end_of_input, 0, 0);
 			}
 			// check the starting string
 			int index = map_str(input, FIND_LONGEST_START);
 			int entry = code_of_manual(FIND_LONGEST_START, index);
 			if(entry == 0){
-				return find_longest_binary_search(input);
+				return find_longest_binary_search(input, 1, FIND_LONGEST_START-1);
 			}
-			return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START, index);
+			return find_longest_binary_search(input, FIND_LONGEST_START+1, MAX_STRING_LENGTH);
 			
 
 			// loop up from 0 

@@ -168,7 +168,7 @@ void test_find_longest_binary_search(){
 		std::string input = "ACTGACTGACTGACTGACTG";
 
 		int ret;
-		ret = f.find_longest_binary_search(input.c_str());
+		ret = f.find_longest_binary_search(input.c_str(), 1, MAX_STRING_LENGTH);
 		std::string output = input.substr(0,ret);
 		assert(output == "ACT");
 		assert(f.code_of(output.c_str(), 3) == 3);
@@ -205,7 +205,7 @@ void test_find_longest_binary_search(){
 			f.add_string(input.substr(0,i).c_str(), i, i);
 		}
 		int ret;
-		ret = f.find_longest_binary_search(input.c_str());
+		ret = f.find_longest_binary_search(input.c_str(), 1, MAX_STRING_LENGTH);
 		std::string output = input.substr(0,ret);
 		assert(output == input.substr(0,pivot));
 		assert(f.code_of(output.c_str(), pivot) == pivot);
