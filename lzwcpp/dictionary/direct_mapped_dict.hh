@@ -162,7 +162,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 					return middle;
 				}
 				else{
-					left = middle + 1;
+				left = middle + 1;
 					middle = left + ((right-left)/2);
 				}
 			}
@@ -203,7 +203,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			if(entry == 0){
 				return find_longest_binary_search(input, 1, FIND_LONGEST_START-1, next_long_index);
 			}
-			return find_longest_binary_search(input, FIND_LONGEST_START+1, MAX_STRING_LENGTH, next_long_index);
+			return find_longest_binary_search(input, FIND_LONGEST_START, MAX_STRING_LENGTH, next_long_index);
 			
 
 			// loop up from 0 
