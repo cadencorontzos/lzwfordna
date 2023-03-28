@@ -156,7 +156,7 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 					right = middle - 1;
 					middle = left + ((right-left)/2);
 				}
-				else if(code_of(input, middle+1) == 0){
+				else if(middle == MAX_STRING_LENGTH || code_of(input, middle+1) == 0){
 					return middle;
 				}
 				else{

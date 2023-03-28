@@ -644,7 +644,7 @@ We solved this issue by adding 2 extra bits after the EOF codeword. These bits d
 So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
 At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora.
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:fixedeofstatsfig} Corpus 1 Stats after fixing EOF}
 \centering
@@ -669,7 +669,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:fixedeofstatsfig}Corpus 2 stats after fixing EOF}
 \centering
@@ -753,7 +753,7 @@ Of course, there are several issues with this method. It is difficult to associa
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of callgrind, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
 
 Here are the runs after this optimization.
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:usingconstantsstatsfig}Corpus 1 Stats after changing constants}
 \centering
@@ -778,7 +778,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:usingconstantsstatsfig}Corpus 2 Stats after changing constants}
 \centering
@@ -849,7 +849,7 @@ If I just concatenate them and save the output into a new string, that will save
 \end{Highlighting}
 \end{Shaded}
 Here are the statistics on the version of the algorithm after this change.
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:stringconcatstatsfig}Corpus 1 Stats after reducing string concatenations}
 \centering
@@ -874,7 +874,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 8 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:stringconcatstatsfig}Corpus 2 Stats after reducing string concatenations}
 \centering
@@ -967,7 +967,7 @@ We can save that lookup, like so.
 \end{Highlighting}
 \end{Shaded}
 Here are the stats of the version of the algorithm after this change.
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:dictaccessesstatsfig}Corpus 1 Stats after reducing dictionary accesses}
 \centering
@@ -992,7 +992,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:dictaccessesstatsfig}Corpus 2 Stats after reducing dictionary accesses}
 \centering
@@ -1029,7 +1029,7 @@ The algorithm works by reading through the entire file, so we know that at some 
 When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time.
 
 \textbf{TODO}: Need to talk about getting rid of string concatenation at some point.
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:charstarstatsfig}Corpus 1 Stats after using character pointers}
 \centering
@@ -1054,7 +1054,7 @@ DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:charstarstatsfig}Corpus 2 Stats after using character pointers}
 \centering
@@ -1101,7 +1101,7 @@ So the another step towards an efficient LZW seemed to be to abstract out the \t
 In our analysis of the two corpora, we found some interesting statistics in the redundancy of the data.
 
 Below is a table which shows stats on the runs lengths of the ``runs'' of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:runstatsfig}Run Lengths for Corpus 1}
 \centering
@@ -1114,7 +1114,7 @@ average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_len
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:runstatsfig}Run Lengths for Corpus 2}
 \centering
@@ -1128,7 +1128,7 @@ average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_len
 \end{tabular}}
 \end{table}
 And here is the combined stats of both copora, along with a histogram of all the runs.
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:bothrunsfig}Run lengths for both corpora}
 \centering
@@ -1156,7 +1156,7 @@ to index into an array of codewords.
 For each strings size 1 to n , we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap on top to handle those.
 
 Here is the data for this version of the dictionary of length 10.
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:directmaplength10statsfig}Corpus 1 Stats for Direct Map of max length 10}
 \centering
@@ -1181,7 +1181,7 @@ DNACorpus1/humghcs & 66495 & 29864 & 2.227 & 1 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:directmaplength10statsfig}Corpus 2 Stats for Direct Map of max length 10}
 \centering
@@ -1224,7 +1224,7 @@ Here is a comparison for different max string lengths
 As stated before, there have been research papers about the
 
 Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary.
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
 \centering
@@ -1249,7 +1249,7 @@ DNACorpus1/humghcs & 66495 & 25336 & 2.625 & 6 & 2\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[!h]
+\begin{table}[H]
 
 \caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
 \centering
@@ -1319,92 +1319,15 @@ Another strategy would be to start from the maximum string length of the diction
 \includegraphics{thesis_files/figure-latex/findlongestfromavg-1.pdf}
 \caption{\label{fig:findlongestfromavg}Comparing the different ways of finding the longest run starting at the average}
 \end{figure}
-\hypertarget{ref-labels}{%
-\chapter{Graphics, References, and Labels}\label{ref-labels}}
-
-\hypertarget{figures}{%
-\section{Figures}\label{figures}}
-
-If your thesis has a lot of figures, \emph{R Markdown} might behave better for you than that other word processor. One perk is that it will automatically number the figures accordingly in each chapter. You'll also be able to create a label for each figure, add a caption, and then reference the figure in a way similar to what we saw with tables earlier. If you label your figures, you can move the figures around and \emph{R Markdown} will automatically adjust the numbering for you. No need for you to remember! So that you don't have to get too far into LaTeX to do this, a couple \textbf{R} functions have been created for you to assist. You'll see their use below.
-
-In the \textbf{R} chunk below, we will load in a picture stored as \texttt{reed.jpg} in our main directory. We then give it the caption of ``Reed logo'', the label of ``reedlogo'', and specify that this is a figure. Make note of the different \textbf{R} chunk options that are given in the R Markdown file (not shown in the knitted document).
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{include\_graphics}\NormalTok{(}\AttributeTok{path =} \StringTok{"figure/reed.jpg"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 \begin{figure}
-
-{\centering \includegraphics[width=0.2\linewidth]{figure/reed} 
-
-}
-
-\caption{Reed logo}\label{fig:reedlogo}
+\centering
+\includegraphics{thesis_files/figure-latex/findlongestwmax-1.pdf}
+\caption{\label{fig:findlongestwmax}Comparing the different ways of finding the longest run starting at average with strings over max not accepted}
 \end{figure}
-Here is a reference to the Reed logo: Figure \ref{fig:reedlogo}. Note the use of the \texttt{fig:} code here. By naming the \textbf{R} chunk that contains the figure, we can then reference that figure later as done in the first sentence here. We can also specify the caption for the figure via the R chunk option \texttt{fig.cap}.
+\hypertarget{comparison-to-other-tools}{%
+\chapter{Comparison to other tools}\label{comparison-to-other-tools}}
 
-\clearpage
-
-Below we will investigate how to save the output of an \textbf{R} plot and label it in a way similar to that done above. Recall the \texttt{flights} dataset from Chapter \ref{rmd-basics}. (Note that we've shown a different way to reference a section or chapter here.) We will next explore a bar graph with the mean flight departure delays by airline from Portland for 2014.
-
-Here is a reference to this image: Figure \ref{fig:delaysboxplot}.
-
-A table linking these carrier codes to airline names is available at \url{https://github.com/ismayc/pnwflights14/blob/master/data/airlines.csv}.
-
-\clearpage
-
-Next, we will explore the use of the \texttt{out.extra} chunk option, which can be used to shrink or expand an image loaded from a file by specifying \texttt{"scale=\ "}. Here we use the mathematical graph stored in the ``subdivision.pdf'' file.
-\begin{figure}
-\includegraphics[scale=0.75]{figure/subdivision} \caption{Subdiv. graph}\label{fig:subd}
-\end{figure}
-Here is a reference to this image: Figure \ref{fig:subd}. Note that \texttt{echo=FALSE} is specified so that the \textbf{R} code is hidden in the document.
-
-\textbf{More Figure Stuff}
-
-Lastly, we will explore how to rotate and enlarge figures using the \texttt{out.extra} chunk option. (Currently this only works in the PDF version of the book.)
-\begin{figure}
-\includegraphics[angle=180, scale=1.1]{figure/subdivision} \caption{A Larger Figure, Flipped Upside Down}\label{fig:subd2}
-\end{figure}
-As another example, here is a reference: Figure \ref{fig:subd2}.
-
-\hypertarget{footnotes-and-endnotes}{%
-\section{Footnotes and Endnotes}\label{footnotes-and-endnotes}}
-
-You might want to footnote something. \footnote{footnote text} The footnote will be in a smaller font and placed appropriately. Endnotes work in much the same way. More information can be found about both on the CUS site or feel free to reach out to \href{mailto:data@reed.edu}{\nolinkurl{data@reed.edu}}.
-
-\hypertarget{bibliographies}{%
-\section{Bibliographies}\label{bibliographies}}
-
-Of course you will need to cite things, and you will probably accumulate an armful of sources. There are a variety of tools available for creating a bibliography database (stored with the .bib extension). In addition to BibTeX suggested below, you may want to consider using the free and easy-to-use tool called Zotero. The Reed librarians have created Zotero documentation at \url{https://libguides.reed.edu/citation/zotero}. In addition, a tutorial is available from Middlebury College at \url{https://sites.middlebury.edu/zoteromiddlebury/}.
-
-\emph{R Markdown} uses \emph{pandoc} (\url{https://pandoc.org/}) to build its bibliographies. One nice caveat of this is that you won't have to do a second compile to load in references as standard LaTeX requires. To cite references in your thesis (after creating your bibliography database), place the reference name inside square brackets and precede it by the ``at'' symbol. For example, here's a reference to a book about worrying: (Molina \& Borkovec, 1994). This \texttt{Molina1994} entry appears in a file called \texttt{thesis.bib} in the \texttt{bib} folder. This bibliography database file was created by a program called BibTeX. You can call this file something else if you like (look at the YAML header in the main .Rmd file) and, by default, is to placed in the \texttt{bib} folder.
-
-For more information about BibTeX and bibliographies, see our CUS site (\url{https://web.reed.edu/cis/help/latex/index.html})\footnote{Reed~College (2007)}. There are three pages on this topic: \emph{bibtex} (which talks about using BibTeX, at \url{https://web.reed.edu/cis/help/latex/bibtex.html}), \emph{bibtexstyles} (about how to find and use the bibliography style that best suits your needs, at \url{https://web.reed.edu/cis/help/latex/bibtexstyles.html}) and \emph{bibman} (which covers how to make and maintain a bibliography by hand, without BibTeX, at \url{https://web.reed.edu/cis/help/latex/bibman.html}). The last page will not be useful unless you have only a few sources.
-
-If you look at the YAML header at the top of the main .Rmd file you can see that we can specify the style of the bibliography by referencing the appropriate csl file. You can download a variety of different style files at \url{https://www.zotero.org/styles}. Make sure to download the file into the csl folder.
-
-\vfill
-
-\textbf{Tips for Bibliographies}
-\begin{itemize}
-\tightlist
-\item
-  Like with thesis formatting, the sooner you start compiling your bibliography for something as large as thesis, the better. Typing in source after source is mind-numbing enough; do you really want to do it for hours on end in late April? Think of it as procrastination.
-\item
-  The cite key (a citation's label) needs to be unique from the other entries.
-\item
-  When you have more than one author or editor, you need to separate each author's name by the word ``and'' e.g.~\texttt{Author\ =\ \{Noble,\ Sam\ and\ Youngberg,\ Jessica\},}.
-\item
-  Bibliographies made using BibTeX (whether manually or using a manager) accept LaTeX markup, so you can italicize and add symbols as necessary.
-\item
-  To force capitalization in an article title or where all lowercase is generally used, bracket the capital letter in curly braces.
-\item
-  You can add a Reed Thesis citation\footnote{Noble (2002)} option. The best way to do this is to use the phdthesis type of citation, and use the optional ``type'' field to enter ``Reed thesis'' or ``Undergraduate thesis.''
-\end{itemize}
-\hypertarget{anything-else}{%
-\section{Anything else?}\label{anything-else}}
-
-If you'd like to see examples of other things in this template, please contact the Data @ Reed team (email \href{mailto:data@reed.edu}{\nolinkurl{data@reed.edu}}) with your suggestions. We love to see people using \emph{R Markdown} for their theses, and are happy to help.
+Here, in this chapter, we will investigate how our implementation holds up against other compression methods.
 
 \hypertarget{conclusion}{%
 \chapter*{Conclusion}\label{conclusion}}
@@ -1504,20 +1427,11 @@ Ibrahim, M., \& Gbolagade, K. (2020). Enhancing computational time of lempel-ziv
 \leavevmode\vadjust pre{\hypertarget{ref-KeerthyMID}{}}%
 Keerthy, P. (2019). Genomic sequence data compression using lempel-ziv-welch algorithm with indexed multiple dictionary. \emph{International Journal of Engineering and Advanced Technology}.
 
-\leavevmode\vadjust pre{\hypertarget{ref-Molina1994}{}}%
-Molina, S. T., \& Borkovec, T. D. (1994). The {P}enn {S}tate worry questionnaire: Psychometric properties and associated characteristics. In G. C. L. Davey \& F. Tallis (Eds.), \emph{Worrying: Perspectives on theory, assessment and treatment} (pp. 265--283). New York: Wiley.
-
-\leavevmode\vadjust pre{\hypertarget{ref-noble2002}{}}%
-Noble, S. G. (2002). \emph{Turning images into simple line-art} (Undergraduate thesis). Reed College.
-
 \leavevmode\vadjust pre{\hypertarget{ref-panialok}{}}%
 Pani, A., Mishra, M., \& Mishra, T. (2012). Parallel lempel-ziv-welch (PLZW) technique for data compression. \emph{International Journal of Computer Science and Information Technology}, \emph{3}, 4038--4040.
 
 \leavevmode\vadjust pre{\hypertarget{ref-prataspinho}{}}%
 Pratas, D., \& Pinho, A. (2018). A DNA sequence corpus for compression benchmark. In (pp. 208--215). http://doi.org/\href{https://doi.org/10.1007/978-3-319-98702-6_25}{10.1007/978-3-319-98702-6\_25}
-
-\leavevmode\vadjust pre{\hypertarget{ref-reedweb2007}{}}%
-Reed~College. (2007). LaTeX your document. Retrieved from \url{https://web.reed.edu/cis/help/LaTeX/index.html}
 
 \end{CSLReferences}
 
