@@ -155,6 +155,10 @@ void test_find_longest_looping_up(){
 
 void test_find_longest_binary_search(){
 
+
+	int index = (0<<6) + (1 << 4) + (2<<2) + 3;
+	uint32_t long_index = (index << 24) + (index << 16)  + (index << 8) + index;
+
 	// test len < pivot
 	{
 		LZW_Encode_Dictionary f;
@@ -168,7 +172,7 @@ void test_find_longest_binary_search(){
 		std::string input = "ACTGACTGACTGACTGACTG";
 
 		int ret;
-		ret = f.find_longest_binary_search(input.c_str(), 1, MAX_STRING_LENGTH);
+		ret = f.find_longest_binary_search(input.c_str(), 1, MAX_STRING_LENGTH, long_index);
 		std::string output = input.substr(0,ret);
 		assert(output == "ACT");
 		assert(f.code_of(output.c_str(), 3) == 3);
@@ -205,7 +209,7 @@ void test_find_longest_binary_search(){
 			f.add_string(input.substr(0,i).c_str(), i, i);
 		}
 		int ret;
-		ret = f.find_longest_binary_search(input.c_str(), 1, MAX_STRING_LENGTH);
+		ret = f.find_longest_binary_search(input.c_str(), 1, MAX_STRING_LENGTH, long_index);
 		std::string output = input.substr(0,ret);
 		assert(output == input.substr(0,pivot));
 		assert(f.code_of(output.c_str(), pivot) == pivot);

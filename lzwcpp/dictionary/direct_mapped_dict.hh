@@ -147,11 +147,13 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		// find longest using binary search.
 		// assumes that the longest run < max
 		// assumes that all characters are in starting dictionary
-		int find_longest_binary_search(const char* input, int left, int right){
+		int find_longest_binary_search(const char* input, int left, int right, index_type full_index){
 			int middle = left + ((right-left)/2);
 			int entry;
+			index_type index;
 			while(left <= right){
-				entry = code_of(input, middle);
+				index = full_index >> (INDEX_BITS-(middle)*2);
+				entry = code_of_manual(middle, index);
 				if (entry == 0){
 					right = middle - 1;
 					middle = left + ((right-left)/2);
@@ -181,13 +183,13 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			uint64_t second_half = _pext_u64(swapped2, MASK);
 			index_type next_long_index = (first_half << NEXT_LONGEST_INDEX_SIZE) + second_half;
 				
-			// check the starting length
-			index_type index_for_fl_start = next_long_index >> (INDEX_BITS-(FIND_LONGEST_START*2));
-			int entry = code_of_manual(FIND_LONGEST_START, index_for_fl_start);
-			if(entry == 0){
-				return find_longest_looping_down(FIND_LONGEST_START, index_for_fl_start);
-			}
-			return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START, next_long_index);
+			/* // check the starting length */
+			/* index_type index_for_fl_start = next_long_index >> (INDEX_BITS-(FIND_LONGEST_START*2)); */
+			/* int entry = code_of_manual(FIND_LONGEST_START, index_for_fl_start); */
+			/* if(entry == 0){ */
+			/* 	return find_longest_looping_down(FIND_LONGEST_START, index_for_fl_start); */
+			/* } */
+			/* return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START, next_long_index); */
 
 			// start at start and binary search
 			//
@@ -195,13 +197,13 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			/* if(input+MAX_STRING_LENGTH> end_of_input){ */
 			/* 	return find_longest_looping_up(input, end_of_input, 0, 0); */
 			/* } */
-			/* // check the starting string */
-			/* int index = map_str(input, FIND_LONGEST_START); */
-			/* int entry = code_of_manual(FIND_LONGEST_START, index); */
-			/* if(entry == 0){ */
-			/* 	return find_longest_binary_search(input, 1, FIND_LONGEST_START-1); */
-			/* } */
-			/* return find_longest_binary_search(input, FIND_LONGEST_START+1, MAX_STRING_LENGTH); */
+			// check the starting string
+			int index = map_str(input, FIND_LONGEST_START);
+			int entry = code_of_manual(FIND_LONGEST_START, index);
+			if(entry == 0){
+				return find_longest_binary_search(input, 1, FIND_LONGEST_START-1, next_long_index);
+			}
+			return find_longest_binary_search(input, FIND_LONGEST_START+1, MAX_STRING_LENGTH, next_long_index);
 			
 
 			// loop up from 0 
