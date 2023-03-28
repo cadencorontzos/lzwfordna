@@ -33,6 +33,9 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		const int INDEX_BITS = CHAR_BIT*sizeof(index_type);
 		std::array<int, 1<<CHAR_BIT> values;
 		const int FIND_LONGEST_START = 7;
+		const int NEXT_LONGEST_INDEX_SIZE = 16;
+		// 00000110 00000110 00000110 00000110 00000110 00000110 00000110 00000110
+		const uint64_t MASK = 434041037028460038;
 
 		index_type map_str(const char* input, unsigned len) const{
 			index_type result = 0;
@@ -71,8 +74,8 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 
 			// load the code values for our neucleotides
 			values['A']	= 0;
-			values['T']	= 1;
-			values['C']	= 2;
+			values['C']	= 1;
+			values['T']	= 2;
 			values['G']	= 3;
 			
 		} 
@@ -89,8 +92,9 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 			return lookup;
 		}
 
+		
 		// We assume that the start is already in the dictionary, and loop up from there
-		int find_longest_looping_up(const char* input, const char* end_of_input, int start, int index){
+		int find_longest_looping_up_on_fly(const char* input, const char* end_of_input, int start, int index){
 			int length = start;
 			int entry = 0;
 			while(input+length < end_of_input && length < MAX_STRING_LENGTH) {
@@ -102,8 +106,21 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 				}
 				length++;
 			}
-			if(length == 0){
-				return 0;
+			return length;
+		
+		}
+
+		// We assume that the start is already in the dictionary, and loop up from there
+		int find_longest_looping_up(const char* input, const char* end_of_input, int start, index_type index){
+			int length = start;
+			int entry = 0;
+			while(input+length < end_of_input && length < MAX_STRING_LENGTH) {
+				entry = code_of_manual(length+1, (index >> (INDEX_BITS-(length+1)*2)));
+				// if entry is non zero, it means we have seen that string before
+				if (entry == 0){
+					return length;
+				}
+				length++;
 			}
 			return length;
 		
@@ -153,30 +170,38 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 		int find_longest_in_dict(const char* input, const char* end_of_input) override{
 			
 			// start at start and loop up or down
-			/* if(input+FIND_LONGEST_START > end_of_input){ */
-			/* 	return find_longest_looping_up(input, end_of_input, 0, 0); */
-			/* } */
-			/* // check the starting length */
-			/* int index = map_str(input, FIND_LONGEST_START); */
-			/* int entry = code_of_manual(FIND_LONGEST_START, index); */
-			/* if(entry == 0){ */
-			/* 	return find_longest_looping_down(input, FIND_LONGEST_START, index); */
-			/* } */
-			/* return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START, index); */
+			if(input+16 > end_of_input){
+				return find_longest_looping_up_on_fly(input, end_of_input, 0, 0);
+			}
+
+			const uint64_t*  input_ints = reinterpret_cast<const uint64_t*>(input);
+			uint64_t swapped = _bswap64(input_ints[0]);
+			uint64_t swapped2 = _bswap64(input_ints[1]);
+			uint64_t first_half = _pext_u64(swapped, MASK);
+			uint64_t second_half = _pext_u64(swapped2, MASK);
+			index_type next_long_index = (first_half << NEXT_LONGEST_INDEX_SIZE) + second_half;
+				
+			// check the starting length
+			index_type index_for_fl_start = next_long_index >> (INDEX_BITS-(FIND_LONGEST_START*2));
+			int entry = code_of_manual(FIND_LONGEST_START, index_for_fl_start);
+			if(entry == 0){
+				return find_longest_looping_down(FIND_LONGEST_START, index_for_fl_start);
+			}
+			return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START, next_long_index);
 
 			// start at start and binary search
 			//
 			// if we don't have enough input left, loop up from 0
-			if(input+MAX_STRING_LENGTH> end_of_input){
-				return find_longest_looping_up(input, end_of_input, 0, 0);
-			}
-			// check the starting string
-			int index = map_str(input, FIND_LONGEST_START);
-			int entry = code_of_manual(FIND_LONGEST_START, index);
-			if(entry == 0){
-				return find_longest_binary_search(input, 1, FIND_LONGEST_START-1);
-			}
-			return find_longest_binary_search(input, FIND_LONGEST_START+1, MAX_STRING_LENGTH);
+			/* if(input+MAX_STRING_LENGTH> end_of_input){ */
+			/* 	return find_longest_looping_up(input, end_of_input, 0, 0); */
+			/* } */
+			/* // check the starting string */
+			/* int index = map_str(input, FIND_LONGEST_START); */
+			/* int entry = code_of_manual(FIND_LONGEST_START, index); */
+			/* if(entry == 0){ */
+			/* 	return find_longest_binary_search(input, 1, FIND_LONGEST_START-1); */
+			/* } */
+			/* return find_longest_binary_search(input, FIND_LONGEST_START+1, MAX_STRING_LENGTH); */
 			
 
 			// loop up from 0 
@@ -213,8 +238,8 @@ class LZW_Encode_Dictionary: private LZWDictionary<codeword_type>{
 
 		void load_starting_dictionary() override{
 			add_string("A", 1, 1);
-			add_string("T", 1, 2);
-			add_string("C", 1, 3);
+			add_string("C", 1, 2);
+			add_string("T", 1, 3);
 			add_string("G", 1, 4);
 		}
 
@@ -247,8 +272,8 @@ class LZW_Decode_Dictionary: private LZWDictionary<codeword_type>{
 
 		void load_starting_dictionary() override{
 			add_string("A", 1);
-			add_string("T", 2);
-			add_string("C", 3);
+			add_string("C", 2);
+			add_string("T", 3);
 			add_string("G", 4);
 		}
 };
