@@ -448,9 +448,7 @@ LZW(input):
 \hypertarget{optimizing-lzw-approach}{%
 \chapter{Optimizing LZW: Approach}\label{optimizing-lzw-approach}}
 
-To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++.
-
-\textbf{TODO}: Elaborate here
+To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++. A majority of the work in this thesis involved rewriting, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
 
 \hypertarget{supporting-research}{%
 \section{Supporting Research}\label{supporting-research}}
@@ -464,7 +462,7 @@ Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv We
 \hypertarget{corpora}{%
 \section{Corpora}\label{corpora}}
 
-Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare different algorithms to one another.
+Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the performance of different algorithms to one another.
 
 In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications (Grumbach \& Tahi, 1994).
 \begin{longtable}[]{@{}cc@{}}
@@ -525,7 +523,7 @@ This particular dataset is publicly available at this \href{https://tinyurl.com/
 
 Evaluating performance of a program is difficult. There is a notion of theoretical run time, but on an actual computer there are many processes running in the background, so it can be hard to get a consistent reading on performance.
 
-To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs.
+To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, all versions of the algorithm for a particular table were ran on the same computer.
 
 \hypertarget{a-starting-point}{%
 \section{A Starting Point}\label{a-starting-point}}
@@ -535,7 +533,7 @@ As a starting point, we thought it was best to get a working implementation of L
 \hypertarget{growing-codewords-and-bit-output}{%
 \subsection{Growing Codewords and Bit Output}\label{growing-codewords-and-bit-output}}
 
-When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance \texttt{01000001} stands for the letter `A' in ASCII encoding. Numbers are more simple to display, so \texttt{00000001} is 1, \texttt{00000010} is 2, and so on.
+When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance \texttt{01000001} stands for the letter `A' in ASCII encoding. Numbers in binary are more simple to display, so \texttt{00000001} is 1, \texttt{00000010} is 2, and so on.
 
 But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, \texttt{1} is the same as \texttt{01} is the same as \texttt{00000000000001}. So when we are outputting codewords for LZW, we don't necessarily need to output a whole byte. We can have growing codewords.
 
@@ -545,7 +543,7 @@ So we needed a method of outputting bits one by one, and reading in bits one by 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{// BitInput: Read a single bit at a time from an input stream.}
-\CommentTok{// Before reading any bits, ensure your input stream still has valid inputs.}
+\CommentTok{// Before reading any bits, ensure input stream still has valid input}
 \KeywordTok{class}\NormalTok{ BitInput }\OperatorTok{\{}
  \KeywordTok{public}\OperatorTok{:}
   \CommentTok{// Construct with an input stream}
@@ -554,22 +552,21 @@ So we needed a method of outputting bits one by one, and reading in bits one by 
 \NormalTok{  BitInput}\OperatorTok{(}\AttributeTok{const}\NormalTok{ BitInput}\OperatorTok{\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
 \NormalTok{  BitInput}\OperatorTok{(}\NormalTok{BitInput}\OperatorTok{\&\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
 
-  \CommentTok{// bool eof();}
   \CommentTok{// Read a single bit (or trailing zero)}
-  \CommentTok{// Allowed to crash or throw an exception if called past end{-}of{-}file.}
+  \CommentTok{// Allowed to crash or throw an exception if past end{-}of{-}file.}
   \DataTypeTok{bool}\NormalTok{ input\_bit}\OperatorTok{();}
 
   \DataTypeTok{int}\NormalTok{ read\_n\_bits}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ n}\OperatorTok{);}
 \OperatorTok{\}}
 
 \CommentTok{// BitOutput: Write a single bit at a time to an output stream}
-\CommentTok{// Make sure all bits are written out by the time the destructor is done.}
+\CommentTok{// Make sure all bits are written out when exiting scope}
 \KeywordTok{class}\NormalTok{ BitOutput }\OperatorTok{\{}
  \KeywordTok{public}\OperatorTok{:}
   \CommentTok{// Construct with an input stream}
 \NormalTok{  BitOutput}\OperatorTok{(}\BuiltInTok{std::}\NormalTok{ostream}\OperatorTok{\&}\NormalTok{ os}\OperatorTok{);}
 
-  \CommentTok{// Flushes out any remaining output bits and trailing zeros, if any:}
+  \CommentTok{// Flushes out any remaining bits and trailing zeros, if any:}
   \OperatorTok{\textasciitilde{}}\NormalTok{BitOutput}\OperatorTok{();}
 
 \NormalTok{  BitOutput}\OperatorTok{(}\AttributeTok{const}\NormalTok{ BitOutput}\OperatorTok{\&)} \OperatorTok{=} \ControlFlowTok{default}\OperatorTok{;}
@@ -617,28 +614,28 @@ The problem was, what about what is left over? Suppose we are reading a file, an
 We solved this issue by adding 2 extra bits after the EOF codeword. These bits denote the case that occurred
 \begin{Shaded}
 \begin{Highlighting}[]
-    \CommentTok{// after we\textquotesingle{}ve encoded, we either have }
-    \CommentTok{// no current block (case 0)}
-    \CommentTok{// we have a current block that is a single character (case 1)}
-    \CommentTok{// otherwise we have a current block \textgreater{} 1 byte (default)}
-    \ControlFlowTok{switch} \OperatorTok{(}\NormalTok{currentBlock}\OperatorTok{.}\NormalTok{length}\OperatorTok{())\{}
-    \ControlFlowTok{case} \DecValTok{0}\OperatorTok{:}
-\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
-\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
-        \ControlFlowTok{break}\OperatorTok{;}
-    \ControlFlowTok{case} \DecValTok{1}\OperatorTok{:}
-\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
-\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
-\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_n\_bits}\OperatorTok{((}\DataTypeTok{int}\OperatorTok{)}\NormalTok{ currentBlock}\OperatorTok{[}\DecValTok{0}\OperatorTok{],}\NormalTok{ CHAR\_BIT}\OperatorTok{);}
-        \ControlFlowTok{break}\OperatorTok{;}
-    \ControlFlowTok{default}\OperatorTok{:}
-\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
-\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
+\CommentTok{// after we\textquotesingle{}ve encoded, we either have }
+\CommentTok{// no current block (case 0)}
+\CommentTok{// we have a current block that is a single character (case 1)}
+\CommentTok{// otherwise we have a current block \textgreater{} 1 byte (default)}
+\ControlFlowTok{switch} \OperatorTok{(}\NormalTok{currentBlock}\OperatorTok{.}\NormalTok{length}\OperatorTok{())\{}
+\ControlFlowTok{case} \DecValTok{0}\OperatorTok{:}
+\NormalTok{    bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
+\NormalTok{    bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
+    \ControlFlowTok{break}\OperatorTok{;}
+\ControlFlowTok{case} \DecValTok{1}\OperatorTok{:}
+\NormalTok{    bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{false}\OperatorTok{);}
+\NormalTok{    bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
+\NormalTok{    bit\_output}\OperatorTok{.}\NormalTok{output\_n\_bits}\OperatorTok{((}\DataTypeTok{int}\OperatorTok{)}\NormalTok{ currentBlock}\OperatorTok{[}\DecValTok{0}\OperatorTok{],}\NormalTok{ CHAR\_BIT}\OperatorTok{);}
+    \ControlFlowTok{break}\OperatorTok{;}
+\ControlFlowTok{default}\OperatorTok{:}
+\NormalTok{    bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
+\NormalTok{    bit\_output}\OperatorTok{.}\NormalTok{output\_bit}\OperatorTok{(}\KeywordTok{true}\OperatorTok{);}
 
-        \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{[}\NormalTok{currentBlock}\OperatorTok{];}
-\NormalTok{        bit\_output}\OperatorTok{.}\NormalTok{output\_n\_bits}\OperatorTok{(}\NormalTok{code}\OperatorTok{,}\NormalTok{ codeword\_size}\OperatorTok{);}
-        \ControlFlowTok{break}\OperatorTok{;}
-    \OperatorTok{\}}
+    \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{[}\NormalTok{currentBlock}\OperatorTok{];}
+\NormalTok{    bit\_output}\OperatorTok{.}\NormalTok{output\_n\_bits}\OperatorTok{(}\NormalTok{code}\OperatorTok{,}\NormalTok{ codeword\_size}\OperatorTok{);}
+    \ControlFlowTok{break}\OperatorTok{;}
+\OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
 So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
@@ -724,11 +721,10 @@ The callgrind output drew attention to one particular part of the code. A C++ \t
 The check for this in our algorithm looked like this.
 \begin{Shaded}
 \begin{Highlighting}[]
-        \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
-        \CommentTok{// }\AlertTok{TODO}\CommentTok{: use cend() and save this iterator}
-        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ dictionary}\OperatorTok{.}\NormalTok{end}\OperatorTok{())\{}
-\NormalTok{            currentBlock }\OperatorTok{=}\NormalTok{ currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
-        \OperatorTok{\}}
+\CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
+\ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ dictionary}\OperatorTok{.}\NormalTok{end}\OperatorTok{())\{}
+\NormalTok{    currentBlock }\OperatorTok{=}\NormalTok{ currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+\OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
 Here is the callgrind output for that line.
@@ -817,35 +813,35 @@ Another thing that I noticed from the callgrind output was that a lot of time/in
 In the version of the algorithm at the time, every time we have already seen a sequence, we have to concatenate a character. I noticed that I was doing this concatenation multiple times without needing to.
 \begin{Shaded}
 \begin{Highlighting}[]
-        \CommentTok{// we concatenate the strings here}
-        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end }\OperatorTok{)\{}
-            \CommentTok{// and here}
-\NormalTok{            currentBlock }\OperatorTok{=}\NormalTok{ currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
-        \OperatorTok{\}}
-        \ControlFlowTok{else}\OperatorTok{\{}
+\CommentTok{// we concatenate the strings here}
+\ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end }\OperatorTok{)\{}
+    \CommentTok{// and here}
+\NormalTok{    currentBlock }\OperatorTok{=}\NormalTok{ currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+\OperatorTok{\}}
+\ControlFlowTok{else}\OperatorTok{\{}
 
-            \CommentTok{// other code here ommitted}
+    \CommentTok{// other code here ommitted}
 
 
-            \CommentTok{// and here! }
-\NormalTok{            dictionary}\OperatorTok{[}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{]} \OperatorTok{=}\NormalTok{ codeword}\OperatorTok{;}
-        \OperatorTok{\}}
+    \CommentTok{// and here! }
+\NormalTok{    dictionary}\OperatorTok{[}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{]} \OperatorTok{=}\NormalTok{ codeword}\OperatorTok{;}
+\OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
-If I just concatenate them and save the output into a new string, that will save me from doing the concatenation 2 more times.
+If I just save \texttt{currentBlock\ +\ next\_character} into a new variable, that will save me from doing the concatenation 2 more times.
 \begin{Shaded}
 \begin{Highlighting}[]
-    \CommentTok{// save concatenation here}
-      \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
-        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end }\OperatorTok{)\{}
-\NormalTok{            current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
-        \OperatorTok{\}}
-        \ControlFlowTok{else}\OperatorTok{\{}
+\CommentTok{// save concatenation here}
+\BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+\ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end }\OperatorTok{)\{}
+\NormalTok{    current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
+\OperatorTok{\}}
+\ControlFlowTok{else}\OperatorTok{\{}
 
-    \CommentTok{// other code omitted here}
+\CommentTok{// other code omitted here}
 
-\NormalTok{            dictionary}\OperatorTok{[}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{]} \OperatorTok{=}\NormalTok{ codeword}\OperatorTok{;}
-        \OperatorTok{\}}
+\NormalTok{    dictionary}\OperatorTok{[}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{]} \OperatorTok{=}\NormalTok{ codeword}\OperatorTok{;}
+\OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
 Here are the statistics on the version of the algorithm after this change.
@@ -915,55 +911,54 @@ But, the current string on this iteration is the current string from the last it
 See the code below
 \begin{Shaded}
 \begin{Highlighting}[]
-    \ControlFlowTok{while}\OperatorTok{(}\NormalTok{next\_character }\OperatorTok{!=}\NormalTok{ EOF}\OperatorTok{)\{}
+\ControlFlowTok{while}\OperatorTok{(}\NormalTok{next\_character }\OperatorTok{!=}\NormalTok{ EOF}\OperatorTok{)\{}
+
+    \CommentTok{// code omitted}
+
+
+    \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
+    \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+    \CommentTok{// save this iterator\textasciigrave{}}
+    \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ not\_in\_dictionary }\OperatorTok{)\{}
+\NormalTok{        current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
+    \OperatorTok{\}}
+    \ControlFlowTok{else}\OperatorTok{\{}
+
+        \CommentTok{// shouldn\textquotesingle{}t look up again}
+        \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{[}\NormalTok{current\_string\_seen}\OperatorTok{];}
+
 
         \CommentTok{// code omitted}
-
-
-        \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
-        \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
-        \CommentTok{// save this iterator\textasciigrave{}}
-        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ not\_in\_dictionary }\OperatorTok{)\{}
-\NormalTok{            current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
-        \OperatorTok{\}}
-        \ControlFlowTok{else}\OperatorTok{\{}
-
-            \CommentTok{// shouldn\textquotesingle{}t look up again}
-            \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{[}\NormalTok{current\_string\_seen}\OperatorTok{];}
-
-
-            \CommentTok{// code omitted}
-        \OperatorTok{\}}
-\NormalTok{        next\_character }\OperatorTok{=}\NormalTok{ input}\OperatorTok{.}\NormalTok{get}\OperatorTok{();}
     \OperatorTok{\}}
+\NormalTok{    next\_character }\OperatorTok{=}\NormalTok{ input}\OperatorTok{.}\NormalTok{get}\OperatorTok{();}
+\OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
 We can save that lookup, like so.
 \begin{Shaded}
 \begin{Highlighting}[]
 
-    \ControlFlowTok{while}\OperatorTok{(}\NormalTok{next\_character }\OperatorTok{!=}\NormalTok{ EOF}\OperatorTok{)\{}
+\ControlFlowTok{while}\OperatorTok{(}\NormalTok{next\_character }\OperatorTok{!=}\NormalTok{ EOF}\OperatorTok{)\{}
 
-        \CommentTok{// code ommitted}
+    \CommentTok{// code ommitted}
 
-        \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
-        \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
-\NormalTok{        codeword\_seen\_now }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{);}
-        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{codeword\_seen\_now }\OperatorTok{!=}\NormalTok{ not\_in\_dictionary }\OperatorTok{)\{}
-\NormalTok{            current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
-\NormalTok{            codeword\_seen\_previously }\OperatorTok{=}\NormalTok{ codeword\_seen\_now}\OperatorTok{;} \CommentTok{// save codeword here}
-        \OperatorTok{\}}
-        \ControlFlowTok{else}\OperatorTok{\{}
-
-            \CommentTok{// lookup the current block in the dictionary and output it, along with the new character}
-
-            \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ codeword\_seen\_previously}\OperatorTok{{-}\textgreater{}}\NormalTok{second}\OperatorTok{;} \CommentTok{// on the next iteration, we use it here}
-
-            \CommentTok{// code omitted}
-
-        \OperatorTok{\}}
-\NormalTok{        next\_character }\OperatorTok{=}\NormalTok{ input}\OperatorTok{.}\NormalTok{get}\OperatorTok{();}
+    \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
+    \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+\NormalTok{    codeword\_seen\_now }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{);}
+    \ControlFlowTok{if} \OperatorTok{(}\NormalTok{codeword\_seen\_now }\OperatorTok{!=}\NormalTok{ not\_in\_dictionary }\OperatorTok{)\{}
+\NormalTok{        current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
+\NormalTok{        codeword\_seen\_previously }\OperatorTok{=}\NormalTok{ codeword\_seen\_now}\OperatorTok{;} \CommentTok{// save codeword here}
     \OperatorTok{\}}
+    \ControlFlowTok{else}\OperatorTok{\{}
+
+        \CommentTok{// on the next iteration, we use it here}
+        \DataTypeTok{int}\NormalTok{ code }\OperatorTok{=}\NormalTok{ codeword\_seen\_previously}\OperatorTok{{-}\textgreater{}}\NormalTok{second}\OperatorTok{;}
+
+        \CommentTok{// code omitted}
+
+    \OperatorTok{\}}
+\NormalTok{    next\_character }\OperatorTok{=}\NormalTok{ input}\OperatorTok{.}\NormalTok{get}\OperatorTok{();}
+\OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
 Here are the stats of the version of the algorithm after this change.
@@ -1027,8 +1022,6 @@ DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1254 & 231\\
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
 When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time.
-
-\textbf{TODO}: Need to talk about getting rid of string concatenation at some point.
 \begin{table}[H]
 
 \caption{\label{tab:charstarstatsfig}Corpus 1 Stats after using character pointers}
@@ -1146,7 +1139,7 @@ X & average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\
 \includegraphics{thesis_files/figure-latex/allrunshistfig-1.pdf}
 \caption{\label{fig:allrunshistfig}A histogram showing the lengths of runs for both copora.}
 \end{figure}
-Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 20.
+Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 15.
 
 To achieve this, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters (`A', `C', `T', and `G'), we can represent the characters with two bits. So for a length \texttt{n} string, we can represent it with \texttt{2n} bits.
 
@@ -1210,18 +1203,15 @@ DNACorpus2/PlFa & 8986712 & 2972072 & 3.024 & 106 & 67\\
 \bottomrule
 \end{tabular}}
 \end{table}
-Here is a comparison for different max string lengths
-\begin{figure}
-\centering
+Here is a comparison for different max string lengths.
+
 \includegraphics{thesis_files/figure-latex/directmaplenthcompfig-1.pdf}
-\caption{\label{fig:directmaplenthcompfig}Comparing different max lengths for Direct Map}
-\end{figure}
-\textbf{TODO}: Have data for multiple different direct map sizes. Also talk about the fixed codeword size and what happens when we run out.
+The direct map method is very memory intensive, so having a max length over 15 is not feasible. At this point, if any runs are longer than the max string length, we just use a regular dictionary to accommodate them.
 
 \hypertarget{multiple-indexed-dictionaries}{%
 \subsection{Multiple Indexed Dictionaries}\label{multiple-indexed-dictionaries}}
 
-As stated before, there have been research papers about the
+As stated before, there have been research papers about the possibility of using multiple indexed dictionaries for LZW, including Keerthy (Keerthy, 2019).
 
 Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary.
 \begin{table}[H]
@@ -1278,8 +1268,6 @@ DNACorpus2/PlFa & 8986712 & 2895340 & 3.104 & 892 & 211\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\pagebreak
-
 \includegraphics{thesis_files/figure-latex/multdictlengthcompfig-1.pdf}
 Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
 \begin{figure}
@@ -1301,8 +1289,8 @@ Here is a comparison of all three techniques: Standard Dictionary, Multiple Stan
 
 Since the Direct map dictionary was a standout in performance, we decided to focus on optimizing it even further.
 
-\hypertarget{get-longest}{%
-\subsection{Get Longest}\label{get-longest}}
+\hypertarget{finding-the-longest-runs}{%
+\subsection{Finding the Longest Runs}\label{finding-the-longest-runs}}
 
 Our dictionary data structures all have a \texttt{get\_longest\_in\_dict} function. This function does the boring work of iterating through the input from the start, checking if each substring is in the dictionary.
 
@@ -1314,21 +1302,56 @@ Another strategy would be to start from the maximum string length of the diction
 \includegraphics{thesis_files/figure-latex/findlongestfrommaxfig-1.pdf}
 \caption{\label{fig:findlongestfrommaxfig}Comparing the different ways of finding the longest run}
 \end{figure}
+We see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in \ref{fig:allrunshistfig}. This means that if we start looking from runs around length 10, we should see a performance improvement.
+
+\hypertarget{finding-the-longest-from-the-average}{%
+\subsection{Finding the Longest From The Average}\label{finding-the-longest-from-the-average}}
+
+Here are the results when we try looking for runs starting at the average.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/findlongestfromavg-1.pdf}
-\caption{\label{fig:findlongestfromavg}Comparing the different ways of finding the longest run starting at the average}
+\caption{\label{fig:findlongestfromavg}Comparing the different ways of finding the longest run}
 \end{figure}
-\begin{figure}
-\centering
+As we predicted, this greatly improves performance. We are capitalizing on the fact that most runs are short. There is the occasional run that is very long, but from the run statistics we saw that the standard deviation for both corpora was pretty small. So on the edge cases in which there are very long runs, we could be wasting a lot of time.
+
+\hypertarget{not-allowing-strings-over-max}{%
+\subsection{Not Allowing strings over max}\label{not-allowing-strings-over-max}}
+
+One way to avoid the edge case where we encounter a very long run is to just not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the hashmap on top of our dictionary, but we will take a hit in compression ratio.
+
+Here is a graph comparing the different strategies.
+
 \includegraphics{thesis_files/figure-latex/findlongestwmax-1.pdf}
-\caption{\label{fig:findlongestwmax}Comparing the different ways of finding the longest run starting at average with strings over max not accepted}
-\end{figure}
+There isn't too much of a performance improvement, which makes sense because long runs are very rare. Let's see how it affects our compression ratio.
+\begin{table}[H]
+
+\caption{\label{tab:maxenforcedstats}Compression Ratio change from disallowing long strings}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{rr}
+\toprule
+cr\_before & cr\_after\\
+\midrule
+\cellcolor{gray!6}{2.909175} & \cellcolor{gray!6}{2.907686}\\
+\bottomrule
+\end{tabular}}
+\end{table}
+The effect on the total compression ratio is minimal
+
+\hypertarget{using-pext}{%
+\subsection{\texorpdfstring{Using \texttt{pext}}{Using pext}}\label{using-pext}}
+
+One potential bottleneck of finding the longest run is converting a run of characters into an index. We can try to do it on the fly as we loop up or down, but we could also use machine instructions.
+
+Our strategy is to use \texttt{pext}, which extracts parallel bits. We give \texttt{pext} a string of characters, say `ACTG', and a bit mask, and it will extract those bits from our string. It theoretically does this in one machine instruction, which could be much more efficient than looping over all the characters.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/findlongestwpext-1.pdf}
 \caption{\label{fig:findlongestwpext}Comparing the different ways of finding the longest run with pext}
 \end{figure}
+Why doesn't it work?
+
 \hypertarget{comparison-to-other-tools}{%
 \chapter{Comparison to other tools}\label{comparison-to-other-tools}}
 

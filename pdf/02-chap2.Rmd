@@ -120,7 +120,7 @@ stats_csv <- function(filename, caption = "Foo"){
 ```
 
 ```{r comparecorporafunc, echo = F}
-compare_coprora <- function(array, per_corpus = FALSE){
+compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
 	df <- data.frame()
   ord <- 1
 	for(corpus_pair in array){
@@ -134,7 +134,7 @@ compare_coprora <- function(array, per_corpus = FALSE){
 		means <- harmonic_mean(comb)
 
 		comb<- comb %>% reframe(
-		  comp_throughput = sum(Original.File.Size)/sum(Compression.Time),
+		  comp_throughput = sum(Original.File.Size)/(1000*sum(Compression.Time)),
 		  hm_comp = means$harmonic_mean_comp,
 		  description = corpus_pair[3],
 		  order = ord,
@@ -148,13 +148,13 @@ compare_coprora <- function(array, per_corpus = FALSE){
     ggplot(aes(x = reorder(description, order), y = comp_throughput, fill = description))+
     geom_col(show.legend = F)+
     {if(per_corpus)facet_wrap(~corpus)}+
-    labs(x="Milestone", y = "Throughput(bytes/ms)", title = "Throughput")+
+    labs(x=x_axis, y = "Throughput(bytes/s)", title = "Throughput")+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   plot2 <- df %>% 
     ggplot(aes(x = reorder(description, order), y = hm_comp, fill = description))+
     geom_col(show.legend = F)+
     {if(per_corpus)facet_wrap(~corpus)}+
-    labs(x="Milestone", y = "Mean Compression Time (ms)", title = "Average Compression Time")+
+    labs(x=x_axis, y = "Mean Compression Time (ms)", title = "Average Compression Time")+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   plot1/plot2
 }
@@ -170,7 +170,7 @@ compare_max_string_lengths <- function(array){
 		means <- harmonic_mean(comb)
 
 		comb<- comb %>% reframe(
-		  comp_throughput = sum(Original.File.Size)/sum(Compression.Time),
+		  comp_throughput = sum(Original.File.Size)/( 1000 * sum(Compression.Time)),
 		  hm_comp = means$harmonic_mean_comp,
 		  size = corpus_pair[3],
 		)
@@ -179,7 +179,7 @@ compare_max_string_lengths <- function(array){
   plot1<- df %>% 
     ggplot(aes(x = size, y = comp_throughput, fill = size))+
     geom_col()+
-    labs(x="Max String Length", y = "Throughput(bytes/ms)")
+    labs(x="Max String Length", y = "Throughput(bytes/s)")
   plot2 <- df %>% 
     ggplot(aes(x = size, y = hm_comp, fill = size))+
     geom_col()+
@@ -191,9 +191,7 @@ compare_max_string_lengths <- function(array){
 
 # Optimizing LZW: Approach
 
-To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++.
-
-**TODO**: Elaborate here
+To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++. A majority of the work in this thesis involved rewriting, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
 
 ## Supporting Research
 
@@ -205,7 +203,7 @@ Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv We
 
 ## Corpora
 
-Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare different algorithms to one another. 
+Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the performance of different algorithms to one another. 
 
 In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications [@grumbach].
 
@@ -224,7 +222,7 @@ This particular dataset is publicly available at this [link](https://tinyurl.com
 
 Evaluating performance of a program is difficult. There is a notion of theoretical run time, but on an actual computer there are many processes running in the background, so it can be hard to get a consistent reading on performance.
 
-To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs.
+To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, all versions of the algorithm for a particular table were ran on the same computer.
 
 ## A Starting Point
 
@@ -233,7 +231,7 @@ As a starting point, we thought it was best to get a working implementation of L
 
 ### Growing Codewords and Bit Output
 
-When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance `01000001` stands for the letter 'A' in ASCII encoding. Numbers are more simple to display, so `00000001` is 1, `00000010` is 2, and so on.
+When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance `01000001` stands for the letter 'A' in ASCII encoding. Numbers in binary are more simple to display, so `00000001` is 1, `00000010` is 2, and so on.
 
 But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, `1` is the same as `01` is the same as `00000000000001`. So when we are outputting codewords for LZW, we don't necessarily need to output a whole byte. We can have growing codewords.
 
@@ -243,7 +241,7 @@ So we needed a method of outputting bits one by one, and reading in bits one by 
 
 ```c++
 // BitInput: Read a single bit at a time from an input stream.
-// Before reading any bits, ensure your input stream still has valid inputs.
+// Before reading any bits, ensure input stream still has valid input
 class BitInput {
  public:
   // Construct with an input stream
@@ -252,22 +250,21 @@ class BitInput {
   BitInput(const BitInput&) = default;
   BitInput(BitInput&&) = default;
 
-  // bool eof();
   // Read a single bit (or trailing zero)
-  // Allowed to crash or throw an exception if called past end-of-file.
+  // Allowed to crash or throw an exception if past end-of-file.
   bool input_bit();
 
   int read_n_bits(int n);
 }
 
 // BitOutput: Write a single bit at a time to an output stream
-// Make sure all bits are written out by the time the destructor is done.
+// Make sure all bits are written out when exiting scope
 class BitOutput {
  public:
   // Construct with an input stream
   BitOutput(std::ostream& os);
 
-  // Flushes out any remaining output bits and trailing zeros, if any:
+  // Flushes out any remaining bits and trailing zeros, if any:
   ~BitOutput();
 
   BitOutput(const BitOutput&) = default;
@@ -299,7 +296,6 @@ The solution was to reserve a codeword to mark the end of the file. So we start 
 ```
 Then use the code 256 to denote the end of file. So the algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword. 
 
-
 The problem was, what about what is left over? Suppose we are reading a file, and the file ends with "ACCT". If "A" is in the dictionary, we see if "AC" is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
 
 1. "ACC" was in the dictionary but "ACCT" was not. This means we can output the codeword for "ACC", follow it by the character "T", and we are done. This is the ideal scenario, because nothing is left over when we output the EOF codeword
@@ -309,28 +305,28 @@ The problem was, what about what is left over? Suppose we are reading a file, an
 We solved this issue by adding 2 extra bits after the EOF codeword. These bits denote the case that occurred
 
 ```c++
-    // after we've encoded, we either have 
-    // no current block (case 0)
-    // we have a current block that is a single character (case 1)
-    // otherwise we have a current block > 1 byte (default)
-    switch (currentBlock.length()){
-    case 0:
-        bit_output.output_bit(false);
-        bit_output.output_bit(false);
-        break;
-    case 1:
-        bit_output.output_bit(false);
-        bit_output.output_bit(true);
-        bit_output.output_n_bits((int) currentBlock[0], CHAR_BIT);
-        break;
-    default:
-        bit_output.output_bit(true);
-        bit_output.output_bit(true);
+// after we've encoded, we either have 
+// no current block (case 0)
+// we have a current block that is a single character (case 1)
+// otherwise we have a current block > 1 byte (default)
+switch (currentBlock.length()){
+case 0:
+	bit_output.output_bit(false);
+	bit_output.output_bit(false);
+	break;
+case 1:
+	bit_output.output_bit(false);
+	bit_output.output_bit(true);
+	bit_output.output_n_bits((int) currentBlock[0], CHAR_BIT);
+	break;
+default:
+	bit_output.output_bit(true);
+	bit_output.output_bit(true);
 
-        int code = dictionary[currentBlock];
-        bit_output.output_n_bits(code, codeword_size);
-        break;
-    }
+	int code = dictionary[currentBlock];
+	bit_output.output_n_bits(code, codeword_size);
+	break;
+}
 ```
 So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
@@ -365,11 +361,10 @@ The callgrind output drew attention to one particular part of the code. A C++ `u
 The check for this in our algorithm looked like this.
 
 ```c++
-        // if we've already seen the sequence, keep going
-        // TODO: use cend() and save this iterator
-        if (dictionary.find(currentBlock + next_character) != dictionary.end()){
-            currentBlock = currentBlock + next_character;
-        }
+// if we've already seen the sequence, keep going
+if (dictionary.find(currentBlock + next_character) != dictionary.end()){
+	currentBlock = currentBlock + next_character;
+}
 ```
 
 Here is the callgrind output for that line.
@@ -420,35 +415,35 @@ Another thing that I noticed from the callgrind output was that a lot of time/in
 In the version of the algorithm at the time, every time we have already seen a sequence, we have to concatenate a character. I noticed that I was doing this concatenation multiple times without needing to.
 
 ```c++
-		// we concatenate the strings here
-        if (dictionary.find(currentBlock + next_character) != end ){
-			// and here
-            currentBlock = currentBlock + next_character;
-        }
-        else{
+// we concatenate the strings here
+if (dictionary.find(currentBlock + next_character) != end ){
+	// and here
+	currentBlock = currentBlock + next_character;
+}
+else{
 
-            // other code here ommitted
+	// other code here ommitted
 
 
-			// and here! 
-            dictionary[currentBlock + next_character] = codeword;
-        }
+	// and here! 
+	dictionary[currentBlock + next_character] = codeword;
+}
 ```
 
-If I just concatenate them and save the output into a new string, that will save me from doing the concatenation 2 more times.
+If I just save `currentBlock + next_character` into a new variable, that will save me from doing the concatenation 2 more times.
 
 ```c++
-	// save concatenation here
-      std::string string_seen_plus_new_char = current_string_seen + next_character;
-        if (dictionary.find(string_seen_plus_new_char) != end ){
-            current_string_seen = string_seen_plus_new_char;
-        }
-        else{
+// save concatenation here
+std::string string_seen_plus_new_char = current_string_seen + next_character;
+if (dictionary.find(string_seen_plus_new_char) != end ){
+	current_string_seen = string_seen_plus_new_char;
+}
+else{
 
-	// other code omitted here
+// other code omitted here
 
-            dictionary[string_seen_plus_new_char] = codeword;
-        }
+	dictionary[string_seen_plus_new_char] = codeword;
+}
 ```
 
 Here are the statistics on the version of the algorithm after this change.
@@ -473,61 +468,63 @@ But, the current string on this iteration is the current string from the last it
 See the code below
 
 ```c++
-    while(next_character != EOF){
+while(next_character != EOF){
+
+	// code omitted
+
+
+	// if we've already seen the sequence, keep going
+	std::string string_seen_plus_new_char = current_string_seen + next_character;
+	// save this iterator`
+	if (dictionary.find(string_seen_plus_new_char) != not_in_dictionary ){
+		current_string_seen = string_seen_plus_new_char;
+	}
+	else{
+
+		// shouldn't look up again
+		int code = dictionary[current_string_seen];
+
 
 		// code omitted
-
-
-        // if we've already seen the sequence, keep going
-        std::string string_seen_plus_new_char = current_string_seen + next_character;
-		// save this iterator`
-        if (dictionary.find(string_seen_plus_new_char) != not_in_dictionary ){
-            current_string_seen = string_seen_plus_new_char;
-        }
-        else{
-
-            // shouldn't look up again
-            int code = dictionary[current_string_seen];
-
-
-			// code omitted
-        }
-        next_character = input.get();
-    }
+	}
+	next_character = input.get();
+}
 ```
 
 We can save that lookup, like so.
 
 ```c++
 
-    while(next_character != EOF){
+while(next_character != EOF){
 
-		// code ommitted
+	// code ommitted
 
-        // if we've already seen the sequence, keep going
-        std::string string_seen_plus_new_char = current_string_seen + next_character;
-		codeword_seen_now = dictionary.find(string_seen_plus_new_char);
-        if (codeword_seen_now != not_in_dictionary ){
-            current_string_seen = string_seen_plus_new_char;
-			codeword_seen_previously = codeword_seen_now; // save codeword here
-        }
-        else{
+	// if we've already seen the sequence, keep going
+	std::string string_seen_plus_new_char = current_string_seen + next_character;
+	codeword_seen_now = dictionary.find(string_seen_plus_new_char);
+	if (codeword_seen_now != not_in_dictionary ){
+		current_string_seen = string_seen_plus_new_char;
+		codeword_seen_previously = codeword_seen_now; // save codeword here
+	}
+	else{
 
-            // lookup the current block in the dictionary and output it, along with the new character
+ 		// on the next iteration, we use it here
+		int code = codeword_seen_previously->second;
 
-            int code = codeword_seen_previously->second; // on the next iteration, we use it here
+		// code omitted
 
-			// code omitted
-
-        }
-        next_character = input.get();
-    }
+	}
+	next_character = input.get();
+}
 ```
+
 Here are the stats of the version of the algorithm after this change.
+
 ```{r dictaccessesstatsfig, warnings= F, messages = F, fig.cap = "Stats after reducing dictionary accesses", fig.height = 7, echo = F}
 stats_csv('data/stats/corpus_1_dictaccesses_34bf4e9.csv', caption = "Corpus 1 Stats after reducing dictionary accesses")
 stats_csv('data/stats/corpus_2_dictaccesses_34bf4e9.csv', caption = "Corpus 2 Stats after reducing dictionary accesses")
 ```
+
 ### Using Const Char *
 <!--
 a12a2901d87d723223b21a9c9115c1c9787a8966
@@ -537,8 +534,9 @@ The algorithm works by reading through the entire file, so we know that at some 
 
 When reading a byte stream of the file, the file may not be in memory the way we want it. The `ifstream` class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using `mmap` and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a `char*` opens the possibility to getting rid of `std::string` entirely, which means way less overhead and decreased compression time.
 
-
+<!--
 **TODO**: Need to talk about getting rid of string concatenation at some point.
+-->
 
 ```{r charstarstatsfig, warnings= F, messages = F, fig.cap = "Stats after using character pointer", fig.height = 7, echo = F}
 stats_csv('data/stats/corpus_1_charstar_a12a290.csv', caption = "Corpus 1 Stats after using character pointers")
@@ -583,7 +581,7 @@ all_runs %>%
   labs(title="Run Distribution for Corpora", x = "Run Length")
 ```
 
-Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 20.
+Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 15.
 
 To achieve this, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters ('A', 'C', 'T', and 'G'), we can represent the characters with two bits. So for a length `n` string, we can represent it with `2n` bits. 
 
@@ -599,7 +597,7 @@ stats_csv('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv', caption =
 stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv', caption = "Corpus 2 Stats for Direct Map of max length 10")
 ```
 
-Here is a comparison for different max string lengths
+Here is a comparison for different max string lengths. 
 
 
 ```{r directmaplenthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 7, echo = F}
@@ -608,12 +606,11 @@ compare_max_string_lengths(list(
 	c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 15)
 ))
 ```
-
-**TODO**: Have data for multiple different direct map sizes. Also talk about the fixed codeword size and what happens when we run out.
+The direct map method is very memory intensive, so having a max length over 15 is not feasible. At this point, if any runs are longer than the max string length, we just use a regular dictionary to accommodate them.
 
 ### Multiple Indexed Dictionaries
 
-As stated before, there have been research papers about the 
+As stated before, there have been research papers about the possibility of using multiple indexed dictionaries for LZW, including Keerthy [@KeerthyMID]. 
 
 Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary. 
 
@@ -621,7 +618,7 @@ Similar to the Direct Mapped approach, we use dictionaries for each string size 
 stats_csv('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', caption = "Corpus 1 Stats for Multiple Dictionaries of max length 10")
 stats_csv('data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', caption = "Corpus 1 Stats for Multiple Dictionaries of max length 10")
 ```
-\pagebreak
+
 ```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 7, echo = F}
 compare_max_string_lengths(list(
 	c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 10),
@@ -659,12 +656,13 @@ compare_coprora(list(
 
 Since the Direct map dictionary was a standout in performance, we decided to focus on optimizing it even further.
 
-### Get Longest
+### Finding the Longest Runs
+
 Our dictionary data structures all have a `get_longest_in_dict` function. This function does the boring work of iterating through the input from the start, checking if each substring is in the dictionary. 
 
 Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by starting from the bottom. 
 
-Another strategy would be to start from the maximum string length of the dictionary. We can check if the next string of the max length in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down or binary search down from the max. Here is a table showing the performance of these different strategies. 
+Another strategy would be to start from the maximum string length of the dictionary. We can check if the next string of the max length in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down or binary search down from the max. Here is a table showing the performance of these different strategies.
 
 ```{r findlongestfrommaxfig, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 7}
 compare_coprora(list(
@@ -672,43 +670,81 @@ compare_coprora(list(
   c('data/stats/ddict/corpus_1_ddictbinarysearchflyindex_94305a5.csv', 'data/stats/ddict/corpus_2_ddictbinarysearchflyindex_94305a5.csv', 'Binary Fly Index'),
   c('data/stats/ddict/corpus_1_ddictloopdownflyindex_7ae114e.csv', 'data/stats/ddict/corpus_2_ddictloopdownflyindex_7ae114e.csv', 'Loop Down Fly Index'),
   c('data/stats/ddict/corpus_1_ddictloopdown_2d0c8b8.csv', 'data/stats/ddict/corpus_2_ddictloopdown_2d0c8b8.csv', 'Loop Down'),
-  c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Direct Map Dictionary')
-), TRUE)
-
+  c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Looping up from zero')
+), TRUE, "Strategy for Finding Longest Run")
 
 ```
 
+We see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in \@ref(fig:allrunshistfig).  This means that if we start looking from runs around length 10, we should see a performance improvement.
 
-```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at the average", echo = F, fig.height = 7}
+### Finding the Longest From The Average
+
+Here are the results when we try looking for runs starting at the average.
+
+```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 7}
 compare_coprora(list(
-  c('data/stats/ddict/corpus_1_ddictdownavg_edafb16.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down'),
-  c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search'),
-  c('data/stats/ddict/corpus_1_ogddict_266bcb7.csv', 'data/stats/ddict/corpus_2_ogddict_266bcb7.csv', 'Original DDict')
+  c('data/stats/ddict/corpus_1_ddictdownavg_edafb16.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down from Average'),
+  c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search from Average'),
+  c('data/stats/ddict/corpus_1_ogddict_266bcb7.csv', 'data/stats/ddict/corpus_2_ogddict_266bcb7.csv', 'Looping up from zero')
 ), TRUE)
 
 
 ```
 
+As we predicted, this greatly improves performance. We are capitalizing on the fact that most runs are short. There is the occasional run that is very long, but from the run statistics we saw that the standard deviation for both corpora was pretty small. So on the edge cases in which there are very long runs, we could be wasting a lot of time. 
+
+### Not Allowing strings over max
+
+One way to avoid the edge case where we encounter a very long run is to just not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the hashmap on top of our dictionary, but we will take a hit in compression ratio. 
+
+Here is a graph comparing the different strategies.
 
 ```{r findlongestwmax, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at average with strings over max not accepted", echo = F, fig.height = 7}
 compare_coprora(list(
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down'),
-  c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max'),
+  c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max Enforced'),
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search'),
-  c('data/stats/ddict/corpus_1_ddictbswmax_588ee0d.csv', 'data/stats/ddict/corpus_2_ddictbswmax_588ee0d.csv', 'Binary Search with Max')
-), TRUE)
+  c('data/stats/ddict/corpus_1_ddictbswmax_588ee0d.csv', 'data/stats/ddict/corpus_2_ddictbswmax_588ee0d.csv', 'Binary Search with Max Enforced')
+), TRUE, "Strategy for Finding Longest Run")
 
+```
+There isn't too much of a performance improvement, which makes sense because long runs are very rare. Let's see how it affects our compression ratio.
+
+
+```{r maxenforcedstats, warnings= F, messages = F, fig.cap = "Compression ratios before and after not allowing strings over max", fig.height = 0.5, echo = F}
+
+  before_corpus1 <- read.csv('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv')
+before_corpus2 <- read.csv('data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv')
+  after_corpus1 <- read.csv('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv')
+after_corpus2<- read.csv( 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv')
+		before <- bind_rows(before_corpus2, before_corpus1)
+		after <- bind_rows(after_corpus2, after_corpus1)
+f <- tibble(
+  cr_before = sum(before$Original.File.Size)/sum(before$Compressed.Size),
+  cr_after = sum(after$Original.File.Size)/sum(after$Compressed.Size)
+)
+  knitr::kable(f, format="latex", booktabs=TRUE, caption = "Compression Ratio change from disallowing long strings") %>% 
+  kable_styling(latex_options=c("scale_down", "HOLD_position", "striped"))
 
 ```
 
+The effect on the total compression ratio is minimal
+
+### Using `pext`
+
+One potential bottleneck of finding the longest run is converting a run of characters into an index. We can try to do it on the fly as we loop up or down, but we could also use machine instructions. 
+
+Our strategy is to use `pext`, which extracts parallel bits. We give `pext` a string of characters, say 'ACTG', and a bit mask, and it will extract those bits from our string. It theoretically does this in one machine instruction, which could be much more efficient than looping over all the characters.
 
 ```{r findlongestwpext, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run with pext", echo = F, fig.height = 7}
 compare_coprora(list(
   c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max'),
   c('data/stats/ddict/corpus_1_ddictloopwpext_70ee265.csv', 'data/stats/ddict/corpus_2_ddictloopwpext_70ee265.csv', 'Loop Down with Pext'),
   c('data/stats/ddict/corpus_1_ddictbswmax_588ee0d.csv', 'data/stats/ddict/corpus_2_ddictbswmax_588ee0d.csv', 'Binary Search with Max'),
-  c('data/stats/ddict/corpus_1_ddictbswpext_366460a.csv', 'data/stats/ddict/corpus_2_ddictbswpext_366460a.csv', 'Binary Search with Pext')
-), TRUE)
+  c('data/stats/ddict/corpus_1_ddictbswpext_6737906.csv', 'data/stats/ddict/corpus_2_ddictbswpext_6737906.csv', 'Binary Search with Pext')
+), TRUE, "Strategy for Finding Longest Run")
 
 
 ```
+
+Why doesn't it work? 
