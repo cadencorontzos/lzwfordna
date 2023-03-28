@@ -700,3 +700,15 @@ compare_coprora(list(
 
 
 ```
+
+
+```{r findlongestwpext, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run with pext", echo = F, fig.height = 7}
+compare_coprora(list(
+  c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max'),
+  c('data/stats/ddict/corpus_1_ddictloopwpext_70ee265.csv', 'data/stats/ddict/corpus_2_ddictloopwpext_70ee265.csv', 'Loop Down with Pext'),
+  c('data/stats/ddict/corpus_1_ddictbswmax_588ee0d.csv', 'data/stats/ddict/corpus_2_ddictbswmax_588ee0d.csv', 'Binary Search with Max'),
+  c('data/stats/ddict/corpus_1_ddictbswpext_366460a.csv', 'data/stats/ddict/corpus_2_ddictbswpext_366460a.csv', 'Binary Search with Pext')
+), TRUE)
+
+
+```
