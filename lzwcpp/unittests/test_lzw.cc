@@ -1,5 +1,5 @@
 #include "../bitio/bitio.hh"
-#include "../dictionary/std_dict.hh"
+#include "../dictionary/mult_std_dict.hh"
 #include "../lzw.hh"
 #include <bitset>
 #include <cassert>
