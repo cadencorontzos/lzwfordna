@@ -35,6 +35,9 @@ public:
   // add a string codeword pair to the dictionary
   virtual void add_string(std::string, codeword_type) { assert(0); }
   virtual void add_string(const char *, unsigned, codeword_type) { assert(0); }
+  virtual void add_string(const char *, next_run_type, codeword_type) {
+    assert(0);
+  }
 
   // fetch the codeword associated with a string of chars
   virtual codeword_type code_of(std::string, unsigned) const { assert(0); }

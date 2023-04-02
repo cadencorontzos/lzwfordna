@@ -48,23 +48,33 @@ public:
     return lookup->second;
   }
 
+  codeword_type code_of_manual(std::string str) const {
+    auto lookup = dictionary.find(str);
+    if (lookup == end) {
+      return 0;
+    }
+    return lookup->second;
+  }
+
   Next_Longest_Run find_longest_in_dict(const char *input,
                                         const char *end_of_input) override {
     int length = 0;
     int entry = 0;
     int last_entry = 0;
+    std::string run_string = "";
     while (input + length < end_of_input) {
       length++;
       last_entry = entry;
-      entry = code_of(input, length);
+      run_string = std::string(input, length);
+      entry = code_of_manual(run_string);
       // if entry is non zero, it means we have seen that string before
       if (entry == 0) {
-        return Next_Longest_Run(length - 1, last_entry, "foo");
+        run_string.pop_back();
+        return Next_Longest_Run(length - 1, last_entry, run_string);
       }
     }
 
-    std::cout << "HERE len: " << length << std::endl;
-    return Next_Longest_Run(length, entry, "foo");
+    return Next_Longest_Run(length, entry, run_string);
   }
 
   void add_string(const char *input, unsigned len,
@@ -79,6 +89,20 @@ public:
     }
     std::string str(input, len);
     dictionary[str] = codeword;
+  }
+
+  void add_string(const char *input, Next_Longest_Run next_longest,
+                  codeword_type codeword) override {
+    // we want to prevent overflow, so when we reached our limit,
+    // allow this last addition then declare the dict empty.
+    if (empty) {
+      return;
+    }
+    if (codeword == MAX_CODEWORD) {
+      empty = true;
+    }
+    dictionary[next_longest.next_longest_run_string +
+               input[next_longest.next_run_length]] = codeword;
   }
 
   void load_starting_dictionary() override {

@@ -40,12 +40,8 @@ void LZW::encode(const char *input_file, uint64_t file_size,
       break;
     }
 
-    // look up code of longest run
-    codeword_to_output =
-        dictionary.code_of(input_file, longest_run.next_run_length);
-
     // output codeword
-    bit_output.output_n_bits(codeword_to_output,
+    bit_output.output_n_bits(longest_run.codeword_of_next_run,
                              codeword_helper.bits_per_codeword);
 
     // output next character
@@ -53,8 +49,7 @@ void LZW::encode(const char *input_file, uint64_t file_size,
     bit_output.output_n_bits(encode_values[next_character], 2);
 
     // add the run we saw + the new character to our dict
-    dictionary.add_string(input_file, longest_run.next_run_length + 1,
-                          codeword);
+    dictionary.add_string(input_file, longest_run, codeword);
 
     codeword = codeword_helper.get_next_codeword();
     input_file += longest_run.next_run_length + 1;
