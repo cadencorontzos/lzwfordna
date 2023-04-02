@@ -23,6 +23,20 @@ void test_code_of() {
   assert(f.code_of("ACT", 3) == 3);
 }
 
+void test_code_of_manual() {
+
+  LZW_Encode_Dictionary f;
+  // load strings into dictionary
+  f.add_string("A", 1, 1);
+  f.add_string("AT", 2, 2);
+  f.add_string("ACT", 3, 3);
+
+  // make sure codes of those strings are right
+  assert(f.code_of_manual("A") == 1);
+  assert(f.code_of_manual("AT") == 2);
+  assert(f.code_of_manual("ACT") == 3);
+}
+
 void test_find_longest_in_dict() {
 
   LZW_Encode_Dictionary f;
@@ -49,9 +63,20 @@ void test_add_string_encode() {
   assert(f.code_of("ACTGC", 5) == 1);
 }
 
+void test_add_string_with_NLR_encode() {
+  LZW_Encode_Dictionary f;
+
+  Next_Longest_Run nlr(4, 2, "ACTG");
+  f.add_string("ACTGC", nlr, 1);
+
+  assert(f.code_of("ACTGC", 5) == 1);
+}
+
 void test_encode() {
   test_add_string_encode();
+  test_add_string_with_NLR_encode();
   test_code_of();
+  test_code_of_manual();
   test_find_longest_in_dict();
 }
 
