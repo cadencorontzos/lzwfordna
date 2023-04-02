@@ -16,6 +16,8 @@ public:
   std::string next_longest_run_string;
   Next_Longest_Run(unsigned length, codeword_type cw, std::string str)
       : Next_Run<codeword_type>(length, cw), next_longest_run_string(str){};
+  Next_Longest_Run()
+      : Next_Run<codeword_type>(0, 0), next_longest_run_string(""){};
 };
 
 // Std Encode
@@ -60,6 +62,8 @@ public:
         return Next_Longest_Run(length - 1, last_entry, "foo");
       }
     }
+
+    std::cout << "HERE len: " << length << std::endl;
     return Next_Longest_Run(length, entry, "foo");
   }
 

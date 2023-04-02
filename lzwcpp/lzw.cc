@@ -1,5 +1,5 @@
 #include "lzw.hh"
-#include "./dictionary/direct_mapped_dict.hh"
+#include "./dictionary/std_dict.hh"
 #include <climits>
 #include <fstream>
 #include <iostream>
@@ -26,37 +26,39 @@ void LZW::encode(const char *input_file, uint64_t file_size,
   codeword_type codeword = codeword_helper.get_next_codeword();
 
   char next_character;
-  int length_of_next_run;
   codeword_type codeword_to_output;
   const char *end_of_input = input_file + file_size;
+
+  Next_Longest_Run longest_run;
   while (true) {
 
     // find longest run of chars already in our dictionary
-    length_of_next_run =
-        dictionary.find_longest_in_dict(input_file, end_of_input);
+    longest_run = dictionary.find_longest_in_dict(input_file, end_of_input);
 
     // make sure we haven't passed EOF
-    if ((input_file + length_of_next_run) >= end_of_input) {
+    if ((input_file + longest_run.next_run_length) >= end_of_input) {
       break;
     }
 
     // look up code of longest run
-    codeword_to_output = dictionary.code_of(input_file, length_of_next_run);
+    codeword_to_output =
+        dictionary.code_of(input_file, longest_run.next_run_length);
 
     // output codeword
     bit_output.output_n_bits(codeword_to_output,
                              codeword_helper.bits_per_codeword);
 
     // output next character
-    next_character = input_file[length_of_next_run];
+    next_character = input_file[longest_run.next_run_length];
     bit_output.output_n_bits(encode_values[next_character], 2);
 
     // add the run we saw + the new character to our dict
-    dictionary.add_string(input_file, length_of_next_run + 1, codeword);
+    dictionary.add_string(input_file, longest_run.next_run_length + 1,
+                          codeword);
 
     codeword = codeword_helper.get_next_codeword();
-    input_file += length_of_next_run + 1;
-    length_of_next_run = 0;
+    input_file += longest_run.next_run_length + 1;
+    longest_run.next_run_length = 0;
   }
   // output special eof character
   bit_output.output_n_bits(codeword_helper.EOF_CODEWORD,
@@ -66,7 +68,7 @@ void LZW::encode(const char *input_file, uint64_t file_size,
   // no current block (case 0)
   // we have a current block that is a single character (case 1)
   // otherwise we have a current block > 1 byte (default)
-  switch (length_of_next_run) {
+  switch (longest_run.next_run_length) {
   case 0:
     bit_output.output_bit(false);
     bit_output.output_bit(false);
@@ -80,7 +82,8 @@ void LZW::encode(const char *input_file, uint64_t file_size,
     bit_output.output_bit(true);
     bit_output.output_bit(true);
 
-    codeword_to_output = dictionary.code_of(input_file, length_of_next_run);
+    codeword_to_output =
+        dictionary.code_of(input_file, longest_run.next_run_length);
     bit_output.output_n_bits(codeword_to_output,
                              codeword_helper.bits_per_codeword);
     break;
