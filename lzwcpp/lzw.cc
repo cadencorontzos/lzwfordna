@@ -1,5 +1,5 @@
 #include "lzw.hh"
-#include "./dictionary/mult_std_dict.hh"
+#include "./dictionary/direct_mapped_dict.hh"
 #include <climits>
 #include <fstream>
 #include <iostream>

@@ -11,6 +11,15 @@ typedef uint16_t codeword_type;
 const codeword_type MAX_CODEWORD =
     static_cast<codeword_type>((1 << (sizeof(codeword_type) * CHAR_BIT)) - 1);
 const int CODEWORD_SIZE = sizeof(codeword_type) * CHAR_BIT;
+using index_type = uint32_t;
+
+class Next_Longest_Run : public Next_Run<codeword_type> {
+public:
+  index_type longest_run_index;
+  Next_Longest_Run(unsigned length, codeword_type cw, index_type index)
+      : Next_Run<codeword_type>(length, cw), longest_run_index(index){};
+  Next_Longest_Run() : Next_Run<codeword_type>(0, 0), longest_run_index(0){};
+};
 
 // Direct Mapped Dictionary:
 //
@@ -33,9 +42,9 @@ const int CODEWORD_SIZE = sizeof(codeword_type) * CHAR_BIT;
 // when we run out of codewords, we simply don't allow any more strings to be
 // added
 //
-class LZW_Encode_Dictionary : private LZWDictionary<codeword_type> {
+class LZW_Encode_Dictionary
+    : private LZWDictionary<codeword_type, Next_Longest_Run> {
 private:
-  using index_type = uint32_t;
   const int INDEX_BITS = CHAR_BIT * sizeof(index_type);
   std::array<int, 1 << CHAR_BIT> values;
   const int FIND_LONGEST_START = 7;
@@ -62,7 +71,7 @@ private:
 
 public:
   LZW_Encode_Dictionary()
-      : LZWDictionary<codeword_type>(), empty(false),
+      : LZWDictionary<codeword_type, Next_Longest_Run>(), empty(false),
         end(longer_than_max.cend()) {
     // we have an array for each possible string length < our max
     for (int i = 0; i < MAX_STRING_LENGTH; i++) {
@@ -98,85 +107,97 @@ public:
 
   // We assume that the start is already in the dictionary, and loop up from
   // there
-  int find_longest_looping_up_on_fly(const char *input,
-                                     const char *end_of_input, int start,
-                                     int index) {
+  Next_Longest_Run find_longest_looping_up_on_fly(const char *input,
+                                                  const char *end_of_input,
+                                                  int start, int index) {
     int length = start;
-    int entry = 0;
+    codeword_type entry = 0;
+    codeword_type last_entry = 0;
     while (input + length < end_of_input && length < MAX_STRING_LENGTH) {
       index = (index << 2) + values[input[length]];
+      last_entry = entry;
       entry = code_of_manual(length + 1, index);
       // if entry is non zero, it means we have seen that string before
       if (entry == 0) {
-        return length;
+        return Next_Longest_Run(length, last_entry, index >> 2);
       }
       length++;
     }
-    return length;
+    return Next_Longest_Run(length, entry, index);
   }
 
   // We assume that the start is already in the dictionary, and loop up from
   // there
-  int find_longest_looping_up(const char *input, const char *end_of_input,
-                              int start, index_type index) {
+  Next_Longest_Run find_longest_looping_up(const char *input,
+                                           const char *end_of_input, int start,
+                                           index_type index) {
     int length = start;
-    int entry = 0;
+    codeword_type entry = 0;
+    codeword_type last_entry = 0;
+    index_type next_index;
     while (input + length < end_of_input && length < MAX_STRING_LENGTH) {
-      entry = code_of_manual(length + 1,
-                             (index >> (INDEX_BITS - (length + 1) * 2)));
+      next_index = (index >> (INDEX_BITS - (length + 1) * 2));
+      last_entry = entry;
+      entry = code_of_manual(length + 1, next_index);
       // if entry is non zero, it means we have seen that string before
       if (entry == 0) {
-        return length;
+        return Next_Longest_Run(length, last_entry, next_index >> 2);
       }
       length++;
     }
-    return length;
+    return Next_Longest_Run(length, entry, next_index);
   }
 
   // Assumes we already have the starting characters in the dictionary
   // should never return 0
-  int find_longest_looping_down(int start, index_type index) {
+  Next_Longest_Run find_longest_looping_down(int start, index_type index) {
     int length = start;
-    int entry;
+    codeword_type entry;
     while (length > 0) {
       entry = code_of_manual(length, index);
       // if entry is non zero, it means we have seen that string before
       if (entry != 0) {
-        return length;
+        return Next_Longest_Run(length, entry, index);
       }
       length--;
       index = (index >> 2);
     }
-    return length;
+    return Next_Longest_Run(length, entry, index);
   }
 
   // find longest using binary search.
   // assumes that the longest run < max
   // assumes that all characters are in starting dictionary
-  int find_longest_binary_search(const char *input, int left, int right,
-                                 index_type full_index) {
+  Next_Longest_Run find_longest_binary_search(const char *input, int left,
+                                              int right,
+                                              index_type full_index) {
     int middle = left + ((right - left) / 2);
-    int entry;
+    codeword_type entry;
     index_type index;
+    index_type next_index;
     while (left <= right) {
-      index = full_index >> (INDEX_BITS - (middle)*2);
+      next_index = full_index >> (INDEX_BITS - (middle + 1) * 2);
+      index = next_index >> 2;
       entry = code_of_manual(middle, index);
       if (entry == 0) {
         right = middle - 1;
         middle = left + ((right - left) / 2);
       } else if (middle == MAX_STRING_LENGTH ||
-                 code_of(input, middle + 1) == 0) {
-        return middle;
+                 code_of_manual(middle + 1, next_index) == 0) {
+        return Next_Longest_Run(middle, entry, index);
       } else {
         left = middle + 1;
         middle = left + ((right - left) / 2);
       }
     }
-    return 1;
+
+    index = values[input[0]];
+    entry = code_of_manual(1, index);
+    return Next_Longest_Run(1, entry, index);
   }
 
-  int find_longest_in_dict(const char *input,
-                           const char *end_of_input) override {
+  Next_Longest_Run find_longest_in_dict(const char *input,
+                                        const char *end_of_input) override {
 
     // start at start and loop up or down
     if (input + 16 > end_of_input) {
@@ -209,7 +230,7 @@ public:
     /* 	return find_longest_looping_up(input, end_of_input, 0, 0); */
     /* } */
     // check the starting string
-    int index = map_str(input, FIND_LONGEST_START);
+    int index = next_long_index >> (INDEX_BITS - FIND_LONGEST_START * 2);
     int entry = code_of_manual(FIND_LONGEST_START, index);
     if (entry == 0) {
       return find_longest_binary_search(input, 1, FIND_LONGEST_START - 1,
@@ -253,6 +274,22 @@ public:
     (dictionary[len - 1])[map_str(input, len)] = codeword;
   }
 
+  void add_string(const char *input, Next_Longest_Run next_longest,
+                  codeword_type codeword) override {
+    if (empty) {
+      return;
+    }
+    if (codeword == MAX_CODEWORD) {
+      empty = true;
+    }
+    // we just don't add anything longer to the dict
+    if (next_longest.next_run_length + 1 > MAX_STRING_LENGTH) {
+      return;
+    }
+    index_type index = (next_longest.longest_run_index << 2) +
+                       values[input[next_longest.next_run_length]];
+    (dictionary[next_longest.next_run_length])[index] = codeword;
+  }
   void load_starting_dictionary() override {
     add_string("A", 1, 1);
     add_string("C", 1, 2);
@@ -313,8 +350,4 @@ public:
     }
     return current_codeword++;
   }
-};
-
-class Next_Longest_Run : public Next_Run<codeword_type> {
-private:
 };
