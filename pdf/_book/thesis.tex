@@ -246,7 +246,9 @@ The Lempel Ziv Welch compression algorithm is a lossless data compression algori
 \begin{table}[h]
     \centering
     \begin{tabular}{ll}
+                \textbf{EOF} & End of file \\
                 \textbf{LZW} & Lempel Ziv Welch \\
+                \textbf{RLE} & Run Length Encoding \\
             \end{tabular}
 \end{table}
   \hypersetup{linkcolor=black}
@@ -280,25 +282,27 @@ This thesis deals with some high level topics and uses language specific to comp
 \hypertarget{what-is-information}{%
 \section{What is information?}\label{what-is-information}}
 
-Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? Or can it be part of the message? If someone asks you ``Where library'', despite the lack of prepositions you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library?''
-Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let us assume that information is something that can be interpreted to glean information that you didn't know before.
+Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? Or can it be part of the message? If someone asks you ``Where library'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library?''
+Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let us assume that information is something that can be interpreted to glean data that you didn't know before.
 
 Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
 
 \hypertarget{compression-a-history}{%
 \section{Compression: A history}\label{compression-a-history}}
 
-The idea of compressing data to make transmission easier has been around for a long time. One of the earliest uses of compression was the use of Morse code, developed by Samuel Morse in the 1830s, used to transmit messages over telegraph. Morse uses a binary code, where dots and dashes represent different letters and numbers of the message to be transmitted.
+Compression dates back to some of the earliest days in computing, when storage was much smaller and extremely expensive. In 1948, Claude Shannon published ``A Mathematical Theory of Communication'', a paper which lined out the field of study now known as information theory. He
 
-In the 1970s, researchers began to develop more sophisticated compression algoritms, such as Huffman encoding and Lempel-Ziv compression. Both LZW and Huffman use codes to represent different characters in a message.
+In the 1970s, researchers began to develop more sophisticated compression algorithms, such as Huffman encoding and Lempel-Ziv compression. Both LZW and Huffman use codes to represent different characters in a message.
 
 TODO: Elaborate
-\#\# Compression Metrics
+
+\hypertarget{compression-metrics}{%
+\section{Compression Metrics}\label{compression-metrics}}
 
 \hypertarget{compression-ratio}{%
 \subsection{Compression Ratio}\label{compression-ratio}}
 
-Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressd as a ratio of the size of the uncompressed data (\(OS\)) to the size of the compressed data (\{CS\}).
+Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressed as a ratio of the size of the uncompressed data (\(OS\)) to the size of the compressed data (\(CS\)).
 
 \[CR = \frac{OS}{CS}\]
 
@@ -307,12 +311,12 @@ So a higher compression ratio means a more effective compression algorithm, and 
 \hypertarget{runtime}{%
 \subsection{Runtime}\label{runtime}}
 
-The runtime is also an important part of evaluating the effectiveness of a compression algorithm. If you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15 but takes twice as long as the other, you may opt for a lower compression ratio to save time.
+The runtime is also an important part of evaluating the effectiveness of a compression algorithm. Runtime is typically defined as the length of time a program takes to complete a task. If you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15 but takes twice as long as the other, you may opt for a lower compression ratio to save time.
 
 \hypertarget{memory-usage}{%
 \subsection{Memory Usage}\label{memory-usage}}
 
-Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to information that programs track as they are running on a computer. So do reduce our runtime and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage.
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to storage where information that programs track as they are running is stored. So do reduce our runtime and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage.
 
 \hypertarget{lossless-vs.-lossy-compression}{%
 \section{Lossless vs.~Lossy Compression}\label{lossless-vs.-lossy-compression}}
@@ -320,15 +324,15 @@ Memory usage is closely tied with runtime when it comes to compression algorithm
 \hypertarget{lossy}{%
 \subsection{Lossy}\label{lossy}}
 
-Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another exampleis MP3 auido files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorables for small devices like MP3 players and cellphones.
+Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example is MP3 audio files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorable for small devices like MP3 players and cellphones.
 
 \hypertarget{lossless}{%
 \subsection{Lossless}\label{lossless}}
 
-Lossless compression is the compression of dat a with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be perserved, like scientific data, archiving (think a .zip folder), and high end audio recording.Examples of lossless compression algoritms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
+Lossless compression is the compression of data with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be preserved, like scientific data, archiving (think a .zip folder), and high end audio recording.Examples of lossless compression algorithms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
 
-\hypertarget{examples-of-compression-algorithms}{%
-\section{Examples of Compression Algorithms}\label{examples-of-compression-algorithms}}
+\hypertarget{examples-of-compression-using-classic-compression-algorithms}{%
+\section{Examples of Compression Using Classic Compression Algorithms}\label{examples-of-compression-using-classic-compression-algorithms}}
 
 \hypertarget{run-length-encoding}{%
 \subsection{Run Length Encoding}\label{run-length-encoding}}
@@ -336,11 +340,11 @@ Lossless compression is the compression of dat a with the goal of preserving all
 Run Length Encoding (RLE) is on of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by just giving the number of times each character appears.
 Suppose you want to send the following message
 
-AAGCTTTTTTTTGGGGGCCCT
+\[AAGCTTTTTTTTGGGGGCCCT\]
 
-Even if this message did mean something, we can get the information across without repeating ourselves. When writing a grocery list, you don't write ``egg egg egg egg'', you say ``4 eggs''. RLE uses this same strategdy.
+Even if this message did mean something, we can get the information across without repeating ourselves. When writing a grocery list, you don't write ``egg egg egg egg'', you say ``4 eggs''. RLE uses this same strategy.
 
-2A1G1C8T5G3C1T
+\[2A1G1C8T5G3C1T\]
 
 We could compress this even further if we omit the 1 on characters that only appear once. Although not as sophisticated as other methods, RLE is effective when used on texts that have a lot of repeating characters.
 
@@ -352,7 +356,8 @@ Huffman Encoding is a strategy that assigns variable length code to certain symb
 Suppose we have a message ``ACAGGATGGC''. We can calculate the frequency of each letter by counting the number of times each letter shows up and dividing by the total number of letters
 
 Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters.
-\begin{center}
+\begin{figure}[h]\centering
+
 
 \tikzset{iv/.style={draw,fill=red!50,circle,minimum size=20pt,inner
 sep=0pt,text=black},ev/.style={draw,fill=yellow,rectangle,minimum
@@ -371,7 +376,8 @@ if n=1{edge label={node [midway, left] {0} } }{edge label={node [midway, right] 
  ] 
 ] 
 \end{forest}
-\end{center}
+\caption{Example Huffman tree}
+\end{figure}
 So \(G=0\), \(A = 10\), \(T=111\) and \(C=110\). Notice that none of the encodings are prefixes of one another, which makes it unambiguous in decoding.
 
 So our message would be encoded to \(1011010001011100110\).
@@ -408,21 +414,78 @@ Arithmetic encoding can have a better compression ratio that Huffman in some cas
 
 Lempel Ziv Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords, where codewords represent strings previously seen in the message. As it compresses the message, the dictionary grows. The compression algorithm leaves behind the codewords and some of the original characters, allowing the decompression algorithm to build up the same dictionary as it decompresses the message.
 
-Here is a simple example. We may be sending messages with the characters \{`A', `C', `T', `G'\}, so I will start with those in my dictionary. Say we want to send the message
+Here is a simple example. We may be sending messages with the characters \{`A' = 0, `C' = 1, `T' = 2, `G' = 3\}, so I will start with those in my dictionary. Say we want to send the message
 
-``AAGGAATCC''
+\[\text{AAGGAATCC}\]
 
-When we compress, we start at the beginning of the message and scan through.
+When we compress, we start at the beginning of the message and scan through. We ask ourselves, ``Is''A'' in our dictionary?''
+
+\[\textbf{A} \text{AGGAATCC}\]
+
+Since we started with ``A'' in our dictionary, we can move on. We then add on the next character in the sequence and ask ``Is''AA'' in our dictionary?''
+
+\[\textbf{AA} \text{GGAATCC}\]
+
+We have not seen ``AA'' before, so we should add it to our dictionary. So now our dictionary looks like this \{`A' = 0, `C' = 1, `T' = 2, `G' = 3, `AA' = 4\}. Next time we see ``AA'', we know it is associated with the codeword 4. To indicate this, in our resulting string we will output the code for ``A'', the part of the string we've seen before, and the character ``A''.
+
+So the encoded string will look something like
+
+\[\text{0A....}\]
+\begin{table}
+\begin{tabular}{ | c | c | p{.4\textwidth} | c | }
+\hline
+\textbf{Step} & \textbf{Input String} & \textbf{Dictionary State} & \textbf{Encoded String} \\
+\hline
+1 & \textbf{A}AGGAATCC & {A: 0, G: 1, T: 2, C: 3} & - \\
+\hline
+2 & \textbf{AA}GGAATCC & {A: 0, G: 1, T: 2, C: 3} & 0A \\
+\hline
+3 & AA\textbf{G}GAATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4} & 0A  \\
+\hline
+4 & AA\textbf{GG}AATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4} & 0A1G   \\
+\hline
+5 & AAGG\textbf{A}ATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5} & 0A1G \\
+\hline
+6 & AAGG\textbf{AA}TCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6} & 0A1G  \\
+\hline
+7 & AAGG\textbf{AAT}CC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6} & 0A1G4T  \\
+\hline
+8 & AAGGAAT\textbf{C}C & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7} & 0A1G4T \\
+\hline
+9 & AAGGAAT\textbf{CC} & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7} & 0A1G4T3C \\
+\hline
+10 & AAGGAATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7, CC: 8} & 0A1G4T3C \\
+\hline
+\end{tabular}
+\caption{ An example of LZW ran on the input "AAGGAATCC"}
+\end{table}
+\newpage
+
+When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character''A'' and add that new string to the dictionary. So we would add that to the dictionary and assign it to our next available codeword, 4. So as you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
+
+This is nice for several reasons
+\begin{itemize}
+\tightlist
+\item
+  When we send this encoding to someone else, we don't need to send a ``codebook'' (our dictionary). They are able to build it up themselves as they decode.
+\item
+  you only need to go over the data once to encode and decode. This means that the run time of the algorithm should roughly increase linearly with the length of the input.
+\item
+  As runs get longer, we will start to see more and more repeating patterns, and replacing them with codewords will become more and more effective.
+\end{itemize}
+Since the algorithm loops, we need some special character at the end of our encoding to let the decoder know when the message is done.
+
+Now that we have laid out how the algorithm works, we can get more specific for our use case. For us, the input is a file on the computer, and the output is also a file (hopefully a smaller one). We read all the characters in the file, encode them, and put them into a new file. Then, when we want to decode, we read the encoded file and output the decoded characters. Again, LZW is lossless, so the original file and the decoded file should be identical.
 
 Here is some example pseudo code on what this algorithm would look like.
 \begin{verbatim}
-LZW(input):
+LZWEncode(input):
 
-    Dictionary dictionary;
+    Dictionary dictionary; // where we store our string => codeword mappings
     dictionary.inititalize; // initialzie the dictionary with single characters
 
-    codeword;
-    output;
+    codeword; // the unique numbers we assign strings
+    output; // where we output the encoded characters
 
     currentBlock = first character of input;
     for every nextCharacter in the input:
@@ -443,8 +506,39 @@ LZW(input):
 
     output(special end of file character);
 \end{verbatim}
-\textbf{TODO}: Finish example, maybe add some pseudo code as well
+The decoding is much simpler. The only real difference is that we are now mapping codewords to strings, since the encoded string contains codewords.
+\begin{verbatim}
+LZWDecode(input):
 
+    Dictionary dictionary; // where we store our codeword => string mappings
+    dictionary.inititalize; // initialzie the dictionary with single characters
+
+    codeword; // the unique numbers we assign strings
+    result; // where we output the encoded characters
+
+    while we don't see the end of file character:
+
+        codewordFound = input.readCodeword()
+        nextCharacter = input.readCharacter()
+
+        sequence = dictionary.lookup(codewordFound) + nextCharacter
+        result.output(sequence)
+
+        dictionary.add(sequence = codeword)
+        codeword = codeword + 1;
+\end{verbatim}
+This is the basic strategy we will start with for our LZW algorithm. In the next chapter, we will go over parts of the algorithm in depth in C++. Here is a quick summary of terms repeated throughout the next two chapters.
+\begin{itemize}
+\tightlist
+\item
+  \texttt{dictionary}: a key value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a \texttt{map}, but the concept is the same.
+\item
+  \texttt{codeword}: a number used to take the place of a string in our encoding.
+\item
+  \texttt{run}: the next run of characters in our input that are already in our dictionary. So if we are encoding ``ACTG'', and ``A'', ``AC'', and ``ACT'' are in the dictionary but ``ACTG'' is not, we have a run of 3.
+\item
+  \texttt{EOF}: end of file, the special character that we need to output at the end of the encoding.
+\end{itemize}
 \hypertarget{optimizing-lzw-approach}{%
 \chapter{Optimizing LZW: Approach}\label{optimizing-lzw-approach}}
 

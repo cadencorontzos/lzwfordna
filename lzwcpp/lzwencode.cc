@@ -12,7 +12,7 @@
 namespace fs = std::filesystem;
 #include "lzw.hh"
 
-float compressionRatio( int output_size, int input_size){
+float compressionRatio( uint64_t output_size, uint64_t input_size){
     assert(output_size!=0);
     return (float)input_size/output_size;
 }

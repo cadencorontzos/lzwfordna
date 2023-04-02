@@ -5,7 +5,7 @@
 #include <climits>
 #include "./dictionary/direct_mapped_dict.hh"
 
-void LZW::encode(const char* input_file, int file_size, std::ostream& output){
+void LZW::encode(const char* input_file, uint64_t file_size, std::ostream& output){
    
     // initialize starter dictionary
 	LZW_Encode_Dictionary dictionary;
@@ -19,7 +19,7 @@ void LZW::encode(const char* input_file, int file_size, std::ostream& output){
 
 	char next_character;
 	int length_of_next_run; 
-	int codeword_to_output;
+	codeword_type codeword_to_output;
 	const char* end_of_input = input_file + file_size;
 	while(true)
 	{
