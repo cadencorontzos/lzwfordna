@@ -13,18 +13,33 @@ void test_code_of() {
 
   // load strings into dictionary
   f.add_string("A", 1, 1);
-  f.add_string("AT", 2, 2);
+  f.add_string("AC", 2, 2);
   f.add_string("ACT", 3, 3);
 
   // make sure codes of those strings are right
   assert(f.code_of("A", 1) == 1);
-  assert(f.code_of("AT", 2) == 2);
+  assert(f.code_of("AC", 2) == 2);
   assert(f.code_of("ACT", 3) == 3);
+}
+
+void test_code_of_manual() {
+  LZW_Encode_Dictionary f;
+  // load strings into dictionary
+  f.add_string("A", 1, 1);
+  f.add_string("AC", 2, 2);
+  f.add_string("ACT", 3, 3);
+
+  // make sure codes of those strings are right
+  assert(f.code_of_manual(1, INDEX_OF_A) == 1);
+  assert(f.code_of_manual(2, (INDEX_OF_A << 2) + INDEX_OF_C) == 2);
+  assert(f.code_of_manual(3, (INDEX_OF_A << 4) + (INDEX_OF_C << 2) +
+                                 (INDEX_OF_T)) == 3);
 }
 
 void test_find_longest_in_dict() {
 
-  // test string shorter than max string length
+  // test string shorter than max string length with total string less than max
+  // length
 
   {
 
@@ -46,6 +61,8 @@ void test_find_longest_in_dict() {
     assert(f.code_of(output.c_str(), 3) == 3);
   }
 
+  // test string shorter than max string length with total string greater than
+  // max length
   {
 
     LZW_Encode_Dictionary f;
@@ -65,30 +82,6 @@ void test_find_longest_in_dict() {
     assert(ret.codeword_of_next_run == 3);
     assert(f.code_of(output.c_str(), 3) == 3);
   }
-
-  // test string longer than max string length
-  // We assume the max is shorter than 20 here
-
-  // we are not letting in strings longer than max length so we don't need this
-  /* { */
-  /* 	LZW_Encode_Dictionary f; */
-
-  /* 	// for this input, "ACT" should be the longest run in the dict */
-  /* 	std::string input = "ACTGACTGACTGACTGACTGACTG"; */
-
-  /* 	// load all substrings into the the dictionary */
-  /* 	for(unsigned i = 1; i < input.length()-1; i++){ */
-  /* 		f.add_string(input.substr(0,i).c_str(), i, i); */
-  /* 	} */
-  /* 	int ret; */
-  /* 	ret = f.find_longest_in_dict(input.c_str(), input.c_str()+
-   * input.length()); */
-  /* 	std::string output = input.substr(0,ret); */
-
-  /* 	assert(output == input.substr(0, input.length()-2)); */
-  /* 	assert(f.code_of(output.c_str(), input.length()-2) == input.length()-2);
-   */
-  /* } */
 
   // test string equal to max string length
 
@@ -123,7 +116,8 @@ void test_find_longest_looping_down() {
 
   // for this input, "ACT" should be the longest run in the dict
   std::string input = "ACTG";
-  int index = (0 << 6) + (1 << 4) + (2 << 2) + 3;
+  int index =
+      (INDEX_OF_A << 6) + (INDEX_OF_C << 4) + (INDEX_OF_T << 2) + INDEX_OF_G;
   Next_Longest_Run ret = f.find_longest_looping_down(4, index);
   std::string output = input.substr(0, ret.next_run_length);
   assert(output == "AC");
@@ -182,7 +176,25 @@ void test_find_longest_binary_search() {
 
     // for this input, "ACT" should be the longest run in the dict
     std::string input = "ACTGACTGACTGACTGACTG";
-    unsigned pivot = std::floor(7 / 2);
+    unsigned pivot = FIND_LONGEST_START;
+    for (unsigned i = 1; i <= pivot; i++) {
+      f.add_string(input.substr(0, i).c_str(), i, i);
+    }
+    Next_Longest_Run ret = f.find_longest_binary_search(
+        input.c_str(), 1, MAX_STRING_LENGTH, long_index);
+    std::string output = input.substr(0, ret.next_run_length);
+    assert(output == input.substr(0, pivot));
+    assert(ret.codeword_of_next_run == pivot);
+    assert(f.code_of(output.c_str(), pivot) == pivot);
+  }
+
+  // test len > pivot
+  {
+    LZW_Encode_Dictionary f;
+
+    // for this input, "ACT" should be the longest run in the dict
+    std::string input = "ACTGACTGACTGACTGACTG";
+    unsigned pivot = FIND_LONGEST_START + 2;
     for (unsigned i = 1; i <= pivot; i++) {
       f.add_string(input.substr(0, i).c_str(), i, i);
     }
@@ -203,9 +215,26 @@ void test_add_string_encode() {
   assert(f.code_of("ACTGC", 5) == 1);
 }
 
+void test_add_string_with_NLR_encode() {
+  LZW_Encode_Dictionary f;
+
+  index_type index = (INDEX_OF_A << 8) + (INDEX_OF_C << 6) + (INDEX_OF_T << 4) +
+                     (INDEX_OF_G << 2) + INDEX_OF_C;
+  // we say the next longest run is the run of ACTGC
+  Next_Longest_Run nlr(5, 1, index);
+
+  // then if we add_string, we should be adding ACTGCT
+  f.add_string("ACTGCT", nlr, 1);
+
+  assert(f.code_of("ACTGCT", 6) == 1);
+  assert(f.code_of_manual(6, (index << 2) + INDEX_OF_T));
+}
+
 void test_encode() {
   test_add_string_encode();
+  test_add_string_with_NLR_encode();
   test_code_of();
+  test_code_of_manual();
   test_find_longest_in_dict();
   test_find_longest_looping_down();
   test_find_longest_looping_up();

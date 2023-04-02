@@ -6,7 +6,14 @@
 #include <unordered_map>
 #include <x86intrin.h>
 
+// indexes for starting strings of length 1
+const int INDEX_OF_A = 0;
+const int INDEX_OF_C = 1;
+const int INDEX_OF_T = 2;
+const int INDEX_OF_G = 3;
+
 constexpr uint8_t MAX_STRING_LENGTH = 15;
+const int FIND_LONGEST_START = 7;
 typedef uint16_t codeword_type;
 const codeword_type MAX_CODEWORD =
     static_cast<codeword_type>((1 << (sizeof(codeword_type) * CHAR_BIT)) - 1);
@@ -47,7 +54,6 @@ class LZW_Encode_Dictionary
 private:
   const int INDEX_BITS = CHAR_BIT * sizeof(index_type);
   std::array<int, 1 << CHAR_BIT> values;
-  const int FIND_LONGEST_START = 7;
   const int NEXT_LONGEST_INDEX_SIZE = 16;
   // 00000110 00000110 00000110 00000110 00000110 00000110 00000110 00000110
   const uint64_t MASK = 434041037028460038;
@@ -87,10 +93,10 @@ public:
     }
 
     // load the code values for our neucleotides
-    values['A'] = 0;
-    values['C'] = 1;
-    values['T'] = 2;
-    values['G'] = 3;
+    values['A'] = INDEX_OF_A;
+    values['C'] = INDEX_OF_C;
+    values['T'] = INDEX_OF_T;
+    values['G'] = INDEX_OF_G;
   }
 
   codeword_type code_of(const char *input, unsigned len) const override {
