@@ -107,15 +107,15 @@ harmonic_mean <- function(corpus){
 ```{r csvtotablefunc, echo = F}
 csv_to_table <- function(filename, caption = "f"){
 df <- read.csv(filename)
-knitr::kable(df, "markdown", align= 'c', caption = caption)
+knitr::kable(df, "markdown", align= 'cc', caption = caption)
 }
 ```
 
 ```{r statscsvfunc, echo = F}
 stats_csv <- function(filename, caption = "Foo"){
   df <- read.csv(filename)
-  knitr::kable(df, format="latex", booktabs=TRUE, caption = caption) %>% 
-  kable_styling(latex_options=c("scale_down", "HOLD_position", "striped"))
+  knitr::kable(df,  linesep = c(rep("", 5), "\\addlinespace"), format="latex", booktabs=TRUE, caption = caption) %>% 
+  kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 }
 ```
 
@@ -156,7 +156,7 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
     {if(per_corpus)facet_wrap(~corpus)}+
     labs(x=x_axis, y = "Mean Compression Time (ms)", title = "Average Compression Time")+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  plot1/plot2
+  plot1+plot2
 }
 ```
 
@@ -178,13 +178,13 @@ compare_max_string_lengths <- function(array){
 	}
   plot1<- df %>% 
     ggplot(aes(x = size, y = comp_throughput, fill = size))+
-    geom_col()+
-    labs(x="Max String Length", y = "Throughput(bytes/s)")
+    geom_col(show.legend = F)+
+    labs(x="Max String Length", y = "Throughput(bytes/s)", title= "Throughput")
   plot2 <- df %>% 
     ggplot(aes(x = size, y = hm_comp, fill = size))+
-    geom_col()+
-    labs(x="Max String Length", y = "Mean Compression Time (ms)")	
-  plot1/plot2
+    geom_col(show.legend = F)+
+    labs(x="Max String Length", y = "Mean Compression Time (ms)", title = "Average Compression Time")	
+  plot1+plot2
 }
 
 ```
@@ -192,14 +192,6 @@ compare_max_string_lengths <- function(array){
 # Optimizing LZW: Approach
 
 To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++. A majority of the work in this thesis involved rewriting, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
-
-## Supporting Research
-
-There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process [@KeerthyMID]. The concept is simple, rather than a single large dictionary, have multiple dictionaries, one for each possible string size. That way, the dictionaries grow more slowly and accesses are faster. This paper also used Genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this paper.
-
-Another paper used simple parallelization techniques to improve compression speed [@panialok]. Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
-
-Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch [@ibrahimgbolagade]. They saw great reduction in compression time without comprimising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the method is not used in this thesis.
 
 ## Corpora
 
@@ -542,7 +534,7 @@ When reading a byte stream of the file, the file may not be in memory the way we
 stats_csv('data/stats/corpus_1_charstar_a12a290.csv', caption = "Corpus 1 Stats after using character pointers")
 stats_csv('data/stats/corpus_2_charstar_a12a290.csv', caption = "Corpus 2 Stats after using character pointers")
 ```
-```{r comparecorporaoptimizingfig, warnings= F, messages = F, fig.cap = "Comparison of the performance of the different milestones", fig.height = 7, echo = F}
+```{r comparecorporaoptimizingfig, warnings= F, messages = F, fig.cap = "Comparison of the performance of the different milestones", fig.height = 4, echo = F}
 compare_coprora(list(
   c('data/stats/corpus_1_stats_fixedeof_9066eef.csv', 'data/stats/corpus_2_stats_fixedeof_9066eef.csv', 'Fixed EOF'),
   c('data/stats/corpus_1_usingconstants_2c3f782.csv', 'data/stats/corpus_2_usingconstants_2c3f782.csv', 'Using constants'),
@@ -567,13 +559,13 @@ Below is a table which shows stats on the runs lengths of the "runs" of data, wh
 stats_csv('data/corpus_1_run_stats.csv', caption = "Run Lengths for Corpus 1")
 stats_csv('data/corpus_2_run_stats.csv', caption = "Run Lengths for Corpus 2")
 ```
-And here is the combined stats of both copora, along with a histogram of all the runs.
+And here is a histogram of all the runs\@ref(fig:allrunshistfig).
 
 ```{r bothrunsfig, warnings= F, messages = F, fig.cap =  "Run counts for both corpora", fig.height = 7, echo= F}
 stats_csv('data/corpus_both_run_stats.csv', caption = "Run lengths for both corpora")
 ```
 
-```{r allrunshistfig, warnings= F, messages = F, fig.cap = "A histogram showing the lengths of runs for both copora.", fig.height = 7, echo = F}
+```{r allrunshistfig, warnings= F, messages = F, fig.cap = "A histogram showing the lengths of runs for both copora.", fig.height = 3, echo = F}
 all_runs <- read.csv('data/all_corpus_run_counts.csv')
 all_runs %>% 
   ggplot(aes(x=Run.Length, y=count))+
@@ -600,12 +592,17 @@ stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv', caption =
 Here is a comparison for different max string lengths. 
 
 
-```{r directmaplenthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 7, echo = F}
+<!--
+i don't know why this caption won't show up
+--->
+
+```{r directmaplenthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
 compare_max_string_lengths(list(
 	c('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv', 'data/stats/directmap/corpus_2_directmap_154fed4_len10.csv', 10),
 	c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 15)
 ))
 ```
+
 The direct map method is very memory intensive, so having a max length over 15 is not feasible. At this point, if any runs are longer than the max string length, we just use a regular dictionary to accommodate them.
 
 ### Multiple Indexed Dictionaries
@@ -614,12 +611,12 @@ As stated before, there have been research papers about the possibility of using
 
 Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary. 
 
-```{r multdictlength10statsfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Multiple Dictionaries", fig.height = 7, echo = F}
+```{r multdictlength10statsfig, warnings= F, messages = F, fig.height = 3, echo = F}
 stats_csv('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', caption = "Corpus 1 Stats for Multiple Dictionaries of max length 10")
 stats_csv('data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', caption = "Corpus 1 Stats for Multiple Dictionaries of max length 10")
 ```
 
-```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 7, echo = F}
+```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
 compare_max_string_lengths(list(
 	c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 10),
 	c('data/stats/multdict/corpus_1_multdict_6d73501_len15.csv', 'data/stats/multdict/corpus_2_multdict_6d73501_len15.csv', 15),
@@ -627,9 +624,10 @@ compare_max_string_lengths(list(
 	c('data/stats/multdict/corpus_1_multdict_06f9a20_len25.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len25.csv', 25)
 ))
 ```
+
 Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
 
-```{r multvsonedictfig, warnings= F, messages = F, fig.cap = "Comparing one Dict to Mult Dict", fig.height = 7, echo = F}
+```{r multvsonedictfig, warnings= F, messages = F, fig.cap = "Comparing one Dict to Mult Dict", fig.height = 4, echo = F}
 
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
@@ -642,7 +640,7 @@ compare_coprora(list(
 
 Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
 
-```{r dictionarytechniquecompfig, warnings= F, messages = F, fig.cap = "Comparing the three types of dictionaries. The Direct Map has a max length of 15 and the Mult Dict has a max length of 10.",echo = F, fig.height=7}
+```{r dictionarytechniquecompfig, warnings= F, messages = F, fig.cap = "Comparing the three types of dictionaries. The Direct Map has a max length of 15 and the Mult Dict has a max length of 10.",echo = F, fig.height=3}
 
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
@@ -664,7 +662,7 @@ Given the statistics of our corpora, we know that this process can be faster. Si
 
 Another strategy would be to start from the maximum string length of the dictionary. We can check if the next string of the max length in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down or binary search down from the max. Here is a table showing the performance of these different strategies.
 
-```{r findlongestfrommaxfig, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 7}
+```{r findlongestfrommaxfig, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 3}
 compare_coprora(list(
   c('data/stats/ddict/corpus_1_ddictbinarysearch_e196a55.csv', 'data/stats/ddict/corpus_2_ddictbinarysearch_e196a55.csv', 'Binary search'),
   c('data/stats/ddict/corpus_1_ddictbinarysearchflyindex_94305a5.csv', 'data/stats/ddict/corpus_2_ddictbinarysearchflyindex_94305a5.csv', 'Binary Fly Index'),
@@ -681,7 +679,7 @@ We see that none of the other strategies are better than just looping up from ze
 
 Here are the results when we try looking for runs starting at the average.
 
-```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 7}
+```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 3}
 compare_coprora(list(
   c('data/stats/ddict/corpus_1_ddictdownavg_edafb16.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down from Average'),
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search from Average'),
@@ -699,7 +697,7 @@ One way to avoid the edge case where we encounter a very long run is to just not
 
 Here is a graph comparing the different strategies.
 
-```{r findlongestwmax, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at average with strings over max not accepted", echo = F, fig.height = 7}
+```{r findlongestwmax, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at average with strings over max not accepted", echo = F, fig.height = 5}
 compare_coprora(list(
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down'),
   c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max Enforced'),
@@ -711,7 +709,7 @@ compare_coprora(list(
 There isn't too much of a performance improvement, which makes sense because long runs are very rare. Let's see how it affects our compression ratio.
 
 
-```{r maxenforcedstats, warnings= F, messages = F, fig.cap = "Compression ratios before and after not allowing strings over max", fig.height = 0.5, echo = F}
+```{r maxenforcedstats, warnings= F, messages = F, echo = F}
 
   before_corpus1 <- read.csv('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv')
 before_corpus2 <- read.csv('data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv')
@@ -723,8 +721,7 @@ f <- tibble(
   cr_before = sum(before$Original.File.Size)/sum(before$Compressed.Size),
   cr_after = sum(after$Original.File.Size)/sum(after$Compressed.Size)
 )
-  knitr::kable(f, format="latex", booktabs=TRUE, caption = "Compression Ratio change from disallowing long strings") %>% 
-  kable_styling(latex_options=c("scale_down", "HOLD_position", "striped"))
+knitr::kable(f, format="latex", booktabs=TRUE, caption = "Compression Ratio change from disallowing long strings")
 
 ```
 
@@ -736,7 +733,7 @@ One potential bottleneck of finding the longest run is converting a run of chara
 
 Our strategy is to use `pext`, which extracts parallel bits. We give `pext` a string of characters, say 'ACTG', and a bit mask, and it will extract those bits from our string. It theoretically does this in one machine instruction, which could be much more efficient than looping over all the characters.
 
-```{r findlongestwpext, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run with pext", echo = F, fig.height = 7}
+```{r findlongestwpext, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run with pext", echo = F, fig.height = 5}
 compare_coprora(list(
   c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max'),
   c('data/stats/ddict/corpus_1_ddictloopwpext_70ee265.csv', 'data/stats/ddict/corpus_2_ddictloopwpext_70ee265.csv', 'Loop Down with Pext'),

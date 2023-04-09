@@ -17,15 +17,6 @@ This thesis deals with some high level topics and uses language specific to comp
 
 Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
   
-## Compression: A history
-
-
-Compression dates back to some of the earliest days in computing, when storage was much smaller and extremely expensive. In 1948, Claude Shannon published "A Mathematical Theory of Communication", a paper which lined out the field of study now known as information theory. He
-
-In the 1970s, researchers began to develop more sophisticated compression algorithms, such as Huffman encoding and Lempel-Ziv compression. Both LZW and Huffman use codes to represent different characters in a message.
-
-TODO: Elaborate
-
 ## Compression Metrics
 
 ### Compression Ratio
@@ -184,7 +175,6 @@ $$\text{0A....}$$
 \end{tabular}
 \caption{ An example of LZW ran on the input "AAGGAATCC"}
 \end{table}
-\newpage
 
 When we are decoding, we start with the same dictionary. We see "0A" and know that that means "Take the string that has codeword 0, add on the character "A" and add that new string to the dictionary. So we would add that to the dictionary and assign it to our next available codeword, 4. So as you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
 
@@ -261,3 +251,14 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 + `codeword`: a number used to take the place of a string in our encoding.
 + `run`: the next run of characters in our input that are already in our dictionary. So if we are encoding "ACTG", and "A", "AC", and "ACT" are in the dictionary but "ACTG" is not, we have a run of 3.
 + `EOF`: end of file, the special character that we need to output at the end of the encoding.
+
+## Related work 
+
+The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area, in the intersection of bioinformatics, computer science, and mathematics.
+
+There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process [@KeerthyMID]. The concept is simple, rather than a single large dictionary, have multiple dictionaries, one for each possible string size. That way, the dictionaries grow more slowly and accesses are faster. This paper also used Genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this paper.
+
+Another paper used simple parallelization techniques to improve compression speed [@panialok]. Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
+
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch [@ibrahimgbolagade]. They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the it is not used in this thesis.
+

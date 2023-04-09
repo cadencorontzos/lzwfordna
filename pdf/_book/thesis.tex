@@ -287,15 +287,6 @@ Clearly, information is fundamental to how humans interact and how they understa
 
 Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
 
-\hypertarget{compression-a-history}{%
-\section{Compression: A history}\label{compression-a-history}}
-
-Compression dates back to some of the earliest days in computing, when storage was much smaller and extremely expensive. In 1948, Claude Shannon published ``A Mathematical Theory of Communication'', a paper which lined out the field of study now known as information theory. He
-
-In the 1970s, researchers began to develop more sophisticated compression algorithms, such as Huffman encoding and Lempel-Ziv compression. Both LZW and Huffman use codes to represent different characters in a message.
-
-TODO: Elaborate
-
 \hypertarget{compression-metrics}{%
 \section{Compression Metrics}\label{compression-metrics}}
 
@@ -459,8 +450,6 @@ So the encoded string will look something like
 \end{tabular}
 \caption{ An example of LZW ran on the input "AAGGAATCC"}
 \end{table}
-\newpage
-
 When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character''A'' and add that new string to the dictionary. So we would add that to the dictionary and assign it to our next available codeword, 4. So as you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
 
 This is nice for several reasons
@@ -539,19 +528,21 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 \item
   \texttt{EOF}: end of file, the special character that we need to output at the end of the encoding.
 \end{itemize}
-\hypertarget{optimizing-lzw-approach}{%
-\chapter{Optimizing LZW: Approach}\label{optimizing-lzw-approach}}
+\hypertarget{related-work}{%
+\section{Related work}\label{related-work}}
 
-To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++. A majority of the work in this thesis involved rewriting, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
-
-\hypertarget{supporting-research}{%
-\section{Supporting Research}\label{supporting-research}}
+The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area, in the intersection of bioinformatics, computer science, and mathematics.
 
 There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple, rather than a single large dictionary, have multiple dictionaries, one for each possible string size. That way, the dictionaries grow more slowly and accesses are faster. This paper also used Genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this paper.
 
 Another paper used simple parallelization techniques to improve compression speed (Pani, Mishra, \& Mishra, 2012). Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
 
-Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without comprimising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the method is not used in this thesis.
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the it is not used in this thesis.
+
+\hypertarget{optimizing-lzw-approach}{%
+\chapter{Optimizing LZW: Approach}\label{optimizing-lzw-approach}}
+
+To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++. A majority of the work in this thesis involved rewriting, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
 
 \hypertarget{corpora}{%
 \section{Corpora}\label{corpora}}
@@ -735,7 +726,7 @@ We solved this issue by adding 2 extra bits after the EOF codeword. These bits d
 So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
 At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:fixedeofstatsfig} Corpus 1 Stats after fixing EOF}
 \centering
@@ -749,18 +740,17 @@ DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 5 & 1\\
 \cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{18} & \cellcolor{gray!6}{7}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 23 & 9\\
 \cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{18} & \cellcolor{gray!6}{7}\\
-\addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 8 & 2\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{13} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 4\\
 \cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:fixedeofstatsfig}Corpus 2 stats after fixing EOF}
 \centering
@@ -774,15 +764,15 @@ DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 15034 & 1898\\
 \cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5427} & \cellcolor{gray!6}{781}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 145 & 40\\
 \cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9790} & \cellcolor{gray!6}{1350}\\
-\addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 569 & 121\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{40810} & \cellcolor{gray!6}{4773}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1761 & 295\\
 \cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{445} & \cellcolor{gray!6}{97}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 53818 & 5913\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{141} & \cellcolor{gray!6}{40}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 7190 & 1015\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1367 & 238\\
 \cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{6} & \cellcolor{gray!6}{2}\\
@@ -843,7 +833,7 @@ Of course, there are several issues with this method. It is difficult to associa
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of callgrind, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
 
 Here are the runs after this optimization.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:usingconstantsstatsfig}Corpus 1 Stats after changing constants}
 \centering
@@ -857,18 +847,17 @@ DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 5 & 1\\
 \cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{19} & \cellcolor{gray!6}{7}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 23 & 9\\
 \cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{19} & \cellcolor{gray!6}{7}\\
-\addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 7 & 2\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 4\\
 \cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{10} & \cellcolor{gray!6}{3}\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:usingconstantsstatsfig}Corpus 2 Stats after changing constants}
 \centering
@@ -882,15 +871,15 @@ DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14940 & 1880\\
 \cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5401} & \cellcolor{gray!6}{769}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 144 & 40\\
 \cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9782} & \cellcolor{gray!6}{1344}\\
-\addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 569 & 118\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{41060} & \cellcolor{gray!6}{4787}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1738 & 292\\
 \cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{444} & \cellcolor{gray!6}{97}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 53774 & 5854\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{139} & \cellcolor{gray!6}{40}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 7188 & 1009\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{1}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1352 & 237\\
 \cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
@@ -939,7 +928,7 @@ If I just save \texttt{currentBlock\ +\ next\_character} into a new variable, th
 \end{Highlighting}
 \end{Shaded}
 Here are the statistics on the version of the algorithm after this change.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:stringconcatstatsfig}Corpus 1 Stats after reducing string concatenations}
 \centering
@@ -953,18 +942,17 @@ DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 4 & 1\\
 \cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{7}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 20 & 9\\
 \cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{7}\\
-\addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 6 & 2\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 10 & 4\\
 \cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{15} & \cellcolor{gray!6}{6}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 8 & 2\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:stringconcatstatsfig}Corpus 2 Stats after reducing string concatenations}
 \centering
@@ -978,15 +966,15 @@ DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14450 & 1876\\
 \cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5186} & \cellcolor{gray!6}{762}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 129 & 38\\
 \cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9392} & \cellcolor{gray!6}{1329}\\
-\addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 525 & 119\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{39700} & \cellcolor{gray!6}{4741}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1640 & 289\\
 \cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{410} & \cellcolor{gray!6}{96}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 51901 & 5848\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{126} & \cellcolor{gray!6}{40}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 6861 & 1001\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1258 & 234\\
 \cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
@@ -1056,7 +1044,7 @@ We can save that lookup, like so.
 \end{Highlighting}
 \end{Shaded}
 Here are the stats of the version of the algorithm after this change.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:dictaccessesstatsfig}Corpus 1 Stats after reducing dictionary accesses}
 \centering
@@ -1070,18 +1058,17 @@ DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 4 & 1\\
 \cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{7}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 20 & 9\\
 \cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{7}\\
-\addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 6 & 2\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{11} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 3\\
 \cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:dictaccessesstatsfig}Corpus 2 Stats after reducing dictionary accesses}
 \centering
@@ -1095,15 +1082,15 @@ DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14146 & 1869\\
 \cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5087} & \cellcolor{gray!6}{758}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 127 & 39\\
 \cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9278} & \cellcolor{gray!6}{1329}\\
-\addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 519 & 115\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{39265} & \cellcolor{gray!6}{4702}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1610 & 290\\
 \cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{405} & \cellcolor{gray!6}{97}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 50936 & 5833\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{125} & \cellcolor{gray!6}{39}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 6773 & 999\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1254 & 231\\
 \cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
@@ -1116,7 +1103,7 @@ DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1254 & 231\\
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
 When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:charstarstatsfig}Corpus 1 Stats after using character pointers}
 \centering
@@ -1130,18 +1117,17 @@ DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 7 & 1\\
 \cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{15} & \cellcolor{gray!6}{6}\\
 DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 15 & 8\\
 \cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
-\addlinespace
 DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 9 & 2\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 10 & 3\\
 \cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{14} & \cellcolor{gray!6}{5}\\
 DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{9} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:charstarstatsfig}Corpus 2 Stats after using character pointers}
 \centering
@@ -1155,15 +1141,15 @@ DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 12264 & 1764\\
 \cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{4070} & \cellcolor{gray!6}{708}\\
 DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 96 & 35\\
 \cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{7627} & \cellcolor{gray!6}{1252}\\
-\addlinespace
 DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 348 & 109\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{32906} & \cellcolor{gray!6}{4456}\\
 DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1205 & 265\\
 \cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{271} & \cellcolor{gray!6}{88}\\
 DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 44733 & 5517\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{92} & \cellcolor{gray!6}{35}\\
 DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 5266 & 940\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 879 & 220\\
 \cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{1}\\
@@ -1188,7 +1174,7 @@ So the another step towards an efficient LZW seemed to be to abstract out the \t
 In our analysis of the two corpora, we found some interesting statistics in the redundancy of the data.
 
 Below is a table which shows stats on the runs lengths of the ``runs'' of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:runstatsfig}Run Lengths for Corpus 1}
 \centering
@@ -1201,7 +1187,7 @@ average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_len
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:runstatsfig}Run Lengths for Corpus 2}
 \centering
@@ -1214,8 +1200,8 @@ average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_len
 \bottomrule
 \end{tabular}}
 \end{table}
-And here is the combined stats of both copora, along with a histogram of all the runs.
-\begin{table}[H]
+And here is a histogram of all the runs\ref{fig:allrunshistfig}.
+\begin{table}[!h]
 
 \caption{\label{tab:bothrunsfig}Run lengths for both corpora}
 \centering
@@ -1243,7 +1229,7 @@ to index into an array of codewords.
 For each strings size 1 to n , we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap on top to handle those.
 
 Here is the data for this version of the dictionary of length 10.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:directmaplength10statsfig}Corpus 1 Stats for Direct Map of max length 10}
 \centering
@@ -1257,18 +1243,17 @@ DNACorpus1/humdyst & 38770 & 18437 & 2.103 & 1 & 1\\
 \cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{77120} & \cellcolor{gray!6}{2.486} & \cellcolor{gray!6}{4} & \cellcolor{gray!6}{4}\\
 DNACorpus1/hehcmv & 229354 & 93251 & 2.460 & 2 & 5\\
 \cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{77315} & \cellcolor{gray!6}{2.414} & \cellcolor{gray!6}{4} & \cellcolor{gray!6}{4}\\
-\addlinespace
 DNACorpus1/humhdab & 58864 & 26752 & 2.200 & 1 & 2\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{49414} & \cellcolor{gray!6}{2.449} & \cellcolor{gray!6}{3} & \cellcolor{gray!6}{3}\\
 DNACorpus1/mtpacga & 100314 & 42203 & 2.377 & 2 & 2\\
 \cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{64879} & \cellcolor{gray!6}{2.402} & \cellcolor{gray!6}{3} & \cellcolor{gray!6}{3}\\
 DNACorpus1/humghcs & 66495 & 29864 & 2.227 & 1 & 2\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{32681} & \cellcolor{gray!6}{2.243} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:directmaplength10statsfig}Corpus 2 Stats for Direct Map of max length 10}
 \centering
@@ -1282,15 +1267,15 @@ DNACorpus2/DaRe & 62565020 & 21182510 & 2.954 & 656 & 442\\
 \cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8986109} & \cellcolor{gray!6}{2.938} & \cellcolor{gray!6}{271} & \cellcolor{gray!6}{184}\\
 DNACorpus2/HePy & 1667825 & 572507 & 2.913 & 26 & 17\\
 \cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{15008736} & \cellcolor{gray!6}{2.882} & \cellcolor{gray!6}{431} & \cellcolor{gray!6}{319}\\
-\addlinespace
 DNACorpus2/EsCo & 4641652 & 1621508 & 2.863 & 51 & 42\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{52441876} & \cellcolor{gray!6}{2.832} & \cellcolor{gray!6}{1475} & \cellcolor{gray!6}{1080}\\
 DNACorpus2/ScPo & 10652155 & 3691943 & 2.885 & 108 & 83\\
 \cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1324571} & \cellcolor{gray!6}{2.937} & \cellcolor{gray!6}{51} & \cellcolor{gray!6}{32}\\
 DNACorpus2/HoSa & 189752667 & 63973137 & 2.966 & 2035 & 1319\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{561527} & \cellcolor{gray!6}{2.833} & \cellcolor{gray!6}{22} & \cellcolor{gray!6}{18}\\
 DNACorpus2/DrMe & 32181429 & 11150498 & 2.886 & 332 & 237\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{9894} & \cellcolor{gray!6}{1.914} & \cellcolor{gray!6}{0} & \cellcolor{gray!6}{1}\\
 DNACorpus2/PlFa & 8986712 & 2972072 & 3.024 & 106 & 67\\
 \cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{20885} & \cellcolor{gray!6}{2.105} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{1}\\
@@ -1298,8 +1283,11 @@ DNACorpus2/PlFa & 8986712 & 2972072 & 3.024 & 106 & 67\\
 \end{tabular}}
 \end{table}
 Here is a comparison for different max string lengths.
-
+\begin{figure}
+\centering
 \includegraphics{thesis_files/figure-latex/directmaplenthcompfig-1.pdf}
+\caption{\label{fig:directmaplenthcompfig}Comparing different max lengths for Direct Map}
+\end{figure}
 The direct map method is very memory intensive, so having a max length over 15 is not feasible. At this point, if any runs are longer than the max string length, we just use a regular dictionary to accommodate them.
 
 \hypertarget{multiple-indexed-dictionaries}{%
@@ -1308,7 +1296,7 @@ The direct map method is very memory intensive, so having a max length over 15 i
 As stated before, there have been research papers about the possibility of using multiple indexed dictionaries for LZW, including Keerthy (Keerthy, 2019).
 
 Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary.
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
 \centering
@@ -1322,18 +1310,17 @@ DNACorpus1/humdyst & 38770 & 15116 & 2.565 & 3 & 1\\
 \cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{69820} & \cellcolor{gray!6}{2.746} & \cellcolor{gray!6}{14} & \cellcolor{gray!6}{6}\\
 DNACorpus1/hehcmv & 229354 & 85279 & 2.689 & 16 & 7\\
 \cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70007} & \cellcolor{gray!6}{2.666} & \cellcolor{gray!6}{15} & \cellcolor{gray!6}{6}\\
-\addlinespace
 DNACorpus1/humhdab & 58864 & 22484 & 2.618 & 5 & 2\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43269} & \cellcolor{gray!6}{2.797} & \cellcolor{gray!6}{10} & \cellcolor{gray!6}{4}\\
 DNACorpus1/mtpacga & 100314 & 36647 & 2.737 & 8 & 3\\
 \cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58089} & \cellcolor{gray!6}{2.683} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{5}\\
 DNACorpus1/humghcs & 66495 & 25336 & 2.625 & 6 & 2\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{27918} & \cellcolor{gray!6}{2.626} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
 \bottomrule
 \end{tabular}}
 \end{table}
-\begin{table}[H]
+\begin{table}[!h]
 
 \caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
 \centering
@@ -1347,22 +1334,26 @@ DNACorpus2/DaRe & 62565020 & 19585959 & 3.194 & 8878 & 1721\\
 \cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609527} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{3347} & \cellcolor{gray!6}{696}\\
 DNACorpus2/HePy & 1667825 & 566631 & 2.943 & 94 & 34\\
 \cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14147605} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{5551} & \cellcolor{gray!6}{1223}\\
-\addlinespace
 DNACorpus2/EsCo & 4641652 & 1593032 & 2.914 & 364 & 105\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851235} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{22817} & \cellcolor{gray!6}{4323}\\
 DNACorpus2/ScPo & 10652155 & 3590421 & 2.967 & 1099 & 258\\
 \cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306336} & \cellcolor{gray!6}{2.978} & \cellcolor{gray!6}{302} & \cellcolor{gray!6}{86}\\
 DNACorpus2/HoSa & 189752667 & 57199679 & 3.317 & 31978 & 5449\\
-\addlinespace
 \cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556194} & \cellcolor{gray!6}{2.861} & \cellcolor{gray!6}{91} & \cellcolor{gray!6}{34}\\
 DNACorpus2/DrMe & 32181429 & 10618575 & 3.031 & 3865 & 905\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7740} & \cellcolor{gray!6}{2.447} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0}\\
 DNACorpus2/PlFa & 8986712 & 2895340 & 3.104 & 892 & 211\\
 \cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17258} & \cellcolor{gray!6}{2.548} & \cellcolor{gray!6}{4} & \cellcolor{gray!6}{1}\\
 \bottomrule
 \end{tabular}}
 \end{table}
+\begin{figure}
+\centering
 \includegraphics{thesis_files/figure-latex/multdictlengthcompfig-1.pdf}
+\caption{\label{fig:multdictlengthcompfig}Comparing different max lengths for Direct Map}
+\end{figure}
 Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
 \begin{figure}
 \centering
@@ -1418,18 +1409,17 @@ Here is a graph comparing the different strategies.
 
 \includegraphics{thesis_files/figure-latex/findlongestwmax-1.pdf}
 There isn't too much of a performance improvement, which makes sense because long runs are very rare. Let's see how it affects our compression ratio.
-\begin{table}[H]
+\begin{table}
 
 \caption{\label{tab:maxenforcedstats}Compression Ratio change from disallowing long strings}
 \centering
-\resizebox{\linewidth}{!}{
 \begin{tabular}[t]{rr}
 \toprule
 cr\_before & cr\_after\\
 \midrule
-\cellcolor{gray!6}{2.909175} & \cellcolor{gray!6}{2.907686}\\
+2.909175 & 2.907686\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 The effect on the total compression ratio is minimal
 
