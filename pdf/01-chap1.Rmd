@@ -262,3 +262,6 @@ Another paper used simple parallelization techniques to improve compression spee
 
 Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch [@ibrahimgbolagade]. They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the it is not used in this thesis.
 
+DNA specific compression algorithms have also been around for a while. One of the first papers exploring this was published in 1994 [@grumbach]. It proposes an algorithm called `biocompress2`, expanding on a previous paper by the same author. They focus on encoding palindromes in DNA sequences, which doesn't do much to help the compression ratio. However, this paper has been cited by many following papers sparking interest in DNA compression, and the collection of sequences that it uses for algorithm comparison is used in this thesis.
+
+Chen et al. proposed an algorithm GenCompress, which uses approximate matching [@Chen2001ACA].

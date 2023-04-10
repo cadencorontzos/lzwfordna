@@ -26,14 +26,14 @@ to be removed for styles that don't require the hanging indent.
 
 \setlength{\parindent}{-0.20in}
 
-    Huffman, D. A. (1952). A method for the construction of minimum-redundancy codes. Proceedings of the IRE, 40(9), 1098-1101.
-    Sayood, K. (2017). Introduction to data compression. Academic Press.
-	Witten, I. H., Neal, R. M., & Cleary, J. G. (1987). Arithmetic coding for data compression. Communications of the ACM, 30(6), 520-540.
-    Sayood, K. (2017). Introduction to data compression. Academic Press.
-	Pratas, Diogo & Pinho, Armando. (2018). A DNA Sequence Corpus for Compression Benchmark. 208-215. 10.1007/978-3-319-98702-6_25.
-
 <!--
 This is just for testing with more citations for the bibliography at the end.  Add other entries into the list here if you'd like them to appear in the bibliography even if they weren't explicitly cited in the document.
+    # Huffman, D. A. (1952). A method for the construction of minimum-redundancy codes. Proceedings of the IRE, 40(9), 1098-1101.
+    # Sayood, K. (2017). Introduction to data compression. Academic Press.
+	# Witten, I. H., Neal, R. M., & Cleary, J. G. (1987). Arithmetic coding for data compression. Communications of the ACM, 30(6), 520-540.
+    # Sayood, K. (2017). Introduction to data compression. Academic Press.
+	# Pratas, Diogo & Pinho, Armando. (2018). A DNA Sequence Corpus for Compression Benchmark. 208-215. 10.1007/978-3-319-98702-6_25.
+
 -->
 
 ---

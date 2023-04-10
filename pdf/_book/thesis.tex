@@ -539,6 +539,10 @@ Another paper used simple parallelization techniques to improve compression spee
 
 Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the it is not used in this thesis.
 
+DNA specific compression algorithms have also been around for a while. One of the first papers exploring this was published in 1994 (Grumbach \& Tahi, 1994). It proposes an algorithm called \texttt{biocompress2}, expanding on a previous paper by the same author. They focus on encoding palindromes in DNA sequences, which doesn't do much to help the compression ratio. However, this paper has been cited by many following papers sparking interest in DNA compression, and the collection of sequences that it uses for algorithm comparison is used in this thesis.
+
+Chen et al.~proposed an algorithm GenCompress, which uses approximate matching (Chen, Kwong, \& Li, 2001).
+
 \hypertarget{optimizing-lzw-approach}{%
 \chapter{Optimizing LZW: Approach}\label{optimizing-lzw-approach}}
 
@@ -1512,13 +1516,7 @@ This first appendix includes all of the R chunks of code that were hidden throug
 \noindent
 
 \setlength{\parindent}{-0.20in}
-\begin{verbatim}
-Huffman, D. A. (1952). A method for the construction of minimum-redundancy codes. Proceedings of the IRE, 40(9), 1098-1101.
-Sayood, K. (2017). Introduction to data compression. Academic Press.
-Witten, I. H., Neal, R. M., & Cleary, J. G. (1987). Arithmetic coding for data compression. Communications of the ACM, 30(6), 520-540.
-Sayood, K. (2017). Introduction to data compression. Academic Press.
-Pratas, Diogo & Pinho, Armando. (2018). A DNA Sequence Corpus for Compression Benchmark. 208-215. 10.1007/978-3-319-98702-6_25.
-\end{verbatim}
+
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
 \leavevmode\vadjust pre{\hypertarget{ref-angel2000}{}}%
@@ -1529,6 +1527,9 @@ Angel, E. (2001a). \emph{Batch-file computer graphics : A bottom-up approach wit
 
 \leavevmode\vadjust pre{\hypertarget{ref-angel2002a}{}}%
 Angel, E. (2001b). \emph{Test second book by angel}. Boston, MA: Wesley Addison Longman.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Chen2001ACA}{}}%
+Chen, X., Kwong, S. T. W., \& Li, M. (2001). A compression algorithm for DNA sequences. \emph{IEEE Engineering in Medicine and Biology Magazine}, \emph{20}, 61--66.
 
 \leavevmode\vadjust pre{\hypertarget{ref-grumbach}{}}%
 Grumbach, S., \& Tahi, F. (1994). {A New Challenge for Compression Algorithms: Genetic Sequences}. \emph{{Information Processing and Management}}, \emph{30}. Retrieved from \url{https://hal.inria.fr/inria-00180949}
