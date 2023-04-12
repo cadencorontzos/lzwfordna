@@ -15,7 +15,7 @@ const int INDEX_OF_G = 3;
 constexpr uint8_t MAX_STRING_LENGTH = 15;
 const int FIND_LONGEST_START = 7;
 typedef uint16_t codeword_type;
-const codeword_type MAX_CODEWORD = static_cast<codeword_type>((1 << (14)) - 1);
+const codeword_type MAX_CODEWORD = static_cast<codeword_type>((1 << (16)) - 1);
 const int CODEWORD_SIZE = sizeof(codeword_type) * CHAR_BIT;
 using index_type = uint32_t;
 
@@ -346,12 +346,20 @@ public:
 // incrementing the codeword
 //
 class Codeword_Helper : public CW_Tracker<codeword_type> {
+private:
+  unsigned int current_max_cw;
+
 public:
   Codeword_Helper()
-      : CW_Tracker<codeword_type>(6, 5, sizeof(codeword_type) * CHAR_BIT){};
+      : CW_Tracker<codeword_type>(6, 5, 4),
+        current_max_cw(1 << bits_per_codeword){};
   codeword_type get_next_codeword() {
     if (current_codeword == MAX_CODEWORD) {
       return MAX_CODEWORD;
+    }
+    if (current_codeword == current_max_cw) {
+      bits_per_codeword++;
+      current_max_cw = (1 << bits_per_codeword);
     }
     return current_codeword++;
   }

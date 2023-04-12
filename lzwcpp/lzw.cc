@@ -43,41 +43,20 @@ void LZW::encode(const char *input_file, uint64_t file_size,
       break;
     }
 
-    if (longest_run.next_run_length <= 6) {
-      for (unsigned i = 0; i < longest_run.next_run_length; i++) {
+    // output codeword
+    bit_output.output_n_bits(longest_run.codeword_of_next_run,
+                             codeword_helper.bits_per_codeword);
 
-        // output next character
-        next_character = input_file[i];
-        char_output.output_n_bits(encode_values[next_character], 2);
-      }
-      // output 3 bits for length of run
-      rl_output.output_n_bits(longest_run.next_run_length, 4);
-      // add the run we saw + the new character to our dict
-      dictionary.add_string(input_file, longest_run, codeword);
-      // output next character
-      next_character = input_file[longest_run.next_run_length];
-      char_output.output_n_bits(encode_values[next_character], 2);
-      input_file += longest_run.next_run_length + 1;
-      longest_run.next_run_length = 0;
-    } else {
+    // output next character
+    next_character = input_file[longest_run.next_run_length];
 
-      // output codeword
-      bit_output.output_n_bits(longest_run.codeword_of_next_run,
-                               codeword_helper.bits_per_codeword);
+    output_chars << next_character;
+    // add the run we saw + the new character to our dict
+    dictionary.add_string(input_file, longest_run, codeword);
 
-      // output next character
-      next_character = input_file[longest_run.next_run_length];
-      // output 3 bits for length of run
-      rl_output.output_n_bits(1, 4);
-      char_output.output_n_bits(encode_values[next_character], 2);
-
-      // add the run we saw + the new character to our dict
-      dictionary.add_string(input_file, longest_run, codeword);
-
-      codeword = codeword_helper.get_next_codeword();
-      input_file += longest_run.next_run_length + 1;
-      longest_run.next_run_length = 0;
-    }
+    codeword = codeword_helper.get_next_codeword();
+    input_file += longest_run.next_run_length + 1;
+    longest_run.next_run_length = 0;
   }
   // output special eof character
   bit_output.output_n_bits(codeword_helper.EOF_CODEWORD,
