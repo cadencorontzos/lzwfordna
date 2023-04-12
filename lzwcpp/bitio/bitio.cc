@@ -11,10 +11,8 @@ bool BitInput::input_bit() {
   // of the byte, we've writtent the whole byte output byte and reset index
   if (index == -1) {
     index = CHAR_BIT - 1;
-    char b;
-    b = input_stream[is_index];
+    buffer = uint8_t(input_stream[is_index]);
     is_index += 1;
-    buffer = int(b);
   }
 
   // now return the bit of the current index, then decrease index

@@ -52,14 +52,14 @@ int main(int argc, char *argv[]) {
 
   LZW compressor;
   std::ofstream output;
-  output.open(std::string(argv[1]) + ".codewords.second.compressed.lzw",
+  output.open(std::string(argv[1]) + ".compressed.lzw.codeword",
               std::ios::binary);
 
   std::ofstream rl_output;
-  rl_output.open(std::string(argv[1]) + ".runs.14.compressed.lzw",
+  rl_output.open(std::string(argv[1]) + ".compressed.lzw.indicator",
                  std::ios::binary);
   std::ofstream char_output;
-  char_output.open(std::string(argv[1]) + ".chars.second.compressed.lzw",
+  char_output.open(std::string(argv[1]) + ".compressed.lzw.chars",
                    std::ios::binary);
   // compress file
   auto start_time = std::chrono::high_resolution_clock::now();
