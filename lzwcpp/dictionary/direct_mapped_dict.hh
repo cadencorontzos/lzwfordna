@@ -15,8 +15,9 @@ const int INDEX_OF_G = 3;
 constexpr uint8_t MAX_STRING_LENGTH = 15;
 const int FIND_LONGEST_START = 7;
 typedef uint16_t codeword_type;
-const codeword_type MAX_CODEWORD = static_cast<codeword_type>((1 << (16)) - 1);
 const int CODEWORD_SIZE = sizeof(codeword_type) * CHAR_BIT;
+const codeword_type MAX_CODEWORD =
+    static_cast<codeword_type>((1 << (CODEWORD_SIZE)) - 1);
 using index_type = uint32_t;
 
 class Next_Longest_Run : public Next_Run<codeword_type> {

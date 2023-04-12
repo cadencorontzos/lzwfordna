@@ -43,21 +43,40 @@ void LZW::encode(const char *input_file, uint64_t file_size,
       break;
     }
 
-    // output codeword
-    bit_output.output_n_bits(longest_run.codeword_of_next_run,
-                             codeword_helper.bits_per_codeword);
+    if (longest_run.next_run_length <= 8) {
 
-    // output next character
-    next_character = input_file[longest_run.next_run_length];
+      rl_output.output_bit(false);
+      for (unsigned i = 0; i < 8; i++) {
 
-    output_chars << next_character;
-    // add the run we saw + the new character to our dict
-    dictionary.add_string(input_file, longest_run, codeword);
+        // output next character
+        next_character = input_file[i];
+        char_output.output_n_bits(encode_values[next_character], 2);
+      }
 
+      // add the run we saw + the new character to our dict
+      dictionary.add_string(input_file, longest_run, codeword);
+
+      input_file += 8;
+    } else {
+      rl_output.output_bit(true);
+
+      // output codeword
+      bit_output.output_n_bits(longest_run.codeword_of_next_run,
+                               codeword_helper.bits_per_codeword);
+
+      // output next character
+      next_character = input_file[longest_run.next_run_length];
+      char_output.output_n_bits(encode_values[next_character], 2);
+
+      // add the run we saw + the new character to our dict
+      dictionary.add_string(input_file, longest_run, codeword);
+
+      input_file += longest_run.next_run_length + 1;
+    }
     codeword = codeword_helper.get_next_codeword();
-    input_file += longest_run.next_run_length + 1;
     longest_run.next_run_length = 0;
   }
+  rl_output.output_bit(true);
   // output special eof character
   bit_output.output_n_bits(codeword_helper.EOF_CODEWORD,
                            codeword_helper.bits_per_codeword);
