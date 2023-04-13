@@ -193,6 +193,8 @@ compare_max_string_lengths <- function(array){
 
 To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++. A majority of the work in this thesis involved rewriting, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
 
+While we may not end up creating the best DNA compressor available, the objective is to explore the boundaries of LZW and to tailor it as best we can for the task of DNA compression. As you will see, the algorithm has limitations.
+
 ## Corpora
 
 Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the performance of different algorithms to one another. 
@@ -731,7 +733,58 @@ The effect on the total compression ratio is minimal
 
 One potential bottleneck of finding the longest run is converting a run of characters into an index. We can try to do it on the fly as we loop up or down, but we could also use machine instructions. 
 
-Our strategy is to use `pext`, which extracts parallel bits. We give `pext` a string of characters, say 'ACTG', and a bit mask, and it will extract those bits from our string. It theoretically does this in one machine instruction, which could be much more efficient than looping over all the characters.
+Our strategy is to use `pext`, which extracts parallel bits. The `pext` instruction is a recent addition to the x86 istruction set, so it has not been widely used yet as optimization technique.
+
+We give `pext` a string of characters, say 'ACTG', and a bit mask, and it will extract those bits from our string. 
+
+
+\begin{figure}[h]\centering
+
+\usetikzlibrary{chains,decorations.pathreplacing}
+
+ \begin{tikzpicture}[
+node distance=0pt,
+ start chain = A going right,
+    X/.style = {rectangle, draw,% styles of nodes in string (chain)
+                minimum width=2ex, minimum height=3ex,
+                outer sep=0pt, on chain},
+    B/.style = {decorate,
+                decoration={brace, amplitude=5pt,
+                pre=moveto,pre length=1pt,post=moveto,post length=1pt,
+                raise=1mm,
+                            #1}, % for mirroring of brace, if necessary
+                thick},
+    B/.default=mirror, % by default braces are mirrored
+                        ]
+\foreach \i in {0,1,0,0,0,0,0,1,
+                0,1,0,0,0,0,1,1,
+                0,1,0,0,0,1,1,1,
+                0,1,0,1,0,1,0,0, }% <-- content of nodes
+    \node[X] {\i};
+\draw[B] ( A-6.south west) -- node[below=2mm] {Index of A} ( A-7.south east);
+\draw[B] (A-14.south west) -- node[below=2mm] {Index of C} (A-15.south east);
+\draw[B] (A-22.south west) -- node[below=2mm] {Index of G} (A-23.south east);
+\draw[B] (A-30.south west) -- node[below=2mm] {Index of T} (A-31.south east);
+\node (B1) [inner sep=1pt,above=of A-1.north west] {$\downarrow$};
+\node (B2) [inner sep=1pt,above=of A-9.north west] {$\downarrow$};
+\draw[B=](B1.north) -- node[above=2mm] {A in binary}(B2.north);
+\node (B3) [inner sep=1pt,above=of A-9.north west] {$\downarrow$};
+\node (B4) [inner sep=1pt,above=of A-17.north west] {$\downarrow$};
+\draw[B=](B3.north) -- node[above=2mm] {C in binary}(B4.north);
+\node (B5) [inner sep=1pt,above=of A-17.north west] {$\downarrow$};
+\node (B6) [inner sep=1pt,above=of A-25.north west] {$\downarrow$};
+\draw[B=](B5.north) -- node[above=2mm] {G in binary}(B6.north);
+\node (B7) [inner sep=1pt,above=of A-25.north west] {$\downarrow$};
+\node (B8) [inner sep=1pt,above=of A-33.north west] {$\downarrow$};
+\draw[B=](B7.north) -- node[above=2mm] {T in binary}(B8.north);
+    \end{tikzpicture}
+
+\caption{How `pext` extracts bits}
+
+\end{figure}
+
+
+It theoretically does this in one machine instruction, which could be much more efficient than looping over all the characters.
 
 ```{r findlongestwpext, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run with pext", echo = F, fig.height = 5}
 compare_coprora(list(
@@ -745,3 +798,41 @@ compare_coprora(list(
 ```
 
 Why doesn't it work? 
+
+## Returning to Compression Ratio
+
+After spending a lot of time debugging, we returned our attenting to the compression ratio. Most of our optimizations didn't have much of an effect on compression ratio, with the exception of disallowing strings over a certain length. It is also worth noting that the Direct Map dictionary and the Std dictionary implementations will have different compression ratios, as the Direct map has a max codeword size of 16 bits while the Std dict has a max codeword size of 32 bits. Std dict also allows longer strings.
+
+### A point of Comparison
+
+It's worth noting that for sequences of DNA, if the bases are encoded in ASCII, there is a simple and effecient algorithm to compress the file with a 4.0 compression ratio every time. Since there are only 4 bases, we can represent each base with 2 bits. This is a simple conversion, and it requires no dictionaries or codewords. 
+
+So the takeaway is, if a DNA compression algorithm can't compress with a compression ratio of higher than 4.0 (2 bits per base), than this simple algorithm would be perferable every time. 
+
+We implemented this method using pext, here are the results
+
+TODO: actually do this.
+
+### Entropy Encoding
+
+Our initial idea was that we would compress the DNA with LZW, then use a entropy encoder like arithmetic encoding or Huffman to further compress the data. This was an oversight, as the algorithm as we have described it thus far does not lend itself well to entropy encoding.
+
+Our algorithm outputs codewords and two bits representing the next character. For a codeword size of 16 bits, this means each loop of our algorithm outputs 18 bits. So any repretitiveness or reuse will not be detectable by an entropy encoder which works on data of 8, 16, or 32 bit chunks.
+
+So maybe we break the compressed file into two seperate files; a file of codewords and a file of the two bit representations of the following characters. Now we can compress these two files, right?
+
+The issue is that entropy encoders rely on repeating numbers of a high frequency. We can cut down the number of bits a certain entry takes to make it more compressible, and make less common entries take more bits \@ref(fig:huffman). DNA neucleotides show up with roughly the same frequency, so having 2 bits per character is hard to beat. So the file with all the charaters in it can't be compressed further.
+
+What about the codewords? Well, a key realization is that any codeword will only show up 4 times in a single run of the program. Say we add the codeword `1234="ACT"` to our dictionary. When will we output this codeword ? Well, we will output it when we see "ACT" followed by another character. Since there are only 4 characters, once you see those 4 other strings ("ACTA", "ACTG", "ACTC", and "ACTT"), we will never output it again because we are looking for the longest run possible.
+
+There are two cases in which we will output a codeword more than 4 times. If we run out of codewords and we have never encoded "ACTG", any time "ACTG" comes up, we will output `1234G`. This case is hard to predict as we have no way of controlling what strings are left when we run out of codewords. The other case is for strings that are the max length. These long runs may show up multiple times, and since we won't add any strings longer than the max to our dictionary, it will never be overwritten. However, these runs are very rare, or else the compression ratio wouldn't be an issue.
+
+So on average, every codeword shows up a maximum of 4 times. This means that for long strands of DNA, we have output nearly all of the codewords with relatively even frequency. In other words, entropy encoding will not shorten the length of the codewords.
+
+
+### A New Approach
+
+Given that we are not able to achieve a compression ratio over 4.0 with the current LZW, we need to alter our approach. The issue with our dataset is that long runs are rare. Every once in a while, you may replace a run of 15 with a codeword, but most of the time you are replacing a run less than 8. Eight characters can be represented by 16 bits, so any run under 8 that is replaced loses bits 
+
+
+TODO: describe new approach

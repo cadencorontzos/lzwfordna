@@ -81,3 +81,31 @@ If you'd like to see examples of other things in this template, please contact t
 # Comparison to other tools
 
 Here, in this chapter, we will investigate how our implementation holds up against other compression methods.
+
+
+## Compression Algorithms in Literature
+
+As discussed in the related work section of chapter 1, there have been several other compression algorithms proposed and tested in the field tailored for DNA. Not all of these are publicly available, thus we can only compare to the numbers that they reported.
+
+Note that I wasn't able to get compression times for these algorithms, only the compression ratios.
+
+might want to double check these
+
+```{r researchmethodsresultsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
+
+df <- data.frame(
+  Sequence = c("CHMPXX", "CHNTXX", "HEHCMVCG", "HUMDYSTROP", "HUMGHCSA", "HUMHBB", "HUMHDAB", "HUMHPRTB", "MPOMTCG", "MTPACG", "VACCG"),
+  BioCompress2 = c(1.6848, 1.6172, 1.8480, 1.9262, 1.3074, 1.8800, 1.8770, 1.9066, 1.9378, 1.8752, 1.7614),
+  GenCompress = c(1.6730, 1.6146, 1.8470, 1.9231, 1.0969, 1.8204, 1.8192, 1.8466, 1.9058, 1.8624, 1.7614),
+  # DNAC = c(1.6716, 1.6127, 1.8492, 1.9116, 1.0272, 1.7897, 1.7951, 1.8165, 1.8920, 1.8556, 1.7580),
+  # DNAP = c(1.6602, 1.6103, 1.8346, 1.9088, 1.0390, 1.7771, 1.7394, 1.7886, 1.8932, 1.8535, 1.7583),
+  # CDNA = c(NA, 1.6500, NA, 1.9300, 0.9500, NA, 1.6700, 1.7200, 1.8700, 1.8500, 1.8100),
+  # GeMNL = c(1.6617, 1.6101, 1.8420, 1.9085, 1.0089, NA, 1.7059, 1.7639, 1.8822, 1.8440, 1.7644),
+  XM = c(1.6577, 1.6068, 1.8426, 1.9031, 0.9828, 1.7513, 1.6671, 1.7361, 1.8768, 1.8447, 1.7649)
+)
+
+# print table
+
+  knitr::kable(df,  linesep = c(rep("", 5), "\\addlinespace"), format="latex", booktabs=TRUE) %>% 
+  kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
+```

@@ -96,6 +96,7 @@ if n=1{edge label={node [midway, left] {0} } }{edge label={node [midway, right] 
 \end{forest}
 
 \caption{Example Huffman tree}
+\label{fig:huffman}
 \end{figure}
 
 So $G=0$, $A = 10$, $T=111$ and $C=110$. Notice that none of the encodings are prefixes of one another, which makes it unambiguous in decoding.
@@ -262,6 +263,12 @@ Another paper used simple parallelization techniques to improve compression spee
 
 Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch [@ibrahimgbolagade]. They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the it is not used in this thesis.
 
-DNA specific compression algorithms have also been around for a while. One of the first papers exploring this was published in 1994 [@grumbach]. It proposes an algorithm called `biocompress2`, expanding on a previous paper by the same author. They focus on encoding palindromes in DNA sequences, which doesn't do much to help the compression ratio. However, this paper has been cited by many following papers sparking interest in DNA compression, and the collection of sequences that it uses for algorithm comparison is used in this thesis.
+DNA specific compression algorithms have also been around for a while. These papers do not focus on LZW, but they do consider some similar methods.
 
-Chen et al. proposed an algorithm GenCompress, which uses approximate matching [@Chen2001ACA].
+One of the first papers exploring this was published in 1994 [@grumbach]. It proposes an algorithm called `biocompress2`, expanding on a previous paper by the same author. They focus on encoding palindromes in DNA sequences, which doesn't do much to help the compression ratio. However, this paper has been cited by many following papers sparking interest in DNA compression, and the collection of sequences that it uses for algorithm comparison is used in this thesis.
+
+Chen et al. proposed an algorithm GenCompress, which uses approximate matching [@Chen2001ACA]. It matches sequnces to sequences already seen, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this method, although their technique is computationally expensive.
+
+In 2007, Minh Cao et al. published a paper detailing another algorithm, XM, which uses statistical methods to try and predict the next character while encoding and decoding [@CaoXM]. This method was found to outperform both Biocompress2 and GenCompress in terms of compression ratio.
+
+As a whole, these papers give us some guidance in terms of where to aim our research. Most of them boast great compression ratios, but their methods can be very computationally intensive in some cases, and thus, slow. We will aim to use previous research on LZW to make a very fast implementation for DNA sequences, then try and use characteristics of the sequences to improve compression ratio. Our hope isn't necessarily to create the best compression ratio out of all these methods, but to make a fast LZW implmentation with a respectable compression ratio. If we are able to make the algorithm very fast, it may be preferable to these other algorithms in some cases if the file is very large.

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.19)  9 APR 2023 22:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.19)  13 APR 2023 22:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1008,7 +1008,7 @@ l.319
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [5]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 385.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 386.
 (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [6]
@@ -1018,51 +1018,48 @@ Underfull \vbox (badness 1571) has occurred while \output is active []
 Chapter 2.
 [13
 
-]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+] [14]
 
-[14]
-
-Package xcolor Warning: Incompatible color definition on input line 632.
+Package xcolor Warning: Incompatible color definition on input line 641.
 
 
 Underfull \vbox (badness 2012) has occurred while \output is active []
 
 [15]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 636.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 645.
 
-Package xcolor Warning: Incompatible color definition on input line 670.
+Package xcolor Warning: Incompatible color definition on input line 679.
 
 
-Package xcolor Warning: Incompatible color definition on input line 670.
+Package xcolor Warning: Incompatible color definition on input line 679.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [16]
 
-Package xcolor Warning: Incompatible color definition on input line 681.
+Package xcolor Warning: Incompatible color definition on input line 690.
 
 
-Package xcolor Warning: Incompatible color definition on input line 689.
+Package xcolor Warning: Incompatible color definition on input line 698.
 
 
-Package xcolor Warning: Incompatible color definition on input line 689.
+Package xcolor Warning: Incompatible color definition on input line 698.
 
 [17]
 
-Package xcolor Warning: Incompatible color definition on input line 704.
+Package xcolor Warning: Incompatible color definition on input line 713.
 
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 706.
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 715.
 (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-Package xcolor Warning: Incompatible color definition on input line 729.
+Package xcolor Warning: Incompatible color definition on input line 738.
 
 
-Package xcolor Warning: Incompatible color definition on input line 729.
+Package xcolor Warning: Incompatible color definition on input line 738.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
@@ -1075,70 +1072,70 @@ Underfull \vbox (badness 4072) has occurred while \output is active []
 
 [18] [19]
 
-Package xcolor Warning: Incompatible color definition on input line 810.
+Package xcolor Warning: Incompatible color definition on input line 819.
 
 
-Package xcolor Warning: Incompatible color definition on input line 817.
+Package xcolor Warning: Incompatible color definition on input line 826.
 
 
-Package xcolor Warning: Incompatible color definition on input line 817.
+Package xcolor Warning: Incompatible color definition on input line 826.
 
 [20] [21]
 
-Package xcolor Warning: Incompatible color definition on input line 901.
+Package xcolor Warning: Incompatible color definition on input line 910.
 
 
-Package xcolor Warning: Incompatible color definition on input line 917.
+Package xcolor Warning: Incompatible color definition on input line 926.
 
 
-Package xcolor Warning: Incompatible color definition on input line 917.
+Package xcolor Warning: Incompatible color definition on input line 926.
 
 
-Package xcolor Warning: Incompatible color definition on input line 919.
+Package xcolor Warning: Incompatible color definition on input line 928.
 
 
-Package xcolor Warning: Incompatible color definition on input line 933.
+Package xcolor Warning: Incompatible color definition on input line 942.
 
 
-Package xcolor Warning: Incompatible color definition on input line 933.
+Package xcolor Warning: Incompatible color definition on input line 942.
 
 [22]
 
-Package xcolor Warning: Incompatible color definition on input line 998.
+Package xcolor Warning: Incompatible color definition on input line 1007.
 
 [23]
 
-Package xcolor Warning: Incompatible color definition on input line 1022.
+Package xcolor Warning: Incompatible color definition on input line 1031.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1022.
+Package xcolor Warning: Incompatible color definition on input line 1031.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1024.
+Package xcolor Warning: Incompatible color definition on input line 1033.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1049.
+Package xcolor Warning: Incompatible color definition on input line 1058.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1049.
+Package xcolor Warning: Incompatible color definition on input line 1058.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1049.
+Package xcolor Warning: Incompatible color definition on input line 1058.
 
 [24]
 
-Package xcolor Warning: Incompatible color definition on input line 1049.
+Package xcolor Warning: Incompatible color definition on input line 1058.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1049.
+Package xcolor Warning: Incompatible color definition on input line 1058.
 
-<thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf, id=501, 469.755pt x 289.08pt>
+<thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf, id=528, 469.755pt x 289.08pt>
 File: thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf  used on input line 1165.
+Package pdftex.def Info: thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf  used on input line 1174.
 (pdftex.def)             Requested size: 469.75386pt x 289.07928pt.
 
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1165--1166
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1174--1175
  [][] 
  []
 
@@ -1146,13 +1143,13 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1165--1166
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [26]
-<thesis_files/figure-latex/allrunshistfig-1.pdf, id=512, 469.755pt x 216.81pt>
+<thesis_files/figure-latex/allrunshistfig-1.pdf, id=539, 469.755pt x 216.81pt>
 File: thesis_files/figure-latex/allrunshistfig-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/allrunshistfig-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/allrunshistfig-1.pdf  used on input line 1223.
+Package pdftex.def Info: thesis_files/figure-latex/allrunshistfig-1.pdf  used on input line 1232.
 (pdftex.def)             Requested size: 469.75386pt x 216.80946pt.
 
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1223--1224
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1232--1233
  [][] 
  []
 
@@ -1166,13 +1163,13 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [27 <./thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf>] [28 <./thesis_files/figure-latex/allrunshistfig-1.pdf>]
-<thesis_files/figure-latex/directmaplenthcompfig-1.pdf, id=533, 469.755pt x 216.81pt>
+<thesis_files/figure-latex/directmaplenthcompfig-1.pdf, id=561, 469.755pt x 216.81pt>
 File: thesis_files/figure-latex/directmaplenthcompfig-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/directmaplenthcompfig-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/directmaplenthcompfig-1.pdf  used on input line 1292.
+Package pdftex.def Info: thesis_files/figure-latex/directmaplenthcompfig-1.pdf  used on input line 1301.
 (pdftex.def)             Requested size: 469.75386pt x 216.80946pt.
 
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1292--1293
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1301--1302
  [][] 
  []
 
@@ -1180,13 +1177,13 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1292--1293
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [29]
-<thesis_files/figure-latex/multdictlengthcompfig-1.pdf, id=540, 469.755pt x 216.81pt>
+<thesis_files/figure-latex/multdictlengthcompfig-1.pdf, id=568, 469.755pt x 216.81pt>
 File: thesis_files/figure-latex/multdictlengthcompfig-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/multdictlengthcompfig-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/multdictlengthcompfig-1.pdf  used on input line 1358.
+Package pdftex.def Info: thesis_files/figure-latex/multdictlengthcompfig-1.pdf  used on input line 1367.
 (pdftex.def)             Requested size: 469.75386pt x 216.80946pt.
 
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1358--1359
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1367--1368
  [][] 
  []
 
@@ -1194,25 +1191,11 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1358--1359
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [30 <./thesis_files/figure-latex/directmaplenthcompfig-1.pdf>]
-<thesis_files/figure-latex/multvsonedictfig-1.pdf, id=552, 469.755pt x 289.08pt>
+<thesis_files/figure-latex/multvsonedictfig-1.pdf, id=579, 469.755pt x 289.08pt>
 File: thesis_files/figure-latex/multvsonedictfig-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/multvsonedictfig-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/multvsonedictfig-1.pdf  used on input line 1364.
+Package pdftex.def Info: thesis_files/figure-latex/multvsonedictfig-1.pdf  used on input line 1373.
 (pdftex.def)             Requested size: 469.75386pt x 289.07928pt.
-
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1364--1365
- [][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-[31 <./thesis_files/figure-latex/multdictlengthcompfig-1.pdf>]
-<thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf, id=562, 469.755pt x 216.81pt>
-File: thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf Graphic file (type pdf)
-<use thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf  used on input line 1373.
-(pdftex.def)             Requested size: 469.75386pt x 216.80946pt.
 
 Overfull \hbox (36.13387pt too wide) in paragraph at lines 1373--1374
  [][] 
@@ -1221,14 +1204,28 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1373--1374
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[32 <./thesis_files/figure-latex/multvsonedictfig-1.pdf>]
-<thesis_files/figure-latex/findlongestfrommaxfig-1.pdf, id=573, 469.755pt x 216.81pt>
-File: thesis_files/figure-latex/findlongestfrommaxfig-1.pdf Graphic file (type pdf)
-<use thesis_files/figure-latex/findlongestfrommaxfig-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/findlongestfrommaxfig-1.pdf  used on input line 1391.
+[31 <./thesis_files/figure-latex/multdictlengthcompfig-1.pdf>]
+<thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf, id=589, 469.755pt x 216.81pt>
+File: thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf Graphic file (type pdf)
+<use thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf>
+Package pdftex.def Info: thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf  used on input line 1382.
 (pdftex.def)             Requested size: 469.75386pt x 216.80946pt.
 
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1391--1392
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1382--1383
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[32 <./thesis_files/figure-latex/multvsonedictfig-1.pdf>]
+<thesis_files/figure-latex/findlongestfrommaxfig-1.pdf, id=600, 469.755pt x 216.81pt>
+File: thesis_files/figure-latex/findlongestfrommaxfig-1.pdf Graphic file (type pdf)
+<use thesis_files/figure-latex/findlongestfrommaxfig-1.pdf>
+Package pdftex.def Info: thesis_files/figure-latex/findlongestfrommaxfig-1.pdf  used on input line 1400.
+(pdftex.def)             Requested size: 469.75386pt x 216.80946pt.
+
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1400--1401
  [][] 
  []
 
@@ -1236,79 +1233,107 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1391--1392
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [33 <./thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf>]
-<thesis_files/figure-latex/findlongestfromavg-1.pdf, id=586, 469.755pt x 216.81pt>
+<thesis_files/figure-latex/findlongestfromavg-1.pdf, id=613, 469.755pt x 216.81pt>
 File: thesis_files/figure-latex/findlongestfromavg-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/findlongestfromavg-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/findlongestfromavg-1.pdf  used on input line 1402.
+Package pdftex.def Info: thesis_files/figure-latex/findlongestfromavg-1.pdf  used on input line 1411.
 (pdftex.def)             Requested size: 469.75386pt x 216.80946pt.
 
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1402--1403
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1411--1412
  [][] 
  []
 
 [34 <./thesis_files/figure-latex/findlongestfrommaxfig-1.pdf> <./thesis_files/figure-latex/findlongestfromavg-1.pdf>]
-<thesis_files/figure-latex/findlongestwmax-1.pdf, id=602, 469.755pt x 361.35pt>
+<thesis_files/figure-latex/findlongestwmax-1.pdf, id=629, 469.755pt x 361.35pt>
 File: thesis_files/figure-latex/findlongestwmax-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/findlongestwmax-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/findlongestwmax-1.pdf  used on input line 1414.
+Package pdftex.def Info: thesis_files/figure-latex/findlongestwmax-1.pdf  used on input line 1423.
 (pdftex.def)             Requested size: 469.75386pt x 361.34912pt.
 
-Overfull \hbox (53.75868pt too wide) in paragraph at lines 1414--1429
+Overfull \hbox (53.75868pt too wide) in paragraph at lines 1423--1438
 [][]
  []
 
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1431.
-[35 <./thesis_files/figure-latex/findlongestwmax-1.pdf>]
-<thesis_files/figure-latex/findlongestwpext-1.pdf, id=615, 469.755pt x 361.35pt>
-File: thesis_files/figure-latex/findlongestwpext-1.pdf Graphic file (type pdf)
-<use thesis_files/figure-latex/findlongestwpext-1.pdf>
-Package pdftex.def Info: thesis_files/figure-latex/findlongestwpext-1.pdf  used on input line 1438.
-(pdftex.def)             Requested size: 469.75386pt x 361.34912pt.
-
-Overfull \hbox (36.13387pt too wide) in paragraph at lines 1438--1439
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1440.
+[35 <./thesis_files/figure-latex/findlongestwmax-1.pdf>] (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarychains.code.tex
+File: tikzlibrarychains.code.tex 2023-01-15 v3.1.10 (3.1.10)
+(c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)) (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarydecorations.pathreplacing.code.tex (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarydecorations.code.tex (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pgf/modules/pgfmoduledecorations.code.tex
+\pgfdecoratedcompleteddistance=\dimen316
+\pgfdecoratedremainingdistance=\dimen317
+\pgfdecoratedinputsegmentcompleteddistance=\dimen318
+\pgfdecoratedinputsegmentremainingdistance=\dimen319
+\pgf@decorate@distancetomove=\dimen320
+\pgf@decorate@repeatstate=\count365
+\pgfdecorationsegmentamplitude=\dimen321
+\pgfdecorationsegmentlength=\dimen322
+)
+\tikz@lib@dec@box=\box107
+) (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pgf/libraries/decorations/pgflibrarydecorations.pathreplacing.code.tex))
+Overfull \hbox (19.54811pt too wide) in paragraph at lines 1485--1486
  [][] 
  []
 
-[36 <./thesis_files/figure-latex/findlongestwpext-1.pdf>] [37] [38
+<thesis_files/figure-latex/findlongestwpext-1.pdf, id=642, 469.755pt x 361.35pt>
+File: thesis_files/figure-latex/findlongestwpext-1.pdf Graphic file (type pdf)
+<use thesis_files/figure-latex/findlongestwpext-1.pdf>
+Package pdftex.def Info: thesis_files/figure-latex/findlongestwpext-1.pdf  used on input line 1492.
+(pdftex.def)             Requested size: 469.75386pt x 361.34912pt.
+
+Overfull \hbox (36.13387pt too wide) in paragraph at lines 1492--1493
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[36]
+Underfull \vbox (badness 3977) has occurred while \output is active []
+
+[37 <./thesis_files/figure-latex/findlongestwpext-1.pdf>] [38] [39] [40
 
 ]
 Chapter 3.
-[39] [40
 
-] [41] [42
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[41] [42] [43
+
+] [44
 
 ]
 Appendix A.
 
-Package xcolor Warning: Incompatible color definition on input line 1466.
+Package xcolor Warning: Incompatible color definition on input line 1590.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1502.
+Package xcolor Warning: Incompatible color definition on input line 1626.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1502.
+Package xcolor Warning: Incompatible color definition on input line 1626.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1502.
+Package xcolor Warning: Incompatible color definition on input line 1626.
 
-[43]
+[45]
 
-Package xcolor Warning: Incompatible color definition on input line 1502.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1502.
+Package xcolor Warning: Incompatible color definition on input line 1626.
 
 
-LaTeX Warning: Reference `ref-labels' on page 44 undefined on input line 1503.
+Package xcolor Warning: Incompatible color definition on input line 1626.
 
-[44]
+
+LaTeX Warning: Reference `ref-labels' on page 46 undefined on input line 1627.
+
+[46]
 Appendix B.
-[45
+[47
 
-] [46
+] [48
 
-] [47
+] [49
 
 ] (./thesis.aux)
 
@@ -1318,21 +1343,21 @@ LaTeX Warning: There were undefined references.
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: C0A5B64754CBC6AA58A8F5554B58F03C;6704.
+(rerunfilecheck)             Checksum: 60BEA956DBACA4D3882F4ADF27EE56B0;7621.
  ) 
 Here is how much of TeX's memory you used:
- 36526 strings out of 477984
- 793217 string characters out of 5837741
+ 37544 strings out of 477984
+ 819670 string characters out of 5837741
  1891382 words of memory out of 5000000
- 55926 multiletter control sequences out of 15000+600000
+ 56910 multiletter control sequences out of 15000+600000
  571466 words of font info for 74 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  132i,12n,132p,1599b,1606s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}<c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on thesis.pdf (67 pages, 377082 bytes).
+{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}<c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
+Output written on thesis.pdf (69 pages, 393150 bytes).
 PDF statistics:
- 788 PDF objects out of 1000 (max. 8388607)
- 670 compressed objects within 7 object streams
- 197 named destinations out of 1000 (max. 500000)
- 383 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 842 PDF objects out of 1000 (max. 8388607)
+ 719 compressed objects within 8 object streams
+ 212 named destinations out of 1000 (max. 500000)
+ 423 words of extra memory for PDF output out of 10000 (max. 10000000)
 
