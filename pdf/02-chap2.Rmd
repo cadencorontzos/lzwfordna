@@ -107,14 +107,16 @@ harmonic_mean <- function(corpus){
 ```{r csvtotablefunc, echo = F}
 csv_to_table <- function(filename, caption = "f"){
 df <- read.csv(filename)
+names(df) <- gsub("\\.", " ", names(df))
 knitr::kable(df, "markdown", align= 'cc', caption = caption)
 }
 ```
 
 ```{r statscsvfunc, echo = F}
-stats_csv <- function(filename, caption = "Foo"){
+stats_csv <- function(filename){
   df <- read.csv(filename)
-  knitr::kable(df,  linesep = c(rep("", 5), "\\addlinespace"), format="latex", booktabs=TRUE, caption = caption) %>% 
+  names(df) <-   gsub("\\.", " ",gsub("\\_", " " ,names(df))) %>% toupper()
+  knitr::kable(df,  linesep = c(rep("", 5), "\\addlinespace"), format="latex", booktabs=TRUE) %>% 
   kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 }
 ```
@@ -148,7 +150,7 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
     ggplot(aes(x = reorder(description, order), y = comp_throughput, fill = description))+
     geom_col(show.legend = F)+
     {if(per_corpus)facet_wrap(~corpus)}+
-    labs(x=x_axis, y = "Throughput(bytes/s)", title = "Throughput")+
+    labs(x=x_axis, y = "Throughput (bytes/s)", title = "Throughput")+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   plot2 <- df %>% 
     ggplot(aes(x = reorder(description, order), y = hm_comp, fill = description))+
@@ -179,7 +181,7 @@ compare_max_string_lengths <- function(array){
   plot1<- df %>% 
     ggplot(aes(x = size, y = comp_throughput, fill = size))+
     geom_col(show.legend = F)+
-    labs(x="Max String Length", y = "Throughput(bytes/s)", title= "Throughput")
+    labs(x="Max String Length", y = "Throughput (bytes/s)", title= "Throughput")
   plot2 <- df %>% 
     ggplot(aes(x = size, y = hm_comp, fill = size))+
     geom_col(show.legend = F)+
@@ -195,9 +197,16 @@ To restate the goal of this thesis, we seek to optimize LZW for use in compressi
 
 While we may not end up creating the best DNA compressor available, the objective is to explore the boundaries of LZW and to tailor it as best we can for the task of DNA compression. As you will see, the algorithm has limitations.
 
+Our Strategy was as follows:
+
+1. Implement a basic version of LZW in C++.
+2. Optimize the algorithm. Make it as fast as possible, and specifically focus on compressing DNA
+3. Once the algorithm is fast, try to entropy encode (Huffman, arithmetic encoding, etc) the compressed files to improve compression ratio
+
+
 ## Corpora
 
-Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the performance of different algorithms to one another. 
+Most compression papers make use of a corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the performance of different algorithms to one another. 
 
 In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications [@grumbach].
 
@@ -210,22 +219,23 @@ Another, newer paper aimed to create a corpus specifically for compressing DNA [
 ```{r corpus2filesfig, warnings= F, messages = F, fig.cap = "Corpus 2", fig.height = 7, echo = FALSE}
 csv_to_table('data/corpus_2_summary.csv', "Corpus 2")
 ```
-This particular dataset is publicly available at this [link](https://tinyurl.com/DNAcorpus).
+The dataset in Table \@ref(tab:corpus2filesfig) is publicly available at this [https://tinyurl.com/DNAcorpus](https://tinyurl.com/DNAcorpus).
 
 ## Evaluating Performance
 
 Evaluating performance of a program is difficult. There is a notion of theoretical run time, but on an actual computer there are many processes running in the background, so it can be hard to get a consistent reading on performance.
 
-To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, all versions of the algorithm for a particular table were ran on the same computer.
+To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, all versions of the algorithm for a particular table were run on the same computer. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
+
+Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as a harmonic average, where the times are weighted by the size of the file. 
 
 ## A Starting Point
 
-As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, optimizing it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon.
-
+As stated previously, we thought it was best to get a working implementation of LZW in C++ on regular text files, , and then optimize it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon. If the initial implementation is inefficient, it makes us harder to tell if the different techniques we have are affecting performance.
 
 ### Growing Codewords and Bit Output
 
-When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance `01000001` stands for the letter 'A' in ASCII encoding. Numbers in binary are more simple to display, so `00000001` is 1, `00000010` is 2, and so on.
+When reading files on the computer, most characters are stored as bytes, which are made up of 8 bits. For instance `01000001` stands for the letter 'A' in ASCII encoding. Numbers in binary are simpler to display, so `00000001` is 1, `00000010` is 2, and so on.
 
 But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, `1` is the same as `01` is the same as `00000000000001`. So when we are outputting codewords for LZW, we don't necessarily need to output a whole byte. We can have growing codewords.
 
@@ -288,7 +298,7 @@ The solution was to reserve a codeword to mark the end of the file. So we start 
 		dictionary[str1] = i;
 	}
 ```
-Then use the code 256 to denote the end of file. So the algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword. 
+As stated in Section \@ref(lempel-ziv-welch), we will need to reserve a codeword to output when we are done encoding the file so that the decoder knows where the end is. So the algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword. 
 
 The problem was, what about what is left over? Suppose we are reading a file, and the file ends with "ACCT". If "A" is in the dictionary, we see if "AC" is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
 
@@ -322,16 +332,19 @@ default:
 	break;
 }
 ```
-So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
+So when the decoder is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
-At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora. 
+At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two corpora. 
 <!---
 9066eef
 -->
+
+<!---
 ```{r fixedeofstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corpora after fixing EOF.", fig.height = 7,  echo = F}
-stats_csv('data/stats/corpus_1_stats_fixedeof_9066eef.csv', caption = " Corpus 1 Stats after fixing EOF")
-stats_csv('data/stats/corpus_2_stats_fixedeof_9066eef.csv', caption = "Corpus 2 stats after fixing EOF")
+
+stats_csv('data/stats/corpus_2_stats_fixedeof_9066eef.csv')
 ```
+-->
 ### Using Constants
 <!--
 2c3f782
@@ -344,7 +357,7 @@ The next major step in the code was to start using constants for everything, inc
 - `EOF_CODEWORD`: What we should output when we reach end of file
 - `STARTING_DICT_SIZE`: At this stage, we had a starting dict size of 256 to hold all possible bytes, but later we will specialize for DNA
 
-It also made sense to start using a specific type for codewords. At this stage, we opted for a 32 bit integer.
+It also made sense to start using a specific type for codewords. At this stage, we opted for a 32 bit unsigned integer.
 
 There are several tools at a developers disposal when looking to debug and optimize code. One tool used for this thesis was `callgrind` which is a tool of `valgrind` a profiling tool. Profiling tools are used to look at how your code works, where the bottlenecks are, and what can be changed/improved for the performance of your code.
 
@@ -389,10 +402,12 @@ Here are the runs after this optimization.
 
 
 
+<!---
 ```{r usingconstantsstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corproa after switching some constants", fig.height = 7, echo = F}
-stats_csv('data/stats/corpus_1_usingconstants_2c3f782.csv', caption = "Corpus 1 Stats after changing constants")
-stats_csv('data/stats/corpus_2_usingconstants_2c3f782.csv', caption = "Corpus 2 Stats after changing constants")
+stats_csv('data/stats/corpus_1_usingconstants_2c3f782.csv')
+stats_csv('data/stats/corpus_2_usingconstants_2c3f782.csv')
 ```
+-->
 
 
 
@@ -402,7 +417,7 @@ stats_csv('data/stats/corpus_2_usingconstants_2c3f782.csv', caption = "Corpus 2 
 8963f64ed59983edc15ed255b894ee666f2e1176
 -->
 
-The LZW algorithm is build on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over. 
+The LZW algorithm is built on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over. 
 
 Another thing that I noticed from the callgrind output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most language, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing string, which can have a significant performance penalty.
 
@@ -442,24 +457,25 @@ else{
 
 Here are the statistics on the version of the algorithm after this change.
 
+<!---
 ```{r stringconcatstatsfig, warnings= F, messages = F, fig.cap = "Stats after eliminating excess string concatenations", fig.height = 7, echo = F}
 
-stats_csv('data/stats/corpus_1_stringconcat_8963f64.csv', caption = "Corpus 1 Stats after reducing string concatenations")
-stats_csv('data/stats/corpus_2_stringconcat_8963f64.csv', caption = "Corpus 2 Stats after reducing string concatenations")
+stats_csv('data/stats/corpus_1_stringconcat_8963f64.csv')
+stats_csv('data/stats/corpus_2_stringconcat_8963f64.csv')
 ```
+-->
 
-### Dictionary Accesses
+### Dictionary Lookups
 <!--
 34bf4e9a6233137b388323f810791687c2a0f823
 -->
  
-Dictionary accesses can be expensive, especially with the standard library. We learned from `callgrind` that along with string operations, our program spent a lot of time doing dictionary accesses. 
+Dictionary lookups can be expensive, especially with the standard library. We learned from `callgrind` that along with string operations, our program spent a lot of time doing these lookups.
 
-We looked for ways to reduce the number of lookups. At the time, the way the algorithm worked was that it looked up the current string and the next character in the dictionary. If that string is in the dictionary, we keep going. If not, we output the codeword for the current string.
+We looked for ways to reduce the volume of lookups. At the time, the way the algorithm worked was that it looked up the current string and the next character in the dictionary. If that string is in the dictionary, we keep going. If not, we output the codeword for the current string.
 
 But, the current string on this iteration is the current string from the last iteration, plus one character. So when we were on the previous iteration of the loop, we could save that lookup and prevent a second lookup.
 
-See the code below
 
 ```c++
 while(next_character != EOF){
@@ -512,12 +528,13 @@ while(next_character != EOF){
 }
 ```
 
-Here are the stats of the version of the algorithm after this change.
 
-```{r dictaccessesstatsfig, warnings= F, messages = F, fig.cap = "Stats after reducing dictionary accesses", fig.height = 7, echo = F}
-stats_csv('data/stats/corpus_1_dictaccesses_34bf4e9.csv', caption = "Corpus 1 Stats after reducing dictionary accesses")
-stats_csv('data/stats/corpus_2_dictaccesses_34bf4e9.csv', caption = "Corpus 2 Stats after reducing dictionary accesses")
+<!---
+```{r dictaccessesstatsfig, eval = F, warnings= F, messages = F, fig.cap = "Stats after reducing dictionary accesses", fig.height = 7, echo = F}
+stats_csv('data/stats/corpus_1_dictaccesses_34bf4e9.csv')
+
 ```
+-->
 
 ### Using Const Char *
 <!--
@@ -532,10 +549,17 @@ When reading a byte stream of the file, the file may not be in memory the way we
 **TODO**: Need to talk about getting rid of string concatenation at some point.
 -->
 
-```{r charstarstatsfig, warnings= F, messages = F, fig.cap = "Stats after using character pointer", fig.height = 7, echo = F}
+<!---
+```{r charstarstatsfig, eval =F, warnings= F, messages = F, fig.cap = "Stats after using character pointer", fig.height = 7, echo = F}
 stats_csv('data/stats/corpus_1_charstar_a12a290.csv', caption = "Corpus 1 Stats after using character pointers")
 stats_csv('data/stats/corpus_2_charstar_a12a290.csv', caption = "Corpus 2 Stats after using character pointers")
 ```
+-->
+
+### Comparison
+
+Taking metrics of the algorithm at each of the stages listed in this chapter, we can make a graph showing the improvements in performance.
+
 ```{r comparecorporaoptimizingfig, warnings= F, messages = F, fig.cap = "Comparison of the performance of the different milestones", fig.height = 4, echo = F}
 compare_coprora(list(
   c('data/stats/corpus_1_stats_fixedeof_9066eef.csv', 'data/stats/corpus_2_stats_fixedeof_9066eef.csv', 'Fixed EOF'),
@@ -545,26 +569,31 @@ compare_coprora(list(
   c('data/stats/corpus_1_charstar_a12a290.csv', 'data/stats/corpus_2_charstar_a12a290.csv', 'Character pointer')))
 ```
 
+Figure \@ref(fig:comparecorporaoptimizingfig) shows the performance of the algorithm at the different milestones mentioned in this section. All graphs use the files from both corpora unless stated otherwise. On the left side of the figure you see that throughput increases for the program with each optimization. On the right, observe that mean compression time decreases with each optimization.
+
 ## Trying Different Dictionaries
 
 A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and placing others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program. 
 
-So the another step towards an efficient LZW seemed to be to abstract out the `std_map` and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
+So another step towards an efficient LZW seemed to be to abstract out the C++ `std::unordered_map` and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
 
 ### Direct Map
 
 In our analysis of the two corpora, we found some interesting statistics in the redundancy of the data.
 
-Below is a table which shows stats on the runs lengths of the "runs" of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
 
-```{r runstatsfig, warnings= F, messages = F, fig.cap = "The counts for runs of each length", fig.height = 7, echo = F}
-stats_csv('data/corpus_1_run_stats.csv', caption = "Run Lengths for Corpus 1")
-stats_csv('data/corpus_2_run_stats.csv', caption = "Run Lengths for Corpus 2")
+```{r runstatsfigcp1, warnings= F, messages = F, fig.cap = "The counts for runs of each length", fig.height = 7, echo = F}
+stats_csv('data/corpus_1_run_stats.csv')
 ```
-And here is a histogram of all the runs\@ref(fig:allrunshistfig).
+
+```{r runstatsfigcp2, warnings= F, messages = F, fig.cap = "The counts for runs of each length", fig.height = 7, echo = F}
+stats_csv('data/corpus_2_run_stats.csv')
+```
+
+Tables \@ref(tab:runstatsfigcp1) and \@ref(tab:runstatsfigcp2) show stats on the run lengths of the "runs" of data, where a run is a string added to the dictionary during a run of the LZW algorithm, and a histogram of runs from both corpora can be seen in Figure \@ref(fig:allrunshistfig).
 
 ```{r bothrunsfig, warnings= F, messages = F, fig.cap =  "Run counts for both corpora", fig.height = 7, echo= F}
-stats_csv('data/corpus_both_run_stats.csv', caption = "Run lengths for both corpora")
+stats_csv('data/corpus_both_run_stats.csv')
 ```
 
 ```{r allrunshistfig, warnings= F, messages = F, fig.cap = "A histogram showing the lengths of runs for both copora.", fig.height = 3, echo = F}
@@ -575,23 +604,22 @@ all_runs %>%
   labs(title="Run Distribution for Corpora", x = "Run Length")
 ```
 
-Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 15.
-
-To achieve this, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters ('A', 'C', 'T', and 'G'), we can represent the characters with two bits. So for a length `n` string, we can represent it with `2n` bits. 
+Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 15. As stated before, there have been research papers about the possibility of using multiple indexed dictionaries for LZW, including Keerthy [@KeerthyMID]. 
+To achieve a similar effect to multiple indexed dictionaries, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters ('A', 'C', 'T', and 'G'), we can represent the characters with two bits. So for a length `n` string, we can represent it with `2n` bits. 
 
 So we can create an indexed dictionary directly in memory for all strings below a certain length. We can use the `2n` bit representation of the string
 to index into an array of codewords. 
 
-For each strings size 1 to n , we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size $4^3$, since there are $4^3$ possible strings. In each of those $4^3$ slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent $2^6=4^3$ values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than `n`, we can just use a hashmap on top to handle those.
+For each string size 1 to n, we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size $4^3$, since there are $4^3$ possible strings. In each of those $4^3$ slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent $2^6=4^3$ values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than `n`, we can just use a hashmap on top to handle those.
 
-Here is the data for this version of the dictionary of length 10.
+As seen in Figure \@ref(fig:directmaplength10statsfig), the both the average compression time and throughput are greater for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
 
+<!---
 ```{r directmaplength10statsfig, warnings= F, messages = F, fig.cap = "Stats for direct map with max length of 10", fig.height = 7, echo = F}
-stats_csv('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv', caption = "Corpus 1 Stats for Direct Map of max length 10")
-stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv', caption = "Corpus 2 Stats for Direct Map of max length 10")
+stats_csv('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv')
+stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv')
 ```
-
-Here is a comparison for different max string lengths. 
+-->
 
 
 <!--
@@ -605,18 +633,22 @@ compare_max_string_lengths(list(
 ))
 ```
 
-The direct map method is very memory intensive, so having a max length over 15 is not feasible. At this point, if any runs are longer than the max string length, we just use a regular dictionary to accommodate them.
+It's also worth noting that since we are allowing strings of all lengths, the compression ratio has not changed.
 
 ### Multiple Indexed Dictionaries
 
-As stated before, there have been research papers about the possibility of using multiple indexed dictionaries for LZW, including Keerthy [@KeerthyMID]. 
 
-Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary. 
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. As seen in Figure \@ref(fig:multdictlengthcompfig), the throughput tends to increase and the average compression time tends to increase as we increase the number of indexed dictionaries. This result was not necessarily one we expected, but it does make sense that there is a certain amount of overhead that is required for a hashmap. The hash function takes about the same amount of time no matter the number of elements in the map, and resizing is rare. So adding more dictionaries only adds more overhead, which tends to slightly decrease efficiency.
 
+Compression ratio still remains the same as strings of all lengths are accommodated. 
+This logic is supported by Figure \@ref(fig:multvsonedictfig), which shoes one `std::unordered_map` compared the multiple indexed model.
+
+<!---
 ```{r multdictlength10statsfig, warnings= F, messages = F, fig.height = 3, echo = F}
-stats_csv('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', caption = "Corpus 1 Stats for Multiple Dictionaries of max length 10")
-stats_csv('data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', caption = "Corpus 1 Stats for Multiple Dictionaries of max length 10")
+stats_csv('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv')
+stats_csv('data/stats/multdict/corpus_2_multdict_154fed4_len10.csv')
 ```
+-->
 
 ```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
 compare_max_string_lengths(list(
@@ -627,7 +659,6 @@ compare_max_string_lengths(list(
 ))
 ```
 
-Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
 
 ```{r multvsonedictfig, warnings= F, messages = F, fig.cap = "Comparing one Dict to Mult Dict", fig.height = 4, echo = F}
 
@@ -638,9 +669,10 @@ compare_coprora(list(
 
 ```
 
+
 ### Comparison
 
-Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
+Figure \@ref(fig:dictionarytechniquecompfig) shows a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary. As shown, the Direct Map technique greatly increases throughput and thus decreases average compression time. Given these results, we decided to shift our focus onto the Direct Map and try to optimize this scheme as much as possible.
 
 ```{r dictionarytechniquecompfig, warnings= F, messages = F, fig.cap = "Comparing the three types of dictionaries. The Direct Map has a max length of 15 and the Mult Dict has a max length of 10.",echo = F, fig.height=3}
 

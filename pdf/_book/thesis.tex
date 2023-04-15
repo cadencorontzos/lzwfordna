@@ -277,15 +277,15 @@ When dealing with DNA, it
 \hypertarget{backround-and-motivations}{%
 \chapter{Backround and Motivations}\label{backround-and-motivations}}
 
-This thesis deals with some high level topics and uses language specific to compression research. This chapter tries to give brief summaries and examples of the relevant topics to be discussed so readers of all experience levels can put our results into context.
+This thesis deals with some high-level topics and uses language specific to compression research. This chapter tries to give brief summaries and examples of the relevant topics to be discussed so readers of all experience levels can put our results into context.
 
 \hypertarget{what-is-information}{%
 \section{What is information?}\label{what-is-information}}
 
-Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? Or can it be part of the message? If someone asks you ``Where library'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library?''
-Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let us assume that information is something that can be interpreted to glean data that you didn't know before.
+Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? If someone asks you ``Where library'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library''?
+Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, lets assumed that infomation is data with some sort of significance that makes it worth perserving and conveying.
 
-Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
+Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel with a limited capacity, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
 
 \hypertarget{compression-metrics}{%
 \section{Compression Metrics}\label{compression-metrics}}
@@ -293,21 +293,21 @@ Information on computers can take many forms, such as text, audio, and video. Th
 \hypertarget{compression-ratio}{%
 \subsection{Compression Ratio}\label{compression-ratio}}
 
-Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressed as a ratio of the size of the uncompressed data (\(OS\)) to the size of the compressed data (\(CS\)).
+Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressed as a ratio of the size of the uncompressed data's original size (\(OS\)) to the size of the compressed size (\(CS\)).
 
 \[CR = \frac{OS}{CS}\]
 
-So a higher compression ratio means a more effective compression algorithm, and means that we were able to store more data in less space, allowing for easier storage and transfer.
+So a higher compression ratio means a more effective compression algorithm, and means that we were able to store more information in less space, allowing for easier storage and transfer.
 
-\hypertarget{runtime}{%
-\subsection{Runtime}\label{runtime}}
+\hypertarget{run-time}{%
+\subsection{Run Time}\label{run-time}}
 
-The runtime is also an important part of evaluating the effectiveness of a compression algorithm. Runtime is typically defined as the length of time a program takes to complete a task. If you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15 but takes twice as long as the other, you may opt for a lower compression ratio to save time.
+The run time is also an important part of evaluating the effectiveness of a compression algorithm. Run time is typically defined as the length of time a program takes to complete a task. Sometimes, if time is constrained, you may care less about saving space. For example, if you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15 but takes twice as long as the other, you may opt for a lower compression ratio to save time.
 
 \hypertarget{memory-usage}{%
 \subsection{Memory Usage}\label{memory-usage}}
 
-Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to storage where information that programs track as they are running is stored. So do reduce our runtime and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage.
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to storage where information that programs track as they are running is stored. So to reduce our run time and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage. Throughout this thesis, we will assume that most of memory usage is encapsulated in our measurement of run time.
 
 \hypertarget{lossless-vs.-lossy-compression}{%
 \section{Lossless vs.~Lossy Compression}\label{lossless-vs.-lossy-compression}}
@@ -320,15 +320,15 @@ Lossy compression is based on the idea that not all information is vital. For in
 \hypertarget{lossless}{%
 \subsection{Lossless}\label{lossless}}
 
-Lossless compression is the compression of data with the goal of preserving all the information in the data. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be preserved, like scientific data, archiving (think a .zip folder), and high end audio recording.Examples of lossless compression algorithms are Huffman Encoding and Lempel Ziv Welch, which is the focus of this thesis.
+Lossless compression is the compression of data with the goal of preserving all the information in the data so that it can be reproduced perfectly on decompression. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be wholly recovered, like scientific data, archiving (e.g a .zip folder), and high end audio recording. Examples of lossless compression algorithms are Huffman Encoding and Lempel-Ziv-Welch, which is the focus of this thesis.
 
-\hypertarget{examples-of-compression-using-classic-compression-algorithms}{%
-\section{Examples of Compression Using Classic Compression Algorithms}\label{examples-of-compression-using-classic-compression-algorithms}}
+\hypertarget{classic-compression-algorithms}{%
+\section{Classic Compression Algorithms}\label{classic-compression-algorithms}}
 
 \hypertarget{run-length-encoding}{%
 \subsection{Run Length Encoding}\label{run-length-encoding}}
 
-Run Length Encoding (RLE) is on of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by just giving the number of times each character appears.
+Run Length Encoding (RLE) is one of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by just giving the number of times each character appears.
 Suppose you want to send the following message
 
 \[AAGCTTTTTTTTGGGGGCCCT\]
@@ -346,7 +346,7 @@ Huffman Encoding is a strategy that assigns variable length code to certain symb
 
 Suppose we have a message ``ACAGGATGGC''. We can calculate the frequency of each letter by counting the number of times each letter shows up and dividing by the total number of letters
 
-Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters.
+Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters. The more frequent character occur higher up in the tree, giving them a shorter length. The less frequent characters occur farther down on the tree. If you follow the branches in Figure \ref{fig:reedlogo} down to a letter, it will tell you the code associated with that letter.
 \begin{figure}[h]\centering
 
 
@@ -393,20 +393,20 @@ Here is a simple example. Say we want to encode a string of characters ``ACGT''.
 \end{itemize}
 We want to represent the message as a fractional number between 0 and 1. We will divide the interval {[}0,1{]} into sub intervals using the probabilities of each character in the message. That way, each symbol is represented by the sub-interval that corresponds to its probability.
 
-So since `A' comes first, we divide {[}0,1{]} into {[}0.0,0.1). Since `C' is next, we go from {[}0.0,0.1{]} to {[}0.01, 0.03). Then since `G is next, we go from {[}0.01, 0.03) to {[}0.016, 0.02). Finally, since 'T' is last, we go from {[}0.016, 0.02) to {[}0.0188, 0.02).
+Since `A' comes first, we divide {[}0,1{]} into {[}0.0,0.1). Since `C' is next, we go from {[}0.0,0.1{]} to {[}0.01, 0.03). Then since `G is next, we go from {[}0.01, 0.03) to {[}0.016, 0.02). Finally, since 'T' is last, we go from {[}0.016, 0.02) to {[}0.0188, 0.02).
 
 So any number in the interval can be used to represent our message.
 
 Arithmetic encoding can have a better compression ratio that Huffman in some cases, but the computation time is often not worth the payoff.
 
-\textbf{TODO}: Add graphic
+\textbf{TODO}: Add source
 
 \hypertarget{lempel-ziv-welch}{%
-\subsection{Lempel Ziv Welch}\label{lempel-ziv-welch}}
+\subsection{Lempel-Ziv-Welch}\label{lempel-ziv-welch}}
 
-Lempel Ziv Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords, where codewords represent strings previously seen in the message. As it compresses the message, the dictionary grows. The compression algorithm leaves behind the codewords and some of the original characters, allowing the decompression algorithm to build up the same dictionary as it decompresses the message.
+Lempel-Ziv-Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords, where codewords represent strings previously seen in the message. As it compresses the message, the dictionary grows. The compression algorithm leaves behind the codewords and some of the original characters, allowing the decompression algorithm to build up the same dictionary as it decompresses the message.
 
-Here is a simple example. We may be sending messages with the characters \{`A' = 0, `C' = 1, `T' = 2, `G' = 3\}, so I will start with those in my dictionary. Say we want to send the message
+Here is a simple example. We may be sending messages with the characters `A', `C', `T', `G', so we can start by assigning those strings codewords. So our dictionary will start as \{`A' = 0, `C' = 1, `T' = 2, `G' = 3\}. Say we want to send the message
 
 \[\text{AAGGAATCC}\]
 
@@ -451,9 +451,9 @@ So the encoded string will look something like
 \end{tabular}
 \caption{ An example of LZW ran on the input "AAGGAATCC"}
 \end{table}
-When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character''A'' and add that new string to the dictionary. So we would add that to the dictionary and assign it to our next available codeword, 4. So as you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
+When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character `A' and add that new string to the dictionary. We would add that to the dictionary and assign it to our next available codeword, 4. As you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
 
-This is nice for several reasons
+This method has several convenient properties:
 \begin{itemize}
 \tightlist
 \item
@@ -463,7 +463,7 @@ This is nice for several reasons
 \item
   As runs get longer, we will start to see more and more repeating patterns, and replacing them with codewords will become more and more effective.
 \end{itemize}
-Since the algorithm loops, we need some special character at the end of our encoding to let the decoder know when the message is done.
+To decode, we can simply start with the same dictionary. We see codewords followed by one character, so we decode that codeword and add the character to the end. Since the decoder continues to look for codewords, we need some special character at the end of our encoding to let the decoder know when the message is done.
 
 Now that we have laid out how the algorithm works, we can get more specific for our use case. For us, the input is a file on the computer, and the output is also a file (hopefully a smaller one). We read all the characters in the file, encode them, and put them into a new file. Then, when we want to decode, we read the encoded file and output the decoded characters. Again, LZW is lossless, so the original file and the decoded file should be identical.
 
@@ -479,19 +479,25 @@ LZWEncode(input):
 
     currentBlock = first character of input;
     for every nextCharacter in the input:
+        
+        // this function returns the longest string we've already seen
+        // starting at our current place in the input
+        nextLongestRun = findLongestInDict();
 
-        currentBlock.add(nextCharacter);
-
-        if currentBlock and the nextCharacter is in dictionary:
-            currentBlock.add(nextCharacter);
+        if currentCharacter + nextLongestRun.length > input.length:
+            break;
             
-        else:
-            code = dictionary.lookup(currentBlock);
-            output(code);
-            output(nextCharacter);
-            dictionary.add(currentBlock + nextCharacter, map it to codeword);
+        // output the code of the next longest run and next character
+        code = dictionary.lookup(nextLongestRun);
+        nextCharacter = input[nextLongestRun + 1]
+        output(code);
+        output(nextCharacter);
 
-            codeword = codeword + 1;
+        
+        dictionary.add(currentBlock + nextCharacter, map it to codeword);
+
+        codeword = codeword + 1;
+        input = input + nextLongestRun + 1;
 
 
     output(special end of file character);
@@ -521,7 +527,7 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 \begin{itemize}
 \tightlist
 \item
-  \texttt{dictionary}: a key value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a \texttt{map}, but the concept is the same.
+  \texttt{dictionary}: a key-value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a \texttt{map} and uses a hash table, but the concept is the same.
 \item
   \texttt{codeword}: a number used to take the place of a string in our encoding.
 \item
@@ -534,17 +540,17 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 
 The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area, in the intersection of bioinformatics, computer science, and mathematics.
 
-There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple, rather than a single large dictionary, have multiple dictionaries, one for each possible string size. That way, the dictionaries grow more slowly and accesses are faster. This paper also used Genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this paper.
+There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length That way, the dictionaries grow more slowly and accesses are faster. This paper also used Genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
 
 Another paper used simple parallelization techniques to improve compression speed (Pani, Mishra, \& Mishra, 2012). Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
 
-Yet another paper made use of Chinese Remainder Theorem to augment Lempel Ziv Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the it is not used in this thesis.
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel-Ziv-Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the it is not used in this thesis.
 
-DNA specific compression algorithms have also been around for a while. These papers do not focus on LZW, but they do consider some similar methods.
+DNA-specific compression algorithms have also been around for a while. These papers do not focus on LZW, but they do consider some similar methods.
 
 One of the first papers exploring this was published in 1994 (Grumbach \& Tahi, 1994). It proposes an algorithm called \texttt{biocompress2}, expanding on a previous paper by the same author. They focus on encoding palindromes in DNA sequences, which doesn't do much to help the compression ratio. However, this paper has been cited by many following papers sparking interest in DNA compression, and the collection of sequences that it uses for algorithm comparison is used in this thesis.
 
-Chen et al.~proposed an algorithm GenCompress, which uses approximate matching (Chen, Kwong, \& Li, 2001). It matches sequnces to sequences already seen, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this method, although their technique is computationally expensive.
+Chen et al.~proposed an algorithm called GenCompress, which uses approximate matching (Chen, Kwong, \& Li, 2001). It matches sequnces to sequences already seen, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this method, although their technique is computationally expensive.
 
 In 2007, Minh Cao et al.~published a paper detailing another algorithm, XM, which uses statistical methods to try and predict the next character while encoding and decoding (Cao, Dix, Allison, \& Mears, 2007). This method was found to outperform both Biocompress2 and GenCompress in terms of compression ratio.
 
@@ -557,20 +563,31 @@ To restate the goal of this thesis, we seek to optimize LZW for use in compressi
 
 While we may not end up creating the best DNA compressor available, the objective is to explore the boundaries of LZW and to tailor it as best we can for the task of DNA compression. As you will see, the algorithm has limitations.
 
+Our Strategy was as follows:
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Implement a basic version of LZW in C++.
+\item
+  Optimize the algorithm. Make it as fast as possible, and specifically focus on compressing DNA
+\item
+  Once the algorithm is fast, try to entropy encode (Huffman, arithmetic encoding, etc) the compressed files to improve compression ratio
+\end{enumerate}
 \hypertarget{corpora}{%
 \section{Corpora}\label{corpora}}
 
-Most compression papers make use of a Corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the performance of different algorithms to one another.
+Most compression papers make use of a corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the performance of different algorithms to one another.
 
 In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications (Grumbach \& Tahi, 1994).
 \begin{longtable}[]{@{}cc@{}}
 \caption{\label{tab:corpus1filesfig}Corpus 1}\tabularnewline
 \toprule()
-Name & Size.bytes. \\
+Name & bytes \\
 \midrule()
 \endfirsthead
 \toprule()
-Name & Size.bytes. \\
+Name & bytes \\
 \midrule()
 \endhead
 chmpxx & 121024 \\
@@ -590,11 +607,11 @@ Another, newer paper aimed to create a corpus specifically for compressing DNA (
 \begin{longtable}[]{@{}cc@{}}
 \caption{\label{tab:corpus2filesfig}Corpus 2}\tabularnewline
 \toprule()
-Name & Size.bytes. \\
+Name & bytes \\
 \midrule()
 \endfirsthead
 \toprule()
-Name & Size.bytes. \\
+Name & bytes \\
 \midrule()
 \endhead
 AeCa & 1591049 \\
@@ -614,24 +631,26 @@ ScPo & 10652155 \\
 YeMi & 73689 \\
 \bottomrule()
 \end{longtable}
-This particular dataset is publicly available at this \href{https://tinyurl.com/DNAcorpus}{link}.
+The dataset in Table \ref{tab:corpus2filesfig} is publicly available at this \url{https://tinyurl.com/DNAcorpus}.
 
 \hypertarget{evaluating-performance}{%
 \section{Evaluating Performance}\label{evaluating-performance}}
 
 Evaluating performance of a program is difficult. There is a notion of theoretical run time, but on an actual computer there are many processes running in the background, so it can be hard to get a consistent reading on performance.
 
-To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, all versions of the algorithm for a particular table were ran on the same computer.
+To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, all versions of the algorithm for a particular table were run on the same computer. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
+
+Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as a harmonic average, where the times are weighted by the size of the file.
 
 \hypertarget{a-starting-point}{%
 \section{A Starting Point}\label{a-starting-point}}
 
-As a starting point, we thought it was best to get a working implementation of LZW in C++ on regular text files, optimize it as much as we could, and then try variations from there, optimizing it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon.
+As stated previously, we thought it was best to get a working implementation of LZW in C++ on regular text files, , and then optimize it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon. If the initial implementation is inefficient, it makes us harder to tell if the different techniques we have are affecting performance.
 
 \hypertarget{growing-codewords-and-bit-output}{%
 \subsection{Growing Codewords and Bit Output}\label{growing-codewords-and-bit-output}}
 
-When reading files on the computer, most characters are stored as bytes, which is made up of 8 bits. For instance \texttt{01000001} stands for the letter `A' in ASCII encoding. Numbers in binary are more simple to display, so \texttt{00000001} is 1, \texttt{00000010} is 2, and so on.
+When reading files on the computer, most characters are stored as bytes, which are made up of 8 bits. For instance \texttt{01000001} stands for the letter `A' in ASCII encoding. Numbers in binary are simpler to display, so \texttt{00000001} is 1, \texttt{00000010} is 2, and so on.
 
 But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, \texttt{1} is the same as \texttt{01} is the same as \texttt{00000000000001}. So when we are outputting codewords for LZW, we don't necessarily need to output a whole byte. We can have growing codewords.
 
@@ -696,7 +715,7 @@ The solution was to reserve a codeword to mark the end of the file. So we start 
     \OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
-Then use the code 256 to denote the end of file. So the algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword.
+As stated in Section \ref{lempel-ziv-welch}, we will need to reserve a codeword to output when we are done encoding the file so that the decoder knows where the end is. So the algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword.
 
 The problem was, what about what is left over? Suppose we are reading a file, and the file ends with ``ACCT''. If ``A'' is in the dictionary, we see if ``AC'' is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
 \begin{enumerate}
@@ -736,62 +755,10 @@ We solved this issue by adding 2 extra bits after the EOF codeword. These bits d
 \OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
-So when the decoded is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
+So when the decoder is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
-At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two copora.
-\begin{table}[!h]
+At this point, there was a working implementation that was able to compress and decompress files. Here is the performance of this version on the two corpora.
 
-\caption{\label{tab:fixedeofstatsfig} Corpus 1 Stats after fixing EOF}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
-DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 5 & 1\\
-\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{18} & \cellcolor{gray!6}{7}\\
-DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 23 & 9\\
-\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{18} & \cellcolor{gray!6}{7}\\
-DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 8 & 2\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{13} & \cellcolor{gray!6}{4}\\
-DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 4\\
-\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
-DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
-\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[!h]
-
-\caption{\label{tab:fixedeofstatsfig}Corpus 2 stats after fixing EOF}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{9} & \cellcolor{gray!6}{3}\\
-DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 15034 & 1898\\
-\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5427} & \cellcolor{gray!6}{781}\\
-DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 145 & 40\\
-\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9790} & \cellcolor{gray!6}{1350}\\
-DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 569 & 121\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{40810} & \cellcolor{gray!6}{4773}\\
-DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1761 & 295\\
-\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{445} & \cellcolor{gray!6}{97}\\
-DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 53818 & 5913\\
-\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{141} & \cellcolor{gray!6}{40}\\
-DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 7190 & 1015\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{0}\\
-DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1367 & 238\\
-\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{6} & \cellcolor{gray!6}{2}\\
-\bottomrule
-\end{tabular}}
-\end{table}
 \hypertarget{using-constants}{%
 \subsection{Using Constants}\label{using-constants}}
 
@@ -807,7 +774,7 @@ The next major step in the code was to start using constants for everything, inc
 \item
   \texttt{STARTING\_DICT\_SIZE}: At this stage, we had a starting dict size of 256 to hold all possible bytes, but later we will specialize for DNA
 \end{itemize}
-It also made sense to start using a specific type for codewords. At this stage, we opted for a 32 bit integer.
+It also made sense to start using a specific type for codewords. At this stage, we opted for a 32 bit unsigned integer.
 
 There are several tools at a developers disposal when looking to debug and optimize code. One tool used for this thesis was \texttt{callgrind} which is a tool of \texttt{valgrind} a profiling tool. Profiling tools are used to look at how your code works, where the bottlenecks are, and what can be changed/improved for the performance of your code.
 
@@ -846,63 +813,11 @@ Of course, there are several issues with this method. It is difficult to associa
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of callgrind, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
 
 Here are the runs after this optimization.
-\begin{table}[!h]
 
-\caption{\label{tab:usingconstantsstatsfig}Corpus 1 Stats after changing constants}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
-DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 5 & 1\\
-\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{19} & \cellcolor{gray!6}{7}\\
-DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 23 & 9\\
-\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{19} & \cellcolor{gray!6}{7}\\
-DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 7 & 2\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{4}\\
-DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 4\\
-\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
-DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
-\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{10} & \cellcolor{gray!6}{3}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[!h]
-
-\caption{\label{tab:usingconstantsstatsfig}Corpus 2 Stats after changing constants}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{9} & \cellcolor{gray!6}{3}\\
-DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14940 & 1880\\
-\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5401} & \cellcolor{gray!6}{769}\\
-DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 144 & 40\\
-\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9782} & \cellcolor{gray!6}{1344}\\
-DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 569 & 118\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{41060} & \cellcolor{gray!6}{4787}\\
-DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1738 & 292\\
-\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{444} & \cellcolor{gray!6}{97}\\
-DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 53774 & 5854\\
-\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{139} & \cellcolor{gray!6}{40}\\
-DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 7188 & 1009\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{1}\\
-DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1352 & 237\\
-\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
-\bottomrule
-\end{tabular}}
-\end{table}
 \hypertarget{extraneous-string-concatenations}{%
 \subsection{Extraneous String Concatenations}\label{extraneous-string-concatenations}}
 
-The LZW algorithm is build on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over.
+The LZW algorithm is built on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over.
 
 Another thing that I noticed from the callgrind output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most language, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing string, which can have a significant performance penalty.
 
@@ -941,69 +856,15 @@ If I just save \texttt{currentBlock\ +\ next\_character} into a new variable, th
 \end{Highlighting}
 \end{Shaded}
 Here are the statistics on the version of the algorithm after this change.
-\begin{table}[!h]
 
-\caption{\label{tab:stringconcatstatsfig}Corpus 1 Stats after reducing string concatenations}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{6} & \cellcolor{gray!6}{2}\\
-DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 4 & 1\\
-\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{7}\\
-DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 20 & 9\\
-\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{7}\\
-DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 6 & 2\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{4}\\
-DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 10 & 4\\
-\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{15} & \cellcolor{gray!6}{6}\\
-DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 8 & 2\\
-\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[!h]
+\hypertarget{dictionary-lookups}{%
+\subsection{Dictionary Lookups}\label{dictionary-lookups}}
 
-\caption{\label{tab:stringconcatstatsfig}Corpus 2 Stats after reducing string concatenations}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
-DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14450 & 1876\\
-\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5186} & \cellcolor{gray!6}{762}\\
-DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 129 & 38\\
-\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9392} & \cellcolor{gray!6}{1329}\\
-DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 525 & 119\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{39700} & \cellcolor{gray!6}{4741}\\
-DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1640 & 289\\
-\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{410} & \cellcolor{gray!6}{96}\\
-DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 51901 & 5848\\
-\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{126} & \cellcolor{gray!6}{40}\\
-DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 6861 & 1001\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{0}\\
-DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1258 & 234\\
-\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\hypertarget{dictionary-accesses}{%
-\subsection{Dictionary Accesses}\label{dictionary-accesses}}
+Dictionary lookups can be expensive, especially with the standard library. We learned from \texttt{callgrind} that along with string operations, our program spent a lot of time doing these lookups.
 
-Dictionary accesses can be expensive, especially with the standard library. We learned from \texttt{callgrind} that along with string operations, our program spent a lot of time doing dictionary accesses.
-
-We looked for ways to reduce the number of lookups. At the time, the way the algorithm worked was that it looked up the current string and the next character in the dictionary. If that string is in the dictionary, we keep going. If not, we output the codeword for the current string.
+We looked for ways to reduce the volume of lookups. At the time, the way the algorithm worked was that it looked up the current string and the next character in the dictionary. If that string is in the dictionary, we keep going. If not, we output the codeword for the current string.
 
 But, the current string on this iteration is the current string from the last iteration, plus one character. So when we were on the previous iteration of the loop, we could save that lookup and prevent a second lookup.
-
-See the code below
 \begin{Shaded}
 \begin{Highlighting}[]
 \ControlFlowTok{while}\OperatorTok{(}\NormalTok{next\_character }\OperatorTok{!=}\NormalTok{ EOF}\OperatorTok{)\{}
@@ -1056,172 +917,66 @@ We can save that lookup, like so.
 \OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
-Here are the stats of the version of the algorithm after this change.
-\begin{table}[!h]
-
-\caption{\label{tab:dictaccessesstatsfig}Corpus 1 Stats after reducing dictionary accesses}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
-DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 4 & 1\\
-\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{7}\\
-DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 20 & 9\\
-\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{7}\\
-DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 6 & 2\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{11} & \cellcolor{gray!6}{4}\\
-DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 11 & 3\\
-\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
-DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 7 & 2\\
-\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{8} & \cellcolor{gray!6}{3}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[!h]
-
-\caption{\label{tab:dictaccessesstatsfig}Corpus 2 Stats after reducing dictionary accesses}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{3}\\
-DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 14146 & 1869\\
-\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{5087} & \cellcolor{gray!6}{758}\\
-DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 127 & 39\\
-\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{9278} & \cellcolor{gray!6}{1329}\\
-DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 519 & 115\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{39265} & \cellcolor{gray!6}{4702}\\
-DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1610 & 290\\
-\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{405} & \cellcolor{gray!6}{97}\\
-DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 50936 & 5833\\
-\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{125} & \cellcolor{gray!6}{39}\\
-DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 6773 & 999\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{2} & \cellcolor{gray!6}{0}\\
-DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 1254 & 231\\
-\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
-\bottomrule
-\end{tabular}}
-\end{table}
 \hypertarget{using-const-char}{%
 \subsection{Using Const Char *}\label{using-const-char}}
 
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
 When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time.
-\begin{table}[!h]
 
-\caption{\label{tab:charstarstatsfig}Corpus 1 Stats after using character pointers}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21902} & \cellcolor{gray!6}{2.590} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
-DNACorpus1/humdyst & 38770 & 15300 & 2.534 & 7 & 1\\
-\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{70067} & \cellcolor{gray!6}{2.736} & \cellcolor{gray!6}{15} & \cellcolor{gray!6}{6}\\
-DNACorpus1/hehcmv & 229354 & 85526 & 2.682 & 15 & 8\\
-\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70254} & \cellcolor{gray!6}{2.656} & \cellcolor{gray!6}{16} & \cellcolor{gray!6}{6}\\
-DNACorpus1/humhdab & 58864 & 22699 & 2.593 & 9 & 2\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43516} & \cellcolor{gray!6}{2.781} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{4}\\
-DNACorpus1/mtpacga & 100314 & 36862 & 2.721 & 10 & 3\\
-\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58336} & \cellcolor{gray!6}{2.671} & \cellcolor{gray!6}{14} & \cellcolor{gray!6}{5}\\
-DNACorpus1/humghcs & 66495 & 25552 & 2.602 & 9 & 2\\
-\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{28134} & \cellcolor{gray!6}{2.606} & \cellcolor{gray!6}{9} & \cellcolor{gray!6}{2}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[!h]
+\hypertarget{comparison}{%
+\subsection{Comparison}\label{comparison}}
 
-\caption{\label{tab:charstarstatsfig}Corpus 2 Stats after using character pointers}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27235} & \cellcolor{gray!6}{2.706} & \cellcolor{gray!6}{9} & \cellcolor{gray!6}{2}\\
-DNACorpus2/DaRe & 62565020 & 19586457 & 3.194 & 12264 & 1764\\
-\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609993} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{4070} & \cellcolor{gray!6}{708}\\
-DNACorpus2/HePy & 1667825 & 566972 & 2.942 & 96 & 35\\
-\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14148071} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{7627} & \cellcolor{gray!6}{1252}\\
-DNACorpus2/EsCo & 4641652 & 1593404 & 2.913 & 348 & 109\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851765} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{32906} & \cellcolor{gray!6}{4456}\\
-DNACorpus2/ScPo & 10652155 & 3590856 & 2.966 & 1205 & 265\\
-\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306708} & \cellcolor{gray!6}{2.977} & \cellcolor{gray!6}{271} & \cellcolor{gray!6}{88}\\
-DNACorpus2/HoSa & 189752667 & 57200209 & 3.317 & 44733 & 5517\\
-\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556535} & \cellcolor{gray!6}{2.859} & \cellcolor{gray!6}{92} & \cellcolor{gray!6}{35}\\
-DNACorpus2/DrMe & 32181429 & 10619042 & 3.031 & 5266 & 940\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7893} & \cellcolor{gray!6}{2.400} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{0}\\
-DNACorpus2/PlFa & 8986712 & 2895744 & 3.103 & 879 & 220\\
-\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17442} & \cellcolor{gray!6}{2.521} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{1}\\
-\bottomrule
-\end{tabular}}
-\end{table}
+Taking metrics of the algorithm at each of the stages listed in this chapter, we can make a graph showing the improvements in performance.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf}
 \caption{\label{fig:comparecorporaoptimizingfig}Comparison of the performance of the different milestones}
 \end{figure}
+Figure \ref{fig:comparecorporaoptimizingfig} shows the performance of the algorithm at the different milestones mentioned in this section. All graphs use the files from both corpora unless stated otherwise. On the left side of the figure you see that throughput increases for the program with each optimization. On the right, observe that mean compression time decreases with each optimization.
+
 \hypertarget{trying-different-dictionaries}{%
 \section{Trying Different Dictionaries}\label{trying-different-dictionaries}}
 
 A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and placing others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program.
 
-So the another step towards an efficient LZW seemed to be to abstract out the \texttt{std\_map} and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
+So another step towards an efficient LZW seemed to be to abstract out the C++ \texttt{std::unordered\_map} and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
 
 \hypertarget{direct-map}{%
 \subsection{Direct Map}\label{direct-map}}
 
 In our analysis of the two corpora, we found some interesting statistics in the redundancy of the data.
 
-Below is a table which shows stats on the runs lengths of the ``runs'' of data, where a run is a string added to the dictionary during a run of the LZW algorithm.
+Tables \ref{tab:runstatsfigcp1} and \ref{tab:runstatsfigcp2} show stats on the run lengths of the ``runs'' of data, where a run is a string added to the dictionary during a run of the LZW algorithm,
 \begin{table}[!h]
-
-\caption{\label{tab:runstatsfig}Run Lengths for Corpus 1}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{rrrr}
+\begin{tabular}{rrrr}
 \toprule
-average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
+AVERAGE RUN LENGTH & MAXIMUM RUN LENGTH & MEDIAN RUN LENGTH & SD RUN LENGTH\\
 \midrule
 \cellcolor{gray!6}{6.135398} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{6} & \cellcolor{gray!6}{1.237217}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \begin{table}[!h]
-
-\caption{\label{tab:runstatsfig}Run Lengths for Corpus 2}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{rrrr}
+\begin{tabular}{rrrr}
 \toprule
-average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
+AVERAGE RUN LENGTH & MAXIMUM RUN LENGTH & MEDIAN RUN LENGTH & SD RUN LENGTH\\
 \midrule
 \cellcolor{gray!6}{10.96825} & \cellcolor{gray!6}{190} & \cellcolor{gray!6}{11} & \cellcolor{gray!6}{2.494305}\\
 \bottomrule
 \end{tabular}}
 \end{table}
-And here is a histogram of all the runs\ref{fig:allrunshistfig}.
+and histogram can be seen in Figure \ref{fig:allrunshistfig}.
 \begin{table}[!h]
-
-\caption{\label{tab:bothrunsfig}Run lengths for both corpora}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{rrrrr}
+\begin{tabular}{rrrrr}
 \toprule
-X & average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\_length\\
+X & AVERAGE RUN LENGTH & MAXIMUM RUN LENGTH & MEDIAN RUN LENGTH & SD RUN LENGTH\\
 \midrule
 \cellcolor{gray!6}{1} & \cellcolor{gray!6}{10.95318} & \cellcolor{gray!6}{190} & \cellcolor{gray!6}{11} & \cellcolor{gray!6}{2.505904}\\
 \bottomrule
@@ -1232,151 +987,43 @@ X & average\_run\_length & maximum\_run\_length & median\_run\_length & sd\_run\
 \includegraphics{thesis_files/figure-latex/allrunshistfig-1.pdf}
 \caption{\label{fig:allrunshistfig}A histogram showing the lengths of runs for both copora.}
 \end{figure}
-Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 15.
-
-To achieve this, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters (`A', `C', `T', and `G'), we can represent the characters with two bits. So for a length \texttt{n} string, we can represent it with \texttt{2n} bits.
+Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 15. As stated before, there have been research papers about the possibility of using multiple indexed dictionaries for LZW, including Keerthy (Keerthy, 2019).
+To achieve a similar effect to multiple indexed dictionaries, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters (`A', `C', `T', and `G'), we can represent the characters with two bits. So for a length \texttt{n} string, we can represent it with \texttt{2n} bits.
 
 So we can create an indexed dictionary directly in memory for all strings below a certain length. We can use the \texttt{2n} bit representation of the string
 to index into an array of codewords.
 
-For each strings size 1 to n , we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap on top to handle those.
+For each string size 1 to n, we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap on top to handle those.
 
-Here is the data for this version of the dictionary of length 10.
-\begin{table}[!h]
-
-\caption{\label{tab:directmaplength10statsfig}Corpus 1 Stats for Direct Map of max length 10}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{25883} & \cellcolor{gray!6}{2.192} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{2}\\
-DNACorpus1/humdyst & 38770 & 18437 & 2.103 & 1 & 1\\
-\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{77120} & \cellcolor{gray!6}{2.486} & \cellcolor{gray!6}{4} & \cellcolor{gray!6}{4}\\
-DNACorpus1/hehcmv & 229354 & 93251 & 2.460 & 2 & 5\\
-\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{77315} & \cellcolor{gray!6}{2.414} & \cellcolor{gray!6}{4} & \cellcolor{gray!6}{4}\\
-DNACorpus1/humhdab & 58864 & 26752 & 2.200 & 1 & 2\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{49414} & \cellcolor{gray!6}{2.449} & \cellcolor{gray!6}{3} & \cellcolor{gray!6}{3}\\
-DNACorpus1/mtpacga & 100314 & 42203 & 2.377 & 2 & 2\\
-\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{64879} & \cellcolor{gray!6}{2.402} & \cellcolor{gray!6}{3} & \cellcolor{gray!6}{3}\\
-DNACorpus1/humghcs & 66495 & 29864 & 2.227 & 1 & 2\\
-\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{32681} & \cellcolor{gray!6}{2.243} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{2}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[!h]
-
-\caption{\label{tab:directmaplength10statsfig}Corpus 2 Stats for Direct Map of max length 10}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{31700} & \cellcolor{gray!6}{2.325} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{2}\\
-DNACorpus2/DaRe & 62565020 & 21182510 & 2.954 & 656 & 442\\
-\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8986109} & \cellcolor{gray!6}{2.938} & \cellcolor{gray!6}{271} & \cellcolor{gray!6}{184}\\
-DNACorpus2/HePy & 1667825 & 572507 & 2.913 & 26 & 17\\
-\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{15008736} & \cellcolor{gray!6}{2.882} & \cellcolor{gray!6}{431} & \cellcolor{gray!6}{319}\\
-DNACorpus2/EsCo & 4641652 & 1621508 & 2.863 & 51 & 42\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{52441876} & \cellcolor{gray!6}{2.832} & \cellcolor{gray!6}{1475} & \cellcolor{gray!6}{1080}\\
-DNACorpus2/ScPo & 10652155 & 3691943 & 2.885 & 108 & 83\\
-\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1324571} & \cellcolor{gray!6}{2.937} & \cellcolor{gray!6}{51} & \cellcolor{gray!6}{32}\\
-DNACorpus2/HoSa & 189752667 & 63973137 & 2.966 & 2035 & 1319\\
-\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{561527} & \cellcolor{gray!6}{2.833} & \cellcolor{gray!6}{22} & \cellcolor{gray!6}{18}\\
-DNACorpus2/DrMe & 32181429 & 11150498 & 2.886 & 332 & 237\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{9894} & \cellcolor{gray!6}{1.914} & \cellcolor{gray!6}{0} & \cellcolor{gray!6}{1}\\
-DNACorpus2/PlFa & 8986712 & 2972072 & 3.024 & 106 & 67\\
-\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{20885} & \cellcolor{gray!6}{2.105} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{1}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-Here is a comparison for different max string lengths.
+As seen in Figure \ref{fig:directmaplength10statsfig}, the both the average compression time and throughput are greater for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/directmaplenthcompfig-1.pdf}
 \caption{\label{fig:directmaplenthcompfig}Comparing different max lengths for Direct Map}
 \end{figure}
-The direct map method is very memory intensive, so having a max length over 15 is not feasible. At this point, if any runs are longer than the max string length, we just use a regular dictionary to accommodate them.
+It's also worth noting that since we are allowing strings of all lengths, the compression ratio has not changed.
 
 \hypertarget{multiple-indexed-dictionaries}{%
 \subsection{Multiple Indexed Dictionaries}\label{multiple-indexed-dictionaries}}
 
-As stated before, there have been research papers about the possibility of using multiple indexed dictionaries for LZW, including Keerthy (Keerthy, 2019).
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. As seen in Figure \ref{fig:multdictlengthcompfig}, the throughput tends to increase and the average compression time tends to increase as we increase the number of indexed dictionaries. This result was not necessarily one we expected, but it does make sense that there is a certain amount of overhead that is required for a hashmap. The hash function takes about the same amount of time no matter the number of elements in the map, and resizing is rare. So adding more dictionaries only adds more overhead, which tends to slightly decrease efficiency.
 
-Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. Here are the results for this dictionary.
-\begin{table}[!h]
-
-\caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus1/humprtb} & \cellcolor{gray!6}{56737} & \cellcolor{gray!6}{21687} & \cellcolor{gray!6}{2.616} & \cellcolor{gray!6}{5} & \cellcolor{gray!6}{2}\\
-DNACorpus1/humdyst & 38770 & 15116 & 2.565 & 3 & 1\\
-\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{69820} & \cellcolor{gray!6}{2.746} & \cellcolor{gray!6}{14} & \cellcolor{gray!6}{6}\\
-DNACorpus1/hehcmv & 229354 & 85279 & 2.689 & 16 & 7\\
-\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{70007} & \cellcolor{gray!6}{2.666} & \cellcolor{gray!6}{15} & \cellcolor{gray!6}{6}\\
-DNACorpus1/humhdab & 58864 & 22484 & 2.618 & 5 & 2\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{43269} & \cellcolor{gray!6}{2.797} & \cellcolor{gray!6}{10} & \cellcolor{gray!6}{4}\\
-DNACorpus1/mtpacga & 100314 & 36647 & 2.737 & 8 & 3\\
-\cellcolor{gray!6}{DNACorpus1/chntxx} & \cellcolor{gray!6}{155844} & \cellcolor{gray!6}{58089} & \cellcolor{gray!6}{2.683} & \cellcolor{gray!6}{12} & \cellcolor{gray!6}{5}\\
-DNACorpus1/humghcs & 66495 & 25336 & 2.625 & 6 & 2\\
-\cellcolor{gray!6}{DNACorpus1/humhbb} & \cellcolor{gray!6}{73308} & \cellcolor{gray!6}{27918} & \cellcolor{gray!6}{2.626} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[!h]
-
-\caption{\label{tab:multdictlength10statsfig}Corpus 1 Stats for Multiple Dictionaries of max length 10}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrrrrr}
-\toprule
-File.Name & Original.File.Size & Compressed.Size & Compression.Ratio & Compression.Time & Decompression.Time\\
-\midrule
-\cellcolor{gray!6}{DNACorpus2/YeMi} & \cellcolor{gray!6}{73689} & \cellcolor{gray!6}{27019} & \cellcolor{gray!6}{2.727} & \cellcolor{gray!6}{7} & \cellcolor{gray!6}{2}\\
-DNACorpus2/DaRe & 62565020 & 19585959 & 3.194 & 8878 & 1721\\
-\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{8609527} & \cellcolor{gray!6}{3.067} & \cellcolor{gray!6}{3347} & \cellcolor{gray!6}{696}\\
-DNACorpus2/HePy & 1667825 & 566631 & 2.943 & 94 & 34\\
-\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{14147605} & \cellcolor{gray!6}{3.058} & \cellcolor{gray!6}{5551} & \cellcolor{gray!6}{1223}\\
-DNACorpus2/EsCo & 4641652 & 1593032 & 2.914 & 364 & 105\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{46851235} & \cellcolor{gray!6}{3.170} & \cellcolor{gray!6}{22817} & \cellcolor{gray!6}{4323}\\
-DNACorpus2/ScPo & 10652155 & 3590421 & 2.967 & 1099 & 258\\
-\cellcolor{gray!6}{DNACorpus2/HaHi} & \cellcolor{gray!6}{3890005} & \cellcolor{gray!6}{1306336} & \cellcolor{gray!6}{2.978} & \cellcolor{gray!6}{302} & \cellcolor{gray!6}{86}\\
-DNACorpus2/HoSa & 189752667 & 57199679 & 3.317 & 31978 & 5449\\
-\cellcolor{gray!6}{DNACorpus2/AeCa} & \cellcolor{gray!6}{1591049} & \cellcolor{gray!6}{556194} & \cellcolor{gray!6}{2.861} & \cellcolor{gray!6}{91} & \cellcolor{gray!6}{34}\\
-DNACorpus2/DrMe & 32181429 & 10618575 & 3.031 & 3865 & 905\\
-\addlinespace
-\cellcolor{gray!6}{DNACorpus2/BuEb} & \cellcolor{gray!6}{18940} & \cellcolor{gray!6}{7740} & \cellcolor{gray!6}{2.447} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0}\\
-DNACorpus2/PlFa & 8986712 & 2895340 & 3.104 & 892 & 211\\
-\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{17258} & \cellcolor{gray!6}{2.548} & \cellcolor{gray!6}{4} & \cellcolor{gray!6}{1}\\
-\bottomrule
-\end{tabular}}
-\end{table}
+Compression ratio still remains the same as strings of all lengths are accommodated.
+This logic is supported by Figure \ref{fig:multvsonedictfig}, which shoes one \texttt{std::unordered\_map} compared the multiple indexed model.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/multdictlengthcompfig-1.pdf}
 \caption{\label{fig:multdictlengthcompfig}Comparing different max lengths for Direct Map}
 \end{figure}
-Here is a comparison of the Multiple Dictionaries versus one standard dictionary.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/multvsonedictfig-1.pdf}
 \caption{\label{fig:multvsonedictfig}Comparing one Dict to Mult Dict}
 \end{figure}
-\hypertarget{comparison}{%
-\subsection{Comparison}\label{comparison}}
+\hypertarget{comparison-1}{%
+\subsection{Comparison}\label{comparison-1}}
 
-Here is a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary.
+Figure \ref{fig:dictionarytechniquecompfig} shows a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary. As shown, the Direct Map technique greatly increases throughput and thus decreases average compression time. Given these results, we decided to shift our focus onto the Direct Map and try to optimize this scheme as much as possible.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf}
