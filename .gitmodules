@@ -1,0 +1,3 @@
+[submodule "lzwcpp/entropy-encoding"]
+	path = lzwcpp/entropy-encoding
+	url = git@github.com:cadencorontzos/Turbo-Range-Coder.git

@@ -8,7 +8,12 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <vector>
 
+extern "C" {
+
+#include "entropy-encoding/include/turborc.h"
+}
 namespace fs = std::filesystem;
 #include "lzw.hh"
 
@@ -20,11 +25,17 @@ float compressionRatio(uint64_t output_size, uint64_t input_size) {
 int main(int argc, char *argv[]) {
 
   if (argc != 2) {
+
     std::cerr
         << "Please include the name of the file you would like to compress\n";
     return 1;
   }
 
+  std::vector<char *> my_args = {"./turborc", "-1", "-f", "out.txt",
+                                 "out2.txt"};
+
+  entropy_encoder(5, my_args.data());
+  exit(0);
   int input_file = open(argv[1], O_RDONLY, (mode_t)0600);
   if (input_file == EOF) {
     std::cout << "Unable to open " << argv[1] << "." << std::endl;
