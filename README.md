@@ -1,3 +1,3 @@
-# thesis
+# LZW for DNA compression
 
-This project is centered on the Lempel Ziv Welch Algorightm
+This project is centered around the Lempel Ziv Welch compression algorithm. 
