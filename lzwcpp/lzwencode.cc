@@ -17,37 +17,6 @@ namespace fs = std::filesystem;
 #include <string>
 #include <vector>
 
-std::vector<char *> split_string(const std::string &input_str) {
-  // Create a vector to hold the substrings
-  std::vector<char *> substrings;
-
-  // Copy the input string to a mutable buffer
-  char *mutable_str = new char[input_str.size() + 1];
-  std::strcpy(mutable_str, input_str.c_str());
-
-  // Tokenize the string by spaces
-  char *token = std::strtok(mutable_str, " ");
-  while (token != nullptr) {
-    // Add the current token to the vector
-    substrings.push_back(token);
-
-    // Get the next token
-    token = std::strtok(nullptr, " ");
-  }
-
-  // Add a null pointer to mark the end of the array
-  substrings.push_back(nullptr);
-
-  // Return the vector of substrings
-  return substrings;
-}
-
-/* void free_vector(std::vector<char *> &command_vector) { */
-/*   for (char *i : command_vector) { */
-/*     delete[] i; */
-/*   } */
-/* } */
-
 float compressionRatio(uint64_t output_size, uint64_t input_size) {
   assert(output_size != 0);
   return (float)input_size / output_size;
@@ -109,8 +78,7 @@ int main(int argc, char *argv[]) {
   char_output.close();
   rl_output.close();
 
-  /* free_vector(command); */
-  // indicator
+  // compress the indicator bits with entropy
   std::string indicator_second_output_filename =
       std::string(argv[1]) + ".compressed.lzw.indicator";
   {
@@ -121,7 +89,7 @@ int main(int argc, char *argv[]) {
     entropy_encoder(5, command2.data(), 10, 0);
   }
 
-  // cws
+  // compress codewords with entropy
   std::string codeword_second_output_filename =
       std::string(argv[1]) + ".compressed.lzw.codeword";
   {
@@ -131,6 +99,7 @@ int main(int argc, char *argv[]) {
         const_cast<char *>(codeword_second_output_filename.c_str())};
     entropy_encoder(5, command.data(), 20, 0);
   }
+
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       end_time - start_time);
 

@@ -1,5 +1,6 @@
 #include "lzw.hh"
 #include "./dictionary/direct_mapped_dict.hh"
+#include <arpa/inet.h>
 #include <climits>
 #include <fstream>
 #include <iostream>
@@ -20,7 +21,6 @@ void LZW::encode(const char *input_file, uint64_t file_size,
   LZW_Encode_Dictionary dictionary;
   dictionary.load_starting_dictionary();
 
-  BitOutput codeword_bit_o(codeword_output);
   BitOutput char_bit_o(char_output);
   BitOutput indicator_bit_o(indicator_output);
 
@@ -56,7 +56,6 @@ void LZW::encode(const char *input_file, uint64_t file_size,
         char_bit_o.output_n_bits(encode_values[next_character], 2);
       }
 
-
       // add the run we saw + the new character to our dict
       dictionary.add_string(input_file, longest_run, codeword);
 
@@ -65,8 +64,12 @@ void LZW::encode(const char *input_file, uint64_t file_size,
       indicator_bit_o.output_bit(true);
 
       // output codeword
-      codeword_bit_o.output_n_bits(longest_run.codeword_of_next_run,
-                                   codeword_helper.bits_per_codeword);
+      /* codeword_bit_o.output_n_bits(longest_run.codeword_of_next_run, */
+      /*                              codeword_helper.bits_per_codeword); */
+      /* std::cout << longest_run.codeword_of_next_run << std::endl; */
+      codeword_type cw_to_write = htons(longest_run.codeword_of_next_run);
+      codeword_output.write(reinterpret_cast<const char *>(&cw_to_write),
+                            sizeof(codeword_type));
 
       /* << std::endl; */
       // output next character
@@ -83,8 +86,10 @@ void LZW::encode(const char *input_file, uint64_t file_size,
   }
   indicator_bit_o.output_bit(true);
   // output special eof character
-  codeword_bit_o.output_n_bits(codeword_helper.EOF_CODEWORD,
-                               codeword_helper.bits_per_codeword);
+  /* std::cout << codeword_helper.EOF_CODEWORD << std::endl; */
+  codeword_type codeword_to_write = htons(codeword_helper.EOF_CODEWORD);
+  codeword_output.write(reinterpret_cast<const char *>(&codeword_to_write),
+                        sizeof(codeword_type));
 
   // after we've encoded, we either have
   // no current block (case 0)
@@ -133,11 +138,10 @@ void LZW::decode(const char *char_input, const char *codeword_input,
   Codeword_Helper codeword_helper;
   codeword_type codeword = codeword_helper.get_next_codeword();
 
-  int codeword_found;
+  codeword_type codeword_found;
   char next_byte;
   bool next_is_codeword = false;
 
-  BitInput codeword_bit_i(codeword_input);
   BitInput char_bit_i(char_input);
   BitInput indicator_bit_i(indicator_input);
 
@@ -148,7 +152,9 @@ void LZW::decode(const char *char_input, const char *codeword_input,
     if (next_is_codeword) {
 
       codeword_found =
-          codeword_bit_i.read_n_bits(codeword_helper.bits_per_codeword);
+          (uint8_t(codeword_input[0]) << 8) + (uint8_t(codeword_input[1]));
+      /* std::cout << codeword_found << std::endl; */
+      codeword_input += 2;
       if (codeword_found == codeword_helper.EOF_CODEWORD) {
         break;
       }
@@ -196,7 +202,9 @@ void LZW::decode(const char *char_input, const char *codeword_input,
   case 3:
 
     int left = char_bit_i.read_n_bits(3);
-	if(left ==0){left = 8;}
+    if (left == 0) {
+      left = 8;
+    }
     for (int i = 0; i < left; i++) {
       output << char(decode_values[char_bit_i.read_n_bits(2)]);
     }
