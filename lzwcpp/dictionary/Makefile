@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS= -g -mbmi2 -Wall -Wextra -pedantic -std=c++2a -O3  -Werror
+CXXFLAGS= -mbmi2 -Wall -Wextra -pedantic -std=c++2a -O3  -Werror
 EXEC= test_std_dict test_direct_map test_mult_std_dict
 
 all: $(EXEC)

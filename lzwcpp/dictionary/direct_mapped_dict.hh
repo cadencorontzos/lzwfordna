@@ -347,20 +347,13 @@ public:
 // incrementing the codeword
 //
 class Codeword_Helper : public CW_Tracker<codeword_type> {
-private:
-  unsigned int current_max_cw;
 
 public:
   Codeword_Helper()
-      : CW_Tracker<codeword_type>(6, 5, 4),
-        current_max_cw(1 << bits_per_codeword){};
+      : CW_Tracker<codeword_type>(6, 5, sizeof(codeword_type) * CHAR_BIT){};
   codeword_type get_next_codeword() {
     if (current_codeword == MAX_CODEWORD) {
       return MAX_CODEWORD;
-    }
-    if (current_codeword == current_max_cw) {
-      bits_per_codeword++;
-      current_max_cw = (1 << bits_per_codeword);
     }
     return current_codeword++;
   }
