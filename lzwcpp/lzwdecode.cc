@@ -1,4 +1,3 @@
-
 #include <chrono>
 #include <fcntl.h>
 #include <filesystem>
@@ -8,7 +7,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <vector>
 
+#include "entropy-encoding/include/turborc.h"
 #include "lzw.hh"
 namespace fs = std::filesystem;
 
@@ -19,6 +20,31 @@ int main(int argc, char *argv[]) {
         << "Please include the name of the file you would like to compress"
         << std::endl;
     return 1;
+  }
+
+  std::string indicator_input_filename = std::string(argv[1]) + ".indicator";
+  // indicator
+  std::string indicator_second_output_filename =
+      std::string(argv[1]) + ".indicator.rc";
+  {
+
+    std::vector<char *> command2 = {
+        "./turborc", "-d",
+        const_cast<char *>(indicator_second_output_filename.c_str()),
+        const_cast<char *>(indicator_input_filename.c_str())};
+    entropy_encoder(4, command2.data(), 1, 1);
+  }
+
+  // cws
+  std::string codeword_input_filename = std::string(argv[1]) + ".codeword";
+  std::string codeword_second_output_filename =
+      std::string(argv[1]) + ".codeword.rc";
+  {
+    std::vector<char *> command = {
+        "./turborc", "-d",
+        const_cast<char *>(codeword_second_output_filename.c_str()),
+        const_cast<char *>(codeword_input_filename.c_str())};
+    entropy_encoder(4, command.data(), 1, 1);
   }
 
   std::string chars_input_filename = std::string(argv[1]) + ".chars";
@@ -45,7 +71,6 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  std::string indicator_input_filename = std::string(argv[1]) + ".indicator";
   int indicator_input_file =
       open(indicator_input_filename.c_str(), O_RDONLY, (mode_t)0600);
   if (indicator_input_file == EOF) {
@@ -74,7 +99,6 @@ int main(int argc, char *argv[]) {
   // codewords
   //
   //
-  std::string codeword_input_filename = std::string(argv[1]) + ".codeword";
   int codeword_input_file =
       open(codeword_input_filename.c_str(), O_RDONLY, (mode_t)0600);
   if (codeword_input_file == EOF) {

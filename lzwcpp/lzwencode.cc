@@ -1,5 +1,6 @@
 #include <cassert>
 #include <chrono>
+#include <cstring>
 #include <fcntl.h>
 #include <filesystem>
 #include <fstream>
@@ -8,14 +9,44 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <vector>
 
-extern "C" {
-
-#include "entropy-encoding/include/turborc.h"
-}
 namespace fs = std::filesystem;
 #include "lzw.hh"
+
+#include "entropy-encoding/include/turborc.h"
+#include <string>
+#include <vector>
+
+std::vector<char *> split_string(const std::string &input_str) {
+  // Create a vector to hold the substrings
+  std::vector<char *> substrings;
+
+  // Copy the input string to a mutable buffer
+  char *mutable_str = new char[input_str.size() + 1];
+  std::strcpy(mutable_str, input_str.c_str());
+
+  // Tokenize the string by spaces
+  char *token = std::strtok(mutable_str, " ");
+  while (token != nullptr) {
+    // Add the current token to the vector
+    substrings.push_back(token);
+
+    // Get the next token
+    token = std::strtok(nullptr, " ");
+  }
+
+  // Add a null pointer to mark the end of the array
+  substrings.push_back(nullptr);
+
+  // Return the vector of substrings
+  return substrings;
+}
+
+/* void free_vector(std::vector<char *> &command_vector) { */
+/*   for (char *i : command_vector) { */
+/*     delete[] i; */
+/*   } */
+/* } */
 
 float compressionRatio(uint64_t output_size, uint64_t input_size) {
   assert(output_size != 0);
@@ -25,17 +56,11 @@ float compressionRatio(uint64_t output_size, uint64_t input_size) {
 int main(int argc, char *argv[]) {
 
   if (argc != 2) {
-
     std::cerr
         << "Please include the name of the file you would like to compress\n";
     return 1;
   }
 
-  std::vector<char *> my_args = {"./turborc", "-1", "-f", "out.txt",
-                                 "out2.txt"};
-
-  entropy_encoder(5, my_args.data());
-  exit(0);
   int input_file = open(argv[1], O_RDONLY, (mode_t)0600);
   if (input_file == EOF) {
     std::cout << "Unable to open " << argv[1] << "." << std::endl;
@@ -63,15 +88,18 @@ int main(int argc, char *argv[]) {
 
   LZW compressor;
   std::ofstream output;
-  output.open(std::string(argv[1]) + ".compressed.lzw.codeword",
-              std::ios::binary);
+  std::string codeword_output_filename =
+      std::string(argv[1]) + ".tmp.compressed.lzw.codeword";
+  output.open(codeword_output_filename, std::ios::binary);
 
   std::ofstream rl_output;
-  rl_output.open(std::string(argv[1]) + ".compressed.lzw.indicator",
-                 std::ios::binary);
+  std::string indicator_output_filename =
+      std::string(argv[1]) + ".tmp.compressed.lzw.indicator";
+  rl_output.open(indicator_output_filename, std::ios::binary);
   std::ofstream char_output;
-  char_output.open(std::string(argv[1]) + ".compressed.lzw.chars",
-                   std::ios::binary);
+  std::string char_output_filename =
+      std::string(argv[1]) + ".compressed.lzw.chars";
+  char_output.open(char_output_filename, std::ios::binary);
   // compress file
   auto start_time = std::chrono::high_resolution_clock::now();
   compressor.encode(input, fileInfo.st_size, output, char_output, rl_output);
@@ -80,12 +108,36 @@ int main(int argc, char *argv[]) {
   output.close();
   char_output.close();
   rl_output.close();
+
+  /* free_vector(command); */
+  // indicator
+  std::string indicator_second_output_filename =
+      std::string(argv[1]) + ".compressed.lzw.indicator";
+  {
+    std::vector<char *> command2 = {
+        "./turborc", "-1", "-f",
+        const_cast<char *>(indicator_output_filename.c_str()),
+        const_cast<char *>(indicator_second_output_filename.c_str())};
+    entropy_encoder(5, command2.data(), 10, 0);
+  }
+
+  // cws
+  std::string codeword_second_output_filename =
+      std::string(argv[1]) + ".compressed.lzw.codeword";
+  {
+    std::vector<char *> command = {
+        "./turborc", "-20", "-Fs",
+        const_cast<char *>(codeword_output_filename.c_str()),
+        const_cast<char *>(codeword_second_output_filename.c_str())};
+    entropy_encoder(5, command.data(), 20, 0);
+  }
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       end_time - start_time);
 
   // output statistics
-  fs::path out = std::string(argv[1]) + "codewords.compressed.lzw";
-  auto output_size = fs::file_size(out);
+  auto output_size = fs::file_size(codeword_second_output_filename + ".rc") +
+                     fs::file_size(indicator_second_output_filename + ".rc") +
+                     fs::file_size(char_output_filename);
   std::cout << "Compressed file size (bytes) : " << output_size << std::endl;
   std::cout << "Compression Ratio : "
             << compressionRatio(output_size, fileInfo.st_size) << std::endl;
