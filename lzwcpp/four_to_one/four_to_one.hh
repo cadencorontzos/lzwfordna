@@ -1,4 +1,5 @@
 #pragma once
+#include "../bitio/bitio.hh"
 #include <iostream>
 
 class Four_To_One {
