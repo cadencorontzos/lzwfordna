@@ -80,16 +80,15 @@ If you'd like to see examples of other things in this template, please contact t
 
 # Comparison to other tools
 
-Here, in this chapter, we will investigate how our implementation holds up against other compression methods.
+Now that we have implemented several versions of LZW, we want to compare them to each other to see which would be preferable in different situations. We also want to compare the performance of these different implementations to the 4 to 1 direct translation and other professional compression tools.
 
+## Comparison of our Implementations
 
 ## Compression Algorithms in Literature
 
 As discussed in the related work section of chapter 1, there have been several other compression algorithms proposed and tested in the field tailored for DNA. Not all of these are publicly available, thus we can only compare to the numbers that they reported.
 
 Note that I wasn't able to get compression times for these algorithms, only the compression ratios.
-
-might want to double check these
 
 ```{r researchmethodsresultsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
 
@@ -109,3 +108,6 @@ df <- data.frame(
   knitr::kable(df,  linesep = c(rep("", 5), "\\addlinespace"), format="latex", booktabs=TRUE) %>% 
   kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
+
+## Comparison to Other Professional Tools
+

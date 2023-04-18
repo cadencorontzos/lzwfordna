@@ -34,9 +34,9 @@ This is just for testing with more citations for the bibliography at the end.  A
     # Sayood, K. (2017). Introduction to data compression. Academic Press.
 	# Pratas, Diogo & Pinho, Armando. (2018). A DNA Sequence Corpus for Compression Benchmark. 208-215. 10.1007/978-3-319-98702-6_25.
 
+nocite: | 
+  @angel2000, @angel2001, @angel2002a
 -->
 
 ---
-nocite: | 
-  @angel2000, @angel2001, @angel2002a
 ...
