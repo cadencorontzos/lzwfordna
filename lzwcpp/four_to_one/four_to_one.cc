@@ -23,11 +23,11 @@ void Four_To_One::encode(const char *input_file, uint64_t file_size,
   // calcualate end of file
   const uint64_t *input_ints = reinterpret_cast<const uint64_t *>(input_file);
   const uint64_t *end_of_input_64 =
-      input_ints + static_cast<uint64_t>(std::ceil(file_size / 8));
+      input_ints + static_cast<uint64_t>(std::floor(file_size / 8));
 
-  int output_num = 0;
+  unsigned output_num = 0;
   // output the file in 2 byte chunks using pext
-  while (input_ints < end_of_input_64) {
+  while (input_ints < end_of_input_64 && output_num + 8 <= file_size) {
     uint64_t first_half = _pext_u64(input_ints[0], MASK);
     output.write(reinterpret_cast<const char *>(&first_half), 2);
     input_ints += 1;
@@ -37,24 +37,21 @@ void Four_To_One::encode(const char *input_file, uint64_t file_size,
 
   const uint32_t *input_32 = reinterpret_cast<const uint32_t *>(input_file);
   const uint32_t *end_of_input_32 =
-      input_32 + static_cast<uint32_t>(std::ceil(file_size / 4));
-  if (input_32 < end_of_input_32) {
+      input_32 + static_cast<uint32_t>(std::floor(file_size / 4));
+  if (input_32 + 1 < end_of_input_32 && output_num + 4 <= file_size) {
     uint32_t next_chunk = _pext_u32(input_32[0], (MASK >> 32));
     output.write(reinterpret_cast<const char *>(&next_chunk), 1);
     input_32 += 1;
     input_file += 4;
     output_num += 4;
-    /* std::cout << "OUTPUT 32" << std::endl; */
   }
 
   BitOutput bit_output(output);
   while (input_file < end_of_input) {
     bit_output.output_n_bits(encode_values[input_file[0]], 2);
-    /* std::cout << "output : " << input_file[0] << std::endl; */
     input_file++;
     output_num++;
   }
-  /* std::cout << "output num: " << output_num << std::endl; */
 }
 
 std::array<int, 1 << CHAR_BIT> decode_values;
@@ -85,7 +82,6 @@ void Four_To_One::decode(const char *input, std::ostream &output) {
   }
   input += 8;
 
-  /* std::cout << "OD: " << original_file_size << std::endl; */
   uint64_t bytes_output = 0;
   const char *end_of_input = input + original_file_size;
   const uint32_t *input_file = reinterpret_cast<const uint32_t *>(input);
@@ -98,14 +94,12 @@ void Four_To_One::decode(const char *input, std::ostream &output) {
     input_file++;
     input += 4;
     bytes_output += 16;
-    /* std::cout << "OUtput 16" << std::endl; */
   }
 
   while (input < end_of_input and bytes_output + 4 <= original_file_size) {
     output << index_to_string(input[0]).substr(0, 4);
     input++;
     bytes_output += 4;
-    /* std::cout << "OUTPUT 16" << std::endl; */
   }
 
   // output the last few characters
@@ -113,8 +107,6 @@ void Four_To_One::decode(const char *input, std::ostream &output) {
   while (bytes_output < original_file_size) {
     char f = char(decode_values[bit_input.read_n_bits(2)]);
     output << f;
-    /* std::cout << "output : " << f << std::endl; */
     bytes_output++;
   }
-  /* std::cout << "Bytes ouptut " << bytes_output << std::endl; */
 }
