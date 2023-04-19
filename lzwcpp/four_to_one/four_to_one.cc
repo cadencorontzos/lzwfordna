@@ -10,6 +10,7 @@
 
 std::array<int, 1 << CHAR_BIT> encode_values;
 const uint64_t MASK = 434041037028460038;
+
 void Four_To_One::encode(const char *input_file, uint64_t file_size,
                          std::ostream &output) {
 
@@ -27,6 +28,7 @@ void Four_To_One::encode(const char *input_file, uint64_t file_size,
 
   unsigned output_num = 0;
   // output the file in 2 byte chunks using pext
+  // next 8 charcters => 2 bytes
   while (input_ints < end_of_input_64 && output_num + 8 <= file_size) {
     uint64_t first_half = _pext_u64(input_ints[0], MASK);
     output.write(reinterpret_cast<const char *>(&first_half), 2);
@@ -35,6 +37,7 @@ void Four_To_One::encode(const char *input_file, uint64_t file_size,
     output_num += 8;
   }
 
+  // output the rest of the complete bytes
   const uint32_t *input_32 = reinterpret_cast<const uint32_t *>(input_file);
   const uint32_t *end_of_input_32 =
       input_32 + static_cast<uint32_t>(std::floor(file_size / 4));
@@ -46,6 +49,7 @@ void Four_To_One::encode(const char *input_file, uint64_t file_size,
     output_num += 4;
   }
 
+  // output any partial bytes at the end
   BitOutput bit_output(output);
   while (input_file < end_of_input) {
     bit_output.output_n_bits(encode_values[input_file[0]], 2);
@@ -81,13 +85,13 @@ void Four_To_One::decode(const char *input, std::ostream &output) {
     original_file_size += (uint8_t(input[i]) << (8 * i));
   }
   input += 8;
-
   uint64_t bytes_output = 0;
+
+  // read all complete 2 byte chunks
   const char *end_of_input = input + original_file_size;
   const uint32_t *input_file = reinterpret_cast<const uint32_t *>(input);
   const uint32_t *end_of_input_32 =
       input_file + int(std::ceil(original_file_size / 16));
-
   while (input_file < end_of_input_32 and
          bytes_output + 16 <= original_file_size) {
     output << index_to_string(input_file[0]).substr(0, 16);
@@ -96,13 +100,14 @@ void Four_To_One::decode(const char *input, std::ostream &output) {
     bytes_output += 16;
   }
 
+  // read all 1 byte chunks
   while (input < end_of_input and bytes_output + 4 <= original_file_size) {
     output << index_to_string(input[0]).substr(0, 4);
     input++;
     bytes_output += 4;
   }
 
-  // output the last few characters
+  // read the last few characters, which don't fill a whole byte
   BitInput bit_input(input);
   while (bytes_output < original_file_size) {
     char f = char(decode_values[bit_input.read_n_bits(2)]);
