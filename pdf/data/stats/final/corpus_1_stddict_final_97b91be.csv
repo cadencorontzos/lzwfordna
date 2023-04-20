@@ -1,0 +1,12 @@
+File Name,Original File Size,Compressed Size,Compression Ratio,Compression Time,Decompression Time
+DNACorpus1/humdyst,38770,10508,3.69,2,0
+DNACorpus1/mpomtcg,186609,50680,3.682,11,2
+DNACorpus1/humhbb,73308,19749,3.712,4,1
+DNACorpus1/humghcs,66495,17871,3.721,3,1
+DNACorpus1/humprtb,56737,15217,3.729,3,0
+DNACorpus1/chntxx,155844,41870,3.722,9,2
+DNACorpus1/chmpxx,121024,30916,3.915,7,1
+DNACorpus1/vaccg,191737,50542,3.794,11,2
+DNACorpus1/mtpacga,100314,26097,3.844,5,1
+DNACorpus1/humhdab,58864,15796,3.727,3,0
+DNACorpus1/hehcmv,229354,61968,3.701,14,3
