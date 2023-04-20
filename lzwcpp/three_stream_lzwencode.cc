@@ -72,7 +72,6 @@ int main(int argc, char *argv[]) {
   // compress file
   auto start_time = std::chrono::high_resolution_clock::now();
   compressor.encode(input, fileInfo.st_size, output, char_output, rl_output);
-  auto end_time = std::chrono::high_resolution_clock::now();
 
   output.close();
   char_output.close();
@@ -100,6 +99,7 @@ int main(int argc, char *argv[]) {
     entropy_encoder(5, command.data(), 20, 0);
   }
 
+  auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       end_time - start_time);
 

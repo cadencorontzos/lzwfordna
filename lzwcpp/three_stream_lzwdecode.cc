@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  auto start_time = std::chrono::high_resolution_clock::now();
   std::string indicator_input_filename = std::string(argv[1]) + ".indicator";
   // indicator
   std::string indicator_second_output_filename =
@@ -130,7 +131,6 @@ int main(int argc, char *argv[]) {
   output.open(std::string(argv[1]) + ".decompressed.lzw", std::ios::binary);
 
   // decompress file
-  auto start_time = std::chrono::high_resolution_clock::now();
   decompressor.decode(char_input, codeword_input, indicator_input, output);
   auto end_time = std::chrono::high_resolution_clock::now();
 
