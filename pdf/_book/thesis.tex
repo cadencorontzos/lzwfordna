@@ -1269,6 +1269,78 @@ Now that we have implemented several versions of LZW, we want to compare them to
 \hypertarget{comparison-of-our-implementations}{%
 \section{Comparison of our Implementations}\label{comparison-of-our-implementations}}
 
+We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation.
+\begin{figure}
+\centering
+\includegraphics{thesis_files/figure-latex/comparisonofourmethodsfig-1.pdf}
+\caption{\label{fig:comparisonofourmethodsfig}Compression ratios of related works on DNACorpus1, reported as bits per base}
+\end{figure}
+\begin{verbatim}
+Warning: package 'tidyr' was built under R version 4.2.2
+\end{verbatim}
+\begin{table}[!h]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{l|r|r|r|r|r|r}
+\hline
+\multicolumn{2}{c|}{ } & \multicolumn{5}{c}{Compression Ratio } \\
+\cline{3-7}
+File Name & Original File Size & Direct Map Dictionary & Four to One & Mult Std Dictionaries & Std Dictionary & Three Stream LZW\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{3.266} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.915} & \cellcolor{gray!6}{3.915} & \cellcolor{gray!6}{3.885}\\
+\hline
+DNACorpus1/chntxx & 155844 & 3.203 & 3.999 & 3.722 & 3.722 & 3.888\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/hehcmv} & \cellcolor{gray!6}{229354} & \cellcolor{gray!6}{3.279} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.701} & \cellcolor{gray!6}{3.701} & \cellcolor{gray!6}{3.885}\\
+\hline
+DNACorpus1/humdyst & 38770 & 2.804 & 3.997 & 3.690 & 3.690 & 3.954\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/humghcs} & \cellcolor{gray!6}{66495} & \cellcolor{gray!6}{2.969} & \cellcolor{gray!6}{3.998} & \cellcolor{gray!6}{3.721} & \cellcolor{gray!6}{3.721} & \cellcolor{gray!6}{3.933}\\
+\hline
+DNACorpus1/humhbb & 73308 & 2.991 & 3.998 & 3.712 & 3.712 & 3.935\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/humhdab} & \cellcolor{gray!6}{58864} & \cellcolor{gray!6}{2.934} & \cellcolor{gray!6}{3.998} & \cellcolor{gray!6}{3.727} & \cellcolor{gray!6}{3.727} & \cellcolor{gray!6}{3.938}\\
+\hline
+DNACorpus1/humprtb & 56737 & 2.923 & 3.998 & 3.729 & 3.729 & 3.927\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{3.218} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.682} & \cellcolor{gray!6}{3.682} & \cellcolor{gray!6}{3.896}\\
+\hline
+DNACorpus1/mtpacga & 100314 & 3.169 & 3.999 & 3.844 & 3.844 & 3.875\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{3.315} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.794} & \cellcolor{gray!6}{3.794} & \cellcolor{gray!6}{3.874}\\
+\hline
+DNACorpus2/AeCa & 1591049 & 3.778 & 4.000 & 3.786 & 3.786 & 3.874\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{2.807} & \cellcolor{gray!6}{3.997} & \cellcolor{gray!6}{3.653} & \cellcolor{gray!6}{3.653} & \cellcolor{gray!6}{3.957}\\
+\hline
+DNACorpus2/BuEb & 18940 & 2.552 & 3.993 & 3.595 & 3.595 & 3.964\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/DaRe} & \cellcolor{gray!6}{62565020} & \cellcolor{gray!6}{3.928} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.013} & \cellcolor{gray!6}{4.013} & \cellcolor{gray!6}{4.035}\\
+\hline
+DNACorpus2/DrMe & 32181429 & 3.847 & 4.000 & 3.836 & 3.836 & 3.865\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{3.918} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{3.893} & \cellcolor{gray!6}{3.893} & \cellcolor{gray!6}{3.928}\\
+\hline
+DNACorpus2/EsCo & 4641652 & 3.817 & 4.000 & 3.791 & 3.791 & 3.847\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{3.776} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{3.943} & \cellcolor{gray!6}{3.943} & \cellcolor{gray!6}{3.897}\\
+\hline
+DNACorpus2/HaHi & 3890005 & 3.916 & 4.000 & 3.884 & 3.884 & 3.944\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/HePy} & \cellcolor{gray!6}{1667825} & \cellcolor{gray!6}{3.884} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{3.894} & \cellcolor{gray!6}{3.894} & \cellcolor{gray!6}{3.942}\\
+\hline
+DNACorpus2/HoSa & 189752667 & 3.953 & 4.000 & 4.118 & 4.118 & 4.075\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{3.843} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{3.858} & \cellcolor{gray!6}{3.858} & \cellcolor{gray!6}{3.908}\\
+\hline
+DNACorpus2/PlFa & 8986712 & 4.031 & 4.000 & 4.000 & 4.000 & 4.010\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/ScPo} & \cellcolor{gray!6}{10652155} & \cellcolor{gray!6}{3.847} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{3.813} & \cellcolor{gray!6}{3.813} & \cellcolor{gray!6}{3.851}\\
+\hline
+DNACorpus2/YeMi & 73689 & 3.099 & 3.998 & 3.859 & 3.859 & 3.881\\
+\hline
+\end{tabular}}
+\end{table}
 \hypertarget{compression-algorithms-in-literature}{%
 \section{Compression Algorithms in Literature}\label{compression-algorithms-in-literature}}
 
@@ -1278,22 +1350,24 @@ Note that I wasn't able to get compression times for these algorithms, only the 
 \begin{table}[!h]
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrr}
+\begin{tabular}{lrrrrrrrr}
 \toprule
-Sequence & BioCompress2 & GenCompress & XM\\
+\multicolumn{1}{c}{ } & \multicolumn{8}{c}{Bits per Base} \\
+\cmidrule(l{3pt}r{3pt}){2-9}
+Name & BioCompress2 & GenCompress & XM & Standard\_Dictionary & Direct\_Map\_Dictionary & Mult\_Std\_Dictionaries & Four\_to\_One & Three\_Stream\_LZW\\
 \midrule
-\cellcolor{gray!6}{CHMPXX} & \cellcolor{gray!6}{1.6848} & \cellcolor{gray!6}{1.6730} & \cellcolor{gray!6}{1.6577}\\
-CHNTXX & 1.6172 & 1.6146 & 1.6068\\
-\cellcolor{gray!6}{HEHCMVCG} & \cellcolor{gray!6}{1.8480} & \cellcolor{gray!6}{1.8470} & \cellcolor{gray!6}{1.8426}\\
-HUMDYSTROP & 1.9262 & 1.9231 & 1.9031\\
-\cellcolor{gray!6}{HUMGHCSA} & \cellcolor{gray!6}{1.3074} & \cellcolor{gray!6}{1.0969} & \cellcolor{gray!6}{0.9828}\\
-HUMHBB & 1.8800 & 1.8204 & 1.7513\\
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{1.6848} & \cellcolor{gray!6}{1.6730} & \cellcolor{gray!6}{1.6577} & \cellcolor{gray!6}{2.043628} & \cellcolor{gray!6}{2.449762} & \cellcolor{gray!6}{2.043628} & \cellcolor{gray!6}{2.000529} & \cellcolor{gray!6}{2.059162}\\
+DNACorpus1/chntxx & 1.6172 & 1.6146 & 1.6068 & 2.149329 & 2.497831 & 2.149329 & 2.000411 & 2.057801\\
+\cellcolor{gray!6}{DNACorpus1/hehcmv} & \cellcolor{gray!6}{1.8480} & \cellcolor{gray!6}{1.8470} & \cellcolor{gray!6}{1.8426} & \cellcolor{gray!6}{2.161480} & \cellcolor{gray!6}{2.439513} & \cellcolor{gray!6}{2.161480} & \cellcolor{gray!6}{2.000297} & \cellcolor{gray!6}{2.059280}\\
+DNACorpus1/humdyst & 1.9262 & 1.9231 & 1.9031 & 2.168274 & 2.853547 & 2.168274 & 2.001754 & 2.023420\\
+\cellcolor{gray!6}{DNACorpus1/humghcs} & \cellcolor{gray!6}{1.3074} & \cellcolor{gray!6}{1.0969} & \cellcolor{gray!6}{0.9828} & \cellcolor{gray!6}{2.150056} & \cellcolor{gray!6}{2.694819} & \cellcolor{gray!6}{2.150056} & \cellcolor{gray!6}{2.000993} & \cellcolor{gray!6}{2.034318}\\
+DNACorpus1/humhbb & 1.8800 & 1.8204 & 1.7513 & 2.155181 & 2.674960 & 2.155181 & 2.000873 & 2.032848\\
 \addlinespace
-\cellcolor{gray!6}{HUMHDAB} & \cellcolor{gray!6}{1.8770} & \cellcolor{gray!6}{1.8192} & \cellcolor{gray!6}{1.6671}\\
-HUMHPRTB & 1.9066 & 1.8466 & 1.7361\\
-\cellcolor{gray!6}{MPOMTCG} & \cellcolor{gray!6}{1.9378} & \cellcolor{gray!6}{1.9058} & \cellcolor{gray!6}{1.8768}\\
-MTPACG & 1.8752 & 1.8624 & 1.8447\\
-\cellcolor{gray!6}{VACCG} & \cellcolor{gray!6}{1.7614} & \cellcolor{gray!6}{1.7614} & \cellcolor{gray!6}{1.7649}\\
+\cellcolor{gray!6}{DNACorpus1/humhdab} & \cellcolor{gray!6}{1.8770} & \cellcolor{gray!6}{1.8192} & \cellcolor{gray!6}{1.6671} & \cellcolor{gray!6}{2.146779} & \cellcolor{gray!6}{2.726828} & \cellcolor{gray!6}{2.146779} & \cellcolor{gray!6}{2.001087} & \cellcolor{gray!6}{2.031394}\\
+DNACorpus1/humprtb & 1.9066 & 1.8466 & 1.7361 & 2.145619 & 2.737261 & 2.145619 & 2.001234 & 2.037048\\
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{1.9378} & \cellcolor{gray!6}{1.9058} & \cellcolor{gray!6}{1.8768} & \cellcolor{gray!6}{2.172671} & \cellcolor{gray!6}{2.485925} & \cellcolor{gray!6}{2.172671} & \cellcolor{gray!6}{2.000375} & \cellcolor{gray!6}{2.053449}\\
+DNACorpus1/mtpacga & 1.8752 & 1.8624 & 1.8447 & 2.081225 & 2.524314 & 2.081225 & 2.000678 & 2.064557\\
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{1.7614} & \cellcolor{gray!6}{1.7614} & \cellcolor{gray!6}{1.7649} & \cellcolor{gray!6}{2.108805} & \cellcolor{gray!6}{2.413347} & \cellcolor{gray!6}{2.108805} & \cellcolor{gray!6}{2.000365} & \cellcolor{gray!6}{2.065162}\\
 \bottomrule
 \end{tabular}}
 \end{table}
