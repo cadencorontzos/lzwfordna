@@ -36,6 +36,12 @@ lzwencode: lzwencode.o $(BITIO_PATH)/bitio.o lzw.o
 lzwdecode: lzwdecode.o $(BITIO_PATH)/bitio.o lzw.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
+lzwencode.o: lzwencode.cc
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+lzwdecode.o: lzwencode.cc
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
 three_stream_lzwencode: three_stream_lzwencode.o $(BITIO_PATH)/bitio.o $(THREE_STREAM_PATH)/three_stream_lzw.o $(ENTROPY_PATH)/turborc.o $(ENTROPY_PATH)/libsais/src/libsais.o $(ENTROPY_PATH)/libsais/src/libsais16.o $(ENTROPY_PATH)/librc.a
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
@@ -47,6 +53,7 @@ three_stream_lzwencode.o: three_stream_lzwencode.cc
 
 three_stream_lzwdecode.o: three_stream_lzwdecode.cc
 	$(CXX) $(CXXFLAGS) -Wno-write-strings -c -o $@ $<
+
 %.o: %.cpp %.hh
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
