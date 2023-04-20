@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 namespace fs = std::filesystem;
-#include "lzw.hh"
+#include "three_stream_lzw.hh"
 
 #include "entropy-encoding/include/turborc.h"
 #include <string>

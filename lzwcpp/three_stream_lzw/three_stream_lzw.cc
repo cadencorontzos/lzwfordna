@@ -1,5 +1,5 @@
-#include "lzw.hh"
-#include "./dictionary/direct_mapped_dict.hh"
+#include "three_stream_lzw.hh"
+#include "../dictionary/direct_mapped_dict.hh"
 #include <arpa/inet.h>
 #include <climits>
 #include <fstream>

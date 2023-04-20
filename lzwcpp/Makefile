@@ -4,8 +4,9 @@ EXEC= test_lzw test_bitio lzwdecode lzwencode
 BITIO_PATH=bitio
 TEST_PATH=unittests
 ENTROPY_PATH=entropy-encoding
+THREE_STREAM_PATH=three_stream_lzw
 
-all: dictionary turborc lzwencode lzwdecode test_lzw test_bitio
+all: dictionary turborc three_stream_lzwencode three_stream_lzwdecode test_three_stream_lzw test_bitio
 
 #dic
 .PHONY: dictionary
@@ -17,24 +18,25 @@ turborc:
 	$(MAKE) -C ./$(ENTROPY_PATH)
 # unittests
 
+
 test_bitio: $(TEST_PATH)/test_bitio.o $(BITIO_PATH)/bitio.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ 
 
-test_lzw: $(TEST_PATH)/test_lzw.o $(BITIO_PATH)/bitio.o lzw.o
+test_three_stream_lzw: $(THREE_STREAM_PATH)/test_three_stream_lzw.o $(BITIO_PATH)/bitio.o $(THREE_STREAM_PATH)/three_stream_lzw.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 #executables
 
-lzwencode: lzwencode.o $(BITIO_PATH)/bitio.o lzw.o $(ENTROPY_PATH)/turborc.o $(ENTROPY_PATH)/libsais/src/libsais.o $(ENTROPY_PATH)/libsais/src/libsais16.o $(ENTROPY_PATH)/librc.a
+three_stream_lzwencode: three_stream_lzwencode.o $(BITIO_PATH)/bitio.o three_stream_lzw.o $(ENTROPY_PATH)/turborc.o $(ENTROPY_PATH)/libsais/src/libsais.o $(ENTROPY_PATH)/libsais/src/libsais16.o $(ENTROPY_PATH)/librc.a
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-lzwdecode: lzwdecode.o $(BITIO_PATH)/bitio.o lzw.o $(ENTROPY_PATH)/turborc.o $(ENTROPY_PATH)/libsais/src/libsais.o $(ENTROPY_PATH)/libsais/src/libsais16.o $(ENTROPY_PATH)/librc.a
+three_stream_lzwdecode: three_stream_lzwdecode.o $(BITIO_PATH)/bitio.o three_stream_lzw.o $(ENTROPY_PATH)/turborc.o $(ENTROPY_PATH)/libsais/src/libsais.o $(ENTROPY_PATH)/libsais/src/libsais16.o $(ENTROPY_PATH)/librc.a
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-lzwencode.o: lzwencode.cc
+three_stream_lzwencode.o: three_stream_lzwencode.cc
 	$(CXX) $(CXXFLAGS) -Wno-write-strings -c -o $@ $<
 
-lzwdecode.o: lzwdecode.cc
+three_stream_lzwdecode.o: three_stream_lzwdecode.cc
 	$(CXX) $(CXXFLAGS) -Wno-write-strings -c -o $@ $<
 %.o: %.cpp %.hh
 	$(CXX) $(CXXFLAGS) -c -o $@ $<

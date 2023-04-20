@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "entropy-encoding/include/turborc.h"
-#include "lzw.hh"
+#include "three_stream_lzw.hh"
 namespace fs = std::filesystem;
 
 int main(int argc, char *argv[]) {
