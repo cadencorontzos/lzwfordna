@@ -10,8 +10,11 @@ __pycache__
 *a.out
 /lzwcpp/lzw
 /lzwcpp/test_bitio
-/lzwcpp/lzwencode
-/lzwcpp/lzwdecode
+/lzwcpp/*lzwencode
+/lzwcpp/*lzwdecode
+/lzwcpp/four_to_one_encode
+/lzwcpp/four_to_one_decode
+/lzwcpp/test_*
 /lzwcpp/test_lzw
 /lzwcpp/DNACorpus*
 /lzwcpp/dictionary/test_std_dict
