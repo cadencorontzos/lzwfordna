@@ -7,6 +7,10 @@ import statistics
 
 LZW_ENCODE = './lzwencode'
 LZW_DECODE = './lzwdecode'
+FOUR_TO_ONE_ENCODE = './four_to_one_encode'
+FOUR_TO_ONE_DECODE = './four_to_one_decode'
+THREE_STREAM_ENCODE = './three_stream_lzwencode'
+THREE_STREAM_DECODE = './three_stream_lzwdecode'
 CORPUS_1 = 'DNACorpus1'
 CORPUS_2 = 'DNACorpus2'
 N = 5
@@ -28,15 +32,35 @@ def runFile(filename, td):
     totalCompTime =[] 
     totalDecompTime = [] 
     for i in range(N):
-        compressionOutput = subprocess.run([LZW_ENCODE, filename], capture_output=True)
-        decompressionOutput = subprocess.run([LZW_DECODE, filename + ".compressed.lzw"], capture_output=True)
+        if(sys.argv[-1] == "-l"): 
+            compressionOutput = subprocess.run([LZW_ENCODE, filename], capture_output=True)
+            decompressionOutput = subprocess.run([LZW_DECODE, filename + ".compressed.lzw"], capture_output=True)
+            os.remove(filename + ".compressed.lzw")
+            os.remove(filename+ ".compressed.lzw.decompressed.lzw")
+        elif(sys.argv[-1] == "-f"): 
+            compressionOutput = subprocess.run([FOUR_TO_ONE_ENCODE, filename], capture_output=True)
+            decompressionOutput = subprocess.run([FOUR_TO_ONE_DECODE, filename + ".compressed.4t1"], capture_output=True)
+            os.remove(filename + ".compressed.4t1")
+            os.remove(filename+ ".compressed.4t1.decompressed.4t1")
+        elif(sys.argv[-1] == "-t"): 
+            compressionOutput = subprocess.run([THREE_STREAM_ENCODE, filename], capture_output=True)
+            decompressionOutput = subprocess.run([THREE_STREAM_DECODE, filename + ".compressed.lzw"], capture_output=True)
+            os.remove(filename + ".compressed.lzw.chars")
+            os.remove(filename + ".compressed.lzw.codeword")
+            os.remove(filename + ".compressed.lzw.codeword.rc")
+            os.remove(filename + ".tmp.compressed.lzw.codeword")
+            os.remove(filename + ".compressed.lzw.indicator")
+            os.remove(filename + ".compressed.lzw.indicator.rc")
+            os.remove(filename + ".tmp.compressed.lzw.indicator")
+            os.remove(filename + ".compressed.lzw.decompressed.lzw")
+        else:
+            print('Invalid option. See usage')
+            sys.exit()
         decompressedFileSize, decompressionTime = parseDecodeOutput(decompressionOutput.stdout.decode())
         originalFileSize, compressedFileSize, compressionRatio, compressionTime = parseEncodeOutput(compressionOutput.stdout.decode())
         totalCompTime.append(int(compressionTime[1]))
         totalDecompTime.append(int(decompressionTime[1]))
 
-        os.remove(filename + ".compressed.lzw")
-        os.remove(filename+ ".compressed.lzw.decompressed.lzw")
 
     assert(decompressedFileSize[1] == originalFileSize[1])
     td.add("File Name", "string", filename, "The name of the file")
@@ -51,7 +75,7 @@ def runFile(filename, td):
 def runCorpus(directoryName,corpusNum):
     # iterate over files in
     # that directory
-    td = TidyData("corpus_"+ str(corpusNum)+ "_"+sys.argv[-1], "Run of a corpus" )
+    td = TidyData("corpus_"+ str(corpusNum)+ "_"+sys.argv[1], "Run of a corpus" )
     files = os.listdir(directoryName)
     for filename in files:
         td.start_record()
@@ -69,7 +93,7 @@ def runCorpuses():
 
 
 if __name__ == "__main__":
-    if len(sys.argv)!=2:
-        print("Please provide a number to label this run.")
+    if len(sys.argv)!=3:
+        print("Usage\n corpus.py <run_name> <option>\n -l = lzw\n -f = four to one encoding\n -t = three stream lzw")
         sys.exit()
     runCorpuses()
