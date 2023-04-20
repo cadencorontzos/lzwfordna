@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: make dictionary test_lzw test_three_stream_lzw
-      run: make all
+      run: make dictionary test_lzw test_three_stream_lzw
     - name: lzw tests
       run: ./test_lzw && ./test_three_stream_lzw
     - name: bito tests
