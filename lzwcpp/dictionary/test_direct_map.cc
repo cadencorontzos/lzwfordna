@@ -264,6 +264,7 @@ void test_str_of() {
   assert(f.str_of(1) == "A");
   assert(f.str_of(2) == "AT");
   assert(f.str_of(3) == "ACT");
+  assert(f.str_of(65) == "");
 }
 
 void test_decode() {
@@ -284,13 +285,11 @@ void test_codeword_helper() {
   assert(codeword_helper.current_codeword == 6);
 
   // check that helper increments correctly
-  for (int i = codeword_helper.current_codeword;
-       i < (1 << codeword_helper.bits_per_codeword); i++) {
+  for (int i = codeword_helper.current_codeword; i <= MAX_CODEWORD; i++) {
     assert(i == codeword_helper.get_next_codeword());
   }
   // make sure we didn't go over max
-  assert(codeword_helper.get_next_codeword() ==
-         (1 << codeword_helper.bits_per_codeword) - 1);
+  assert(codeword_helper.get_next_codeword() == MAX_CODEWORD);
 }
 
 int main() {
