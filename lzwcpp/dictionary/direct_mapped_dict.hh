@@ -12,6 +12,7 @@ const int INDEX_OF_C = 1;
 const int INDEX_OF_T = 2;
 const int INDEX_OF_G = 3;
 
+const bool BINARY_SEARCH = false;
 constexpr uint8_t MAX_STRING_LENGTH = 15;
 const int FIND_LONGEST_START = 7;
 typedef uint16_t codeword_type;
@@ -140,7 +141,7 @@ public:
     int length = start;
     codeword_type entry = 0;
     codeword_type last_entry = 0;
-    index_type next_index;
+    index_type next_index = 0;
     while (input + length < end_of_input && length < MAX_STRING_LENGTH) {
       next_index = (index >> (INDEX_BITS - (length + 1) * 2));
       last_entry = entry;
@@ -218,23 +219,22 @@ public:
     index_type next_long_index =
         (first_half << NEXT_LONGEST_INDEX_SIZE) + second_half;
 
-    /* // check the starting length */
-    /* index_type index_for_fl_start = next_long_index >>
-     * (INDEX_BITS-(FIND_LONGEST_START*2)); */
-    /* int entry = code_of_manual(FIND_LONGEST_START, index_for_fl_start); */
-    /* if(entry == 0){ */
-    /* 	return find_longest_looping_down(FIND_LONGEST_START,
-     * index_for_fl_start); */
-    /* } */
-    /* return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START,
-     * next_long_index); */
+
+	if(!BINARY_SEARCH){
+    // check the starting length
+     index_type index_for_fl_start = next_long_index >>
+      (INDEX_BITS-(FIND_LONGEST_START*2)); 
+    int entry = code_of_manual(FIND_LONGEST_START, index_for_fl_start);
+    if(entry == 0){
+     	return find_longest_looping_down(FIND_LONGEST_START,
+      index_for_fl_start); 
+     } 
+     return find_longest_looping_up(input, end_of_input, FIND_LONGEST_START-1,
+      next_long_index); 
+
+	}else{
 
     // start at start and binary search
-    //
-    // if we don't have enough input left, loop up from 0
-    /* if(input+MAX_STRING_LENGTH> end_of_input){ */
-    /* 	return find_longest_looping_up(input, end_of_input, 0, 0); */
-    /* } */
     // check the starting string
     int index = next_long_index >> (INDEX_BITS - FIND_LONGEST_START * 2);
     int entry = code_of_manual(FIND_LONGEST_START, index);
@@ -245,21 +245,7 @@ public:
     return find_longest_binary_search(input, FIND_LONGEST_START,
                                       MAX_STRING_LENGTH, next_long_index);
 
-    // loop up from 0
-    /* int length = 0; */
-    /* int entry = 0; */
-    /* while(input+length < end_of_input) { */
-    /* 	length++; */
-    /* 	entry = code_of(input, length); */
-    /* 	// if entry is non zero, it means we have seen that string before */
-    /* 	if (entry == 0){ */
-    /* 		return length-1; */
-    /* 	} */
-    /* } */
-    /* if(length == 0){ */
-    /* 	return 0; */
-    /* } */
-    /* return length; */
+	}
   }
 
   void add_string(const char *input, unsigned len,
