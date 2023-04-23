@@ -564,7 +564,7 @@ To restate the goal of this thesis, we seek to optimize LZW for use in compressi
 
 While we may not end up creating the best DNA compressor available, the objective is to explore the boundaries of LZW and to tailor it as best we can for the task of DNA compression. As you will see, the algorithm has limitations.
 
-Our Strategy was as follows:
+Our strategy was as follows:
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
@@ -579,8 +579,6 @@ Our Strategy was as follows:
 \section{Corpora}\label{corpora}}
 
 Most compression papers make use of a corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the performance of different algorithms to one another.
-
-In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications (Grumbach \& Tahi, 1994).
 \begin{longtable}[]{@{}cc@{}}
 \caption{\label{tab:corpus1filesfig}Corpus 1}\tabularnewline
 \toprule()
@@ -604,6 +602,8 @@ mtpacga & 100314 \\
 vaccg & 191737 \\
 \bottomrule()
 \end{longtable}
+In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications (Grumbach \& Tahi, 1994). We call this Corpus 1, summarized in \ref{tab:corpus1filesfig}.
+
 Another, newer paper aimed to create a corpus specifically for compressing DNA (Pratas \& Pinho, 2018). They put together a corpus of DNA sequences for this purpose, as summarized below. Since the papers publishing, it has been cited by several DNA compression papers.
 \begin{longtable}[]{@{}cc@{}}
 \caption{\label{tab:corpus2filesfig}Corpus 2}\tabularnewline
@@ -639,7 +639,7 @@ The dataset in Table \ref{tab:corpus2filesfig} is publicly available at this \ur
 
 Evaluating performance of a program is difficult. There is a notion of theoretical run time, but on an actual computer there are many processes running in the background, so it can be hard to get a consistent reading on performance.
 
-To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, all versions of the algorithm for a particular table were run on the same computer. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
+To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, the stats were taken on the same computer. Our test machine was a PC with a AMD Ryzen 5 5500 processor 32 gigabytes of RAM running Ubuntu version 20.04. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
 
 Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files.
 
@@ -795,19 +795,19 @@ The check for this in our algorithm looked like this.
 Here is the callgrind output for that line.
 \begin{verbatim}
 105,030,135 ( 0.18%)          if (dictionary.find(currentBlock + next_character) != dictionary.end()){
-13,537,450,317 (22.83%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, char) (3,890,005x)
-11,653,779,430 (19.65%)  => /usr/include/c++/9/bits/unordered_map.h:std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long> > >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (3,890,005x)
-2,108,383,120 ( 3.56%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (3,890,005x)
-956,941,242 ( 1.61%)  => /usr/include/c++/9/bits/unordered_map.h:std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long> > >::end() (3,890,005x)
-241,180,314 ( 0.41%)  => /usr/include/c++/9/bits/hashtable_policy.h:bool std::__detail::operator!=<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true>(std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&, std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&) (3,890,005x)
+13,537,450,317 (22.83%)  => /usr/include/c++/9/bits/basic_string.h
+11,653,779,430 (19.65%)  => /usr/include/c++/9/bits/unordered_map.h
+2,108,383,120 ( 3.56%)  => /usr/include/c++/9/bits/basic_string.h
+956,941,242 ( 1.61%)  => /usr/include/c++/9/bits/unordered_map.h
+241,180,314 ( 0.41%)  => /usr/include/c++/9/bits/hashtable_policy.h
 \end{verbatim}
 As shown, this line is taking a significant amount of instructions, and it needs to pull the end() of the dictionary each time it is ran. If we use cend() instead and save that iterator in a variable called end, we can save a significant amount of instructions.
 \begin{verbatim}
 89,470,115 ( 0.61%)          if (dictionary.find(currentBlock + next_character) != end ){
-3,353,009,053 (22.78%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, char) (3,890,005x)
-2,833,786,025 (19.26%)  => /usr/include/c++/9/bits/unordered_map.h:std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned long, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long> > >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (3,890,005x)
-420,120,704 ( 2.85%)  => /usr/include/c++/9/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (3,890,005x)
-50,570,065 ( 0.34%)  => /usr/include/c++/9/bits/hashtable_policy.h:bool std::__detail::operator!=<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true>(std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&, std::__detail::_Node_iterator_base<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, unsigned long>, true> const&) (3,890,005x)
+3,353,009,053 (22.78%)  => /usr/include/c++/9/bits/basic_string.h
+2,833,786,025 (19.26%)  => /usr/include/c++/9/bits/unordered_map.h
+420,120,704 ( 2.85%)  => /usr/include/c++/9/bits/basic_string.h
+50,570,065 ( 0.34%)  => /usr/include/c++/9/bits/hashtable_policy.h
 \end{verbatim}
 Of course, there are several issues with this method. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Another thing is that compliers are very advanced, and sometimes small optimizations like this are done by the compiler automatically.
 
