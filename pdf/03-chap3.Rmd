@@ -87,14 +87,14 @@ Now that we have implemented several versions of LZW, we want to compare them to
 We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation. Figure \@ref(fig:comparisonofourmethodsfig) shows the performance of these methods on the corpora. It is no surprise that the Four to One implementation is the fastest. 
 
 
-```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
+```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 5, echo = F}
 compare_coprora(list(
-  c('data/stats/final/corpus_1_stddict_final_97b91be.csv', 'data/stats/final/corpus_2_stddict_final_97b91be.csv', 'Std Dictionary'),
-  c('data/stats/final/corpus_1_ddict_final_97b91be.csv', 'data/stats/final/corpus_2_ddict_final_97b91be.csv', 'Direct Map Dictionary'),
-  c('data/stats/final/corpus_1_multstddict_final_97b91be.csv', 'data/stats/final/corpus_2_multstddict_final_97b91be.csv', 'Mult Std Dictionaries'),
-  c('data/stats/final/corpus_1_4t1_final_97b91be.csv', 'data/stats/final/corpus_2_4t1_final_97b91be.csv', 'Four to One'),
-  c('data/stats/final/corpus_1_threestream_final_b299766.csv', 'data/stats/final/corpus_2_threestream_final_b299766.csv', 'Three Stream LZW')
-), TRUE, "Final Implementation")
+  c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
+  c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary'),
+  c('data/stats/final/corpus_1_multstddict_final_687ff25.csv', 'data/stats/final/corpus_2_multstddict_final_687ff25.csv', 'Mult Std Dictionaries'),
+  c('data/stats/final/corpus_1_4t1_final_687ff25.csv', 'data/stats/final/corpus_2_4t1_final_687ff25.csv', 'Four to One'),
+  c('data/stats/final/corpus_1_threestream_final_687ff25.csv', 'data/stats/final/corpus_2_threestream_final_687ff25.csv', 'Three Stream LZW')
+), FALSE, "Final Implementation")
 ```
 
 ```{r comparisonofourmethodstab, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
@@ -113,11 +113,11 @@ process_corpus_group <- function(array){
 }
 
 wholedf <- process_corpus_group(list(
-  c('data/stats/final/corpus_1_stddict_final_97b91be.csv', 'data/stats/final/corpus_2_stddict_final_97b91be.csv', 'Std Dictionary'),
-  c('data/stats/final/corpus_1_ddict_final_97b91be.csv', 'data/stats/final/corpus_2_ddict_final_97b91be.csv', 'Direct Map Dictionary'),
-  c('data/stats/final/corpus_1_multstddict_final_97b91be.csv', 'data/stats/final/corpus_2_multstddict_final_97b91be.csv', 'Mult Std Dictionaries'),
-  c('data/stats/final/corpus_1_4t1_final_97b91be.csv', 'data/stats/final/corpus_2_4t1_final_97b91be.csv', 'Four to One'),
-  c('data/stats/final/corpus_1_threestream_final_b299766.csv', 'data/stats/final/corpus_2_threestream_final_b299766.csv', 'Three Stream LZW')
+  c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
+  c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary'),
+  c('data/stats/final/corpus_1_multstddict_final_687ff25.csv', 'data/stats/final/corpus_2_multstddict_final_687ff25.csv', 'Mult Std Dictionaries'),
+  c('data/stats/final/corpus_1_4t1_final_687ff25.csv', 'data/stats/final/corpus_2_4t1_final_687ff25.csv', 'Four to One'),
+  c('data/stats/final/corpus_1_threestream_final_687ff25.csv', 'data/stats/final/corpus_2_threestream_final_687ff25.csv', 'Three Stream LZW')
 ))
 
 
@@ -161,11 +161,11 @@ process_run_corpus1 <- function(filename){
   
 }
 
-Standard_Dictionary<- process_run_corpus1("data/stats/final/corpus_1_stddict_final_97b91be.csv")
- Direct_Map_Dictionary <- process_run_corpus1('data/stats/final/corpus_1_ddict_final_97b91be.csv')
- Mult_Std_Dictionaries <- process_run_corpus1('data/stats/final/corpus_1_multstddict_final_97b91be.csv')
- Four_to_One <- process_run_corpus1('data/stats/final/corpus_1_4t1_final_97b91be.csv')
- Three_Stream_LZW <- process_run_corpus1('data/stats/final/corpus_1_threestream_final_b299766.csv')
+Standard_Dictionary<- process_run_corpus1("data/stats/final/corpus_1_stddict_final_687ff25.csv")
+ Direct_Map_Dictionary <- process_run_corpus1('data/stats/final/corpus_1_ddict_final_687ff25.csv')
+ Mult_Std_Dictionaries <- process_run_corpus1('data/stats/final/corpus_1_multstddict_final_687ff25.csv')
+ Four_to_One <- process_run_corpus1('data/stats/final/corpus_1_4t1_final_687ff25.csv')
+ Three_Stream_LZW <- process_run_corpus1('data/stats/final/corpus_1_threestream_final_687ff25.csv')
 
 df <- data.frame(
   Name,
@@ -202,4 +202,6 @@ As you can see, the compression ratio for these other algorithms are much better
 ```
 
 
-Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip`. Both of these were made to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. `genozip` does outperform our implementation, which also makes sense.
+Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip`. Both of these were made to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. `genozip` does outperform our implementation, which also makes sense as it was also created with DNA in mind. 
+
+
