@@ -162,7 +162,7 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
 		
 		  comb <- rbind(cp1,cp2)
 		  		means <- harmonic_mean(comb)
-		  print(means)
+
 		  		df<- df %>%  add_row(comp_throughput = sum(comb$Original.File.Size)/(.000001*sum(comb$Compression.Time)),
 		  hm_comp = means$harmonic_mean_comp,
 		  description = corpus_pair[3],
@@ -211,7 +211,7 @@ compare_max_string_lengths <- function(array){
     comp = rbind(cp1,cp2)
 		means1 <- harmonic_mean(comp)
 
-		df<- df %>%  add_row(comp_throughput = sum(comp$Original.File.Size)/(.001*max(sum(comp$Compression.Time), 1)),
+		df<- df %>%  add_row(comp_throughput = sum(comp$Original.File.Size)/(.000001*sum(comp$Compression.Time)),
 		  hm_comp = means1$harmonic_mean_comp,
 		  size = corpus_pair[3]
 
@@ -271,7 +271,7 @@ Evaluating performance of a program is difficult. There is a notion of theoretic
 
 To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, all versions of the algorithm for a particular table were run on the same computer. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
 
-Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as a harmonic average, where the times are weighted by the size of the file. 
+Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files.
 
 ## A Starting Point
 
@@ -656,21 +656,15 @@ to index into an array of codewords.
 
 For each string size 1 to n, we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size $4^3$, since there are $4^3$ possible strings. In each of those $4^3$ slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent $2^6=4^3$ values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than `n`, we can just use a hashmap on top to handle those.
 
-As seen in Figure \@ref(fig:directmaplength10statsfig), the both the average compression time and throughput are greater for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
+As seen in Figure \@ref(fig:directmaplength10statsfig), the throughput is greater and the average compression time is less for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
 
-<!---
-```{r directmaplength10statsfig, warnings= F, messages = F, fig.cap = "Stats for direct map with max length of 10", fig.height = 7, echo = F}
-stats_csv('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv')
-stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv')
-```
--->
 
 
 
 
 ```{r directmaplenthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
 compare_max_string_lengths(list(
-	c('data/stats/directmap/corpus_1_directmap_154fed4_len10.csv', 'data/stats/directmap/corpus_2_directmap_154fed4_len10.csv', 10),
+	c('data/stats/directmap/corpus_1_directmap_266bcb7_len10.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len10.csv', 10),
 	c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 15)
 ))
 ```
@@ -685,18 +679,13 @@ Similar to the Direct Mapped approach, we use dictionaries for each string size 
 Compression ratio still remains the same as strings of all lengths are accommodated. 
 This logic is supported by Figure \@ref(fig:multvsonedictfig), which shoes one `std::unordered_map` compared the multiple indexed model.
 
-<!---
-```{r multdictlength10statsfig, warnings= F, messages = F, fig.height = 3, echo = F}
-stats_csv('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv')
-stats_csv('data/stats/multdict/corpus_2_multdict_154fed4_len10.csv')
-```
--->
+
 
 ```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
 compare_max_string_lengths(list(
-	c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 10),
-	c('data/stats/multdict/corpus_1_multdict_6d73501_len15.csv', 'data/stats/multdict/corpus_2_multdict_6d73501_len15.csv', 15),
-	c('data/stats/multdict/corpus_1_multdict_80d2016_len20.csv', 'data/stats/multdict/corpus_2_multdict_80d2016_len20.csv', 20),
+	c('data/stats/multdict/corpus_1_multdict_06f9a20_len10.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len10.csv', 10),
+	c('data/stats/multdict/corpus_1_multdict_06f9a20_len15.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len15.csv', 15),
+	c('data/stats/multdict/corpus_1_multdict_06f9a20_len20.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len20.csv', 20),
 	c('data/stats/multdict/corpus_1_multdict_06f9a20_len25.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len25.csv', 25)
 ))
 ```
@@ -706,7 +695,7 @@ compare_max_string_lengths(list(
 
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
-  c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 'Multiple Indexed Dictionaries')
+  c('data/stats/multdict/corpus_1_multdict_06f9a20_len10.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len10.csv', 'Multiple Indexed Dictionaries')
   ))
 
 ```
@@ -721,7 +710,7 @@ Figure \@ref(fig:dictionarytechniquecompfig) shows a comparison of all three tec
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
   c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Direct Map Dictionary'),
-  c('data/stats/multdict/corpus_1_multdict_154fed4_len10.csv', 'data/stats/multdict/corpus_2_multdict_154fed4_len10.csv', 'Multiple Indexed Dictionaries')
+  c('data/stats/multdict/corpus_1_multdict_06f9a20_len10.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len10.csv', 'Multiple Indexed Dictionaries')
   ))
 
 ```

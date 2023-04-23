@@ -12,8 +12,8 @@ This thesis deals with some high-level topics and uses language specific to comp
 
 ## What is information?
 
-  Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? If someone asks you "Where library", despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks "Where is the library"?
-  Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, lets assumed that infomation is data with some sort of significance that makes it worth perserving and conveying.
+  Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could use words, you could use sign language. But regardless of the medium, there is some important idea to get across. Does it matter if the other person gets your message exactly? If someone asks you "Where library", despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks "Where is the library"?
+  Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, lets assumed that information is data with some sort of significance that makes it worth preserving and conveying.
 
 Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel with a limited capacity, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
   
@@ -33,13 +33,13 @@ The run time is also an important part of evaluating the effectiveness of a comp
 
 ### Memory Usage
 
-Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to storage where information that programs track as they are running is stored. So to reduce our run time and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage. Throughout this thesis, we will assume that most of memory usage is encapsulated in our measurement of run time.
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally the storage a program uses while it is running. So to reduce our run time and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage. Throughout this thesis, we will assume that most of memory usage is encapsulated in our measurement of run time.
 
 ## Lossless vs. Lossy Compression
 
 ### Lossy
 
-Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example is MP3 audio files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorable for small devices like MP3 players and cellphones.
+Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example is MP3 audio files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorable for devices with limited storage like MP3 players and cellphones.
 
 
 ### Lossless
@@ -50,7 +50,7 @@ Lossless compression is the compression of data with the goal of preserving all 
 
 ### Run Length Encoding
 
-Run Length Encoding (RLE) is one of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by just giving the number of times each character appears.
+Run Length Encoding (RLE) is one of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by encoding the number of times each character appears.
   Suppose you want to send the following message 
   
   $$AAGCTTTTTTTTGGGGGCCCT$$
@@ -73,7 +73,8 @@ frequencies <- c(0.3, 0.2, 0.1, 0.4)
 df =  data.frame(letters, frequencies)
 
 ```
-Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters. The more frequent character occur higher up in the tree, giving them a shorter length. The less frequent characters occur farther down on the tree. If you follow the branches in Figure \@ref(fig:reedlogo) down to a letter, it will tell you the code associated with that letter.
+Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters. The more frequent character occur higher up in the tree, giving them a shorter length. The less frequent characters occur farther down on the tree. If you follow the branches in Figure \@ref(fig:huffman) down to a letter, it will tell you the code associated with that letter.
+
 \begin{figure}[h]\centering
 
 
@@ -122,9 +123,6 @@ Since 'A' comes first, we divide [0,1] into [0.0,0.1). Since 'C' is next, we go 
 
 So any number in the interval can be used to represent our message. 
 
-Arithmetic encoding can have a better compression ratio that Huffman in some cases, but the computation time is often not worth the payoff.
-
-**TODO**: Add source
 
 ### Lempel-Ziv-Welch
 
@@ -147,6 +145,7 @@ We have not seen "AA" before, so we should add it to our dictionary. So now our 
 So the encoded string will look something like
 
 $$\text{0A....}$$
+
 
 \begin{table}
 \begin{tabular}{ | c | c | p{.4\textwidth} | c | }
@@ -174,15 +173,19 @@ $$\text{0A....}$$
 10 & AAGGAATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7, CC: 8} & 0A1G4T3C \\
 \hline
 \end{tabular}
+\label{lzwexample}
 \caption{ An example of LZW ran on the input "AAGGAATCC"}
 \end{table}
+
+
+Table \@ref(lzwexample) illustrates this example fully.
 
 When we are decoding, we start with the same dictionary. We see "0A" and know that that means "Take the string that has codeword 0, add on the character 'A' and add that new string to the dictionary. We would add that to the dictionary and assign it to our next available codeword, 4. As you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
 
 This method has several convenient properties:
 
 + When we send this encoding to someone else, we don't need to send a "codebook" (our dictionary). They are able to build it up themselves as they decode. 
-+ you only need to go over the data once to encode and decode. This means that the run time of the algorithm should roughly increase linearly with the length of the input. 
++ There only needs to be one run over the data once to encode and decode. This means that the run time of the algorithm should increase linearly with the length of the input. 
 + As runs get longer, we will start to see more and more repeating patterns, and replacing them with codewords will become more and more effective.
 
 To decode, we can simply start with the same dictionary. We see codewords followed by one character, so we decode that codeword and add the character to the end. Since the decoder continues to look for codewords, we need some special character at the end of our encoding to let the decoder know when the message is done.
@@ -254,7 +257,7 @@ LZWDecode(input):
 
 This is the basic strategy we will start with for our LZW algorithm. In the next chapter, we will go over parts of the algorithm in depth in C++. Here is a quick summary of terms repeated throughout the next two chapters.
 
-+ `dictionary`: a key-value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a `map` and uses a hash table, but the concept is the same.
++ `dictionary`: a key-value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a `std::unordered_map` and uses a hash table, but the concept is the same.
 + `codeword`: a number used to take the place of a string in our encoding.
 + `run`: the next run of characters in our input that are already in our dictionary. So if we are encoding "ACTG", and "A", "AC", and "ACT" are in the dictionary but "ACTG" is not, we have a run of 3.
 + `EOF`: end of file, the special character that we need to output at the end of the encoding.
@@ -263,11 +266,12 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 
 The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area, in the intersection of bioinformatics, computer science, and mathematics.
 
-There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process [@KeerthyMID]. The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length That way, the dictionaries grow more slowly and accesses are faster. This paper also used Genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
+There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process [@KeerthyMID]. The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length. That way, the dictionaries grow more slowly and accesses are faster. This paper also used genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
 
-Another paper used simple parallelization techniques to improve compression speed [@panialok]. Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
+Another paper used simple parallelization techniques to improve compression speed [@panialok]. Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio. 
 
-Yet another paper made use of Chinese Remainder Theorem to augment Lempel-Ziv-Welch [@ibrahimgbolagade]. They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the it is not used in this thesis.
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel-Ziv-Welch [@ibrahimgbolagade]. They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors, but we were not able to further our progress on this method and thus the it is not used in this thesis.
+
 
 DNA-specific compression algorithms have also been around for a while. These papers do not focus on LZW, but they do consider some similar methods.
 
@@ -276,5 +280,7 @@ One of the first papers exploring this was published in 1994 [@grumbach]. It pro
 Chen et al. proposed an algorithm called GenCompress, which uses approximate matching [@Chen2001ACA]. It matches sequnces to sequences already seen, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this method, although their technique is computationally expensive.
 
 In 2007, Minh Cao et al. published a paper detailing another algorithm, XM, which uses statistical methods to try and predict the next character while encoding and decoding [@CaoXM]. This method was found to outperform both Biocompress2 and GenCompress in terms of compression ratio.
+
+A paper in 2021 uses segmenting and partitioning to create a parallel compression algorithm called `genozip` [@genozip]. This paper also published their code online in a convenient format which allows others to compare and test their implementation. 
 
 As a whole, these papers give us some guidance in terms of where to aim our research. Most of them boast great compression ratios, but their methods can be very computationally intensive in some cases, and thus, slow. We will aim to use previous research on LZW to make a very fast implementation for DNA sequences, then try and use characteristics of the sequences to improve compression ratio. Our hope isn't necessarily to create the best compression ratio out of all these methods, but to make a fast LZW implmentation with a respectable compression ratio. If we are able to make the algorithm very fast, it may be preferable to these other algorithms in some cases if the file is very large.

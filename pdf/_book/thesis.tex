@@ -201,9 +201,7 @@ This is an example of a thesis setup to use the reed thesis document class
 }
 
 \Abstract{
-The Lempel Ziv Welch compression algorithm is a lossless data compression algorithm used for numerous applications, including the Unix file compression utility \texttt{compress} and the GIF image format. Storing, reading, and transferring enormous amounts of data is often an issue in the biological field, especially when concerning DNA. This thesis explores the application of Lempel Ziv Welch to the compression of DNA. A variety of different optimization of the original LZW algorithm are explore included palatalizing, multiple dictionaries, and some other cool thing here broh.
-
-This this is focused on
+This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lepel Ziv Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call three stream LZW. We also implement an algorithm which trivially translates neucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great comression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast.
 }
 
 	\usepackage{setspace}\onehalfspacing
@@ -262,9 +260,7 @@ This this is focused on
 
   \listoffigures
   \begin{abstract}
-    The Lempel Ziv Welch compression algorithm is a lossless data compression algorithm used for numerous applications, including the Unix file compression utility \texttt{compress} and the GIF image format. Storing, reading, and transferring enormous amounts of data is often an issue in the biological field, especially when concerning DNA. This thesis explores the application of Lempel Ziv Welch to the compression of DNA. A variety of different optimization of the original LZW algorithm are explore included palatalizing, multiple dictionaries, and some other cool thing here broh.
-
-    This this is focused on
+    This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lepel Ziv Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call three stream LZW. We also implement an algorithm which trivially translates neucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great comression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast.
   \end{abstract}
   \begin{dedication}
     You can have a dedication here if you wish.
@@ -286,8 +282,8 @@ This thesis deals with some high-level topics and uses language specific to comp
 \hypertarget{what-is-information}{%
 \section{What is information?}\label{what-is-information}}
 
-Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could tell them with words, you could tell them with sign language. But regardless of the medium, you have some idea that you want to get across. Does it matter if the other person gets your message exactly? If someone asks you ``Where library'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library''?
-Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, lets assumed that infomation is data with some sort of significance that makes it worth perserving and conveying.
+Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could use words, you could use sign language. But regardless of the medium, there is some important idea to get across. Does it matter if the other person gets your message exactly? If someone asks you ``Where library'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library''?
+Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, lets assumed that information is data with some sort of significance that makes it worth preserving and conveying.
 
 Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel with a limited capacity, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
 
@@ -311,7 +307,7 @@ The run time is also an important part of evaluating the effectiveness of a comp
 \hypertarget{memory-usage}{%
 \subsection{Memory Usage}\label{memory-usage}}
 
-Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally refers to storage where information that programs track as they are running is stored. So to reduce our run time and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage. Throughout this thesis, we will assume that most of memory usage is encapsulated in our measurement of run time.
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally the storage a program uses while it is running. So to reduce our run time and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage. Throughout this thesis, we will assume that most of memory usage is encapsulated in our measurement of run time.
 
 \hypertarget{lossless-vs.-lossy-compression}{%
 \section{Lossless vs.~Lossy Compression}\label{lossless-vs.-lossy-compression}}
@@ -319,7 +315,7 @@ Memory usage is closely tied with runtime when it comes to compression algorithm
 \hypertarget{lossy}{%
 \subsection{Lossy}\label{lossy}}
 
-Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example is MP3 audio files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorable for small devices like MP3 players and cellphones.
+Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example is MP3 audio files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorable for devices with limited storage like MP3 players and cellphones.
 
 \hypertarget{lossless}{%
 \subsection{Lossless}\label{lossless}}
@@ -332,7 +328,7 @@ Lossless compression is the compression of data with the goal of preserving all 
 \hypertarget{run-length-encoding}{%
 \subsection{Run Length Encoding}\label{run-length-encoding}}
 
-Run Length Encoding (RLE) is one of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by just giving the number of times each character appears.
+Run Length Encoding (RLE) is one of the simplest and most intuitive forms of compression. We can take advantage of redundant runs of characters in a sequence by encoding the number of times each character appears.
 Suppose you want to send the following message
 
 \[AAGCTTTTTTTTGGGGGCCCT\]
@@ -350,7 +346,7 @@ Huffman Encoding is a strategy that assigns variable length code to certain symb
 
 Suppose we have a message ``ACAGGATGGC''. We can calculate the frequency of each letter by counting the number of times each letter shows up and dividing by the total number of letters
 
-Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters. The more frequent character occur higher up in the tree, giving them a shorter length. The less frequent characters occur farther down on the tree. If you follow the branches in Figure \ref{fig:reedlogo} down to a letter, it will tell you the code associated with that letter.
+Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters. The more frequent character occur higher up in the tree, giving them a shorter length. The less frequent characters occur farther down on the tree. If you follow the branches in Figure \ref{fig:huffman} down to a letter, it will tell you the code associated with that letter.
 \begin{figure}[h]\centering
 
 
@@ -401,10 +397,6 @@ Since `A' comes first, we divide {[}0,1{]} into {[}0.0,0.1). Since `C' is next, 
 
 So any number in the interval can be used to represent our message.
 
-Arithmetic encoding can have a better compression ratio that Huffman in some cases, but the computation time is often not worth the payoff.
-
-\textbf{TODO}: Add source
-
 \hypertarget{lempel-ziv-welch}{%
 \subsection{Lempel-Ziv-Welch}\label{lempel-ziv-welch}}
 
@@ -453,8 +445,11 @@ So the encoded string will look something like
 10 & AAGGAATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7, CC: 8} & 0A1G4T3C \\
 \hline
 \end{tabular}
+\label{lzwexample}
 \caption{ An example of LZW ran on the input "AAGGAATCC"}
 \end{table}
+Table \ref{lzwexample} illustrates this example fully.
+
 When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character `A' and add that new string to the dictionary. We would add that to the dictionary and assign it to our next available codeword, 4. As you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
 
 This method has several convenient properties:
@@ -463,7 +458,7 @@ This method has several convenient properties:
 \item
   When we send this encoding to someone else, we don't need to send a ``codebook'' (our dictionary). They are able to build it up themselves as they decode.
 \item
-  you only need to go over the data once to encode and decode. This means that the run time of the algorithm should roughly increase linearly with the length of the input.
+  There only needs to be one run over the data once to encode and decode. This means that the run time of the algorithm should increase linearly with the length of the input.
 \item
   As runs get longer, we will start to see more and more repeating patterns, and replacing them with codewords will become more and more effective.
 \end{itemize}
@@ -531,7 +526,7 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 \begin{itemize}
 \tightlist
 \item
-  \texttt{dictionary}: a key-value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a \texttt{map} and uses a hash table, but the concept is the same.
+  \texttt{dictionary}: a key-value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a \texttt{std::unordered\_map} and uses a hash table, but the concept is the same.
 \item
   \texttt{codeword}: a number used to take the place of a string in our encoding.
 \item
@@ -544,11 +539,11 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 
 The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area, in the intersection of bioinformatics, computer science, and mathematics.
 
-There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length That way, the dictionaries grow more slowly and accesses are faster. This paper also used Genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
+There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length. That way, the dictionaries grow more slowly and accesses are faster. This paper also used genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
 
 Another paper used simple parallelization techniques to improve compression speed (Pani, Mishra, \& Mishra, 2012). Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
 
-Yet another paper made use of Chinese Remainder Theorem to augment Lempel-Ziv-Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors of the paper, but we were not able to further our progress on this method and thus the it is not used in this thesis.
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel-Ziv-Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors, but we were not able to further our progress on this method and thus the it is not used in this thesis.
 
 DNA-specific compression algorithms have also been around for a while. These papers do not focus on LZW, but they do consider some similar methods.
 
@@ -557,6 +552,8 @@ One of the first papers exploring this was published in 1994 (Grumbach \& Tahi, 
 Chen et al.~proposed an algorithm called GenCompress, which uses approximate matching (Chen, Kwong, \& Li, 2001). It matches sequnces to sequences already seen, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this method, although their technique is computationally expensive.
 
 In 2007, Minh Cao et al.~published a paper detailing another algorithm, XM, which uses statistical methods to try and predict the next character while encoding and decoding (Cao, Dix, Allison, \& Mears, 2007). This method was found to outperform both Biocompress2 and GenCompress in terms of compression ratio.
+
+A paper in 2021 uses segmenting and partitioning to create a parallel compression algorithm called \texttt{genozip} (Lan, Tobler, Souilmi, \& Llamas, 2021). This paper also published their code online in a convenient format which allows others to compare and test their implementation.
 
 As a whole, these papers give us some guidance in terms of where to aim our research. Most of them boast great compression ratios, but their methods can be very computationally intensive in some cases, and thus, slow. We will aim to use previous research on LZW to make a very fast implementation for DNA sequences, then try and use characteristics of the sequences to improve compression ratio. Our hope isn't necessarily to create the best compression ratio out of all these methods, but to make a fast LZW implmentation with a respectable compression ratio. If we are able to make the algorithm very fast, it may be preferable to these other algorithms in some cases if the file is very large.
 
@@ -644,7 +641,7 @@ Evaluating performance of a program is difficult. There is a notion of theoretic
 
 To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, all versions of the algorithm for a particular table were run on the same computer. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
 
-Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as a harmonic average, where the times are weighted by the size of the file.
+Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files.
 
 \hypertarget{a-starting-point}{%
 \section{A Starting Point}\label{a-starting-point}}
@@ -930,18 +927,6 @@ When reading a byte stream of the file, the file may not be in memory the way we
 \subsection{Comparison}\label{comparison}}
 
 Taking metrics of the algorithm at each of the stages listed in this chapter, we can make a graph showing the improvements in performance.
-\begin{verbatim}
-  harmonic_mean_comp harmonic_mean_decomp
-1         4736003787            640667306
-  harmonic_mean_comp harmonic_mean_decomp
-1         4707720572            640877169
-  harmonic_mean_comp harmonic_mean_decomp
-1         4535692260            638985399
-  harmonic_mean_comp harmonic_mean_decomp
-1         4481319780            636378799
-  harmonic_mean_comp harmonic_mean_decomp
-1         3846695924            605804963
-\end{verbatim}
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf}
@@ -1007,7 +992,7 @@ to index into an array of codewords.
 
 For each string size 1 to n, we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap on top to handle those.
 
-As seen in Figure \ref{fig:directmaplength10statsfig}, the both the average compression time and throughput are greater for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
+As seen in Figure \ref{fig:directmaplength10statsfig}, the throughput is greater and the average compression time is less for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/directmaplenthcompfig-1.pdf}
@@ -1027,12 +1012,6 @@ This logic is supported by Figure \ref{fig:multvsonedictfig}, which shoes one \t
 \includegraphics{thesis_files/figure-latex/multdictlengthcompfig-1.pdf}
 \caption{\label{fig:multdictlengthcompfig}Comparing different max lengths for Direct Map}
 \end{figure}
-\begin{verbatim}
-  harmonic_mean_comp harmonic_mean_decomp
-1           3332.923             586.6154
-  harmonic_mean_comp harmonic_mean_decomp
-1             3053.5             580.3077
-\end{verbatim}
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/multvsonedictfig-1.pdf}
@@ -1042,14 +1021,6 @@ This logic is supported by Figure \ref{fig:multvsonedictfig}, which shoes one \t
 \subsection{Comparison}\label{comparison-1}}
 
 Figure \ref{fig:dictionarytechniquecompfig} shows a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary. As shown, the Direct Map technique greatly increases throughput and thus decreases average compression time. Given these results, we decided to shift our focus onto the Direct Map and try to optimize this scheme as much as possible.
-\begin{verbatim}
-  harmonic_mean_comp harmonic_mean_decomp
-1           3332.923             586.6154
-  harmonic_mean_comp harmonic_mean_decomp
-1           188.0385             144.6154
-  harmonic_mean_comp harmonic_mean_decomp
-1             3053.5             580.3077
-\end{verbatim}
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf}
@@ -1491,17 +1462,29 @@ Chen, X., Kwong, S. T. W., \& Li, M. (2001). A compression algorithm for DNA seq
 \leavevmode\vadjust pre{\hypertarget{ref-grumbach}{}}%
 Grumbach, S., \& Tahi, F. (1994). {A New Challenge for Compression Algorithms: Genetic Sequences}. \emph{{Information Processing and Management}}, \emph{30}. Retrieved from \url{https://hal.inria.fr/inria-00180949}
 
+\leavevmode\vadjust pre{\hypertarget{ref-huffman1952method}{}}%
+Huffman, D. A. (1952). A method for the construction of minimum-redundancy codes. \emph{Proceedings of the IRE}, \emph{40}(9), 1098--1101.
+
 \leavevmode\vadjust pre{\hypertarget{ref-ibrahimgbolagade}{}}%
 Ibrahim, M., \& Gbolagade, K. (2020). Enhancing computational time of lempel-ziv-welch-based text compression with chinese remainder theorem. \emph{Journal of Computer Science and Its Application}, \emph{27}. http://doi.org/\href{https://doi.org/10.4314/jcsia.v27i1.9}{10.4314/jcsia.v27i1.9}
 
 \leavevmode\vadjust pre{\hypertarget{ref-KeerthyMID}{}}%
 Keerthy, P. (2019). Genomic sequence data compression using lempel-ziv-welch algorithm with indexed multiple dictionary. \emph{International Journal of Engineering and Advanced Technology}.
 
+\leavevmode\vadjust pre{\hypertarget{ref-genozip}{}}%
+Lan, D., Tobler, R., Souilmi, Y., \& Llamas, B. (2021). {Genozip: a universal extensible genomic data compressor}. \emph{Bioinformatics}, \emph{37}(16), 2225--2230. http://doi.org/\href{https://doi.org/10.1093/bioinformatics/btab102}{10.1093/bioinformatics/btab102}
+
 \leavevmode\vadjust pre{\hypertarget{ref-panialok}{}}%
 Pani, A., Mishra, M., \& Mishra, T. (2012). Parallel lempel-ziv-welch (PLZW) technique for data compression. \emph{International Journal of Computer Science and Information Technology}, \emph{3}, 4038--4040.
 
 \leavevmode\vadjust pre{\hypertarget{ref-prataspinho}{}}%
 Pratas, D., \& Pinho, A. (2018). A DNA sequence corpus for compression benchmark. In (pp. 208--215). http://doi.org/\href{https://doi.org/10.1007/978-3-319-98702-6_25}{10.1007/978-3-319-98702-6\_25}
+
+\leavevmode\vadjust pre{\hypertarget{ref-welch1984technique}{}}%
+Welch, T. A. (1984). A technique for high-performance data compression. \emph{Computer}, \emph{17}(6), 8--19. http://doi.org/\href{https://doi.org/10.1109/MC.1984.1659158}{10.1109/MC.1984.1659158}
+
+\leavevmode\vadjust pre{\hypertarget{ref-ziv1977universal}{}}%
+Ziv, J., \& Lempel, A. (1977). A universal algorithm for sequential data compression. In \emph{IEEE transactions on information theory} (Vol. 23, pp. 337--343). http://doi.org/\href{https://doi.org/10.1109/TIT.1977.1055714}{10.1109/TIT.1977.1055714}
 
 \end{CSLReferences}
 
