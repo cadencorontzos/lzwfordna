@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
   }
 
   auto end_time = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+  auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(
       end_time - start_time);
 
   // output statistics
