@@ -84,7 +84,7 @@ Now that we have implemented several versions of LZW, we want to compare them to
 
 ## Comparison of our Implementations
 
-We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation.
+We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation. Figure \@ref(fig:comparisonofourmethodsfig) shows the performance of these methods on the corpora. It is no surprise that the Four to One implementation is the fastest. 
 
 
 ```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
@@ -191,6 +191,8 @@ names(df_new) <-   gsub("\\_", " ", names(df_new))
   kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
 
+As you can see, the compression ratio for these other algorithms are much better. This makes sense, because these algorithms were specifically created with DNA in mind, while we started from an algorithm, LZW, which was created for the redundancies present in human text. Our algorithms also do better on longer text, which puts them at a disadvantage in this comparison. In fact, the average size of the files in Corpus 1 is surprisingly small for the number of papers that have used them. If you had files that are only about 100 thousand bytes, you don't really need to compress them at all. For smaller files, the four to one version or even our Direct Map version may be preferable because of how fast they are. These other papers do not provide performance metrics like compression time, but we believe that our implementations would be faster on longer files.
+
 ## Comparison to Other Professional Tools
 
 ```{r}
@@ -199,3 +201,5 @@ names(df_new) <-   gsub("\\_", " ", names(df_new))
 
 ```
 
+
+Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip`. Both of these were made to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. `genozip` does outperform our implementation, which also makes sense.
