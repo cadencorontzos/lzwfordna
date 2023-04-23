@@ -202,6 +202,8 @@ This is an example of a thesis setup to use the reed thesis document class
 
 \Abstract{
 The Lempel Ziv Welch compression algorithm is a lossless data compression algorithm used for numerous applications, including the Unix file compression utility \texttt{compress} and the GIF image format. Storing, reading, and transferring enormous amounts of data is often an issue in the biological field, especially when concerning DNA. This thesis explores the application of Lempel Ziv Welch to the compression of DNA. A variety of different optimization of the original LZW algorithm are explore included palatalizing, multiple dictionaries, and some other cool thing here broh.
+
+This this is focused on
 }
 
 	\usepackage{setspace}\onehalfspacing
@@ -261,6 +263,8 @@ The Lempel Ziv Welch compression algorithm is a lossless data compression algori
   \listoffigures
   \begin{abstract}
     The Lempel Ziv Welch compression algorithm is a lossless data compression algorithm used for numerous applications, including the Unix file compression utility \texttt{compress} and the GIF image format. Storing, reading, and transferring enormous amounts of data is often an issue in the biological field, especially when concerning DNA. This thesis explores the application of Lempel Ziv Welch to the compression of DNA. A variety of different optimization of the original LZW algorithm are explore included palatalizing, multiple dictionaries, and some other cool thing here broh.
+
+    This this is focused on
   \end{abstract}
   \begin{dedication}
     You can have a dedication here if you wish.
@@ -812,8 +816,6 @@ Of course, there are several issues with this method. It is difficult to associa
 
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of callgrind, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
 
-Here are the runs after this optimization.
-
 \hypertarget{extraneous-string-concatenations}{%
 \subsection{Extraneous String Concatenations}\label{extraneous-string-concatenations}}
 
@@ -928,6 +930,18 @@ When reading a byte stream of the file, the file may not be in memory the way we
 \subsection{Comparison}\label{comparison}}
 
 Taking metrics of the algorithm at each of the stages listed in this chapter, we can make a graph showing the improvements in performance.
+\begin{verbatim}
+  harmonic_mean_comp harmonic_mean_decomp
+1         4736003787            640667306
+  harmonic_mean_comp harmonic_mean_decomp
+1         4707720572            640877169
+  harmonic_mean_comp harmonic_mean_decomp
+1         4535692260            638985399
+  harmonic_mean_comp harmonic_mean_decomp
+1         4481319780            636378799
+  harmonic_mean_comp harmonic_mean_decomp
+1         3846695924            605804963
+\end{verbatim}
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf}
@@ -1013,6 +1027,12 @@ This logic is supported by Figure \ref{fig:multvsonedictfig}, which shoes one \t
 \includegraphics{thesis_files/figure-latex/multdictlengthcompfig-1.pdf}
 \caption{\label{fig:multdictlengthcompfig}Comparing different max lengths for Direct Map}
 \end{figure}
+\begin{verbatim}
+  harmonic_mean_comp harmonic_mean_decomp
+1           3332.923             586.6154
+  harmonic_mean_comp harmonic_mean_decomp
+1             3053.5             580.3077
+\end{verbatim}
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/multvsonedictfig-1.pdf}
@@ -1022,6 +1042,14 @@ This logic is supported by Figure \ref{fig:multvsonedictfig}, which shoes one \t
 \subsection{Comparison}\label{comparison-1}}
 
 Figure \ref{fig:dictionarytechniquecompfig} shows a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary. As shown, the Direct Map technique greatly increases throughput and thus decreases average compression time. Given these results, we decided to shift our focus onto the Direct Map and try to optimize this scheme as much as possible.
+\begin{verbatim}
+  harmonic_mean_comp harmonic_mean_decomp
+1           3332.923             586.6154
+  harmonic_mean_comp harmonic_mean_decomp
+1           188.0385             144.6154
+  harmonic_mean_comp harmonic_mean_decomp
+1             3053.5             580.3077
+\end{verbatim}
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf}
@@ -1197,6 +1225,8 @@ node distance=0pt,
 
 \label{fig:pext}
 \end{figure}
+We did get lucky in that the 6th and 7th bit (from left to right) on A, C, T, and G give a unique 2 bit values. This means we can just extract the 6th and 7th bit from every character without knowing what it is.
+
 We can apply this technique to our \texttt{find\_longest} function: we can extract the index of a string using pext very quickly, then use that index rather than recalculating it every time. Figure \ref{fig:findlongestwpext} hows the results of this application for both looping and binary search. In both cases, using pext to extract the index of the string increases throughput and decreases average compression time.
 \begin{figure}
 \centering
@@ -1269,7 +1299,7 @@ Now that we have implemented several versions of LZW, we want to compare them to
 \hypertarget{comparison-of-our-implementations}{%
 \section{Comparison of our Implementations}\label{comparison-of-our-implementations}}
 
-We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation.
+We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation. Figure \ref{fig:comparisonofourmethodsfig} shows the performance of these methods on the corpora. It is no surprise that the Four to One implementation is the fastest.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/comparisonofourmethodsfig-1.pdf}
@@ -1371,18 +1401,22 @@ DNACorpus1/mtpacga & 1.8752 & 1.8624 & 1.8447 & 2.081225 & 2.524314 & 2.081225 &
 \bottomrule
 \end{tabular}}
 \end{table}
+As you can see, the compression ratio for these other algorithms are much better. This makes sense, because these algorithms were specifically created with DNA in mind, while we started from an algorithm, LZW, which was created for the redundancies present in human text. Our algorithms also do better on longer text, which puts them at a disadvantage in this comparison. In fact, the average size of the files in Corpus 1 is surprisingly small for the number of papers that have used them. If you had files that are only about 100 thousand bytes, you don't really need to compress them at all. For smaller files, the four to one version or even our Direct Map version may be preferable because of how fast they are. These other papers do not provide performance metrics like compression time, but we believe that our implementations would be faster on longer files.
+
 \hypertarget{comparison-to-other-professional-tools}{%
 \section{Comparison to Other Professional Tools}\label{comparison-to-other-professional-tools}}
+
+Not surprisingly, all of our implementations do better than general compressors \texttt{bzip} and \texttt{gzip}. Both of these were made to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. \texttt{genozip} does outperform our implementation, which also makes sense.
 
 \hypertarget{conclusion}{%
 \chapter*{Conclusion}\label{conclusion}}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-If we don't want Conclusion to have a chapter number next to it, we can add the \texttt{\{-\}} attribute.
+We started with a naive implementation of Lempel Ziv Welch, and our goal was to optimize it for DNA. Although we were not able to achieve as high of a compression ratio as other algorithms in literature and professional DNA compresion tools, we were able to make a fast algorithm that can do better than a 4.0 compression ratio on large files. There is a trade off when it comes to choosing a compression algorithm, with speed and space. If you needed to compress DNA files as small as possible, you should use the professional tools or one of the algorithms proposed in other research papers. If you want to compress DNA very quickly and you are okay with a moderate compression ratio, than you should use the Four to One implementation which we discussed previously. If you want something that is in between, with a moderate compression ratio and fairly fast, than the Three Stream implementation of LZW would work very well for large files.
 
-\textbf{More info}
+The concept of an indexed, Direct Map dictionary is one that could prove useful for other applications. Further research could be used to apply a similar idea to a different algorithm, one more suited to the redundancies present in DNA. I.e, could we take one of the research papers discussed in the Related Works section and apply the idea of the Direct Map to the algorithm presented in it? This could also be useful in other areas of compression in which the workload has a limited number of characters, because the size of the dictionary grows exponentially with as the number of characters needing to be accounted for increases.
 
-And here's some other random info: the first paragraph after a chapter title or section head \emph{shouldn't be} indented, because indents are to tell the reader that you're starting a new paragraph. Since that's obvious after a chapter or section title, proper typesetting doesn't add an indent there.
+The Four to One implementation and the usage of \texttt{pext} in general is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications with where there are much less characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA).
 
 \appendix
 

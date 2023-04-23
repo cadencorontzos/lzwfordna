@@ -78,6 +78,7 @@ if (!require(thesisdown)) {
     )
   }
 }
+options(scipen=999)
 library(thesisdown)
 library(dplyr)
 library(ggplot2)
@@ -91,13 +92,9 @@ library(patchwork)
 harmonic_mean <- function(corpus){
   num_files <-length(unique(corpus$File.Name))
   means <- corpus %>% 
-    mutate(
-      comp_recip = 1/max(Compression.Time,1),
-      decomp_recip = 1/max(Decompression.Time,1)
-    ) %>% 
     reframe(
-      harmonic_mean_comp= num_files/sum(comp_recip),
-      harmonic_mean_decomp= num_files/sum(decomp_recip)
+      harmonic_mean_comp= sum(Compression.Time)/num_files,
+      harmonic_mean_decomp= sum(Decompression.Time)/num_files
     )
   return(means)
 }
@@ -123,28 +120,64 @@ stats_csv <- function(filename){
 
 ```{r comparecorporafunc, echo = F}
 compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
-	df <- data.frame()
+	df <- data.frame(
+	  
+	   comp_throughput = numeric(0),
+		  hm_comp = numeric(0),
+		  description = character(0),
+		  order = numeric(0),
+		  corpus = character(0)
+	)
   ord <- 1
 	for(corpus_pair in array){
 		cp1 <- read.csv(corpus_pair[1])
 		cp2 <- read.csv(corpus_pair[2])
-				cbind(corpus = 1, cp1)
-		cp1["corpus"] <- "Corpus 1"
-		cp2["corpus"] <- "Corpus 2"
-		comb <- bind_rows(cp1, cp2)
 
-		means <- harmonic_mean(comb)
 
-		comb<- comb %>% reframe(
-		  comp_throughput = sum(Original.File.Size)/(1000*sum(Compression.Time)),
+		  comb <- rbind(cp1,cp2)
+		
+		
+		if(per_corpus){
+		  		means1 <- harmonic_mean(cp1)
+		means2 <- harmonic_mean(cp2)
+		  
+		  		df<- df %>%  add_row(comp_throughput = sum(cp1$Original.File.Size)/(.000001*sum(cp1$Compression.Time)),
+		  hm_comp = means1$harmonic_mean_comp,
+		  description = corpus_pair[3],
+		  order = ord,
+		  corpus = "Corpus 1"
+		)
+
+
+
+
+		df<- df %>% add_row(
+		  comp_throughput =sum(cp2$Original.File.Size)/(.000001*sum(cp2$Compression.Time)),
+		  hm_comp = means2$harmonic_mean_comp,
+		  description = corpus_pair[3],
+		  order = ord,
+		  corpus = "Corpus2"
+		)
+		}else{
+		
+		  comb <- rbind(cp1,cp2)
+		  		means <- harmonic_mean(comb)
+		  print(means)
+		  		df<- df %>%  add_row(comp_throughput = sum(comb$Original.File.Size)/(.000001*sum(comb$Compression.Time)),
 		  hm_comp = means$harmonic_mean_comp,
 		  description = corpus_pair[3],
 		  order = ord,
-		  corpus = corpus
+		  corpus = "Corpus 1"
 		)
+
+		}
+
+
 		ord<- ord+1
-		df <- bind_rows(comb, df)
+
+		
 	}
+  df<- na.omit(df)
 
   plot1<- df %>% 
     ggplot(aes(x = reorder(description, order), y = comp_throughput, fill = description))+
@@ -164,20 +197,31 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
 
 ```{r comparemaxstringlengthsfunc, echo = F}
 compare_max_string_lengths <- function(array){
-	df <- data.frame()
+	df <- data.frame(
+	   comp_throughput = numeric(0),
+		  hm_comp = numeric(0),
+		  size = character(0)
+	)
+
 	for(corpus_pair in array){
 		cp1 <- read.csv(corpus_pair[1])
 		cp2 <- read.csv(corpus_pair[2])
-		comb <- bind_rows(cp1, cp2)
-		means <- harmonic_mean(comb)
 
-		comb<- comb %>% reframe(
-		  comp_throughput = sum(Original.File.Size)/( 1000 * sum(Compression.Time)),
-		  hm_comp = means$harmonic_mean_comp,
-		  size = corpus_pair[3],
+
+    comp = rbind(cp1,cp2)
+		means1 <- harmonic_mean(comp)
+
+		df<- df %>%  add_row(comp_throughput = sum(comp$Original.File.Size)/(.001*max(sum(comp$Compression.Time), 1)),
+		  hm_comp = means1$harmonic_mean_comp,
+		  size = corpus_pair[3]
+
 		)
-		df <- bind_rows(comb, df)
+
+
+		
 	}
+  df<- na.omit(df)
+
   plot1<- df %>% 
     ggplot(aes(x = size, y = comp_throughput, fill = size))+
     geom_col(show.legend = F)+
@@ -342,7 +386,7 @@ At this point, there was a working implementation that was able to compress and 
 <!---
 ```{r fixedeofstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corpora after fixing EOF.", fig.height = 7,  echo = F}
 
-stats_csv('data/stats/corpus_2_stats_fixedeof_9066eef.csv')
+stats_csv('data/stats/corpus_2_fixedeof_9066eef.csv')
 ```
 -->
 ### Using Constants
@@ -398,7 +442,6 @@ Of course, there are several issues with this method. It is difficult to associa
 
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of callgrind, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved. 
 
-Here are the runs after this optimization.
 
 
 
@@ -562,11 +605,12 @@ Taking metrics of the algorithm at each of the stages listed in this chapter, we
 
 ```{r comparecorporaoptimizingfig, warnings= F, messages = F, fig.cap = "Comparison of the performance of the different milestones", fig.height = 4, echo = F}
 compare_coprora(list(
-  c('data/stats/corpus_1_stats_fixedeof_9066eef.csv', 'data/stats/corpus_2_stats_fixedeof_9066eef.csv', 'Fixed EOF'),
+  c('data/stats/corpus_1_fixedeof_9066eef.csv', 'data/stats/corpus_2_fixedeof_9066eef.csv', 'Fixed EOF'),
   c('data/stats/corpus_1_usingconstants_2c3f782.csv', 'data/stats/corpus_2_usingconstants_2c3f782.csv', 'Using constants'),
   c('data/stats/corpus_1_stringconcat_8963f64.csv', 'data/stats/corpus_2_stringconcat_8963f64.csv', 'String concatenation'),
   c('data/stats/corpus_1_dictaccesses_34bf4e9.csv', 'data/stats/corpus_2_dictaccesses_34bf4e9.csv', 'Excess dictionary calls'),
-  c('data/stats/corpus_1_charstar_a12a290.csv', 'data/stats/corpus_2_charstar_a12a290.csv', 'Character pointer')))
+  c('data/stats/corpus_1_charstar_a12a290.csv', 'data/stats/corpus_2_charstar_a12a290.csv', 'Character pointer')), 
+  FALSE)
 ```
 
 Figure \@ref(fig:comparecorporaoptimizingfig) shows the performance of the algorithm at the different milestones mentioned in this section. All graphs use the files from both corpora unless stated otherwise. On the left side of the figure you see that throughput increases for the program with each optimization. On the right, observe that mean compression time decreases with each optimization.
@@ -622,9 +666,7 @@ stats_csv('data/stats/directmap/corpus_2_directmap_154fed4_len10.csv')
 -->
 
 
-<!--
-i don't know why this caption won't show up
---->
+
 
 ```{r directmaplenthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
 compare_max_string_lengths(list(
@@ -889,6 +931,7 @@ node distance=0pt,
 \end{figure}
 
 
+We did get lucky in that the 6th and 7th bit (from left to right) on A, C, T, and G give a unique 2 bit values. This means we can just extract the 6th and 7th bit from every character without knowing what it is.
 
 We can apply this technique to our `find_longest` function: we can extract the index of a string using pext very quickly, then use that index rather than recalculating it every time. Figure \@ref(fig:findlongestwpext) hows the results of this application for both looping and binary search. In both cases, using pext to extract the index of the string increases throughput and decreases average compression time.
 
