@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  auto start_time = std::chrono::high_resolution_clock::now();
   int input_file = open(argv[1], O_RDONLY, (mode_t)0600);
   if (input_file == EOF) {
     std::cout << "Unable to open " << argv[1] << "." << std::endl;
@@ -55,7 +56,6 @@ int main(int argc, char *argv[]) {
   output.open(std::string(argv[1]) + ".compressed.4t1", std::ios::binary);
 
   // compress file
-  auto start_time = std::chrono::high_resolution_clock::now();
   compressor.encode(input, fileInfo.st_size, output);
   auto end_time = std::chrono::high_resolution_clock::now();
 
