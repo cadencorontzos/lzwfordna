@@ -37,3 +37,8 @@ jobs:
       with:
         working-directory: '.'
         doxyfile-path: 'doxygen.config'
+    - name: Deploy Docs
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
