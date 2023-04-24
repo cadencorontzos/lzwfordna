@@ -84,7 +84,7 @@ Now that we have implemented several versions of LZW, we want to compare them to
 
 ## Comparison of our Implementations
 
-We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation. Figure \@ref(fig:comparisonofourmethodsfig) shows the performance of these methods on the corpora. It is no surprise that the Four to One implementation is the fastest. 
+We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation. Figure \@ref(fig:comparisonofourmethodsfig) shows the performance of these methods on the corpora. 
 
 
 ```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 5, echo = F}
@@ -96,6 +96,7 @@ compare_coprora(list(
   c('data/stats/final/corpus_1_threestream_final_687ff25.csv', 'data/stats/final/corpus_2_threestream_final_687ff25.csv', 'Three Stream LZW')
 ), FALSE, "Final Implementation")
 ```
+
 
 ```{r comparisonofourmethodstab, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
 
@@ -128,10 +129,12 @@ df_new <- wholedf %>%
 names(df_new) <-   gsub("\\.", " ", names(df_new))
 
 
-kbl(df_new) %>%
-  add_header_above(c(" " = 2, "Compression Ratio " = 5)) %>% 
+kbl(df_new, caption = "Performance metrics for our final implementations.") %>%
+  add_header_above(c(" " = 2, "Compression Ratio " = 5 )) %>% 
     kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
+
+We can also see the raw values in Table \@ref(tab:comparisonofourmethodstab). While the Four to One implementation completely dominates in terms of throughput, the Direct Map version is substantially faster than the Standard and Multiple Dictionary versions. The Three Stream LZW comes in between the Direct Map and Four to One implementations in terms of compression time, but it actually has the best compression ratio out of all three dictionary versions on most of the input files. This means that by switching from the Standard Dictionary to the Direct Map and adding on entropy encoding, we were able to regain the lost ground in terms of compression ratio while not totally compromising our performance improvements. 
 
 ## Compression Algorithms in Literature
 
@@ -187,7 +190,7 @@ df <- data.frame(
 names(df_new) <-   gsub("\\_", " ", names(df_new))
 # print table
 
-  knitr::kable(df,  linesep = c(rep("", 5), "\\addlinespace"), format="latex", booktabs=TRUE) %>%   add_header_above(c(" " = 1, "Bits per Base" = 8)) %>% 
+  kbl(df, caption = "Compression ratios of related works on DNACorpus 1, reported as bits per base", booktabs=TRUE) %>%   add_header_above(c(" " = 1, "Bits per Base" = 8)) %>% 
   kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
 
