@@ -9,6 +9,7 @@ fi
 # Set the compression tool and directory
 tool="$1"
 directory="$2"
+option="$3"
 
 # Get the full path to the compression tool
 tool_path="$(which "$tool")"
@@ -32,12 +33,30 @@ for file in "$directory"/*; do
         # Loop 5 times to get median time and size
         for i in {1..5}; do
             # Compress the file and time the run
-            t=$( { /bin/time -f "%e" "$tool" -k "$file" >/dev/null; } 2>&1 )
-            # Store the compression time and size
+			
+			if [[ "$tool" == "bzip2" ]]; then
+            	t=$( { /bin/time -f "%e" "$tool" -9 -k "$file" >/dev/null; } 2>&1 )
+            	compressed_size=("$(du -b "${file}.bz2" | awk '{print $1}')")
+			elif  [[ "$tool" == "gzip" ]]; then            
+            	t=$( { /bin/time -f "%e" "$tool" -k -9 "$file" >/dev/null; } 2>&1 )
+            	compressed_size=("$(du -b "${file}.gz" | awk '{print $1}')")
+			elif  [[ "$tool" == *genozip* ]]; then            
+            	t=$( { /bin/time -f "%e" "$tool" --input=generic "$file" >/dev/null; } 2>&1 )
+            	compressed_size=("$(du -b "${file}.genozip" | awk '{print $1}')")
+			else
+				echo "I only know about bzip2, gzip, and genozip."
+				exit 1
+			fi
+			# Store the compression time and size
             times+=("$t")
-            compressed_size=("$(du -b "${file}.bz2" | awk '{print $1}')")
             # Remove the compressed file
-            rm -f "${file}.bz2"
+			if [[ "$tool" == "bzip2" ]]; then
+            	rm -f "${file}.bz2"
+			elif  [[ "$tool" == "gzip" ]]; then            
+            	rm -f "${file}.gz"
+			elif  [[ "$tool" == *genozip* ]]; then            
+            	rm -f "${file}.genozip"
+			fi
         done
         
         # Sort the times and sizes and calculate the median
