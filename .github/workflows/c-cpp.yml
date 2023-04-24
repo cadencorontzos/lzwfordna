@@ -32,12 +32,8 @@ jobs:
       run: ./dictionary/test_direct_map
     - name: mult dict tests
       run: ./dictionary/test_mult_std_dict
-    - name: Install Doxygen
-      run: sudo apt-get update && sudo apt-get install -y doxygen
-    - name: Generate Doxygen Docs
-      run: doxygen doxygen.config
-    - name: Deploy Docs
-      uses: peaceiris/actions-gh-pages@v3
+    - name: make docs
+      uses: mattnotmitt/doxygen-action@v1.9.5
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs
+        working-directory: '.'
+        doxyfile-path: 'doxygen.config'
