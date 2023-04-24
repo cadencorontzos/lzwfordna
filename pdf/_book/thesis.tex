@@ -445,10 +445,10 @@ So the encoded string will look something like
 10 & AAGGAATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7, CC: 8} & 0A1G4T3C \\
 \hline
 \end{tabular}
-\label{lzwexample}
+\label{tab:lzwexample}
 \caption{ An example of LZW ran on the input "AAGGAATCC"}
 \end{table}
-Table \ref{lzwexample} illustrates this example fully.
+Table \ref{tab:lzwexample} illustrates this example fully.
 
 When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character `A' and add that new string to the dictionary. We would add that to the dictionary and assign it to our next available codeword, 4. As you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
 
@@ -641,7 +641,7 @@ Evaluating performance of a program is difficult. There is a notion of theoretic
 
 To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, the stats were taken on the same computer. Our test machine was a PC with a AMD Ryzen 5 5500 processor 32 gigabytes of RAM running Ubuntu version 20.04. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
 
-Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files.
+Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files. All graphs use the files from both corpora unless stated otherwise.
 
 \hypertarget{a-starting-point}{%
 \section{A Starting Point}\label{a-starting-point}}
@@ -859,11 +859,13 @@ If we just save \texttt{currentBlock\ +\ next\_character} into a new variable, t
 \hypertarget{dictionary-lookups}{%
 \subsection{Dictionary Lookups}\label{dictionary-lookups}}
 
-Dictionary lookups can be expensive, especially with the standard library. We learned from \texttt{callgrind} that along with string operations, our program spent a lot of time doing these lookups.
+Dictionary lookups can be expensive, especially with the standard library. We learned from \texttt{callgrind} that along with string operations, our program spent a large fraction of the total runtime doing these lookups.
 
-We looked for ways to reduce the volume of lookups. At the time, the way the algorithm worked was that it looked up the current string and the next character in the dictionary. If that string is in the dictionary, we keep going. If not, we output the codeword for the current string.
+We looked for ways to reduce the volume of lookups. At the time, the algorithm looked up the current string and the next character in the dictionary. If that string was in the dictionary, it keeps adding characters. If the string was not in the dictionary, then the algorithm outputs the codeword for the current string.
 
-But, the current string on this iteration is the current string from the last iteration, plus one character. So when we were on the previous iteration of the loop, we could save that lookup and prevent a second lookup.
+But, the current string on this iteration is just the current string from the last iteration, plus one character. So when we were on the previous iteration of the loop, we could save that lookup and prevent a second lookup.
+
+Here is some of the code to further explain this point.
 \begin{Shaded}
 \begin{Highlighting}[]
 \ControlFlowTok{while}\OperatorTok{(}\NormalTok{next\_character }\OperatorTok{!=}\NormalTok{ EOF}\OperatorTok{)\{}
@@ -872,9 +874,11 @@ But, the current string on this iteration is the current string from the last it
 
 
     \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
-    \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+    \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }
+                                                \OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
     \CommentTok{// save this iterator\textasciigrave{}}
-    \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ not\_in\_dictionary }\OperatorTok{)\{}
+    \ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=} 
+\NormalTok{                                            not\_in\_dictionary}\OperatorTok{)\{}
 \NormalTok{        current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
     \OperatorTok{\}}
     \ControlFlowTok{else}\OperatorTok{\{}
@@ -898,11 +902,12 @@ We can save that lookup, like so.
     \CommentTok{// code ommitted}
 
     \CommentTok{// if we\textquotesingle{}ve already seen the sequence, keep going}
-    \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
+    \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }
+                                                \OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
 \NormalTok{    codeword\_seen\_now }\OperatorTok{=}\NormalTok{ dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{);}
     \ControlFlowTok{if} \OperatorTok{(}\NormalTok{codeword\_seen\_now }\OperatorTok{!=}\NormalTok{ not\_in\_dictionary }\OperatorTok{)\{}
 \NormalTok{        current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
-\NormalTok{        codeword\_seen\_previously }\OperatorTok{=}\NormalTok{ codeword\_seen\_now}\OperatorTok{;} \CommentTok{// save codeword here}
+\NormalTok{        codeword\_seen\_previously }\OperatorTok{=}\NormalTok{ codeword\_seen\_now}\OperatorTok{;} \CommentTok{// save codeword }
     \OperatorTok{\}}
     \ControlFlowTok{else}\OperatorTok{\{}
 
@@ -916,12 +921,14 @@ We can save that lookup, like so.
 \OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
+This should reduce the amount of time the program spends on string concatenation.
+
 \hypertarget{using-const-char}{%
 \subsection{Using Const Char *}\label{using-const-char}}
 
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
-When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time.
+When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data.
 
 \hypertarget{comparison}{%
 \subsection{Comparison}\label{comparison}}
@@ -932,53 +939,86 @@ Taking metrics of the algorithm at each of the stages listed in this chapter, we
 \includegraphics{thesis_files/figure-latex/comparecorporaoptimizingfig-1.pdf}
 \caption{\label{fig:comparecorporaoptimizingfig}Comparison of the performance of the different milestones}
 \end{figure}
-Figure \ref{fig:comparecorporaoptimizingfig} shows the performance of the algorithm at the different milestones mentioned in this section. All graphs use the files from both corpora unless stated otherwise. On the left side of the figure you see that throughput increases for the program with each optimization. On the right, observe that mean compression time decreases with each optimization.
+Figure \ref{fig:comparecorporaoptimizingfig} shows the performance of the algorithm at the different milestones mentioned in this section. The bars represent distinct versions of the algorithm, and they are listed chronologically from left to right. On the left side of the figure you see that throughput increases for the program with each optimization. On the right, observe that mean compression time decreases with each optimization.
 
 \hypertarget{trying-different-dictionaries}{%
 \section{Trying Different Dictionaries}\label{trying-different-dictionaries}}
 
 A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and placing others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program.
 
-So another step towards an efficient LZW seemed to be to abstract out the C++ \texttt{std::unordered\_map} and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
+So another step towards an efficient LZW was to be to abstract out the C++ \texttt{std::unordered\_map} and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
 
 \hypertarget{direct-map}{%
 \subsection{Direct Map}\label{direct-map}}
 
 In our analysis of the two corpora, we found some interesting statistics in the redundancy of the data.
-\begin{table}[!h]
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}{rrrr}
-\toprule
-AVERAGE RUN LENGTH & MAXIMUM RUN LENGTH & MEDIAN RUN LENGTH & SD RUN LENGTH\\
-\midrule
-\cellcolor{gray!6}{6.135398} & \cellcolor{gray!6}{17} & \cellcolor{gray!6}{6} & \cellcolor{gray!6}{1.237217}\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[!h]
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}{rrrr}
-\toprule
-AVERAGE RUN LENGTH & MAXIMUM RUN LENGTH & MEDIAN RUN LENGTH & SD RUN LENGTH\\
-\midrule
-\cellcolor{gray!6}{10.96825} & \cellcolor{gray!6}{190} & \cellcolor{gray!6}{11} & \cellcolor{gray!6}{2.494305}\\
-\bottomrule
-\end{tabular}}
-\end{table}
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2703}}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2703}}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2568}}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2027}}@{}}
+\caption{\label{tab:runstatsfigcp1}Run statistics in Corpus 1}\tabularnewline
+\toprule()
+\begin{minipage}[b]{\linewidth}\centering
+average\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+maximum\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+median\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+sd\_run\_length
+\end{minipage} \\
+\midrule()
+\endfirsthead
+\toprule()
+\begin{minipage}[b]{\linewidth}\centering
+average\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+maximum\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+median\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+sd\_run\_length
+\end{minipage} \\
+\midrule()
+\endhead
+6.135398 & 17 & 6 & 1.237217 \\
+\bottomrule()
+\end{longtable}
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2703}}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2703}}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2568}}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2027}}@{}}
+\caption{\label{tab:runstatsfigcp2}Run statistics in Corpus 2}\tabularnewline
+\toprule()
+\begin{minipage}[b]{\linewidth}\centering
+average\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+maximum\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+median\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+sd\_run\_length
+\end{minipage} \\
+\midrule()
+\endfirsthead
+\toprule()
+\begin{minipage}[b]{\linewidth}\centering
+average\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+maximum\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+median\_run\_length
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+sd\_run\_length
+\end{minipage} \\
+\midrule()
+\endhead
+10.96825 & 190 & 11 & 2.494305 \\
+\bottomrule()
+\end{longtable}
 Tables \ref{tab:runstatsfigcp1} and \ref{tab:runstatsfigcp2} show stats on the run lengths of the ``runs'' of data, where a run is a string added to the dictionary during a run of the LZW algorithm, and a histogram of runs from both corpora can be seen in Figure \ref{fig:allrunshistfig}.
-\begin{table}[!h]
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}{rrrrr}
-\toprule
-X & AVERAGE RUN LENGTH & MAXIMUM RUN LENGTH & MEDIAN RUN LENGTH & SD RUN LENGTH\\
-\midrule
-\cellcolor{gray!6}{1} & \cellcolor{gray!6}{10.95318} & \cellcolor{gray!6}{190} & \cellcolor{gray!6}{11} & \cellcolor{gray!6}{2.505904}\\
-\bottomrule
-\end{tabular}}
-\end{table}
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/allrunshistfig-1.pdf}
@@ -990,23 +1030,89 @@ To achieve a similar effect to multiple indexed dictionaries, we opted for a uni
 So we can create an indexed dictionary directly in memory for all strings below a certain length. We can use the \texttt{2n} bit representation of the string
 to index into an array of codewords.
 
-For each string size 1 to n, we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap on top to handle those.
-
-As seen in Figure \ref{fig:directmaplength10statsfig}, the throughput is greater and the average compression time is less for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
+For each string size 1 to n, we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size \(4^3\), since there are \(4^3\) possible strings. In each of those \(4^3\) slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent \(2^6=4^3\) values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than \texttt{n}, we can just use a hashmap (like \texttt{std::unordered\_map}) on top to handle those. We call this data structure the Direct Map Dictionary. Different numbers \texttt{n} may provide different performance results.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/directmaplenthcompfig-1.pdf}
 \caption{\label{fig:directmaplenthcompfig}Comparing different max lengths for Direct Map}
 \end{figure}
-It's also worth noting that since we are allowing strings of all lengths, the compression ratio has not changed.
+As seen in Figure \ref{fig:directmaplenthcompfig}, the throughput is greater and the average compression time is less for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
 
-\hypertarget{multiple-indexed-dictionaries}{%
-\subsection{Multiple Indexed Dictionaries}\label{multiple-indexed-dictionaries}}
+Since we are limiting the size of codewords, we will run out of codewords faster than before. Thus, the compression ratio may be different.
+\begin{table}[!h]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{l|r|r|r}
+\hline
+\multicolumn{2}{c|}{ } & \multicolumn{2}{c}{Compression Ratio } \\
+\cline{3-4}
+File Name & Original File Size & Direct Map & Standard Dictionary\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{2.449} & \cellcolor{gray!6}{2.797}\\
+\hline
+DNACorpus1/chntxx & 155844 & 2.402 & 2.683\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/hehcmv} & \cellcolor{gray!6}{229354} & \cellcolor{gray!6}{2.460} & \cellcolor{gray!6}{2.689}\\
+\hline
+DNACorpus1/humdyst & 38770 & 2.103 & 2.565\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/humghcs} & \cellcolor{gray!6}{66495} & \cellcolor{gray!6}{2.227} & \cellcolor{gray!6}{2.625}\\
+\hline
+DNACorpus1/humhbb & 73308 & 2.243 & 2.626\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/humhdab} & \cellcolor{gray!6}{58864} & \cellcolor{gray!6}{2.200} & \cellcolor{gray!6}{2.618}\\
+\hline
+DNACorpus1/humprtb & 56737 & 2.192 & 2.616\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{2.414} & \cellcolor{gray!6}{2.666}\\
+\hline
+DNACorpus1/mtpacga & 100314 & 2.377 & 2.737\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{2.486} & \cellcolor{gray!6}{2.746}\\
+\hline
+DNACorpus2/AeCa & 1591049 & 2.833 & 2.861\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{2.105} & \cellcolor{gray!6}{2.548}\\
+\hline
+DNACorpus2/BuEb & 18940 & 1.914 & 2.447\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/DaRe} & \cellcolor{gray!6}{62565020} & \cellcolor{gray!6}{2.954} & \cellcolor{gray!6}{3.194}\\
+\hline
+DNACorpus2/DrMe & 32181429 & 2.886 & 3.031\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{2.938} & \cellcolor{gray!6}{3.067}\\
+\hline
+DNACorpus2/EsCo & 4641652 & 2.863 & 2.914\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{2.832} & \cellcolor{gray!6}{3.170}\\
+\hline
+DNACorpus2/HaHi & 3890005 & 2.937 & 2.978\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/HePy} & \cellcolor{gray!6}{1667825} & \cellcolor{gray!6}{2.913} & \cellcolor{gray!6}{2.943}\\
+\hline
+DNACorpus2/HoSa & 189752667 & 2.966 & 3.317\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{2.882} & \cellcolor{gray!6}{3.058}\\
+\hline
+DNACorpus2/PlFa & 8986712 & 3.024 & 3.104\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/ScPo} & \cellcolor{gray!6}{10652155} & \cellcolor{gray!6}{2.885} & \cellcolor{gray!6}{2.967}\\
+\hline
+DNACorpus2/YeMi & 73689 & 2.325 & 2.727\\
+\hline
+\end{tabular}}
+\end{table}
+As seen in Figure \ref{tab:directtostdcomprat}, using the Direct Map Dictionary decreases the compression ratio on every input file relative to the Standard Dictionary Implementation. This is a trade off between compression time and compression ratio. Our hope is that the Direct Map version will be much faster, and we will be able to make up some of the compression ratio lost by using entropy encoding.
 
-Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. As seen in Figure \ref{fig:multdictlengthcompfig}, the throughput tends to increase and the average compression time tends to increase as we increase the number of indexed dictionaries. This result was not necessarily one we expected, but it does make sense that there is a certain amount of overhead that is required for a hashmap. The hash function takes about the same amount of time no matter the number of elements in the map, and resizing is rare. So adding more dictionaries only adds more overhead, which tends to slightly decrease efficiency.
+It's also worth noting that at this point, we are outputting codewords followed by characters. If we output codewords followed by two bits representing the next character, we will save 6 bits per iteration. The relative differences in compression ratio between the Direct Map and Std Dictionaries would not change.
+
+\hypertarget{multiple-standard-dictionaries}{%
+\subsection{Multiple Standard Dictionaries}\label{multiple-standard-dictionaries}}
+
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size \texttt{n} , and for all strings of length greater than \texttt{n}, we use a regular dictionary, or a \texttt{std::unordered\_map}. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. As seen in Figure \ref{fig:multdictlengthcompfig}, the throughput tends to increase and the average compression time tends to increase as we increase the number of indexed dictionaries. This result was not necessarily one we expected, but it does make sense that there is a certain amount of overhead that is required for a hashmap. The hash function takes about the same amount of time no matter the number of elements in the map, and resizing is rare. So adding more dictionaries only adds more overhead, which tends to slightly decrease efficiency.
 
 Compression ratio still remains the same as strings of all lengths are accommodated.
-This logic is supported by Figure \ref{fig:multvsonedictfig}, which shoes one \texttt{std::unordered\_map} compared the multiple indexed model.
+This logic is supported by Figure \ref{fig:multvsonedictfig}, which shows one \texttt{std::unordered\_map} compared to the Multiple Indexed model.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/multdictlengthcompfig-1.pdf}
@@ -1017,10 +1123,14 @@ This logic is supported by Figure \ref{fig:multvsonedictfig}, which shoes one \t
 \includegraphics{thesis_files/figure-latex/multvsonedictfig-1.pdf}
 \caption{\label{fig:multvsonedictfig}Comparing one Dict to Mult Dict}
 \end{figure}
+The Multiple Standard Dictionary implementation has the same compression ratio as the single Standard Dictionary implementation.
+
 \hypertarget{comparison-1}{%
 \subsection{Comparison}\label{comparison-1}}
 
 Figure \ref{fig:dictionarytechniquecompfig} shows a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary. As shown, the Direct Map technique greatly increases throughput and thus decreases average compression time. Given these results, we decided to shift our focus onto the Direct Map and try to optimize this scheme as much as possible.
+
+Again, taking the Direct Map approach means decreasing compression ratio overall. The hope is that we will be able to use entropy encoding on the output of the Direct Map version of LZW to make up for that loss in compression ratio.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/dictionarytechniquecompfig-1.pdf}
@@ -1036,7 +1146,7 @@ Given that the Direct Map dictionary showed great performance improvements, we d
 
 Our dictionary data structures all have a \texttt{get\_longest\_in\_dict} function. This function does the boring work of iterating through the input from the start, checking if each substring is in the dictionary.
 
-Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by starting from the bottom.
+Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by looping up from zero.
 
 Another strategy would be to start from the maximum string length of the dictionary, so 15. We can check if the next string of the max length is in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down . Here is some pseudocode that mimics this proposed algorithm.
 \begin{verbatim}
@@ -1107,7 +1217,7 @@ Of course, we could also calculate the indexes for binary search on the fly. So 
 \includegraphics{thesis_files/figure-latex/findlongestfrommaxfig-1.pdf}
 \caption{\label{fig:findlongestfrommaxfig}Comparing the different ways of finding the longest run}
 \end{figure}
-We see that calculating the index on the fly does improve performance. However, we can also see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in \ref{fig:allrunshistfig}. This means that if we start looking from runs around length 10, we should see a performance improvement.
+We see that calculating the index on the fly does tend to improve performance. However, we can also see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in \ref{fig:allrunshistfig}. This means that if we start looking from runs around length 10, we should see a performance improvement.
 
 \hypertarget{finding-the-longest-from-the-average}{%
 \subsection{Finding the Longest From The Average}\label{finding-the-longest-from-the-average}}
@@ -1136,12 +1246,14 @@ Of course, not allowing string over max length does mean that our compression ra
 \centering
 \begin{tabular}[t]{rr}
 \toprule
-cr\_before & cr\_after\\
+CR Before & CR After\\
 \midrule
 2.909175 & 2.907686\\
 \bottomrule
 \end{tabular}
 \end{table}
+This difference in compression ratio is very slight, but remember that we already took a decrease in compression ratio by selecting the Direct Map Dictionary over the Standard Dictionary.
+
 \hypertarget{using-pext}{%
 \subsection{\texorpdfstring{Using \texttt{pext}}{Using pext}}\label{using-pext}}
 
@@ -1207,7 +1319,71 @@ We can apply this technique to our \texttt{find\_longest} function: we can extra
 \hypertarget{returning-to-compression-ratio}{%
 \section{Returning to Compression Ratio}\label{returning-to-compression-ratio}}
 
-After spending a lot of time debugging, we returned our attenting to the compression ratio. Most of our optimizations didn't have much of an effect on compression ratio, with the exception of disallowing strings over a certain length. It is also worth noting that the Direct Map dictionary and the Std dictionary implementations will have different compression ratios, as the Direct map has a max codeword size of 16 bits while the Std dict has a max codeword size of 32 bits. Std dict also allows longer strings.
+After spending a lot of time debugging, we returned our attention to the compression ratio. Most of our optimizations didn't have much of an effect on compression ratio, with the exception of disallowing strings over a certain length. We did note that the Direct Map does have a lower compression ratio than the Standard Dictionary implementation due to a smaller codeword size and to the fact that the Standard Dictionary allows runs of any length.
+\begin{table}[!h]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{l|r|r|r}
+\hline
+\multicolumn{2}{c|}{ } & \multicolumn{2}{c}{Compression Ratio } \\
+\cline{3-4}
+File Name & Original File Size & Direct Map Dictionary & Std Dictionary\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{3.266} & \cellcolor{gray!6}{3.915}\\
+\hline
+DNACorpus1/chntxx & 155844 & 3.203 & 3.722\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/hehcmv} & \cellcolor{gray!6}{229354} & \cellcolor{gray!6}{3.279} & \cellcolor{gray!6}{3.701}\\
+\hline
+DNACorpus1/humdyst & 38770 & 2.804 & 3.690\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/humghcs} & \cellcolor{gray!6}{66495} & \cellcolor{gray!6}{2.969} & \cellcolor{gray!6}{3.721}\\
+\hline
+DNACorpus1/humhbb & 73308 & 2.991 & 3.712\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/humhdab} & \cellcolor{gray!6}{58864} & \cellcolor{gray!6}{2.934} & \cellcolor{gray!6}{3.727}\\
+\hline
+DNACorpus1/humprtb & 56737 & 2.923 & 3.729\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{3.218} & \cellcolor{gray!6}{3.682}\\
+\hline
+DNACorpus1/mtpacga & 100314 & 3.169 & 3.844\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{3.315} & \cellcolor{gray!6}{3.794}\\
+\hline
+DNACorpus2/AeCa & 1591049 & 3.778 & 3.786\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{2.807} & \cellcolor{gray!6}{3.653}\\
+\hline
+DNACorpus2/BuEb & 18940 & 2.552 & 3.595\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/DaRe} & \cellcolor{gray!6}{62565020} & \cellcolor{gray!6}{3.928} & \cellcolor{gray!6}{4.013}\\
+\hline
+DNACorpus2/DrMe & 32181429 & 3.847 & 3.836\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{3.918} & \cellcolor{gray!6}{3.893}\\
+\hline
+DNACorpus2/EsCo & 4641652 & 3.817 & 3.791\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{3.776} & \cellcolor{gray!6}{3.943}\\
+\hline
+DNACorpus2/HaHi & 3890005 & 3.916 & 3.884\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/HePy} & \cellcolor{gray!6}{1667825} & \cellcolor{gray!6}{3.884} & \cellcolor{gray!6}{3.894}\\
+\hline
+DNACorpus2/HoSa & 189752667 & 3.953 & 4.118\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{3.843} & \cellcolor{gray!6}{3.858}\\
+\hline
+DNACorpus2/PlFa & 8986712 & 4.031 & 4.000\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/ScPo} & \cellcolor{gray!6}{10652155} & \cellcolor{gray!6}{3.847} & \cellcolor{gray!6}{3.813}\\
+\hline
+DNACorpus2/YeMi & 73689 & 3.099 & 3.859\\
+\hline
+\end{tabular}}
+\end{table}
+In Figure \ref{fig:directostdfinal}, we can see a comparison in compression ratios of the final implementations of the Direct Map and Standard Dictionaries. Note that the Multiple Standard Dictionary version should have the same compression ratios as its single counterpart.
 
 \hypertarget{a-point-of-comparison}{%
 \subsection{A point of Comparison}\label{a-point-of-comparison}}
@@ -1216,18 +1392,18 @@ It's worth noting that for sequences of DNA, if the bases are encoded in ASCII, 
 
 So the takeaway is, if a DNA compression algorithm can't compress with a compression ratio of higher than 4.0 (2 bits per base), than this simple algorithm would be perferable every time.
 
-We implemented this method using pext, and the results are detailed in the next chapter.
+We implemented this method using \texttt{pext}, and the results are detailed in the next chapter.
 
 \hypertarget{entropy-encoding}{%
 \subsection{Entropy Encoding}\label{entropy-encoding}}
 
 Our initial idea was that we would compress the DNA with LZW, then use a entropy encoder like arithmetic encoding or Huffman to further compress the data. This was an oversight, as the algorithm as we have described it thus far does not lend itself well to entropy encoding.
 
-Our algorithm outputs codewords and two bits representing the next character. For a codeword size of 16 bits, this means each loop of our algorithm outputs 18 bits. So any repretitiveness or reuse will not be detectable by an entropy encoder which works on data of 8, 16, or 32 bit chunks.
+Our algorithm outputs codewords and two bits representing the next character. For a codeword size of 16 bits, this means each loop of our algorithm outputs 18 bits. So any repetitiveness or reuse will not be detectable by an entropy encoder which works on data of 8, 16, or 32 bit chunks.
 
-So maybe we break the compressed file into two seperate files; a file of codewords and a file of the two bit representations of the following characters. Now we can compress these two files, right?
+So maybe we break the compressed file into two separate files; a file of codewords and a file of the two bit representations of the following characters. Now we can compress these two files, right?
 
-The issue is that entropy encoders rely on repeating numbers of a high frequency. We can cut down the number of bits a certain entry takes to make it more compressible, and make less common entries take more bits (see Figure \ref{fig:huffman}). DNA neucleotides show up with roughly the same frequency, so having 2 bits per character is hard to beat. So the file with all the charaters in it can't be compressed further.
+The issue is that entropy encoders rely on repeating numbers of a high frequency. We can cut down the number of bits a certain entry takes to make it more compressible, and make less common entries take more bits (see Figure \ref{fig:huffman}). DNA nucleotides show up with roughly the same frequency, so having 2 bits per character is hard to beat. So the file with all the characters in it can't be compressed further.
 
 What about the codewords? Well, a key realization is that any codeword will only show up 4 times in a single run of the program. Say we add the codeword \texttt{1234="ACT"} to our dictionary. When will we output this codeword ? Well, we will output it when we see ``ACT'' followed by another character. Since there are only 4 characters, once you see those 4 other strings (``ACTA'', ``ACTG'', ``ACTC'', and ``ACTT''), we will never output it again because we are looking for the longest run possible.
 
@@ -1238,7 +1414,7 @@ So on average, every codeword shows up a maximum of 4 times. This means that for
 \hypertarget{a-new-approach}{%
 \subsection{A New Approach}\label{a-new-approach}}
 
-Given that we are not able to achieve a compression ratio over 4.0 with the current LZW, we need to alter our approach. The issue with our dataset is that long runs are rare. Every once in a while, you may replace a run of 15 with a codeword, but most of the time you are replacing a run less than 8. Eight characters can be represented by 16 bits, so any run under 8 that is replaced loses bits
+Given that we are not able to achieve a compression ratio over 4.0 with the Direct Map LZW, we need to alter our approach. The issue with our dataset is that long runs are rare. Every once in a while, there may an opportunity to replace a run of 15 with a codeword, but most of the time the runs being replaced are of length 8 or less. Eight characters can be represented by 16 bits via the 2 bit encodings, so any run under 8 that is replaced actually increases the total number of bits in the output file.
 
 The fact that we are not getting a compression ratio over 4.0 led us to think of a new twist on the algorithm specifically tailored for this situation. The scheme uses three streams of data: characters, codewords, and indicator bits. The algorithm works as follows.
 
@@ -1258,7 +1434,7 @@ Decompression: We start by reading an indicator bit
 \item
   if the bit is 0, we read the next 8 characters. We then use \texttt{find\_longest} to find the longest run and add it to the dictionary. We can then put the 8 characters into the output stream and move on
 \end{itemize}
-This is, in essence, a greedy algorithm. We have the choice of outputting a codeword or 8 characters every time, and we choose the choice which results in the least number of bits output.
+This is, in essence, a greedy algorithm. We have the choice of outputting a codeword or 8 characters every time, and we choose the choice which results in the least number of bits in the output file.
 
 The other advantage to this algorithm is that it works well for entropy encoding. The indicator bits are mostly 0, since most runs are less than 8. The codeword stream is also compressible, since none of the codewords for strings less than length 8 are output. The performance of this new scheme is assessed in the next chapter.
 
@@ -1270,16 +1446,15 @@ Now that we have implemented several versions of LZW, we want to compare them to
 \hypertarget{comparison-of-our-implementations}{%
 \section{Comparison of our Implementations}\label{comparison-of-our-implementations}}
 
-We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation. Figure \ref{fig:comparisonofourmethodsfig} shows the performance of these methods on the corpora. It is no surprise that the Four to One implementation is the fastest.
+We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation. Figure \ref{fig:comparisonofourmethodsfig} shows the performance of these methods on the corpora.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/comparisonofourmethodsfig-1.pdf}
 \caption{\label{fig:comparisonofourmethodsfig}Compression ratios of related works on DNACorpus1, reported as bits per base}
 \end{figure}
-\begin{verbatim}
-Warning: package 'tidyr' was built under R version 4.2.2
-\end{verbatim}
 \begin{table}[!h]
+
+\caption{\label{tab:comparisonofourmethodstab}Performance metrics for our final implementations.}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{l|r|r|r|r|r|r}
@@ -1342,6 +1517,8 @@ DNACorpus2/YeMi & 73689 & 3.099 & 3.998 & 3.859 & 3.859 & 3.881\\
 \hline
 \end{tabular}}
 \end{table}
+We can also see the raw values in Table \ref{tab:comparisonofourmethodstab}. While the Four to One implementation completely dominates in terms of throughput, the Direct Map version is substantially faster than the Standard and Multiple Dictionary versions. The Three Stream LZW comes in between the Direct Map and Four to One implementations in terms of compression time, but it actually has the best compression ratio out of all three dictionary versions on most of the input files. This means that by switching from the Standard Dictionary to the Direct Map and adding on entropy encoding, we were able to regain the lost ground in terms of compression ratio while not totally compromising our performance improvements.
+
 \hypertarget{compression-algorithms-in-literature}{%
 \section{Compression Algorithms in Literature}\label{compression-algorithms-in-literature}}
 
@@ -1349,9 +1526,11 @@ As discussed in the related work section of chapter 1, there have been several o
 
 Note that I wasn't able to get compression times for these algorithms, only the compression ratios.
 \begin{table}[!h]
+
+\caption{\label{tab:researchmethodsresultsfig}Compression ratios of related works on DNACorpus 1, reported as bits per base}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}{lrrrrrrrr}
+\begin{tabular}[t]{lrrrrrrrr}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{8}{c}{Bits per Base} \\
 \cmidrule(l{3pt}r{3pt}){2-9}
@@ -1362,12 +1541,13 @@ DNACorpus1/chntxx & 1.6172 & 1.6146 & 1.6068 & 2.149329 & 2.497831 & 2.149329 & 
 \cellcolor{gray!6}{DNACorpus1/hehcmv} & \cellcolor{gray!6}{1.8480} & \cellcolor{gray!6}{1.8470} & \cellcolor{gray!6}{1.8426} & \cellcolor{gray!6}{2.161480} & \cellcolor{gray!6}{2.439513} & \cellcolor{gray!6}{2.161480} & \cellcolor{gray!6}{2.000297} & \cellcolor{gray!6}{2.059280}\\
 DNACorpus1/humdyst & 1.9262 & 1.9231 & 1.9031 & 2.168274 & 2.853547 & 2.168274 & 2.001754 & 2.023420\\
 \cellcolor{gray!6}{DNACorpus1/humghcs} & \cellcolor{gray!6}{1.3074} & \cellcolor{gray!6}{1.0969} & \cellcolor{gray!6}{0.9828} & \cellcolor{gray!6}{2.150056} & \cellcolor{gray!6}{2.694819} & \cellcolor{gray!6}{2.150056} & \cellcolor{gray!6}{2.000993} & \cellcolor{gray!6}{2.034318}\\
-DNACorpus1/humhbb & 1.8800 & 1.8204 & 1.7513 & 2.155181 & 2.674960 & 2.155181 & 2.000873 & 2.032848\\
 \addlinespace
+DNACorpus1/humhbb & 1.8800 & 1.8204 & 1.7513 & 2.155181 & 2.674960 & 2.155181 & 2.000873 & 2.032848\\
 \cellcolor{gray!6}{DNACorpus1/humhdab} & \cellcolor{gray!6}{1.8770} & \cellcolor{gray!6}{1.8192} & \cellcolor{gray!6}{1.6671} & \cellcolor{gray!6}{2.146779} & \cellcolor{gray!6}{2.726828} & \cellcolor{gray!6}{2.146779} & \cellcolor{gray!6}{2.001087} & \cellcolor{gray!6}{2.031394}\\
 DNACorpus1/humprtb & 1.9066 & 1.8466 & 1.7361 & 2.145619 & 2.737261 & 2.145619 & 2.001234 & 2.037048\\
 \cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{1.9378} & \cellcolor{gray!6}{1.9058} & \cellcolor{gray!6}{1.8768} & \cellcolor{gray!6}{2.172671} & \cellcolor{gray!6}{2.485925} & \cellcolor{gray!6}{2.172671} & \cellcolor{gray!6}{2.000375} & \cellcolor{gray!6}{2.053449}\\
 DNACorpus1/mtpacga & 1.8752 & 1.8624 & 1.8447 & 2.081225 & 2.524314 & 2.081225 & 2.000678 & 2.064557\\
+\addlinespace
 \cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{1.7614} & \cellcolor{gray!6}{1.7614} & \cellcolor{gray!6}{1.7649} & \cellcolor{gray!6}{2.108805} & \cellcolor{gray!6}{2.413347} & \cellcolor{gray!6}{2.108805} & \cellcolor{gray!6}{2.000365} & \cellcolor{gray!6}{2.065162}\\
 \bottomrule
 \end{tabular}}
