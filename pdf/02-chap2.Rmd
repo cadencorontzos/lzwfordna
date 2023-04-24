@@ -89,12 +89,12 @@ library(patchwork)
 
 
 ```{r harmonicmeanfunc, echo = F}
-harmonic_mean <- function(corpus){
+mean_comp_time <- function(corpus){
   num_files <-length(unique(corpus$File.Name))
   means <- corpus %>% 
     reframe(
-      harmonic_mean_comp= sum(Compression.Time)/num_files,
-      harmonic_mean_decomp= sum(Decompression.Time)/num_files
+     mean_comp= .000000001*sum(Compression.Time)/num_files,
+     mean_decomp= .000000001*sum(Decompression.Time)/num_files
     )
   return(means)
 }
@@ -118,6 +118,17 @@ stats_csv <- function(filename){
 }
 ```
 
+
+```{r throughputfunc, echo = F}
+throughput <- function(df){
+  bytes_per_megabyte <-(1/1024)
+  seconds_per_nanosecond <- .000000001
+  sum_bytes <- sum(df$Original.File.Size)
+  sum_time_ns <- sum(df$Compression.Time)
+ (sum_bytes*bytes_per_megabyte)/(seconds_per_nanosecond*sum_time_ns)
+}
+```
+
 ```{r comparecorporafunc, echo = F}
 compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
 	df <- data.frame(
@@ -138,11 +149,11 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
 		
 		
 		if(per_corpus){
-		  		means1 <- harmonic_mean(cp1)
-		means2 <- harmonic_mean(cp2)
+		  		means1 <- mean_comp_time(cp1)
+		means2 <- mean_comp_time(cp2)
 		  
-		  		df<- df %>%  add_row(comp_throughput = sum(cp1$Original.File.Size)/(.000001*sum(cp1$Compression.Time)),
-		  hm_comp = means1$harmonic_mean_comp,
+		  		df<- df %>%  add_row(comp_throughput = throughput(cp1),
+		  hm_comp = means1$mean_comp,
 		  description = corpus_pair[3],
 		  order = ord,
 		  corpus = "Corpus 1"
@@ -152,8 +163,8 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
 
 
 		df<- df %>% add_row(
-		  comp_throughput =sum(cp2$Original.File.Size)/(.000001*sum(cp2$Compression.Time)),
-		  hm_comp = means2$harmonic_mean_comp,
+		  comp_throughput = throughput(cp2),
+		  hm_comp = means2$mean_comp,
 		  description = corpus_pair[3],
 		  order = ord,
 		  corpus = "Corpus2"
@@ -161,10 +172,10 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
 		}else{
 		
 		  comb <- rbind(cp1,cp2)
-		  		means <- harmonic_mean(comb)
+		  		means <- mean_comp_time(comb)
 
-		  		df<- df %>%  add_row(comp_throughput = sum(comb$Original.File.Size)/(.000001*sum(comb$Compression.Time)),
-		  hm_comp = means$harmonic_mean_comp,
+		  		df<- df %>%  add_row(comp_throughput = throughput(comb),
+		  hm_comp = means$mean_comp,
 		  description = corpus_pair[3],
 		  order = ord,
 		  corpus = "Corpus 1"
@@ -183,13 +194,13 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone"){
     ggplot(aes(x = reorder(description, order), y = comp_throughput, fill = description))+
     geom_col(show.legend = F)+
     {if(per_corpus)facet_wrap(~corpus)}+
-    labs(x=x_axis, y = "Throughput (bytes/s)", title = "Throughput")+
+    labs(x=x_axis, y = "Throughput (Mb/s)", title = "Throughput")+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   plot2 <- df %>% 
     ggplot(aes(x = reorder(description, order), y = hm_comp, fill = description))+
     geom_col(show.legend = F)+
     {if(per_corpus)facet_wrap(~corpus)}+
-    labs(x=x_axis, y = "Mean Compression Time (ms)", title = "Average Compression Time")+
+    labs(x=x_axis, y = "Mean Compression Time (s)", title = "Average Compression Time")+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   plot1+plot2
 }
@@ -209,10 +220,10 @@ compare_max_string_lengths <- function(array){
 
 
     comp = rbind(cp1,cp2)
-		means1 <- harmonic_mean(comp)
+		means1 <- mean_comp_time(comp)
 
-		df<- df %>%  add_row(comp_throughput = sum(comp$Original.File.Size)/(.000001*sum(comp$Compression.Time)),
-		  hm_comp = means1$harmonic_mean_comp,
+		df<- df %>%  add_row(comp_throughput = throughput(comp),
+		  hm_comp = means1$mean_comp,
 		  size = corpus_pair[3]
 
 		)
@@ -225,11 +236,11 @@ compare_max_string_lengths <- function(array){
   plot1<- df %>% 
     ggplot(aes(x = size, y = comp_throughput, fill = size))+
     geom_col(show.legend = F)+
-    labs(x="Max String Length", y = "Throughput (bytes/s)", title= "Throughput")
+    labs(x="Max String Length", y = "Throughput (Mb/s)", title= "Throughput")
   plot2 <- df %>% 
     ggplot(aes(x = size, y = hm_comp, fill = size))+
     geom_col(show.legend = F)+
-    labs(x="Max String Length", y = "Mean Compression Time (ms)", title = "Average Compression Time")	
+    labs(x="Max String Length", y = "Mean Compression Time (s)", title = "Average Compression Time")	
   plot1+plot2
 }
 
@@ -271,7 +282,7 @@ Evaluating performance of a program is difficult. There is a notion of theoretic
 
 To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, the stats were taken on the same computer. Our test machine was a PC with a AMD Ryzen 5 5500 processor 32 gigabytes of RAM running Ubuntu version 20.04. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
 
-Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files.
+Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files. All graphs use the files from both corpora unless stated otherwise.
 
 ## A Starting Point
 
@@ -381,20 +392,9 @@ default:
 So when the decoder is reading and encounters the EOF codeword, it can look at the next two bits to see if anything is left over.
 
 At this point, there was a working implementation that was able to compress and decompress files.
-<!---
-9066eef
--->
 
-<!---
-```{r fixedeofstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corpora after fixing EOF.", fig.height = 7,  echo = F}
-
-stats_csv('data/stats/corpus_2_fixedeof_9066eef.csv')
-```
--->
 ### Using Constants
-<!--
-2c3f782
--->
+
 The early version of the code was not clean. There were hard coded variables, unspecified integer types, and generally messy naming conventions that made the code difficult to read and debug.
 
 The next major step in the code was to start using constants for everything, including
@@ -444,22 +444,7 @@ Of course, there are several issues with this method. It is difficult to associa
 
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of `callgrind`, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
 
-
-
-<!---
-```{r usingconstantsstatsfig, warnings= F, messages = F, fig.cap = "Stats for the corproa after switching some constants", fig.height = 7, echo = F}
-stats_csv('data/stats/corpus_1_usingconstants_2c3f782.csv')
-stats_csv('data/stats/corpus_2_usingconstants_2c3f782.csv')
-```
--->
-
-
-
 ### Extraneous String Concatenations
-
-<!--
-8963f64ed59983edc15ed255b894ee666f2e1176
--->
 
 The LZW algorithm is built on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over. 
 
@@ -502,16 +487,15 @@ else{
 
 
 ### Dictionary Lookups
-<!--
-34bf4e9a6233137b388323f810791687c2a0f823
--->
  
-Dictionary lookups can be expensive, especially with the standard library. We learned from `callgrind` that along with string operations, our program spent a lot of time doing these lookups.
+Dictionary lookups can be expensive, especially with the standard library. We learned from `callgrind` that along with string operations, our program spent a large fraction of the total runtime doing these lookups.
 
-We looked for ways to reduce the volume of lookups. At the time, the way the algorithm worked was that it looked up the current string and the next character in the dictionary. If that string is in the dictionary, we keep going. If not, we output the codeword for the current string.
+We looked for ways to reduce the volume of lookups. At the time, the algorithm looked up the current string and the next character in the dictionary. If that string was in the dictionary, it keeps adding characters. If the string was not in the dictionary, then the algorithm outputs the codeword for the current string.
 
-But, the current string on this iteration is the current string from the last iteration, plus one character. So when we were on the previous iteration of the loop, we could save that lookup and prevent a second lookup.
+But, the current string on this iteration is just the current string from the last iteration, plus one character. So when we were on the previous iteration of the loop, we could save that lookup and prevent a second lookup.
 
+
+Here is some of the code to further explain this point.
 
 ```c++
 while(next_character != EOF){
@@ -520,9 +504,11 @@ while(next_character != EOF){
 
 
 	// if we've already seen the sequence, keep going
-	std::string string_seen_plus_new_char = current_string_seen + next_character;
+	std::string string_seen_plus_new_char = current_string_seen 
+												+ next_character;
 	// save this iterator`
-	if (dictionary.find(string_seen_plus_new_char) != not_in_dictionary ){
+	if (dictionary.find(string_seen_plus_new_char) != 
+											not_in_dictionary){
 		current_string_seen = string_seen_plus_new_char;
 	}
 	else{
@@ -546,11 +532,12 @@ while(next_character != EOF){
 	// code ommitted
 
 	// if we've already seen the sequence, keep going
-	std::string string_seen_plus_new_char = current_string_seen + next_character;
+	std::string string_seen_plus_new_char = current_string_seen 
+												+ next_character;
 	codeword_seen_now = dictionary.find(string_seen_plus_new_char);
 	if (codeword_seen_now != not_in_dictionary ){
 		current_string_seen = string_seen_plus_new_char;
-		codeword_seen_previously = codeword_seen_now; // save codeword here
+		codeword_seen_previously = codeword_seen_now; // save codeword 
 	}
 	else{
 
@@ -564,33 +551,13 @@ while(next_character != EOF){
 }
 ```
 
-
-<!---
-```{r dictaccessesstatsfig, eval = F, warnings= F, messages = F, fig.cap = "Stats after reducing dictionary accesses", fig.height = 7, echo = F}
-stats_csv('data/stats/corpus_1_dictaccesses_34bf4e9.csv')
-
-```
--->
+This should reduce the amount of time the program spends on string concatenation.
 
 ### Using Const Char *
-<!--
-a12a2901d87d723223b21a9c9115c1c9787a8966
--->
 
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
-When reading a byte stream of the file, the file may not be in memory the way we want it. The `ifstream` class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using `mmap` and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a `char*` opens the possibility to getting rid of `std::string` entirely, which means way less overhead and decreased compression time.
-
-<!--
-**TODO**: Need to talk about getting rid of string concatenation at some point.
--->
-
-<!---
-```{r charstarstatsfig, eval =F, warnings= F, messages = F, fig.cap = "Stats after using character pointer", fig.height = 7, echo = F}
-stats_csv('data/stats/corpus_1_charstar_a12a290.csv', caption = "Corpus 1 Stats after using character pointers")
-stats_csv('data/stats/corpus_2_charstar_a12a290.csv', caption = "Corpus 2 Stats after using character pointers")
-```
--->
+When reading a byte stream of the file, the file may not be in memory the way we want it. The `ifstream` class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using `mmap` and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a `char*` opens the possibility to getting rid of `std::string` entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data. 
 
 ### Comparison
 
@@ -606,32 +573,28 @@ compare_coprora(list(
   FALSE)
 ```
 
-Figure \@ref(fig:comparecorporaoptimizingfig) shows the performance of the algorithm at the different milestones mentioned in this section. All graphs use the files from both corpora unless stated otherwise. On the left side of the figure you see that throughput increases for the program with each optimization. On the right, observe that mean compression time decreases with each optimization.
+Figure \@ref(fig:comparecorporaoptimizingfig) shows the performance of the algorithm at the different milestones mentioned in this section. The bars represent distinct versions of the algorithm, and they are listed chronologically from left to right. On the left side of the figure you see that throughput increases for the program with each optimization. On the right, observe that mean compression time decreases with each optimization.
 
 ## Trying Different Dictionaries
 
 A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and placing others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program. 
 
-So another step towards an efficient LZW seemed to be to abstract out the C++ `std::unordered_map` and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
+So another step towards an efficient LZW was to be to abstract out the C++ `std::unordered_map` and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
 
 ### Direct Map
 
 In our analysis of the two corpora, we found some interesting statistics in the redundancy of the data.
 
 
-```{r runstatsfigcp1, warnings= F, messages = F, fig.cap = "The counts for runs of each length", fig.height = 7, echo = F}
-stats_csv('data/corpus_1_run_stats.csv')
+```{r runstatsfigcp1, warnings= F, messages = F, fig.height = 7, echo = F}
+csv_to_table('data/corpus_1_run_stats.csv', 'Run statistics in Corpus 1')
 ```
 
-```{r runstatsfigcp2, warnings= F, messages = F, fig.cap = "The counts for runs of each length", fig.height = 7, echo = F}
-stats_csv('data/corpus_2_run_stats.csv')
+```{r runstatsfigcp2, warnings= F, messages = F, fig.height = 7, echo = F}
+csv_to_table('data/corpus_2_run_stats.csv', "Run statistics in Corpus 2")
 ```
 
 Tables \@ref(tab:runstatsfigcp1) and \@ref(tab:runstatsfigcp2) show stats on the run lengths of the "runs" of data, where a run is a string added to the dictionary during a run of the LZW algorithm, and a histogram of runs from both corpora can be seen in Figure \@ref(fig:allrunshistfig).
-
-```{r bothrunsfig, warnings= F, messages = F, fig.cap =  "Run counts for both corpora", fig.height = 7, echo= F}
-stats_csv('data/corpus_both_run_stats.csv')
-```
 
 ```{r allrunshistfig, warnings= F, messages = F, fig.cap = "A histogram showing the lengths of runs for both copora.", fig.height = 3, echo = F}
 all_runs <- read.csv('data/all_corpus_run_counts.csv')
@@ -647,10 +610,7 @@ To achieve a similar effect to multiple indexed dictionaries, we opted for a uni
 So we can create an indexed dictionary directly in memory for all strings below a certain length. We can use the `2n` bit representation of the string
 to index into an array of codewords. 
 
-For each string size 1 to n, we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size $4^3$, since there are $4^3$ possible strings. In each of those $4^3$ slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent $2^6=4^3$ values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than `n`, we can just use a hashmap on top to handle those.
-
-As seen in Figure \@ref(fig:directmaplength10statsfig), the throughput is greater and the average compression time is less for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
-
+For each string size 1 to n, we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size $4^3$, since there are $4^3$ possible strings. In each of those $4^3$ slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent $2^6=4^3$ values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than `n`, we can just use a hashmap (like `std::unordered_map`) on top to handle those. We call this data structure the Direct Map Dictionary. Different numbers `n` may provide different performance results.
 
 
 
@@ -662,15 +622,53 @@ compare_max_string_lengths(list(
 ))
 ```
 
-It's also worth noting that since we are allowing strings of all lengths, the compression ratio has not changed.
 
-### Multiple Indexed Dictionaries
+As seen in Figure \@ref(fig:directmaplenthcompfig), the throughput is greater and the average compression time is less for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
+
+Since we are limiting the size of codewords, we will run out of codewords faster than before. Thus, the compression ratio may be different.
+
+```{r directtostdcomprat, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
+
+df1 <- read.csv('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv')
+df2 <- read.csv('data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv')
+df3 <- read.csv('data/stats/corpus_1_stddict_68bea3d.csv')
+df4<- read.csv( 'data/stats/corpus_2_stddict_68bea3d.csv')
+
+dft1 <- rbind(df1,df2)
+dft1 <- dft1 %>% mutate(
+  Dictionary.Type = "Direct Map"
+)
+dft2 <- rbind(df3, df4)
+dft2 <- dft2 %>% mutate(
+  Dictionary.Type = "Standard Dictionary"
+)
+
+df<- rbind(dft1,dft2)
+
+library(tidyr)
+df_new <- df %>% 
+  select(File.Name, Dictionary.Type, Compression.Ratio, Original.File.Size) %>% 
+  spread(key = Dictionary.Type, value = Compression.Ratio) 
+names(df_new) <-   gsub("\\.", " ", names(df_new))
 
 
-Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. As seen in Figure \@ref(fig:multdictlengthcompfig), the throughput tends to increase and the average compression time tends to increase as we increase the number of indexed dictionaries. This result was not necessarily one we expected, but it does make sense that there is a certain amount of overhead that is required for a hashmap. The hash function takes about the same amount of time no matter the number of elements in the map, and resizing is rare. So adding more dictionaries only adds more overhead, which tends to slightly decrease efficiency.
+kbl(df_new) %>%
+  add_header_above(c(" " = 2, "Compression Ratio " = 2)) %>% 
+    kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
+```
+
+As seen in Figure \@ref(tab:directtostdcomprat), using the Direct Map Dictionary decreases the compression ratio on every input file relative to the Standard Dictionary Implementation. This is a trade off between compression time and compression ratio. Our hope is that the Direct Map version will be much faster, and we will be able to make up some of the compression ratio lost by using entropy encoding. 
+
+It's also worth noting that at this point, we are outputting codewords followed by characters. If we output codewords followed by two bits representing the next character, we will save 6 bits per iteration. The relative differences in compression ratio between the Direct Map and Std Dictionaries would not change.
+
+
+### Multiple Standard Dictionaries
+
+
+Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary, or a `std::unordered_map`. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. As seen in Figure \@ref(fig:multdictlengthcompfig), the throughput tends to increase and the average compression time tends to increase as we increase the number of indexed dictionaries. This result was not necessarily one we expected, but it does make sense that there is a certain amount of overhead that is required for a hashmap. The hash function takes about the same amount of time no matter the number of elements in the map, and resizing is rare. So adding more dictionaries only adds more overhead, which tends to slightly decrease efficiency.
 
 Compression ratio still remains the same as strings of all lengths are accommodated. 
-This logic is supported by Figure \@ref(fig:multvsonedictfig), which shoes one `std::unordered_map` compared the multiple indexed model.
+This logic is supported by Figure \@ref(fig:multvsonedictfig), which shows one `std::unordered_map` compared to the Multiple Indexed model.
 
 
 
@@ -693,12 +691,16 @@ compare_coprora(list(
 
 ```
 
+The Multiple Standard Dictionary implementation has the same compression ratio as the single Standard Dictionary implementation.
+
 
 ### Comparison
 
 Figure \@ref(fig:dictionarytechniquecompfig) shows a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary. As shown, the Direct Map technique greatly increases throughput and thus decreases average compression time. Given these results, we decided to shift our focus onto the Direct Map and try to optimize this scheme as much as possible.
 
-```{r dictionarytechniquecompfig, warnings= F, messages = F, fig.cap = "Comparing the three types of dictionaries. The Direct Map has a max length of 15 and the Mult Dict has a max length of 10.",echo = F, fig.height=3}
+Again, taking the Direct Map approach means decreasing compression ratio overall. The hope is that we will be able to use entropy encoding on the output of the Direct Map version of LZW to make up for that loss in compression ratio.
+
+```{r dictionarytechniquecompfig, warnings= F, messages = F, fig.cap = "Comparing the three types of dictionaries. The Direct Map has a max length of 15 and the Mult Dict has a max length of 10.",echo = F, fig.height=4}
 
 compare_coprora(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
@@ -716,7 +718,7 @@ Given that the Direct Map dictionary showed great performance improvements, we d
 
 Our dictionary data structures all have a `get_longest_in_dict` function. This function does the boring work of iterating through the input from the start, checking if each substring is in the dictionary. 
 
-Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by starting from the bottom.
+Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by looping up from zero.
 
 Another strategy would be to start from the maximum string length of the dictionary, so 15. We can check if the next string of the max length is in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down . Here is some pseudocode that mimics this proposed algorithm.
 
@@ -803,7 +805,7 @@ compare_coprora(list(
 
 ```
 
-We see that calculating the index on the fly does improve performance. However, we can also see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in \@ref(fig:allrunshistfig).  This means that if we start looking from runs around length 10, we should see a performance improvement.
+We see that calculating the index on the fly does tend to improve performance. However, we can also see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in \@ref(fig:allrunshistfig).  This means that if we start looking from runs around length 10, we should see a performance improvement.
 
 ### Finding the Longest From The Average
 
@@ -848,12 +850,15 @@ after_corpus2<- read.csv( 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv
 		before <- bind_rows(before_corpus2, before_corpus1)
 		after <- bind_rows(after_corpus2, after_corpus1)
 f <- tibble(
-  cr_before = sum(before$Original.File.Size)/sum(before$Compressed.Size),
-  cr_after = sum(after$Original.File.Size)/sum(after$Compressed.Size)
+  CR.Before = sum(before$Original.File.Size)/sum(before$Compressed.Size),
+  CR.After = sum(after$Original.File.Size)/sum(after$Compressed.Size)
 )
+  names(f) <-   gsub("\\.", " ",gsub("\\_", " " ,names(f))) 
 knitr::kable(f, format="latex", booktabs=TRUE, caption = "Compression Ratio change from disallowing long strings")
 
 ```
+
+This difference in compression ratio is very slight, but remember that we already took a decrease in compression ratio by selecting the Direct Map Dictionary over the Standard Dictionary.
 
 ### Using `pext`
 
@@ -931,7 +936,42 @@ compare_coprora(list(
 
 ## Returning to Compression Ratio
 
-After spending a lot of time debugging, we returned our attenting to the compression ratio. Most of our optimizations didn't have much of an effect on compression ratio, with the exception of disallowing strings over a certain length. It is also worth noting that the Direct Map dictionary and the Std dictionary implementations will have different compression ratios, as the Direct map has a max codeword size of 16 bits while the Std dict has a max codeword size of 32 bits. Std dict also allows longer strings.
+After spending a lot of time debugging, we returned our attention to the compression ratio. Most of our optimizations didn't have much of an effect on compression ratio, with the exception of disallowing strings over a certain length. We did note that the Direct Map does have a lower compression ratio than the Standard Dictionary implementation due to a smaller codeword size and to the fact that the Standard Dictionary allows runs of any length.  
+
+
+```{r directostdfinal, warnings= F, messages = F, fig.cap = "Comparing compression ratios of the two Dictionary versions", fig.height = 5, echo = F}
+process_corpus_group <- function(array){
+	wholedf = data.frame()
+	for(group_list in array){
+	df <- data.frame()
+	cp1 <- read.csv(group_list[1])
+	cp2 <- read.csv(group_list[2])
+	df <- bind_rows(cp1, cp2)
+	df['Implementation'] <- group_list[3]
+	wholedf<- bind_rows(df, wholedf)
+	}
+	wholedf
+}
+
+wholedf <- process_corpus_group(list(
+  c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
+  c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary')
+))
+
+
+library(tidyr)
+df_new <- wholedf %>% 
+  select(File.Name, Implementation, Compression.Ratio, Original.File.Size) %>% 
+  spread(key = Implementation, value = Compression.Ratio) 
+names(df_new) <-   gsub("\\.", " ", names(df_new))
+
+
+kbl(df_new) %>%
+  add_header_above(c(" " = 2, "Compression Ratio " = 2)) %>% 
+    kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
+```
+
+In Figure \@ref(fig:directostdfinal), we can see a comparison in compression ratios of the final implementations of the Direct Map and Standard Dictionaries. Note that the Multiple Standard Dictionary version should have the same compression ratios as its single counterpart.
 
 ### A point of Comparison
 
@@ -939,17 +979,17 @@ It's worth noting that for sequences of DNA, if the bases are encoded in ASCII, 
 
 So the takeaway is, if a DNA compression algorithm can't compress with a compression ratio of higher than 4.0 (2 bits per base), than this simple algorithm would be perferable every time. 
 
-We implemented this method using pext, and the results are detailed in the next chapter.
+We implemented this method using `pext`, and the results are detailed in the next chapter.
 
 ### Entropy Encoding
 
 Our initial idea was that we would compress the DNA with LZW, then use a entropy encoder like arithmetic encoding or Huffman to further compress the data. This was an oversight, as the algorithm as we have described it thus far does not lend itself well to entropy encoding.
 
-Our algorithm outputs codewords and two bits representing the next character. For a codeword size of 16 bits, this means each loop of our algorithm outputs 18 bits. So any repretitiveness or reuse will not be detectable by an entropy encoder which works on data of 8, 16, or 32 bit chunks.
+Our algorithm outputs codewords and two bits representing the next character. For a codeword size of 16 bits, this means each loop of our algorithm outputs 18 bits. So any repetitiveness or reuse will not be detectable by an entropy encoder which works on data of 8, 16, or 32 bit chunks.
 
-So maybe we break the compressed file into two seperate files; a file of codewords and a file of the two bit representations of the following characters. Now we can compress these two files, right?
+So maybe we break the compressed file into two separate files; a file of codewords and a file of the two bit representations of the following characters. Now we can compress these two files, right?
 
-The issue is that entropy encoders rely on repeating numbers of a high frequency. We can cut down the number of bits a certain entry takes to make it more compressible, and make less common entries take more bits (see Figure \@ref(fig:huffman)). DNA neucleotides show up with roughly the same frequency, so having 2 bits per character is hard to beat. So the file with all the charaters in it can't be compressed further.
+The issue is that entropy encoders rely on repeating numbers of a high frequency. We can cut down the number of bits a certain entry takes to make it more compressible, and make less common entries take more bits (see Figure \@ref(fig:huffman)). DNA nucleotides show up with roughly the same frequency, so having 2 bits per character is hard to beat. So the file with all the characters in it can't be compressed further.
 
 What about the codewords? Well, a key realization is that any codeword will only show up 4 times in a single run of the program. Say we add the codeword `1234="ACT"` to our dictionary. When will we output this codeword ? Well, we will output it when we see "ACT" followed by another character. Since there are only 4 characters, once you see those 4 other strings ("ACTA", "ACTG", "ACTC", and "ACTT"), we will never output it again because we are looking for the longest run possible.
 
@@ -960,7 +1000,7 @@ So on average, every codeword shows up a maximum of 4 times. This means that for
 
 ### A New Approach
 
-Given that we are not able to achieve a compression ratio over 4.0 with the current LZW, we need to alter our approach. The issue with our dataset is that long runs are rare. Every once in a while, you may replace a run of 15 with a codeword, but most of the time you are replacing a run less than 8. Eight characters can be represented by 16 bits, so any run under 8 that is replaced loses bits 
+Given that we are not able to achieve a compression ratio over 4.0 with the Direct Map LZW, we need to alter our approach. The issue with our dataset is that long runs are rare. Every once in a while, there may an opportunity to replace a run of 15 with a codeword, but most of the time the runs being replaced are of length 8 or less. Eight characters can be represented by 16 bits via the 2 bit encodings, so any run under 8 that is replaced actually increases the total number of bits in the output file.
 
 The fact that we are not getting a compression ratio over 4.0 led us to think of a new twist on the algorithm specifically tailored for this situation. The scheme uses three streams of data: characters, codewords, and indicator bits. The algorithm works as follows.
 
@@ -974,7 +1014,7 @@ Decompression: We start by reading an indicator bit
 + if the bit is 1, we read a codeword from the codeword stream and the next character from the character stream. We add this to the dictionary like the old algorithm.
 + if the bit is 0, we read the next 8 characters. We then use `find_longest` to find the longest run and add it to the dictionary. We can then put the 8 characters into the output stream and move on
 
-This is, in essence, a greedy algorithm. We have the choice of outputting a codeword or 8 characters every time, and we choose the choice which results in the least number of bits output.
+This is, in essence, a greedy algorithm. We have the choice of outputting a codeword or 8 characters every time, and we choose the choice which results in the least number of bits in the output file.
 
 The other advantage to this algorithm is that it works well for entropy encoding. The indicator bits are mostly 0, since most runs are less than 8. The codeword stream is also compressible, since none of the codewords for strings less than length 8 are output. The performance of this new scheme is assessed in the next chapter.
 

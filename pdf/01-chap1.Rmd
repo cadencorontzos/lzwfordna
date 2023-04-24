@@ -173,12 +173,12 @@ $$\text{0A....}$$
 10 & AAGGAATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7, CC: 8} & 0A1G4T3C \\
 \hline
 \end{tabular}
-\label{lzwexample}
+\label{tab:lzwexample}
 \caption{ An example of LZW ran on the input "AAGGAATCC"}
 \end{table}
 
 
-Table \@ref(lzwexample) illustrates this example fully.
+Table \@ref(tab:lzwexample) illustrates this example fully.
 
 When we are decoding, we start with the same dictionary. We see "0A" and know that that means "Take the string that has codeword 0, add on the character 'A' and add that new string to the dictionary. We would add that to the dictionary and assign it to our next available codeword, 4. As you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
 
