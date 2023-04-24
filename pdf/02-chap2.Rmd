@@ -93,8 +93,8 @@ mean_comp_time <- function(corpus){
   num_files <-length(unique(corpus$File.Name))
   means <- corpus %>% 
     reframe(
-     mean_comp= .000000001*sum(Compression.Time)/num_files,
-     mean_decomp= .000000001*sum(Decompression.Time)/num_files
+     mean_comp= .000000001*sum(Compression.Time)/num_files
+    # mean_decomp= .000000001*sum(Decompression.Time)/num_files
     )
   return(means)
 }

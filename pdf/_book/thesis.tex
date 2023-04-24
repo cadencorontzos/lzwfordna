@@ -201,7 +201,7 @@ This is an example of a thesis setup to use the reed thesis document class
 }
 
 \Abstract{
-This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lepel Ziv Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call three stream LZW. We also implement an algorithm which trivially translates neucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great comression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast.
+This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lepel Ziv Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call Three Stream LZW. We also implement an algorithm which trivially translates nucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great compression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast, having double the throughput of some professional compression tools.
 }
 
 	\usepackage{setspace}\onehalfspacing
@@ -260,7 +260,7 @@ This thesis gives an introduction to compression. Specifically, we focus on comp
 
   \listoffigures
   \begin{abstract}
-    This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lepel Ziv Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call three stream LZW. We also implement an algorithm which trivially translates neucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great comression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast.
+    This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lepel Ziv Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call Three Stream LZW. We also implement an algorithm which trivially translates nucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great compression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast, having double the throughput of some professional compression tools.
   \end{abstract}
   \begin{dedication}
     You can have a dedication here if you wish.
@@ -1557,17 +1557,89 @@ As you can see, the compression ratio for these other algorithms are much better
 \hypertarget{comparison-to-other-professional-tools}{%
 \section{Comparison to Other Professional Tools}\label{comparison-to-other-professional-tools}}
 
-Not surprisingly, all of our implementations do better than general compressors \texttt{bzip} and \texttt{gzip}. Both of these were made to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. \texttt{genozip} does outperform our implementation, which also makes sense as it was also created with DNA in mind.
+The other tools that we choose to use are \texttt{gzip}, \texttt{bzip}, and \texttt{genozip}. Both \texttt{bzip} and \texttt{gzip} are open source, general compression tools. As mentioned earlier \texttt{genozip} is was creates specifically for DNA compression and the compression of other common filetypes in biological research (Lan et al., 2021).
+\begin{table}[!h]
 
+\caption{\label{tab:othertoolstab}Performance metrics for other tools. Both bzip and gzip were ran with option -9, and genozip was ran with --input=generic.}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{l|r|r|r|r|r|r|r|r|r}
+\hline
+\multicolumn{2}{c|}{ } & \multicolumn{8}{c}{Compression Ratio } \\
+\cline{3-10}
+File Name & Original File Size & bzip & Direct Map Dictionary & Four to One & genozip & gzip & Mult Std Dictionaries & Std Dictionary & Three Stream LZW\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{3.77} & \cellcolor{gray!6}{3.266} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.95} & \cellcolor{gray!6}{3.60} & \cellcolor{gray!6}{3.915} & \cellcolor{gray!6}{3.915} & \cellcolor{gray!6}{3.885}\\
+\hline
+DNACorpus1/chntxx & 155844 & 3.66 & 3.203 & 3.999 & 3.85 & 3.49 & 3.722 & 3.722 & 3.888\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/hehcmv} & \cellcolor{gray!6}{229354} & \cellcolor{gray!6}{3.68} & \cellcolor{gray!6}{3.279} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.86} & \cellcolor{gray!6}{3.50} & \cellcolor{gray!6}{3.701} & \cellcolor{gray!6}{3.701} & \cellcolor{gray!6}{3.885}\\
+\hline
+DNACorpus1/humdyst & 38770 & 3.66 & 2.804 & 3.997 & 3.24 & 3.36 & 3.690 & 3.690 & 3.954\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/humghcs} & \cellcolor{gray!6}{66495} & \cellcolor{gray!6}{4.62} & \cellcolor{gray!6}{2.969} & \cellcolor{gray!6}{3.998} & \cellcolor{gray!6}{5.56} & \cellcolor{gray!6}{5.15} & \cellcolor{gray!6}{3.721} & \cellcolor{gray!6}{3.721} & \cellcolor{gray!6}{3.933}\\
+\hline
+DNACorpus1/humhbb & 73308 & 3.72 & 2.991 & 3.998 & 3.61 & 3.58 & 3.712 & 3.712 & 3.935\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/humhdab} & \cellcolor{gray!6}{58864} & \cellcolor{gray!6}{3.86} & \cellcolor{gray!6}{2.934} & \cellcolor{gray!6}{3.998} & \cellcolor{gray!6}{3.56} & \cellcolor{gray!6}{3.61} & \cellcolor{gray!6}{3.727} & \cellcolor{gray!6}{3.727} & \cellcolor{gray!6}{3.938}\\
+\hline
+DNACorpus1/humprtb & 56737 & 3.81 & 2.923 & 3.998 & 3.52 & 3.58 & 3.729 & 3.729 & 3.927\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{3.68} & \cellcolor{gray!6}{3.218} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.84} & \cellcolor{gray!6}{3.50} & \cellcolor{gray!6}{3.682} & \cellcolor{gray!6}{3.682} & \cellcolor{gray!6}{3.896}\\
+\hline
+DNACorpus1/mtpacga & 100314 & 3.76 & 3.169 & 3.999 & 3.84 & 3.58 & 3.844 & 3.844 & 3.875\\
+\hline
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{3.81} & \cellcolor{gray!6}{3.315} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.94} & \cellcolor{gray!6}{3.65} & \cellcolor{gray!6}{3.794} & \cellcolor{gray!6}{3.794} & \cellcolor{gray!6}{3.874}\\
+\hline
+DNACorpus2/AeCa & 1591049 & 3.71 & 3.778 & 4.000 & 4.00 & 3.57 & 3.786 & 3.786 & 3.874\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{3.64} & \cellcolor{gray!6}{2.807} & \cellcolor{gray!6}{3.997} & \cellcolor{gray!6}{3.28} & \cellcolor{gray!6}{3.36} & \cellcolor{gray!6}{3.653} & \cellcolor{gray!6}{3.653} & \cellcolor{gray!6}{3.957}\\
+\hline
+DNACorpus2/BuEb & 18940 & 3.62 & 2.552 & 3.993 & 2.59 & 3.25 & 3.595 & 3.595 & 3.964\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/DaRe} & \cellcolor{gray!6}{62565020} & \cellcolor{gray!6}{3.88} & \cellcolor{gray!6}{3.928} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.39} & \cellcolor{gray!6}{3.76} & \cellcolor{gray!6}{4.013} & \cellcolor{gray!6}{4.013} & \cellcolor{gray!6}{4.035}\\
+\hline
+DNACorpus2/DrMe & 32181429 & 3.70 & 3.847 & 4.000 & 4.03 & 3.60 & 3.836 & 3.836 & 3.865\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{3.72} & \cellcolor{gray!6}{3.918} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.14} & \cellcolor{gray!6}{3.61} & \cellcolor{gray!6}{3.893} & \cellcolor{gray!6}{3.893} & \cellcolor{gray!6}{3.928}\\
+\hline
+DNACorpus2/EsCo & 4641652 & 3.70 & 3.817 & 4.000 & 4.02 & 3.57 & 3.791 & 3.791 & 3.847\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{3.74} & \cellcolor{gray!6}{3.776} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.15} & \cellcolor{gray!6}{3.65} & \cellcolor{gray!6}{3.943} & \cellcolor{gray!6}{3.943} & \cellcolor{gray!6}{3.897}\\
+\hline
+DNACorpus2/HaHi & 3890005 & 3.77 & 3.916 & 4.000 & 4.14 & 3.63 & 3.884 & 3.884 & 3.944\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/HePy} & \cellcolor{gray!6}{1667825} & \cellcolor{gray!6}{3.77} & \cellcolor{gray!6}{3.884} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.14} & \cellcolor{gray!6}{3.67} & \cellcolor{gray!6}{3.894} & \cellcolor{gray!6}{3.894} & \cellcolor{gray!6}{3.942}\\
+\hline
+DNACorpus2/HoSa & 189752667 & 3.89 & 3.953 & 4.000 & 4.22 & 3.73 & 4.118 & 4.118 & 4.075\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{3.73} & \cellcolor{gray!6}{3.843} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.21} & \cellcolor{gray!6}{3.65} & \cellcolor{gray!6}{3.858} & \cellcolor{gray!6}{3.858} & \cellcolor{gray!6}{3.908}\\
+\hline
+DNACorpus2/PlFa & 8986712 & 3.82 & 4.031 & 4.000 & 4.28 & 3.77 & 4.000 & 4.000 & 4.010\\
+\hline
+\cellcolor{gray!6}{DNACorpus2/ScPo} & \cellcolor{gray!6}{10652155} & \cellcolor{gray!6}{3.68} & \cellcolor{gray!6}{3.847} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.07} & \cellcolor{gray!6}{3.57} & \cellcolor{gray!6}{3.813} & \cellcolor{gray!6}{3.813} & \cellcolor{gray!6}{3.851}\\
+\hline
+DNACorpus2/YeMi & 73689 & 3.78 & 3.099 & 3.998 & 3.72 & 3.58 & 3.859 & 3.859 & 3.881\\
+\hline
+\end{tabular}}
+\end{table}
+Table \ref{tab:othertoolstab} summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors \texttt{bzip} and \texttt{gzip} in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, \texttt{genozip} does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. However, if you look at the performance data in Figure \ref{fig:othertoolsgraphfig}, you can see that our both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including \texttt{genozip}. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
+\begin{figure}
+\centering
+\includegraphics{thesis_files/figure-latex/othertoolsgraphfig-1.pdf}
+\caption{\label{fig:othertoolsgraphfig}Compression ratios of related works on DNACorpus1, reported as bits per base}
+\end{figure}
 \hypertarget{conclusion}{%
 \chapter*{Conclusion}\label{conclusion}}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-We started with a naive implementation of Lempel Ziv Welch, and our goal was to optimize it for DNA. Although we were not able to achieve as high of a compression ratio as other algorithms in literature and professional DNA compresion tools, we were able to make a fast algorithm that can do better than a 4.0 compression ratio on large files. There is a trade off when it comes to choosing a compression algorithm, with speed and space. If you needed to compress DNA files as small as possible, you should use the professional tools or one of the algorithms proposed in other research papers. If you want to compress DNA very quickly and you are okay with a moderate compression ratio, than you should use the Four to One implementation which we discussed previously. If you want something that is in between, with a moderate compression ratio and fairly fast, than the Three Stream implementation of LZW would work very well for large files.
+We started with a naive implementation of Lempel Ziv Welch, and our goal was to optimize it for DNA. Although we were not able to achieve as high of a compression ratio as other algorithms in literature and professional DNA compresion tools, we were able to make a fast algorithm that can do better than a 4.0 compression ratio on large files. There is a trade off when it comes to choosing a compression algorithm, with speed and space. If you needed to compress DNA files as small as possible, you should use the professional tools or one of the algorithms proposed in other research papers. If you want to compress DNA very quickly and you are okay with a moderate compression ratio, than you should use the Four to One implementation which we discussed previously. If you want something that is in between, with a moderate compression ratio and fairly fast, the results in Chapter 3 tell us that the Three Stream implementation of LZW would work very well for large files.
 
 The concept of an indexed, Direct Map dictionary is one that could prove useful for other applications. Further research could be used to apply a similar idea to a different algorithm, one more suited to the redundancies present in DNA. I.e, could we take one of the research papers discussed in the Related Works section and apply the idea of the Direct Map to the algorithm presented in it? This could also be useful in other areas of compression in which the workload has a limited number of characters, because the size of the dictionary grows exponentially with as the number of characters needing to be accounted for increases.
 
 The Four to One implementation and the usage of \texttt{pext} in general is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications with where there are much less characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA).
+
+Overall, our thesis has produced a few notable implementations of LZW and shown the applicability of \texttt{pext} in optimizing compression algorithms.
 
 \appendix
 
