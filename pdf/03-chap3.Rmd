@@ -146,7 +146,8 @@ Note that I wasn't able to get compression times for these algorithms, only the 
 
 Name <- c("DNACorpus1/chmpxx", "DNACorpus1/chntxx", "DNACorpus1/hehcmv", "DNACorpus1/humdyst", "DNACorpus1/humghcs", "DNACorpus1/humhbb", "DNACorpus1/humhdab", "DNACorpus1/humprtb", "DNACorpus1/mpomtcg", "DNACorpus1/mtpacga", "DNACorpus1/vaccg")
 
-process_run_corpus1 <- function(filename){
+
+process_run_corpus1 <- function(filename, ms=FALSE){
   
   df <- read.csv(filename)
   vec <- numeric()
@@ -154,6 +155,9 @@ process_run_corpus1 <- function(filename){
     df_filtered <- df[df$File.Name == name, ]
     ogfs <- (first(df_filtered[1,"Compressed.Size"]) * 8)
 
+    if(ms){
+      
+    }
     bitscomp <-first(df_filtered[1, "Original.File.Size"])
 
     bits_per_base <- ogfs / bitscomp
@@ -198,13 +202,93 @@ As you can see, the compression ratio for these other algorithms are much better
 
 ## Comparison to Other Professional Tools
 
-```{r}
+The other tools that we choose to use are `gzip`, `bzip`, and `genozip`. Both `bzip` and `gzip` are open source, general compression tools. As mentioned earlier `genozip` is was creates specifically for DNA compression and the compression of other common filetypes in biological research [@genozip]. 
+
+```{r othertoolstab, echo=FALSE}
+gzip1 <- read.csv("data/stats/other_tools/gzip_corpus_1_stats.csv")
+gzip2 <- read.csv("data/stats/other_tools/gzip_corpus_2_stats.csv")
+gzip <- rbind(gzip1, gzip2)
+gzip <- gzip %>%  mutate(
+  Program = "gzip"
+)
+
+bzip1 <- read.csv("data/stats/other_tools/bzip_corpus_1_stats.csv")
+bzip2 <- read.csv("data/stats/other_tools/bzip_corpus_2_stats.csv")
+bzip <- rbind(bzip1, bzip2)
+bzip <- bzip %>%  mutate(
+  Program = "bzip"
+)
+
+genozip1 <- read.csv("data/stats/other_tools/genozip_corpus_1_stats.csv")
+genozip2 <- read.csv("data/stats/other_tools/genozip_corpus_2_stats.csv")
+genozip <- rbind(genozip1, genozip2)
+genozip <- genozip %>% mutate(
+  Program = "genozip"
+)
+wholedf1 <- rbind(genozip, bzip, gzip)
+
+wholedf <- process_corpus_group(list(
+  c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
+  c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary'),
+  c('data/stats/final/corpus_1_multstddict_final_687ff25.csv', 'data/stats/final/corpus_2_multstddict_final_687ff25.csv', 'Mult Std Dictionaries'),
+  c('data/stats/final/corpus_1_4t1_final_687ff25.csv', 'data/stats/final/corpus_2_4t1_final_687ff25.csv', 'Four to One'),
+  c('data/stats/final/corpus_1_threestream_final_687ff25.csv', 'data/stats/final/corpus_2_threestream_final_687ff25.csv', 'Three Stream LZW')
+))
+
+wholedf <- wholedf %>% rename(
+  Program = Implementation
+) %>% mutate(
+  Compression.Time = Compression.Time * .000000001
+) %>% 
+  select(
+    Compression.Time,
+    Compression.Ratio,
+    Original.File.Size,
+    File.Name,
+    Compressed.Size,
+    Program,
+    
+  )
+
+wholedf <- rbind(wholedf, wholedf1)
+
+library(tidyr)
+df_new <- wholedf %>% 
+  select(File.Name, Program, Compression.Ratio, Original.File.Size) %>% 
+  spread(key = Program, value = Compression.Ratio) 
+names(df_new) <-   gsub("\\.", " ", names(df_new))
 
 
+kbl(df_new, caption = "Performance metrics for other tools. Both bzip and gzip were ran with option -9, and genozip was ran with --input=generic.") %>%
+  add_header_above(c(" " = 2, "Compression Ratio " = 8 )) %>% 
+    kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 
 ```
 
 
-Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip`. Both of these were made to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. `genozip` does outperform our implementation, which also makes sense as it was also created with DNA in mind. 
+Table  \@ref(tab:othertoolstab) summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip` in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, `genozip` does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. However, if you look at the performance data in Figure \@ref(fig:othertoolsgraphfig), you can see that our both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including `genozip`. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
+
+```{r othertoolsgraphfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
+
+
+summary <- wholedf %>% 
+  group_by(Program) %>% 
+  reframe(
+    comp_throughput = sum(Original.File.Size)/sum(Compression.Time),
+    mean_comp_time = sum(Compression.Time)/ length(unique(File.Name))
+  )
+
+  plot1<- summary %>% 
+    ggplot(aes(x = Program, y = comp_throughput, fill = Program))+
+    geom_col(show.legend = F)+
+    labs(x="Program", y = "Throughput (Mb/s)", title = "Throughput")+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  plot2 <- summary %>% 
+    ggplot(aes(x = Program, y = mean_comp_time, fill = Program))+
+    geom_col(show.legend = F)+
+    labs(x="Program", y = "Mean Compression Time (s)", title = "Average Compression Time")+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  plot1+plot2
+```
 
 
