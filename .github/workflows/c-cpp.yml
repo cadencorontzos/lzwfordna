@@ -35,8 +35,8 @@ jobs:
     - name: make docs
       uses: mattnotmitt/doxygen-action@v1.9.5
       with:
-        working-directory: '.'
-        doxyfile-path: 'doxygen.config'
+        working-directory: 'lzwcpp'
+        doxyfile-path: 'lzwcpp/doxygen.config'
     - name: Deploy Docs
       uses: peaceiris/actions-gh-pages@v3
       with:
