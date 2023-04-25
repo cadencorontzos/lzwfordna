@@ -1,5 +1,5 @@
 /*
- * A pair of simple classes tu perform stream I/O on individual bits.
+ * A pair of simple classes to perform stream I/O on individual bits.
  */
 #pragma once
 #include <iostream>

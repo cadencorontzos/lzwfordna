@@ -1,4 +1,3 @@
-
 #include "dictionary.hh"
 #include <climits>
 #include <cmath>
@@ -6,6 +5,11 @@
 #include <limits>
 #include <memory>
 #include <unordered_map>
+
+/**
+ * A collection of classes for LZW using the std::unordered_map
+ */
+namespace Std_Dictionary {
 
 typedef uint32_t codeword_type;
 const codeword_type MAX_CODEWORD = std::numeric_limits<codeword_type>::max();
@@ -20,18 +24,13 @@ public:
       : Next_Run<codeword_type>(0, 0), next_longest_run_string(""){};
 };
 
-// Std Encode
-//
-// use a unordered map to track codewords
-//
 class LZW_Encode_Dictionary
     : private LZWDictionary<codeword_type, Next_Longest_Run> {
 private:
-  // dictionary and end of dictionary
   std::unordered_map<std::string, codeword_type> dictionary;
   std::unordered_map<std::string, codeword_type>::const_iterator end;
 
-  // track when we run out of codewords
+  /// track when we run out of codewords
   bool empty;
 
 public:
@@ -113,9 +112,9 @@ public:
   }
 };
 
-// std Decode
-//
-//
+/**
+ * Std Decode just uses a the same unordered_map
+ */
 class LZW_Decode_Dictionary : private LZWDictionary<codeword_type> {
 private:
   // dictionary and end of dictionary
@@ -149,11 +148,9 @@ public:
   }
 };
 
-// Codeword_Helper for Direct Map:
-//
-// track current codeword and use the minumum number of bits required to display
-// said codeword
-//
+/**
+ * Tracks codewords and allows for growing codewords
+ */
 class Codeword_Helper : public CW_Tracker<codeword_type> {
 private:
   unsigned int current_max_cw;
@@ -173,3 +170,6 @@ public:
     return current_codeword++;
   }
 };
+} // namespace Std_Dictionary
+
+using namespace Std_Dictionary;

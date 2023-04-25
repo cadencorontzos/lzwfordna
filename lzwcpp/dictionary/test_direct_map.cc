@@ -126,45 +126,46 @@ void test_find_longest_looping_down() {
 }
 
 void test_find_longest_looping_up() {
-	{
+  {
 
-  LZW_Encode_Dictionary f;
+    LZW_Encode_Dictionary f;
 
-  // load three strings, each building on last
-  f.add_string("A", 1, 1);
-  f.add_string("AC", 2, 2);
-  f.add_string("ACT", 3, 3);
+    // load three strings, each building on last
+    f.add_string("A", 1, 1);
+    f.add_string("AC", 2, 2);
+    f.add_string("ACT", 3, 3);
 
-  // for this input, "ACT" should be the longest run in the dict
-  std::string input = "ACTG";
+    // for this input, "ACT" should be the longest run in the dict
+    std::string input = "ACTG";
 
-  Next_Longest_Run ret = f.find_longest_looping_up_on_fly(
-      input.c_str(), input.c_str() + input.length(), 0, 0);
-  std::string output = input.substr(0, ret.next_run_length);
-  assert(output == "ACT");
-  assert(ret.codeword_of_next_run == 3);
-  assert(f.code_of(output.c_str(), 3) == 3);
-	}
-	{
+    Next_Longest_Run ret = f.find_longest_looping_up_on_fly(
+        input.c_str(), input.c_str() + input.length(), 0, 0);
+    std::string output = input.substr(0, ret.next_run_length);
+    assert(output == "ACT");
+    assert(ret.codeword_of_next_run == 3);
+    assert(f.code_of(output.c_str(), 3) == 3);
+  }
+  {
 
-  LZW_Encode_Dictionary f;
+    LZW_Encode_Dictionary f;
 
-  // load three strings, each building on last
-  f.add_string("A", 1, 1);
-  f.add_string("AC", 2, 2);
-  f.add_string("ACT", 3, 3);
+    // load three strings, each building on last
+    f.add_string("A", 1, 1);
+    f.add_string("AC", 2, 2);
+    f.add_string("ACT", 3, 3);
 
-  // for this input, "ACT" should be the longest run in the dict
-  std::string input = "ACTG";
+    // for this input, "ACT" should be the longest run in the dict
+    std::string input = "ACTG";
 
-  index_type i  = (INDEX_OF_A << 6) + (INDEX_OF_C << 4) + (INDEX_OF_T << 2) + INDEX_OF_G;
-  Next_Longest_Run ret = f.find_longest_looping_up(
-      input.c_str(), input.c_str() + input.length(), 1, i << (32 -8 ));
-  std::string output = input.substr(0, ret.next_run_length);
-  assert(output == "ACT");
-  assert(ret.codeword_of_next_run == 3);
-  assert(f.code_of(output.c_str(), 3) == 3);
-	}
+    index_type i =
+        (INDEX_OF_A << 6) + (INDEX_OF_C << 4) + (INDEX_OF_T << 2) + INDEX_OF_G;
+    Next_Longest_Run ret = f.find_longest_looping_up(
+        input.c_str(), input.c_str() + input.length(), 1, i << (32 - 8));
+    std::string output = input.substr(0, ret.next_run_length);
+    assert(output == "ACT");
+    assert(ret.codeword_of_next_run == 3);
+    assert(f.code_of(output.c_str(), 3) == 3);
+  }
 }
 
 void test_find_longest_binary_search() {

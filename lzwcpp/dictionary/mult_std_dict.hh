@@ -6,11 +6,19 @@
 #include <memory>
 #include <unordered_map>
 
+/**
+ * A collection of classes for LZW using Multiple Indexed std::unordered_maps
+ */
+namespace Multiple_Std_Dictionary {
+
 typedef uint32_t codeword_type;
 const codeword_type MAX_CODEWORD = std::numeric_limits<codeword_type>::max();
 const int CODEWORD_SIZE = std::numeric_limits<codeword_type>::digits;
 const int MAX_STRING_LENGTH = 15;
 
+/**
+ * Tracks next longest run
+ */
 class Next_Longest_Run : public Next_Run<codeword_type> {
 public:
   std::string next_longest_run_string;
@@ -20,17 +28,19 @@ public:
       : Next_Run<codeword_type>(0, 0), next_longest_run_string(""){};
 };
 
-// Std Mult dict Encode
-//
-// use an array of unordered map to track codewords
-//
+/**
+ * Std Mult dict Encode
+ *
+ * use an array of unordered map to track codewords
+ *
+ */
 class LZW_Encode_Dictionary
     : private LZWDictionary<codeword_type, Next_Longest_Run> {
 private:
-  // array of dictionaries
-  // we need one for every string length up to our max, plus another for all
-  // strings longer than that max we also don't want weird indexing so we will
-  // have one dict at the bottom that is empty
+  /// array of dictionaries.
+  /// we need one for every string length up to our max, plus another for all
+  /// strings longer than that max. we also don't want weird indexing so we will
+  /// have one dict at the bottom that is empty
   std::array<std::unordered_map<std::string, codeword_type>,
              MAX_STRING_LENGTH + 2>
       dictionary_array;
@@ -38,9 +48,13 @@ private:
              MAX_STRING_LENGTH + 2>
       dictionary_ends;
 
-  // track when we run out of codewords
+  /// track when we run out of codewords
   bool empty;
 
+  /**
+   * gives index of dict where string of length should go
+   * @param len length
+   */
   int len_to_index(unsigned len) const {
     if (len <= MAX_STRING_LENGTH) {
       return len;
@@ -94,6 +108,12 @@ public:
     return Next_Longest_Run(length, entry, run_string);
   }
 
+  /**
+   * Adds a string to the dictionary
+   * @param input pointer to start of input
+   * @param len length to read
+   * @param codeword codeword to assign to input string
+   */
   void add_string(const char *input, unsigned len,
                   codeword_type codeword) override {
     // we want to prevent overflow, so when we reached our limit,
@@ -108,6 +128,12 @@ public:
     dictionary_array[len_to_index(len)][str] = codeword;
   }
 
+  /**
+   * Adds a string to the dictionary using next run object
+   * @param input pointer to start of input
+   * @param next_longest information about the next longest run
+   * @param codeword codeword to assign to input string
+   */
   void add_string(const char *input, Next_Longest_Run next_longest,
                   codeword_type codeword) override {
     if (empty) {
@@ -130,9 +156,11 @@ public:
   }
 };
 
-// std Decode
-//
-//
+/**
+ * Mult Std Decode
+ *
+ * just uses an unordered_map
+ */
 class LZW_Decode_Dictionary : private LZWDictionary<codeword_type> {
 private:
   // dictionary and end of dictionary
@@ -166,11 +194,12 @@ public:
   }
 };
 
-// Codeword_Helper for mult_dicts:
-//
-// track current codeword and use the minumum number of bits required to display
-// said codeword
-//
+/**
+ * Codeword_Helper for mult_dicts:
+ *
+ * track current codeword and use the minumum number of bits required to display
+ * said codeword
+ */
 class Codeword_Helper : public CW_Tracker<codeword_type> {
 private:
   unsigned int current_max_cw;
@@ -190,3 +219,6 @@ public:
     return current_codeword++;
   }
 };
+} // namespace Multiple_Std_Dictionary
+
+using namespace Multiple_Std_Dictionary;
