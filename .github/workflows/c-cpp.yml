@@ -36,9 +36,9 @@ jobs:
         working-directory: 'lzwcpp'
         doxyfile-path: 'doxygen.config'
     - name: ls
-      run: ls ../. && ls
+      run: ls
     - name: Deploy Docs
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ../docs
+        publish_dir: ./docs
