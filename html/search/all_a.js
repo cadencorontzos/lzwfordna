@@ -1,0 +1,8 @@
+var searchData=
+[
+  ['next_5flongest_5findex_5fsize_0',['NEXT_LONGEST_INDEX_SIZE',['../classLZW__Encode__Dictionary.html#adaa7d145f3cca06470a99d43b29c80ec',1,'LZW_Encode_Dictionary']]],
+  ['next_5flongest_5frun_1',['Next_Longest_Run',['../classNext__Longest__Run.html',1,'Next_Longest_Run'],['../classNext__Longest__Run.html#ab48dc050ca280cac7ed35afe42c71e76',1,'Next_Longest_Run::Next_Longest_Run(unsigned length, codeword_type cw, index_type index)'],['../classNext__Longest__Run.html#a650f9274abedc111799bf922965e30f1',1,'Next_Longest_Run::Next_Longest_Run()'],['../classNext__Longest__Run.html#a3ea38d9943bcd46fd976ab01d277de5a',1,'Next_Longest_Run::Next_Longest_Run(unsigned length, codeword_type cw, std::string str)'],['../classNext__Longest__Run.html#a650f9274abedc111799bf922965e30f1',1,'Next_Longest_Run::Next_Longest_Run()'],['../classNext__Longest__Run.html#a3ea38d9943bcd46fd976ab01d277de5a',1,'Next_Longest_Run::Next_Longest_Run(unsigned length, codeword_type cw, std::string str)'],['../classNext__Longest__Run.html#a650f9274abedc111799bf922965e30f1',1,'Next_Longest_Run::Next_Longest_Run()']]],
+  ['next_5flongest_5frun_5fstring_2',['next_longest_run_string',['../classNext__Longest__Run.html#aca0820fe6e91254f701d285d101cf2eb',1,'Next_Longest_Run']]],
+  ['next_5frun_3',['Next_Run',['../classNext__Run.html',1,'Next_Run&lt; codeword_type &gt;'],['../classNext__Run.html#af841c43a30e40e2d2d3352dbb2c0ed28',1,'Next_Run::Next_Run(unsigned length, codeword_type cw)']]],
+  ['next_5frun_5flength_4',['next_run_length',['../classNext__Run.html#af472c19f2f4422b0c14b219624a497d8',1,'Next_Run']]]
+];

@@ -1,0 +1,137 @@
+\hypertarget{classLZWDictionary}{}\doxysection{LZWDictionary\texorpdfstring{$<$}{<} codeword\+\_\+type, next\+\_\+run\+\_\+type \texorpdfstring{$>$}{>} Class Template Reference}
+\label{classLZWDictionary}\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+
+
+{\ttfamily \#include $<$dictionary.\+hh$>$}
+
+Inheritance diagram for LZWDictionary\texorpdfstring{$<$}{<} codeword\+\_\+type, next\+\_\+run\+\_\+type \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.224044cm]{classLZWDictionary}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classLZWDictionary_aa2440a7bbbe98eed1cb98d52fe2d1cd5}{LZWDictionary}} ()=default
+\item 
+\mbox{\hyperlink{classLZWDictionary_a7a4ebb0d8f566a9f591f3cce4bf49d30}{$\sim$\+LZWDictionary}} ()=default
+\item 
+virtual next\+\_\+run\+\_\+type \mbox{\hyperlink{classLZWDictionary_a91944e79498da423d0e99c34e5b6cee2}{find\+\_\+longest\+\_\+in\+\_\+dict}} (const char $\ast$, int, int)
+\item 
+virtual next\+\_\+run\+\_\+type \mbox{\hyperlink{classLZWDictionary_aa30e2de401bdd315da26b5260ab85f11}{find\+\_\+longest\+\_\+in\+\_\+dict}} (const char $\ast$, const char $\ast$)
+\item 
+virtual void \mbox{\hyperlink{classLZWDictionary_a6b6674b0a0ea7584e1f02b101d3c402f}{add\+\_\+string}} (std\+::string, \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}})
+\item 
+virtual void \mbox{\hyperlink{classLZWDictionary_aac66898b8d84027860d45780e1f6d7c2}{add\+\_\+string}} (const char $\ast$, unsigned, \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}})
+\item 
+virtual void \mbox{\hyperlink{classLZWDictionary_a506826e11bb36ede6da8ed6643c0f034}{add\+\_\+string}} (const char $\ast$, next\+\_\+run\+\_\+type, \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}})
+\item 
+virtual \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} \mbox{\hyperlink{classLZWDictionary_ac1a2aecc7c22c55fa39b45434e133212}{code\+\_\+of}} (std\+::string, unsigned) const
+\item 
+virtual \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} \mbox{\hyperlink{classLZWDictionary_aa1524a19e5cb3a91d1aa1aaa6b3ead99}{code\+\_\+of}} (const char $\ast$, unsigned) const
+\item 
+virtual std\+::string \mbox{\hyperlink{classLZWDictionary_a3edeba4860bcfe0aa86a0661a5408749}{str\+\_\+of}} (\mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}) const
+\item 
+virtual void \mbox{\hyperlink{classLZWDictionary_adc55bd1afc184af08f0e3f44066b280a}{load\+\_\+starting\+\_\+dictionary}} ()=0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classLZWDictionary_aa2440a7bbbe98eed1cb98d52fe2d1cd5}\label{classLZWDictionary_aa2440a7bbbe98eed1cb98d52fe2d1cd5}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!LZWDictionary@{LZWDictionary}}
+\index{LZWDictionary@{LZWDictionary}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{LZWDictionary()}{LZWDictionary()}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+\mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\mbox{\hyperlink{classLZWDictionary}{\+::\+LZWDictionary}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+\mbox{\Hypertarget{classLZWDictionary_a7a4ebb0d8f566a9f591f3cce4bf49d30}\label{classLZWDictionary_a7a4ebb0d8f566a9f591f3cce4bf49d30}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!````~LZWDictionary@{$\sim$LZWDictionary}}
+\index{````~LZWDictionary@{$\sim$LZWDictionary}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{$\sim$LZWDictionary()}{~LZWDictionary()}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+\mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::$\sim$\mbox{\hyperlink{classLZWDictionary}{LZWDictionary}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classLZWDictionary_a506826e11bb36ede6da8ed6643c0f034}\label{classLZWDictionary_a506826e11bb36ede6da8ed6643c0f034}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!add\_string@{add\_string}}
+\index{add\_string@{add\_string}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{add\_string()}{add\_string()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+virtual void \mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::add\+\_\+string (\begin{DoxyParamCaption}\item[{const char $\ast$}]{,  }\item[{next\+\_\+run\+\_\+type}]{,  }\item[{\mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+\mbox{\Hypertarget{classLZWDictionary_aac66898b8d84027860d45780e1f6d7c2}\label{classLZWDictionary_aac66898b8d84027860d45780e1f6d7c2}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!add\_string@{add\_string}}
+\index{add\_string@{add\_string}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{add\_string()}{add\_string()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+virtual void \mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::add\+\_\+string (\begin{DoxyParamCaption}\item[{const char $\ast$}]{,  }\item[{unsigned}]{,  }\item[{\mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+\mbox{\Hypertarget{classLZWDictionary_a6b6674b0a0ea7584e1f02b101d3c402f}\label{classLZWDictionary_a6b6674b0a0ea7584e1f02b101d3c402f}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!add\_string@{add\_string}}
+\index{add\_string@{add\_string}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{add\_string()}{add\_string()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+virtual void \mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::add\+\_\+string (\begin{DoxyParamCaption}\item[{std\+::string}]{,  }\item[{\mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+\mbox{\Hypertarget{classLZWDictionary_aa1524a19e5cb3a91d1aa1aaa6b3ead99}\label{classLZWDictionary_aa1524a19e5cb3a91d1aa1aaa6b3ead99}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!code\_of@{code\_of}}
+\index{code\_of@{code\_of}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{code\_of()}{code\_of()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+virtual \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} \mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::code\+\_\+of (\begin{DoxyParamCaption}\item[{const char $\ast$}]{,  }\item[{unsigned}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented in \mbox{\hyperlink{classLZW__Encode__Dictionary_a4fc7daeb7085a96d749268441346adc6}{LZW\+\_\+\+Encode\+\_\+\+Dictionary}}, \mbox{\hyperlink{classLZW__Encode__Dictionary_a4fc7daeb7085a96d749268441346adc6}{LZW\+\_\+\+Encode\+\_\+\+Dictionary}}, and \mbox{\hyperlink{classLZW__Encode__Dictionary_a4fc7daeb7085a96d749268441346adc6}{LZW\+\_\+\+Encode\+\_\+\+Dictionary}}.
+
+\mbox{\Hypertarget{classLZWDictionary_ac1a2aecc7c22c55fa39b45434e133212}\label{classLZWDictionary_ac1a2aecc7c22c55fa39b45434e133212}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!code\_of@{code\_of}}
+\index{code\_of@{code\_of}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{code\_of()}{code\_of()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+virtual \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} \mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::code\+\_\+of (\begin{DoxyParamCaption}\item[{std\+::string}]{,  }\item[{unsigned}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+\mbox{\Hypertarget{classLZWDictionary_aa30e2de401bdd315da26b5260ab85f11}\label{classLZWDictionary_aa30e2de401bdd315da26b5260ab85f11}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!find\_longest\_in\_dict@{find\_longest\_in\_dict}}
+\index{find\_longest\_in\_dict@{find\_longest\_in\_dict}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{find\_longest\_in\_dict()}{find\_longest\_in\_dict()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+virtual next\+\_\+run\+\_\+type \mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::find\+\_\+longest\+\_\+in\+\_\+dict (\begin{DoxyParamCaption}\item[{const char $\ast$}]{,  }\item[{const char $\ast$}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented in \mbox{\hyperlink{classLZW__Encode__Dictionary_a2d7518c3147f6c1102ef84c7aeed0e8c}{LZW\+\_\+\+Encode\+\_\+\+Dictionary}}, \mbox{\hyperlink{classLZW__Encode__Dictionary_a2d7518c3147f6c1102ef84c7aeed0e8c}{LZW\+\_\+\+Encode\+\_\+\+Dictionary}}, and \mbox{\hyperlink{classLZW__Encode__Dictionary_a2d7518c3147f6c1102ef84c7aeed0e8c}{LZW\+\_\+\+Encode\+\_\+\+Dictionary}}.
+
+\mbox{\Hypertarget{classLZWDictionary_a91944e79498da423d0e99c34e5b6cee2}\label{classLZWDictionary_a91944e79498da423d0e99c34e5b6cee2}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!find\_longest\_in\_dict@{find\_longest\_in\_dict}}
+\index{find\_longest\_in\_dict@{find\_longest\_in\_dict}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{find\_longest\_in\_dict()}{find\_longest\_in\_dict()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+virtual next\+\_\+run\+\_\+type \mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::find\+\_\+longest\+\_\+in\+\_\+dict (\begin{DoxyParamCaption}\item[{const char $\ast$}]{,  }\item[{int}]{,  }\item[{int}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+\mbox{\Hypertarget{classLZWDictionary_adc55bd1afc184af08f0e3f44066b280a}\label{classLZWDictionary_adc55bd1afc184af08f0e3f44066b280a}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!load\_starting\_dictionary@{load\_starting\_dictionary}}
+\index{load\_starting\_dictionary@{load\_starting\_dictionary}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{load\_starting\_dictionary()}{load\_starting\_dictionary()}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+virtual void \mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::load\+\_\+starting\+\_\+dictionary (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \mbox{\hyperlink{classLZW__Encode__Dictionary_a5444ca2ad02971afcae4e04955c957b3}{LZW\+\_\+\+Encode\+\_\+\+Dictionary}}, \mbox{\hyperlink{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}{LZW\+\_\+\+Decode\+\_\+\+Dictionary}}, \mbox{\hyperlink{classLZW__Encode__Dictionary_a5444ca2ad02971afcae4e04955c957b3}{LZW\+\_\+\+Encode\+\_\+\+Dictionary}}, \mbox{\hyperlink{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}{LZW\+\_\+\+Decode\+\_\+\+Dictionary}}, \mbox{\hyperlink{classLZW__Encode__Dictionary_a5444ca2ad02971afcae4e04955c957b3}{LZW\+\_\+\+Encode\+\_\+\+Dictionary}}, and \mbox{\hyperlink{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}{LZW\+\_\+\+Decode\+\_\+\+Dictionary}}.
+
+\mbox{\Hypertarget{classLZWDictionary_a3edeba4860bcfe0aa86a0661a5408749}\label{classLZWDictionary_a3edeba4860bcfe0aa86a0661a5408749}} 
+\index{LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}!str\_of@{str\_of}}
+\index{str\_of@{str\_of}!LZWDictionary$<$ codeword\_type, next\_run\_type $>$@{LZWDictionary$<$ codeword\_type, next\_run\_type $>$}}
+\doxysubsubsection{\texorpdfstring{str\_of()}{str\_of()}}
+{\footnotesize\ttfamily template$<$typename \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}} , typename next\+\_\+run\+\_\+type  = int$>$ \\
+virtual std\+::string \mbox{\hyperlink{classLZWDictionary}{LZWDictionary}}$<$ \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}, next\+\_\+run\+\_\+type $>$\+::str\+\_\+of (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\+\_\+type}}}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+dictionary/\mbox{\hyperlink{dictionary_8hh}{dictionary.\+hh}}\end{DoxyCompactItemize}

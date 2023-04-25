@@ -1,0 +1,73 @@
+\hypertarget{dictionary_8hh_source}{}\doxysection{dictionary.\+hh}
+\label{dictionary_8hh_source}\index{dictionary/dictionary.hh@{dictionary/dictionary.hh}}
+\mbox{\hyperlink{dictionary_8hh}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#include <cassert>}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{4 }
+\DoxyCodeLine{5 \textcolor{keyword}{template} <\textcolor{keyword}{typename} codeword\_type> \textcolor{keyword}{class }\mbox{\hyperlink{classNext__Run}{Next\_Run}} \{}
+\DoxyCodeLine{6 \textcolor{keyword}{public}:}
+\DoxyCodeLine{7   \textcolor{keywordtype}{unsigned} \mbox{\hyperlink{classNext__Run_af472c19f2f4422b0c14b219624a497d8}{next\_run\_length}};}
+\DoxyCodeLine{8   \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}} \mbox{\hyperlink{classNext__Run_a098dd290bbb0bce8b4ec347e84dbd034}{codeword\_of\_next\_run}};}
+\DoxyCodeLine{9   \mbox{\hyperlink{classNext__Run_af841c43a30e40e2d2d3352dbb2c0ed28}{Next\_Run}}(\textcolor{keywordtype}{unsigned} length, \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}} cw)}
+\DoxyCodeLine{10       : \mbox{\hyperlink{classNext__Run_af472c19f2f4422b0c14b219624a497d8}{next\_run\_length}}(length), \mbox{\hyperlink{classNext__Run_a098dd290bbb0bce8b4ec347e84dbd034}{codeword\_of\_next\_run}}(cw)\{\};}
+\DoxyCodeLine{11 \};}
+\DoxyCodeLine{12 }
+\DoxyCodeLine{13 \textcolor{comment}{// Parent class}}
+\DoxyCodeLine{14 \textcolor{comment}{// A dictionary class to be used for LZW algorithm}}
+\DoxyCodeLine{15 \textcolor{comment}{// functions are allowed to be written to take char* or std::strings, depending}}
+\DoxyCodeLine{16 \textcolor{comment}{// on what makes sense for each implementation Children should define}}
+\DoxyCodeLine{17 \textcolor{comment}{// LZW\_Encode\_Dictionary and LZW\_Decode\_Dictionary}}
+\DoxyCodeLine{18 \textcolor{keyword}{template} <\textcolor{keyword}{typename} codeword\_type, \textcolor{keyword}{typename} next\_run\_type = \textcolor{keywordtype}{int}>}
+\DoxyCodeLine{19 \textcolor{keyword}{class }\mbox{\hyperlink{classLZWDictionary}{LZWDictionary}} \{}
+\DoxyCodeLine{20 }
+\DoxyCodeLine{21 \textcolor{keyword}{public}:}
+\DoxyCodeLine{22   \mbox{\hyperlink{classLZWDictionary_aa2440a7bbbe98eed1cb98d52fe2d1cd5}{LZWDictionary}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{23   \mbox{\hyperlink{classLZWDictionary_a7a4ebb0d8f566a9f591f3cce4bf49d30}{\string~LZWDictionary}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{24 }
+\DoxyCodeLine{25   \textcolor{comment}{// takes the input stream, pointer into stream, and input\_size}}
+\DoxyCodeLine{26   \textcolor{comment}{// returns the longest string that is present in the dicitonary, starting from}}
+\DoxyCodeLine{27   \textcolor{comment}{// the pointer. Subject to size constraints}}
+\DoxyCodeLine{28   \textcolor{keyword}{virtual} next\_run\_type \mbox{\hyperlink{classLZWDictionary_a91944e79498da423d0e99c34e5b6cee2}{find\_longest\_in\_dict}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *, \textcolor{keywordtype}{int}, \textcolor{keywordtype}{int}) \{}
+\DoxyCodeLine{29     assert(0);}
+\DoxyCodeLine{30   \}}
+\DoxyCodeLine{31   \textcolor{keyword}{virtual} next\_run\_type \mbox{\hyperlink{classLZWDictionary_aa30e2de401bdd315da26b5260ab85f11}{find\_longest\_in\_dict}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *) \{}
+\DoxyCodeLine{32     assert(0);}
+\DoxyCodeLine{33   \}}
+\DoxyCodeLine{34 }
+\DoxyCodeLine{35   \textcolor{comment}{// add a string codeword pair to the dictionary}}
+\DoxyCodeLine{36   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{classLZWDictionary_a6b6674b0a0ea7584e1f02b101d3c402f}{add\_string}}(std::string, \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}}) \{ assert(0); \}}
+\DoxyCodeLine{37   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{classLZWDictionary_aac66898b8d84027860d45780e1f6d7c2}{add\_string}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *, \textcolor{keywordtype}{unsigned}, \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}}) \{ assert(0); \}}
+\DoxyCodeLine{38   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{classLZWDictionary_a506826e11bb36ede6da8ed6643c0f034}{add\_string}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *, next\_run\_type, \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}}) \{}
+\DoxyCodeLine{39     assert(0);}
+\DoxyCodeLine{40   \}}
+\DoxyCodeLine{41 }
+\DoxyCodeLine{42   \textcolor{comment}{// fetch the codeword associated with a string of chars}}
+\DoxyCodeLine{43   \textcolor{keyword}{virtual} \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}} \mbox{\hyperlink{classLZWDictionary_ac1a2aecc7c22c55fa39b45434e133212}{code\_of}}(std::string, \textcolor{keywordtype}{unsigned})\textcolor{keyword}{ const }\{ assert(0); \}}
+\DoxyCodeLine{44   \textcolor{keyword}{virtual} \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}} \mbox{\hyperlink{classLZWDictionary_aa1524a19e5cb3a91d1aa1aaa6b3ead99}{code\_of}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *, \textcolor{keywordtype}{unsigned})\textcolor{keyword}{ const }\{ assert(0); \}}
+\DoxyCodeLine{45 }
+\DoxyCodeLine{46   \textcolor{comment}{// fetch string associated with codeword}}
+\DoxyCodeLine{47   \textcolor{keyword}{virtual} std::string \mbox{\hyperlink{classLZWDictionary_a3edeba4860bcfe0aa86a0661a5408749}{str\_of}}(\mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}})\textcolor{keyword}{ const }\{ assert(0); \}}
+\DoxyCodeLine{48 }
+\DoxyCodeLine{49   \textcolor{comment}{// initilize the dictionary with starter values}}
+\DoxyCodeLine{50   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{classLZWDictionary_adc55bd1afc184af08f0e3f44066b280a}{load\_starting\_dictionary}}() = 0;}
+\DoxyCodeLine{51 \};}
+\DoxyCodeLine{52 }
+\DoxyCodeLine{53 \textcolor{comment}{// Keeps track of constants associated with codewords}}
+\DoxyCodeLine{54 \textcolor{comment}{// makes sure we don't go over our max codeword}}
+\DoxyCodeLine{55 \textcolor{comment}{// prevents LZW algorithm from having to track variable length codeword outputs}}
+\DoxyCodeLine{56 \textcolor{keyword}{template} <\textcolor{keyword}{typename} codeword\_type> \textcolor{keyword}{class }\mbox{\hyperlink{classCW__Tracker}{CW\_Tracker}} \{}
+\DoxyCodeLine{57 \textcolor{keyword}{public}:}
+\DoxyCodeLine{58   \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}} \mbox{\hyperlink{classCW__Tracker_a00e5f60f23844c82b356dbac5160d09b}{current\_codeword}};}
+\DoxyCodeLine{59   \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{classCW__Tracker_a69968d38fb8e594cf629db20db2a7eb8}{EOF\_CODEWORD}};}
+\DoxyCodeLine{60   \textcolor{keywordtype}{int} \mbox{\hyperlink{classCW__Tracker_ac2cd8ce3ba919196dde844065a357fb4}{bits\_per\_codeword}};}
+\DoxyCodeLine{61   \mbox{\hyperlink{classCW__Tracker_ad9a3a07e889d400b5f987b855daff480}{CW\_Tracker}}(\textcolor{keywordtype}{unsigned} starting\_codeword, \textcolor{keywordtype}{unsigned} eof,}
+\DoxyCodeLine{62              \textcolor{keywordtype}{unsigned} starting\_codeword\_size)}
+\DoxyCodeLine{63       : \mbox{\hyperlink{classCW__Tracker_a00e5f60f23844c82b356dbac5160d09b}{current\_codeword}}(starting\_codeword), \mbox{\hyperlink{classCW__Tracker_a69968d38fb8e594cf629db20db2a7eb8}{EOF\_CODEWORD}}(eof),}
+\DoxyCodeLine{64         \mbox{\hyperlink{classCW__Tracker_ac2cd8ce3ba919196dde844065a357fb4}{bits\_per\_codeword}}(starting\_codeword\_size)\{\};}
+\DoxyCodeLine{65   \mbox{\hyperlink{classCW__Tracker_a704c354fc2319c9b5cce93f76865c9b2}{\string~CW\_Tracker}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{66   \textcolor{keyword}{virtual} \mbox{\hyperlink{direct__mapped__dict_8hh_ac1be50354aea7190e5415d85286e6bfe}{codeword\_type}} \mbox{\hyperlink{classCW__Tracker_a278c30ddf5efe75dff02a47205dd65b1}{get\_next\_codeword}}() = 0;}
+\DoxyCodeLine{67 \};}
+
+\end{DoxyCode}

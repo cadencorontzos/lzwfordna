@@ -1,0 +1,189 @@
+\hypertarget{classLZW__Decode__Dictionary}{}\doxysection{LZW\+\_\+\+Decode\+\_\+\+Dictionary Class Reference}
+\label{classLZW__Decode__Dictionary}\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+
+
+{\ttfamily \#include $<$direct\+\_\+mapped\+\_\+dict.\+hh$>$}
+
+Inheritance diagram for LZW\+\_\+\+Decode\+\_\+\+Dictionary\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.728395cm]{classLZW__Decode__Dictionary}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classLZW__Decode__Dictionary_a7561e81d9a2a96b79e35ef27e5b515fd}{LZW\+\_\+\+Decode\+\_\+\+Dictionary}} ()
+\item 
+void \mbox{\hyperlink{classLZW__Decode__Dictionary_a4f421d36b3c2c507dc9e7657934d95e4}{add\+\_\+string}} (std\+::string str, \mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}} codeword) override
+\item 
+std\+::string \mbox{\hyperlink{classLZW__Decode__Dictionary_a5dacfe306ace6d46d38ad2c9e904311a}{str\+\_\+of}} (\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}} codeword) const override
+\item 
+void \mbox{\hyperlink{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}{load\+\_\+starting\+\_\+dictionary}} () override
+\item 
+\mbox{\hyperlink{classLZW__Decode__Dictionary_a7561e81d9a2a96b79e35ef27e5b515fd}{LZW\+\_\+\+Decode\+\_\+\+Dictionary}} ()
+\item 
+void \mbox{\hyperlink{classLZW__Decode__Dictionary_a4f421d36b3c2c507dc9e7657934d95e4}{add\+\_\+string}} (std\+::string str, \mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}} codeword) override
+\item 
+std\+::string \mbox{\hyperlink{classLZW__Decode__Dictionary_a5dacfe306ace6d46d38ad2c9e904311a}{str\+\_\+of}} (\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}} codeword) const override
+\item 
+void \mbox{\hyperlink{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}{load\+\_\+starting\+\_\+dictionary}} () override
+\item 
+\mbox{\hyperlink{classLZW__Decode__Dictionary_a7561e81d9a2a96b79e35ef27e5b515fd}{LZW\+\_\+\+Decode\+\_\+\+Dictionary}} ()
+\item 
+void \mbox{\hyperlink{classLZW__Decode__Dictionary_a4f421d36b3c2c507dc9e7657934d95e4}{add\+\_\+string}} (std\+::string str, \mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}} codeword) override
+\item 
+std\+::string \mbox{\hyperlink{classLZW__Decode__Dictionary_a5dacfe306ace6d46d38ad2c9e904311a}{str\+\_\+of}} (\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}} codeword) const override
+\item 
+void \mbox{\hyperlink{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}{load\+\_\+starting\+\_\+dictionary}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::array$<$ std\+::string, \mbox{\hyperlink{std__dict_8hh_a1229498df19e813ea474f8c03abf969c}{MAX\+\_\+\+CODEWORD}}+1 $>$ \mbox{\hyperlink{classLZW__Decode__Dictionary_a599c3f32e2d9e0647490a4d339c8aedb}{dictionary}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classLZW__Decode__Dictionary_a7ab9a4a4fa6d7ef81cc5ad03c0065f7a}{empty}}
+\item 
+std\+::unordered\+\_\+map$<$ \mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}, std\+::string $>$ \mbox{\hyperlink{classLZW__Decode__Dictionary_a61a894e47877874f60c65108e16a2e63}{dictionary}}
+\item 
+std\+::unordered\+\_\+map$<$ \mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}, std\+::string $>$\+::const\+\_\+iterator \mbox{\hyperlink{classLZW__Decode__Dictionary_a963960954c40dd49131b2ce275ed60b3}{end}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr int \mbox{\hyperlink{classLZW__Decode__Dictionary_a6d85ff2b01c442a9be37ea70a9f58e06}{CODEWORD\+\_\+\+SIZE}} = CHAR\+\_\+\+BIT $\ast$ sizeof(\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a7561e81d9a2a96b79e35ef27e5b515fd}\label{classLZW__Decode__Dictionary_a7561e81d9a2a96b79e35ef27e5b515fd}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{LZW\_Decode\_Dictionary()}{LZW\_Decode\_Dictionary()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::\+LZW\+\_\+\+Decode\+\_\+\+Dictionary (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a7561e81d9a2a96b79e35ef27e5b515fd}\label{classLZW__Decode__Dictionary_a7561e81d9a2a96b79e35ef27e5b515fd}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{LZW\_Decode\_Dictionary()}{LZW\_Decode\_Dictionary()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::\+LZW\+\_\+\+Decode\+\_\+\+Dictionary (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a7561e81d9a2a96b79e35ef27e5b515fd}\label{classLZW__Decode__Dictionary_a7561e81d9a2a96b79e35ef27e5b515fd}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{LZW\_Decode\_Dictionary()}{LZW\_Decode\_Dictionary()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::\+LZW\+\_\+\+Decode\+\_\+\+Dictionary (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a4f421d36b3c2c507dc9e7657934d95e4}\label{classLZW__Decode__Dictionary_a4f421d36b3c2c507dc9e7657934d95e4}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!add\_string@{add\_string}}
+\index{add\_string@{add\_string}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{add\_string()}{add\_string()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily void LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::add\+\_\+string (\begin{DoxyParamCaption}\item[{std\+::string}]{str,  }\item[{\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}}]{codeword }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a4f421d36b3c2c507dc9e7657934d95e4}\label{classLZW__Decode__Dictionary_a4f421d36b3c2c507dc9e7657934d95e4}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!add\_string@{add\_string}}
+\index{add\_string@{add\_string}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{add\_string()}{add\_string()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily void LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::add\+\_\+string (\begin{DoxyParamCaption}\item[{std\+::string}]{str,  }\item[{\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}}]{codeword }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a4f421d36b3c2c507dc9e7657934d95e4}\label{classLZW__Decode__Dictionary_a4f421d36b3c2c507dc9e7657934d95e4}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!add\_string@{add\_string}}
+\index{add\_string@{add\_string}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{add\_string()}{add\_string()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily void LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::add\+\_\+string (\begin{DoxyParamCaption}\item[{std\+::string}]{str,  }\item[{\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}}]{codeword }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}\label{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!load\_starting\_dictionary@{load\_starting\_dictionary}}
+\index{load\_starting\_dictionary@{load\_starting\_dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{load\_starting\_dictionary()}{load\_starting\_dictionary()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily void LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::load\+\_\+starting\+\_\+dictionary (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classLZWDictionary_adc55bd1afc184af08f0e3f44066b280a}{LZWDictionary$<$ codeword\+\_\+type, next\+\_\+run\+\_\+type $>$}}.
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}\label{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!load\_starting\_dictionary@{load\_starting\_dictionary}}
+\index{load\_starting\_dictionary@{load\_starting\_dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{load\_starting\_dictionary()}{load\_starting\_dictionary()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily void LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::load\+\_\+starting\+\_\+dictionary (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classLZWDictionary_adc55bd1afc184af08f0e3f44066b280a}{LZWDictionary$<$ codeword\+\_\+type, next\+\_\+run\+\_\+type $>$}}.
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}\label{classLZW__Decode__Dictionary_acd30119cddb1f2ac910044cdabd72036}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!load\_starting\_dictionary@{load\_starting\_dictionary}}
+\index{load\_starting\_dictionary@{load\_starting\_dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{load\_starting\_dictionary()}{load\_starting\_dictionary()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily void LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::load\+\_\+starting\+\_\+dictionary (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classLZWDictionary_adc55bd1afc184af08f0e3f44066b280a}{LZWDictionary$<$ codeword\+\_\+type, next\+\_\+run\+\_\+type $>$}}.
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a5dacfe306ace6d46d38ad2c9e904311a}\label{classLZW__Decode__Dictionary_a5dacfe306ace6d46d38ad2c9e904311a}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!str\_of@{str\_of}}
+\index{str\_of@{str\_of}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{str\_of()}{str\_of()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily std\+::string LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::str\+\_\+of (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}}]{codeword }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a5dacfe306ace6d46d38ad2c9e904311a}\label{classLZW__Decode__Dictionary_a5dacfe306ace6d46d38ad2c9e904311a}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!str\_of@{str\_of}}
+\index{str\_of@{str\_of}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{str\_of()}{str\_of()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily std\+::string LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::str\+\_\+of (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}}]{codeword }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a5dacfe306ace6d46d38ad2c9e904311a}\label{classLZW__Decode__Dictionary_a5dacfe306ace6d46d38ad2c9e904311a}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!str\_of@{str\_of}}
+\index{str\_of@{str\_of}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{str\_of()}{str\_of()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily std\+::string LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::str\+\_\+of (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}}]{codeword }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}}
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a6d85ff2b01c442a9be37ea70a9f58e06}\label{classLZW__Decode__Dictionary_a6d85ff2b01c442a9be37ea70a9f58e06}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!CODEWORD\_SIZE@{CODEWORD\_SIZE}}
+\index{CODEWORD\_SIZE@{CODEWORD\_SIZE}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{CODEWORD\_SIZE}{CODEWORD\_SIZE}}
+{\footnotesize\ttfamily constexpr int LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::\+CODEWORD\+\_\+\+SIZE = CHAR\+\_\+\+BIT $\ast$ sizeof(\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}, {\ttfamily [private]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a599c3f32e2d9e0647490a4d339c8aedb}\label{classLZW__Decode__Dictionary_a599c3f32e2d9e0647490a4d339c8aedb}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!dictionary@{dictionary}}
+\index{dictionary@{dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{dictionary}{dictionary}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$ \mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}, std\+::string $>$ LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::dictionary}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a61a894e47877874f60c65108e16a2e63}\label{classLZW__Decode__Dictionary_a61a894e47877874f60c65108e16a2e63}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!dictionary@{dictionary}}
+\index{dictionary@{dictionary}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{dictionary}{dictionary}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$\mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}, std\+::string$>$ LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::dictionary\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a7ab9a4a4fa6d7ef81cc5ad03c0065f7a}\label{classLZW__Decode__Dictionary_a7ab9a4a4fa6d7ef81cc5ad03c0065f7a}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!empty@{empty}}
+\index{empty@{empty}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{empty}{empty}}
+{\footnotesize\ttfamily bool LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::empty\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classLZW__Decode__Dictionary_a963960954c40dd49131b2ce275ed60b3}\label{classLZW__Decode__Dictionary_a963960954c40dd49131b2ce275ed60b3}} 
+\index{LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}!end@{end}}
+\index{end@{end}!LZW\_Decode\_Dictionary@{LZW\_Decode\_Dictionary}}
+\doxysubsubsection{\texorpdfstring{end}{end}}
+{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$ \mbox{\hyperlink{std__dict_8hh_ab7f8a9108b264c05ed4f7a78ebb5e559}{codeword\+\_\+type}}, std\+::string $>$\+::const\+\_\+iterator LZW\+\_\+\+Decode\+\_\+\+Dictionary\+::end\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+dictionary/\mbox{\hyperlink{direct__mapped__dict_8hh}{direct\+\_\+mapped\+\_\+dict.\+hh}}\item 
+dictionary/\mbox{\hyperlink{mult__std__dict_8hh}{mult\+\_\+std\+\_\+dict.\+hh}}\item 
+dictionary/\mbox{\hyperlink{std__dict_8hh}{std\+\_\+dict.\+hh}}\end{DoxyCompactItemize}
