@@ -84,9 +84,9 @@ Inheritance diagram for CW_Tracker&lt; codeword_type &gt;:</div>
  <div class="center">
   <img src="classCW__Tracker.png" usemap="#CW_5FTracker_3C_20codeword_5Ftype_20_3E_map" alt=""/>
   <map id="CW_5FTracker_3C_20codeword_5Ftype_20_3E_map" name="CW_5FTracker_3C_20codeword_5Ftype_20_3E_map">
-<area href="classCodeword__Helper.html" alt="Codeword_Helper" shape="rect" coords="0,56,194,80"/>
-<area href="classCodeword__Helper.html" alt="Codeword_Helper" shape="rect" coords="204,56,398,80"/>
-<area href="classCodeword__Helper.html" alt="Codeword_Helper" shape="rect" coords="408,56,602,80"/>
+<area href="classDirect__Map__Dictionary_1_1Codeword__Helper.html" alt="Direct_Map_Dictionary::Codeword_Helper" shape="rect" coords="0,56,255,80"/>
+<area href="classMultiple__Std__Dictionary_1_1Codeword__Helper.html" alt="Multiple_Std_Dictionary::Codeword_Helper" shape="rect" coords="265,56,520,80"/>
+<area href="classStd__Dictionary_1_1Codeword__Helper.html" alt="Std_Dictionary::Codeword_Helper" shape="rect" coords="530,56,785,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -96,32 +96,36 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad9a3a07e889d400b5f987b855daff480"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a704c354fc2319c9b5cce93f76865c9b2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCW__Tracker.html#a704c354fc2319c9b5cce93f76865c9b2">~CW_Tracker</a> ()=default</td></tr>
 <tr class="separator:a704c354fc2319c9b5cce93f76865c9b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a278c30ddf5efe75dff02a47205dd65b1"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCW__Tracker.html#a278c30ddf5efe75dff02a47205dd65b1">get_next_codeword</a> ()=0</td></tr>
+<tr class="memitem:a278c30ddf5efe75dff02a47205dd65b1"><td class="memItemLeft" align="right" valign="top">virtual codeword_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCW__Tracker.html#a278c30ddf5efe75dff02a47205dd65b1">get_next_codeword</a> ()=0</td></tr>
+<tr class="memdesc:a278c30ddf5efe75dff02a47205dd65b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns next codeword, checking for overflow and codword growing  <a href="classCW__Tracker.html#a278c30ddf5efe75dff02a47205dd65b1">More...</a><br /></td></tr>
 <tr class="separator:a278c30ddf5efe75dff02a47205dd65b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a00e5f60f23844c82b356dbac5160d09b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCW__Tracker.html#a00e5f60f23844c82b356dbac5160d09b">current_codeword</a></td></tr>
+<tr class="memitem:a00e5f60f23844c82b356dbac5160d09b"><td class="memItemLeft" align="right" valign="top">codeword_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCW__Tracker.html#a00e5f60f23844c82b356dbac5160d09b">current_codeword</a></td></tr>
 <tr class="separator:a00e5f60f23844c82b356dbac5160d09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69968d38fb8e594cf629db20db2a7eb8"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCW__Tracker.html#a69968d38fb8e594cf629db20db2a7eb8">EOF_CODEWORD</a></td></tr>
 <tr class="separator:a69968d38fb8e594cf629db20db2a7eb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2cd8ce3ba919196dde844065a357fb4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCW__Tracker.html#ac2cd8ce3ba919196dde844065a357fb4">bits_per_codeword</a></td></tr>
 <tr class="separator:ac2cd8ce3ba919196dde844065a357fb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename codeword_type&gt;<br />
+class CW_Tracker&lt; codeword_type &gt;</div><p >Keeps track of constants associated with codewords makes sure we don't go over our max codeword prevents <a class="el" href="classLZW.html">LZW</a> algorithm from having to track variable length codeword outputs </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad9a3a07e889d400b5f987b855daff480" name="ad9a3a07e889d400b5f987b855daff480"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad9a3a07e889d400b5f987b855daff480">&#9670;&#160;</a></span>CW_Tracker()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt; </div>
+template&lt;typename codeword_type &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt;<a class="el" href="classCW__Tracker.html">::CW_Tracker</a> </td>
+          <td class="memname"><a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; codeword_type &gt;<a class="el" href="classCW__Tracker.html">::CW_Tracker</a> </td>
           <td>(</td>
           <td class="paramtype">unsigned&#160;</td>
           <td class="paramname"><em>starting_codeword</em>, </td>
@@ -159,13 +163,13 @@ template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be5035
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt; </div>
+template&lt;typename codeword_type &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt;::~<a class="el" href="classCW__Tracker.html">CW_Tracker</a> </td>
+          <td class="memname"><a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; codeword_type &gt;::~<a class="el" href="classCW__Tracker.html">CW_Tracker</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -187,13 +191,13 @@ template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be5035
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt; </div>
+template&lt;typename codeword_type &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> <a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt;::get_next_codeword </td>
+          <td class="memname">virtual codeword_type <a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; codeword_type &gt;::get_next_codeword </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -206,7 +210,9 @@ template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be5035
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classCodeword__Helper.html#a3a27fd7969bf07ee1c5cf004b48c3011">Codeword_Helper</a>, <a class="el" href="classCodeword__Helper.html#a3a27fd7969bf07ee1c5cf004b48c3011">Codeword_Helper</a>, and <a class="el" href="classCodeword__Helper.html#a3a27fd7969bf07ee1c5cf004b48c3011">Codeword_Helper</a>.</p>
+<p>returns next codeword, checking for overflow and codword growing </p>
+
+<p>Implemented in <a class="el" href="classDirect__Map__Dictionary_1_1Codeword__Helper.html#a6dc67cd70d9b291f436367b7833ab2f3">Direct_Map_Dictionary::Codeword_Helper</a>, <a class="el" href="classMultiple__Std__Dictionary_1_1Codeword__Helper.html#a760132e0577fe6cbc85bc1976924ed6b">Multiple_Std_Dictionary::Codeword_Helper</a>, and <a class="el" href="classStd__Dictionary_1_1Codeword__Helper.html#ae7333a795ba631f49b71b46b055087fa">Std_Dictionary::Codeword_Helper</a>.</p>
 
 </div>
 </div>
@@ -217,10 +223,10 @@ template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be5035
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt; </div>
+template&lt;typename codeword_type &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">int <a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt;::bits_per_codeword</td>
+          <td class="memname">int <a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; codeword_type &gt;::bits_per_codeword</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -233,10 +239,10 @@ template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be5035
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt; </div>
+template&lt;typename codeword_type &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> <a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt;::current_codeword</td>
+          <td class="memname">codeword_type <a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; codeword_type &gt;::current_codeword</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -249,10 +255,10 @@ template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be5035
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt; </div>
+template&lt;typename codeword_type &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">const int <a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; <a class="el" href="direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe">codeword_type</a> &gt;::EOF_CODEWORD</td>
+          <td class="memname">const int <a class="el" href="classCW__Tracker.html">CW_Tracker</a>&lt; codeword_type &gt;::EOF_CODEWORD</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['binary_5fsearch_0',['BINARY_SEARCH',['../direct__mapped__dict_8hh.html#a41eb8ff724e2179b96c314a1fbd010d2',1,'direct_mapped_dict.hh']]],
+  ['binary_5fsearch_0',['BINARY_SEARCH',['../namespaceDirect__Map__Dictionary.html#a7f584df41049e61fd7488c00c587424d',1,'Direct_Map_Dictionary']]],
   ['bitinput_1',['BitInput',['../classBitInput.html',1,'BitInput'],['../classBitInput.html#a677162b944375ac84be0e03f1ce2d85a',1,'BitInput::BitInput(const char *input)'],['../classBitInput.html#ac000f07553dc89110addeda1850bf9cf',1,'BitInput::BitInput(const BitInput &amp;)=default'],['../classBitInput.html#a494e5dd258d542ae77d3dcfc82301607',1,'BitInput::BitInput(BitInput &amp;&amp;)=default']]],
   ['bitio_2ecc_2',['bitio.cc',['../bitio_8cc.html',1,'']]],
   ['bitio_2ehh_3',['bitio.hh',['../bitio_8hh.html',1,'']]],

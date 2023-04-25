@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['codeword_5ftype_0',['codeword_type',['../direct__mapped__dict_8hh.html#ac1be50354aea7190e5415d85286e6bfe',1,'codeword_type():&#160;direct_mapped_dict.hh'],['../mult__std__dict_8hh.html#ab7f8a9108b264c05ed4f7a78ebb5e559',1,'codeword_type():&#160;mult_std_dict.hh'],['../std__dict_8hh.html#ab7f8a9108b264c05ed4f7a78ebb5e559',1,'codeword_type():&#160;std_dict.hh']]]
+  ['codeword_5ftype_0',['codeword_type',['../namespaceDirect__Map__Dictionary.html#af38a54b1466b6a63ad2efa8ee984cc28',1,'Direct_Map_Dictionary::codeword_type()'],['../namespaceMultiple__Std__Dictionary.html#a554974b8988aa6410147e0cc4a662900',1,'Multiple_Std_Dictionary::codeword_type()'],['../namespaceStd__Dictionary.html#a6fc8a75ebb1f8585c64fae9ec27c7e91',1,'Std_Dictionary::codeword_type()']]]
 ];

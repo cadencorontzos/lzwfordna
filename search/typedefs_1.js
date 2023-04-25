@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['index_5ftype_0',['index_type',['../direct__mapped__dict_8hh.html#a2e340426945fbac9d43dda2eba3e49ac',1,'direct_mapped_dict.hh']]]
+  ['index_5ftype_0',['index_type',['../namespaceDirect__Map__Dictionary.html#a6f57597d8b3511f93a33d3d6c4373b17',1,'Direct_Map_Dictionary']]]
 ];
