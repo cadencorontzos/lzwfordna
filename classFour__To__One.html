@@ -89,7 +89,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6ee28028484561df31c662cf7755b2c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFour__To__One.html#a6ee28028484561df31c662cf7755b2c1">decode</a> (const char *input, std::ostream &amp;output)</td></tr>
 <tr class="separator:a6ee28028484561df31c662cf7755b2c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >A compressor that converts DNA neucleotides to two bit encodings </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a266ec65bb216203c1b9fb92a5b5a6840" name="a266ec65bb216203c1b9fb92a5b5a6840"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a266ec65bb216203c1b9fb92a5b5a6840">&#9670;&#160;</a></span>Four_To_One()</h2>
 
@@ -166,6 +168,13 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Decodes an input stream using <a class="el" href="classLZW.html">LZW</a> Assumes that input was comressed using this same class </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input_file</td><td>pointer to input stream </td></tr>
+    <tr><td class="paramname">output</td><td>where to put decoded chars </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -200,6 +209,14 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Encodes an input stream by converting chars to 2 bits Assumes input only consists of A, C, T, or G </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input_file</td><td>pointer to input stream </td></tr>
+    <tr><td class="paramname">file_size</td><td>length of input stream </td></tr>
+    <tr><td class="paramname">output</td><td>where to put encoded chars </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

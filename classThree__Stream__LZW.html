@@ -89,7 +89,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3008af1db05d20c2843267251fa42c71"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classThree__Stream__LZW.html#a3008af1db05d20c2843267251fa42c71">decode</a> (const char *char_input, const char *codeword_input, const char *indicator_input, std::ostream &amp;output)</td></tr>
 <tr class="separator:a3008af1db05d20c2843267251fa42c71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >A compressor that uses modified <a class="el" href="classLZW.html">LZW</a> encoding</p>
+<p >The compressor compresses into three streams: a character stream, a codewords stream, and an indicator bit stream. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aab6d66cf3fb17df83d272c062e4b16ef" name="aab6d66cf3fb17df83d272c062e4b16ef"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aab6d66cf3fb17df83d272c062e4b16ef">&#9670;&#160;</a></span>Three_Stream_LZW()</h2>
 
@@ -178,6 +181,15 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Decodes an input stream using <a class="el" href="classLZW.html">LZW</a> Assumes that inputs were comressed using this same class </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">char_input</td><td>pointer to encoded char input stream </td></tr>
+    <tr><td class="paramname">codeword_input</td><td>pointer to codeword stream </td></tr>
+    <tr><td class="paramname">indicator_input</td><td>pointer to indicator input stream </td></tr>
+    <tr><td class="paramname">output</td><td>where to put decoded chars </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -224,6 +236,21 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Encodes an input stream using <a class="el" href="classLZW.html">LZW</a></p>
+<p >The indicator bits tell the deoder whether to</p><ul>
+<li>read a codeword and decode it</li>
+<li>read the next 8 characters</li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input_file</td><td>pointer to input stream </td></tr>
+    <tr><td class="paramname">file_size</td><td>length of input stream </td></tr>
+    <tr><td class="paramname">codeword_output</td><td>where to put codewords </td></tr>
+    <tr><td class="paramname">char_output</td><td>where to put encoded characters </td></tr>
+    <tr><td class="paramname">indicator_output</td><td>where to put indicator bits </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

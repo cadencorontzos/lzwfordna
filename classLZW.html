@@ -89,7 +89,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0da08f6ed4c2e8c74930dbaec7a69b85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLZW.html#a0da08f6ed4c2e8c74930dbaec7a69b85">decode</a> (const char *input, std::ostream &amp;output)</td></tr>
 <tr class="separator:a0da08f6ed4c2e8c74930dbaec7a69b85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >A compressor that uses <a class="el" href="classLZW.html">LZW</a> encoding </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a93315002eabe0e040ff38628917ebf49" name="a93315002eabe0e040ff38628917ebf49"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a93315002eabe0e040ff38628917ebf49">&#9670;&#160;</a></span>LZW()</h2>
 
@@ -166,6 +168,13 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Decodes an input stream using <a class="el" href="classLZW.html">LZW</a> Assumes that input was comressed using this same class </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input_file</td><td>pointer to input stream </td></tr>
+    <tr><td class="paramname">output</td><td>where to put decoded chars </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -200,6 +209,14 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Encodes an input stream using <a class="el" href="classLZW.html">LZW</a> Assumes input only consists of A, C, T, or G </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input_file</td><td>pointer to input stream </td></tr>
+    <tr><td class="paramname">file_size</td><td>length of input stream </td></tr>
+    <tr><td class="paramname">output</td><td>where to put encoded chars </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
