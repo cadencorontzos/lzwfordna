@@ -233,7 +233,7 @@ void test_encode(std::string decoded_string,
   const char *input_file = decoded_string.c_str();
   int file_size = decoded_string.length();
   {
-    LZW lzw;
+    Three_Stream_LZW lzw;
     lzw.encode(input_file, file_size, cw_output, char_output, indicator_output);
   }
 
@@ -266,7 +266,7 @@ void test_decode(std::array<std::string, 3> encoded_string,
   std::stringstream output;
 
   {
-    LZW lzw;
+    Three_Stream_LZW lzw;
     lzw.decode(encoded_string[1].c_str(), encoded_string[0].c_str(),
                encoded_string[2].c_str(), output);
   }

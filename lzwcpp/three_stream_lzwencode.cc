@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Original File size (bytes) : " << fileInfo.st_size << std::endl;
 
-  LZW compressor;
+  Three_Stream_LZW compressor;
   std::ofstream output;
   std::string codeword_output_filename =
       std::string(argv[1]) + ".tmp.compressed.lzw.codeword";

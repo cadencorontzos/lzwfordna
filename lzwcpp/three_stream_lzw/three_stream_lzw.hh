@@ -2,10 +2,10 @@
 #include "../bitio/bitio.hh"
 #include <string>
 
-class LZW {
+class Three_Stream_LZW {
 public:
-  LZW() = default;
-  ~LZW() = default;
+  Three_Stream_LZW() = default;
+  ~Three_Stream_LZW() = default;
 
   void encode(const char *input_file, uint64_t file_size,
               std::ostream &codeword_output, std::ostream &char_output,

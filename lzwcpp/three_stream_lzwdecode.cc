@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  LZW decompressor;
+  Three_Stream_LZW decompressor;
   std::ofstream output;
 
   output.open(std::string(argv[1]) + ".decompressed.lzw", std::ios::binary);

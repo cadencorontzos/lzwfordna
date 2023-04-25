@@ -8,9 +8,10 @@
 
 std::array<int, 1 << CHAR_BIT> encode_values;
 std::array<int, 1 << CHAR_BIT> decode_values;
-void LZW::encode(const char *input_file, uint64_t file_size,
-                 std::ostream &codeword_output, std::ostream &char_output,
-                 std::ostream &indicator_output) {
+void Three_Stream_LZW::encode(const char *input_file, uint64_t file_size,
+                              std::ostream &codeword_output,
+                              std::ostream &char_output,
+                              std::ostream &indicator_output) {
 
   encode_values['A'] = 0;
   encode_values['C'] = 1;
@@ -122,8 +123,10 @@ void LZW::encode(const char *input_file, uint64_t file_size,
   }
 }
 
-void LZW::decode(const char *char_input, const char *codeword_input,
-                 const char *indicator_input, std::ostream &output) {
+void Three_Stream_LZW::decode(const char *char_input,
+                              const char *codeword_input,
+                              const char *indicator_input,
+                              std::ostream &output) {
 
   decode_values[0] = 'A';
   decode_values[1] = 'C';
