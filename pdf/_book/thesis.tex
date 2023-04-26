@@ -188,7 +188,8 @@
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
 \Acknowledgements{
-I want to thank a few people.
+Thank you to Eitan Frachtenberg, who helped me constantly throughout the whole year writing this. I never thought thesising would be so much fun, and I hope you enjoyed it as much as I did.
+Thanks also to all the other staff and faculty who helped me through my four years at Reed. Thank you to B Hunter, who was enormous help to me in getting jobs and opportunites while at Reed. Thank you also to David Ramirez, whose advice and mentorship I am always grateful for.
 }
 
 \Dedication{
@@ -200,7 +201,7 @@ I want to thank a few people.
 }
 
 \Abstract{
-This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lempel-Ziv-Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call Three Stream LZW. We also implement an algorithm which trivially translates nucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great compression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast, having double the throughput of some professional compression tools.
+Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer files that are gigabytes or even terabytes in size. In this thesis, we focus on compressing DNA sequences specifically using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a data structure we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW called Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
 }
 
 	\usepackage{setspace}\onehalfspacing
@@ -235,7 +236,8 @@ This thesis gives an introduction to compression. Specifically, we focus on comp
 \frontmatter % this stuff will be roman-numbered
 \pagestyle{empty} % this removes page numbers from the frontmatter
   \begin{acknowledgements}
-    I want to thank a few people.
+    Thank you to Eitan Frachtenberg, who helped me constantly throughout the whole year writing this. I never thought thesising would be so much fun, and I hope you enjoyed it as much as I did.
+    Thanks also to all the other staff and faculty who helped me through my four years at Reed. Thank you to B Hunter, who was enormous help to me in getting jobs and opportunites while at Reed. Thank you also to David Ramirez, whose advice and mentorship I am always grateful for.
   \end{acknowledgements}
 
 \chapter*{List of Abbreviations}
@@ -257,7 +259,7 @@ This thesis gives an introduction to compression. Specifically, we focus on comp
 
   \listoffigures
   \begin{abstract}
-    This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lempel-Ziv-Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call Three Stream LZW. We also implement an algorithm which trivially translates nucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great compression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast, having double the throughput of some professional compression tools.
+    Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer files that are gigabytes or even terabytes in size. In this thesis, we focus on compressing DNA sequences specifically using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a data structure we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW called Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
   \end{abstract}
 
 \mainmatter % here the regular arabic numbering starts
@@ -545,9 +547,9 @@ DNA-specific compression algorithms have also been a growing subsection of compu
 
 One of the first papers exploring this was published in 1994 (Grumbach \& Tahi, 1994). It proposes an algorithm called \texttt{biocompress2}, expanding on a previous paper by the same author. They focus on encoding palindromes in DNA sequences, which allows them to achieve an above average compression ratio, though performance is not evaluated. This paper has been cited by many following papers sparking interest in DNA compression, and the collection of sequences that it uses for algorithm comparison is used in this thesis.
 
-Chen et al.~proposed an algorithm called GenCompress, which uses approximate matching (Chen, Kwong, \& Li, 2001). It matches sequences of nucleotides to sequences already seen in the file, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this relative matching method, although their technique is computationally expensive.
+Chen et al.~proposed an algorithm called \texttt{GenCompress}, which uses approximate matching (Chen, Kwong, \& Li, 2001). It matches sequences of nucleotides to sequences already seen in the file, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this relative matching method, although their technique is computationally expensive.
 
-In 2007, Cao et al.~published a paper detailing another algorithm, \texttt{XM}, which uses statistical methods to try and predict the next character while encoding and decoding (Cao, Dix, Allison, \& Mears, 2007). This method was found to outperform both Biocompress2 and GenCompress in terms of compression ratio.
+In 2007, Cao et al.~published a paper detailing another algorithm, \texttt{XM}, which uses statistical methods to try and predict the next character while encoding and decoding (Cao, Dix, Allison, \& Mears, 2007). This method was found to outperform both \texttt{biocompress2} and \texttt{GenCompress} in terms of compression ratio.
 
 A paper in 2021 uses segmenting and partitioning to create a parallel compression algorithm called \texttt{genozip} (Lan, Tobler, Souilmi, \& Llamas, 2021). This paper also published their code online in a convenient format which allows others to compare and test their implementation.
 
@@ -1438,16 +1440,18 @@ The other advantage to this algorithm is that it works well for entropy encoding
 \hypertarget{comparison-to-other-tools}{%
 \chapter{Comparison to other tools}\label{comparison-to-other-tools}}
 
-Now that we have implemented several versions of LZW, we want to compare them to each other to see which would be preferable in different situations. We also want to compare the performance of these different implementations to the 4 to 1 direct translation and other professional compression tools.
+Now that we have implemented several versions of LZW, we will compare them to each other to see which would be preferable in different situations. We also want to compare the performance of these different implementations to the Four to One implementation and other professional compression tools.
 
 \hypertarget{comparison-of-our-implementations}{%
 \section{Comparison of our Implementations}\label{comparison-of-our-implementations}}
 
-We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation. Figure \ref{fig:comparisonofourmethodsfig} shows the performance of these methods on the corpora.
+We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with the Standard Dictionary, LZW with Multiple Standard Dictionaries, Three Stream LZW, and the Four To One translation. Figure \ref{fig:comparisonofourmethodsfig} shows the performance of these methods on the corpora.
+
+We can also see the raw values in Table \ref{tab:comparisonofourmethodstab}. While the Four to One implementation completely dominates in terms of throughput, the Direct Map version is substantially faster than the Standard and Multiple Dictionary versions. The Three Stream LZW comes in between the Direct Map and Four to One implementations in terms of compression time, but it actually has the best compression ratio out of all LZW versions on most of the input files. This means that by switching from the Standard Dictionary to the Direct Map and adding on entropy encoding, we were able to regain the lost ground in terms of compression ratio while not totally compromising our performance improvements.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/comparisonofourmethodsfig-1.pdf}
-\caption{\label{fig:comparisonofourmethodsfig}Compression ratios of related works on DNACorpus1, reported as bits per base}
+\caption{\label{fig:comparisonofourmethodsfig}Performance comparison of our final implementations.}
 \end{figure}
 \begin{table}[!h]
 
@@ -1514,14 +1518,21 @@ DNACorpus2/YeMi & 73689 & 3.099 & 3.998 & 3.859 & 3.859 & 3.881\\
 \hline
 \end{tabular}}
 \end{table}
-We can also see the raw values in Table \ref{tab:comparisonofourmethodstab}. While the Four to One implementation completely dominates in terms of throughput, the Direct Map version is substantially faster than the Standard and Multiple Dictionary versions. The Three Stream LZW comes in between the Direct Map and Four to One implementations in terms of compression time, but it actually has the best compression ratio out of all three dictionary versions on most of the input files. This means that by switching from the Standard Dictionary to the Direct Map and adding on entropy encoding, we were able to regain the lost ground in terms of compression ratio while not totally compromising our performance improvements.
+It is also worth noting that until now, we have not had much discussion about decompression time. That is because it is usually not as interesting as compression time; for instance, with LZW implementations, we are just looking up codewords in the dictionary to their corresponding string, tacking another character onto that string, and outputting the result. This tends to be much faster than having to look for the longest run, thus decompression is almost always faster than compression when it comes to LZW. Nevertheless, we can still look at the decompression times for our implementation. As seen in Figure \ref{fig:decompcomparisonofourmethodsfig}, the ordering of average decompression time is mostly unsurprising. The Multiple Standard Dictionaries and the single Standard Dictionaries take the most time, with Three Stream LZW coming in second. The surprising part is that Direct Map LZW is slightly faster than Four to One in decompression time. Four to One is also the only implementation which had a larger average decompression time than average compression time. The reason for this is that the decompression implementation for Four to One is not the fastest possible: right now it just reads the bytes one by one and translates the 2 bit encodings back into full characters. A faster implementation would start with a pre-loaded dictionary of all possible byte values mapped to their corresponding 4 character string. This wasn't implemented due to time constraints, which is why Figure \ref{fig:decompcomparisonofourmethodsfig} doesn't look quite like you might expect.
+\begin{figure}
 
+{\centering \includegraphics{thesis_files/figure-latex/decompcomparisonofourmethodsfig-1} 
+
+}
+
+\caption{Average Decompression time of our final implementations.}\label{fig:decompcomparisonofourmethodsfig}
+\end{figure}
 \hypertarget{compression-algorithms-in-literature}{%
 \section{Compression Algorithms in Literature}\label{compression-algorithms-in-literature}}
 
-As discussed in the related work section of chapter 1, there have been several other compression algorithms proposed and tested in the field tailored for DNA. Not all of these are publicly available, thus we can only compare to the numbers that they reported.
+As discussed in the related work section of chapter 1, there have been several other compression algorithms proposed that are tailored for DNA. Not all of these are publicly available, thus we can only compare to the numbers that the researchers reported.
 
-Note that I wasn't able to get compression times for these algorithms, only the compression ratios.
+Note that I wasn't able to get compression times for these algorithms, only the compression ratios (Cao et al., 2007).
 \begin{table}[!h]
 
 \caption{\label{tab:researchmethodsresultsfig}Compression ratios of related works on DNACorpus 1, reported as bits per base}
@@ -1549,214 +1560,101 @@ DNACorpus1/mtpacga & 1.8752 & 1.8624 & 1.8447 & 2.081225 & 2.524314 & 2.081225 &
 \bottomrule
 \end{tabular}}
 \end{table}
-As you can see, the compression ratio for these other algorithms are much better. This makes sense, because these algorithms were specifically created with DNA in mind, while we started from an algorithm, LZW, which was created for the redundancies present in human text. Our algorithms also do better on longer text, which puts them at a disadvantage in this comparison. In fact, the average size of the files in Corpus 1 is surprisingly small for the number of papers that have used them. If you had files that are only about 100 thousand bytes, you don't really need to compress them at all. For smaller files, the four to one version or even our Direct Map version may be preferable because of how fast they are. These other papers do not provide performance metrics like compression time, but we believe that our implementations would be faster on longer files.
+As you can see, the compression ratio for these other algorithms are much better. This makes sense, because these algorithms were specifically created with DNA in mind, while we started from an algorithm, LZW, which was created for the redundancies present in human text. Our algorithms also tend to do better on longer texts, which puts them at a disadvantage because Corpus 1 has mostly smaller files. In fact, the average size of the files in Corpus 1 is surprisingly small for the number of papers that have used them. If you had files that are only about 100 thousand bytes, you don't really need to compress them at all. For smaller files, the Four to One version or even Direct Map LZW version may be preferable because of how fast they are. These other papers do not provide performance metrics like compression time, but we believe that our implementations would be much faster on longer files.
 
 \hypertarget{comparison-to-other-professional-tools}{%
 \section{Comparison to Other Professional Tools}\label{comparison-to-other-professional-tools}}
 
-The other tools that we choose to use are \texttt{gzip}, \texttt{bzip}, and \texttt{genozip}. Both \texttt{bzip} and \texttt{gzip} are open source, general compression tools. As mentioned earlier \texttt{genozip} was created specifically for DNA compression and the compression of other common filetypes in biological research (Lan et al., 2021).
+The other tools that we choose to use are \texttt{gzip}, \texttt{bzip}, \texttt{xz}, and \texttt{genozip}. All three of \texttt{xz}, \texttt{bzip}, and \texttt{gzip} are open source, general compression tools. As mentioned earlier \texttt{genozip} was created specifically for DNA compression and the compression of other common filetypes in biological research (Lan et al., 2021).
 \begin{table}[!h]
 
-\caption{\label{tab:othertoolstab}Performance metrics for other tools. Both bzip and gzip were ran with option -9, and genozip was ran with --input=generic.}
+\caption{\label{tab:othertoolstab}Performance metrics for other professional tools. Xz, bzip, and gzip were ran with option -9, and genozip was ran with --input=generic.}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{l|r|r|r|r|r|r|r|r|r}
+\begin{tabular}[t]{l|r|r|r|r|r|r|r|r|r|r}
 \hline
-\multicolumn{2}{c|}{ } & \multicolumn{8}{c}{Compression Ratio } \\
-\cline{3-10}
-File Name & Original File Size & bzip & Direct Map Dictionary & Four to One & genozip & gzip & Mult Std Dictionaries & Std Dictionary & Three Stream LZW\\
+\multicolumn{2}{c|}{ } & \multicolumn{9}{c}{Compression Ratio } \\
+\cline{3-11}
+File Name & Original File Size & bzip & Direct Map Dictionary & Four to One & genozip & gzip & Mult Std Dictionaries & Std Dictionary & Three Stream LZW & xz\\
 \hline
-\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{3.77} & \cellcolor{gray!6}{3.266} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.95} & \cellcolor{gray!6}{3.60} & \cellcolor{gray!6}{3.915} & \cellcolor{gray!6}{3.915} & \cellcolor{gray!6}{3.885}\\
+\cellcolor{gray!6}{DNACorpus1/chmpxx} & \cellcolor{gray!6}{121024} & \cellcolor{gray!6}{3.77} & \cellcolor{gray!6}{3.266} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.95} & \cellcolor{gray!6}{3.60} & \cellcolor{gray!6}{3.915} & \cellcolor{gray!6}{3.915} & \cellcolor{gray!6}{3.885} & \cellcolor{gray!6}{3.84}\\
 \hline
-DNACorpus1/chntxx & 155844 & 3.66 & 3.203 & 3.999 & 3.85 & 3.49 & 3.722 & 3.722 & 3.888\\
+DNACorpus1/chntxx & 155844 & 3.66 & 3.203 & 3.999 & 3.85 & 3.49 & 3.722 & 3.722 & 3.888 & 3.70\\
 \hline
-\cellcolor{gray!6}{DNACorpus1/hehcmv} & \cellcolor{gray!6}{229354} & \cellcolor{gray!6}{3.68} & \cellcolor{gray!6}{3.279} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.86} & \cellcolor{gray!6}{3.50} & \cellcolor{gray!6}{3.701} & \cellcolor{gray!6}{3.701} & \cellcolor{gray!6}{3.885}\\
+\cellcolor{gray!6}{DNACorpus1/hehcmv} & \cellcolor{gray!6}{229354} & \cellcolor{gray!6}{3.68} & \cellcolor{gray!6}{3.279} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.86} & \cellcolor{gray!6}{3.50} & \cellcolor{gray!6}{3.701} & \cellcolor{gray!6}{3.701} & \cellcolor{gray!6}{3.885} & \cellcolor{gray!6}{3.70}\\
 \hline
-DNACorpus1/humdyst & 38770 & 3.66 & 2.804 & 3.997 & 3.24 & 3.36 & 3.690 & 3.690 & 3.954\\
+DNACorpus1/humdyst & 38770 & 3.66 & 2.804 & 3.997 & 3.24 & 3.36 & 3.690 & 3.690 & 3.954 & 3.60\\
 \hline
-\cellcolor{gray!6}{DNACorpus1/humghcs} & \cellcolor{gray!6}{66495} & \cellcolor{gray!6}{4.62} & \cellcolor{gray!6}{2.969} & \cellcolor{gray!6}{3.998} & \cellcolor{gray!6}{5.56} & \cellcolor{gray!6}{5.15} & \cellcolor{gray!6}{3.721} & \cellcolor{gray!6}{3.721} & \cellcolor{gray!6}{3.933}\\
+\cellcolor{gray!6}{DNACorpus1/humghcs} & \cellcolor{gray!6}{66495} & \cellcolor{gray!6}{4.62} & \cellcolor{gray!6}{2.969} & \cellcolor{gray!6}{3.998} & \cellcolor{gray!6}{5.56} & \cellcolor{gray!6}{5.15} & \cellcolor{gray!6}{3.721} & \cellcolor{gray!6}{3.721} & \cellcolor{gray!6}{3.933} & \cellcolor{gray!6}{7.04}\\
 \hline
-DNACorpus1/humhbb & 73308 & 3.72 & 2.991 & 3.998 & 3.61 & 3.58 & 3.712 & 3.712 & 3.935\\
+DNACorpus1/humhbb & 73308 & 3.72 & 2.991 & 3.998 & 3.61 & 3.58 & 3.712 & 3.712 & 3.935 & 3.90\\
 \hline
-\cellcolor{gray!6}{DNACorpus1/humhdab} & \cellcolor{gray!6}{58864} & \cellcolor{gray!6}{3.86} & \cellcolor{gray!6}{2.934} & \cellcolor{gray!6}{3.998} & \cellcolor{gray!6}{3.56} & \cellcolor{gray!6}{3.61} & \cellcolor{gray!6}{3.727} & \cellcolor{gray!6}{3.727} & \cellcolor{gray!6}{3.938}\\
+\cellcolor{gray!6}{DNACorpus1/humhdab} & \cellcolor{gray!6}{58864} & \cellcolor{gray!6}{3.86} & \cellcolor{gray!6}{2.934} & \cellcolor{gray!6}{3.998} & \cellcolor{gray!6}{3.56} & \cellcolor{gray!6}{3.61} & \cellcolor{gray!6}{3.727} & \cellcolor{gray!6}{3.727} & \cellcolor{gray!6}{3.938} & \cellcolor{gray!6}{3.97}\\
 \hline
-DNACorpus1/humprtb & 56737 & 3.81 & 2.923 & 3.998 & 3.52 & 3.58 & 3.729 & 3.729 & 3.927\\
+DNACorpus1/humprtb & 56737 & 3.81 & 2.923 & 3.998 & 3.52 & 3.58 & 3.729 & 3.729 & 3.927 & 3.87\\
 \hline
-\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{3.68} & \cellcolor{gray!6}{3.218} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.84} & \cellcolor{gray!6}{3.50} & \cellcolor{gray!6}{3.682} & \cellcolor{gray!6}{3.682} & \cellcolor{gray!6}{3.896}\\
+\cellcolor{gray!6}{DNACorpus1/mpomtcg} & \cellcolor{gray!6}{186609} & \cellcolor{gray!6}{3.68} & \cellcolor{gray!6}{3.218} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.84} & \cellcolor{gray!6}{3.50} & \cellcolor{gray!6}{3.682} & \cellcolor{gray!6}{3.682} & \cellcolor{gray!6}{3.896} & \cellcolor{gray!6}{3.76}\\
 \hline
-DNACorpus1/mtpacga & 100314 & 3.76 & 3.169 & 3.999 & 3.84 & 3.58 & 3.844 & 3.844 & 3.875\\
+DNACorpus1/mtpacga & 100314 & 3.76 & 3.169 & 3.999 & 3.84 & 3.58 & 3.844 & 3.844 & 3.875 & 3.82\\
 \hline
-\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{3.81} & \cellcolor{gray!6}{3.315} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.94} & \cellcolor{gray!6}{3.65} & \cellcolor{gray!6}{3.794} & \cellcolor{gray!6}{3.794} & \cellcolor{gray!6}{3.874}\\
+\cellcolor{gray!6}{DNACorpus1/vaccg} & \cellcolor{gray!6}{191737} & \cellcolor{gray!6}{3.81} & \cellcolor{gray!6}{3.315} & \cellcolor{gray!6}{3.999} & \cellcolor{gray!6}{3.94} & \cellcolor{gray!6}{3.65} & \cellcolor{gray!6}{3.794} & \cellcolor{gray!6}{3.794} & \cellcolor{gray!6}{3.874} & \cellcolor{gray!6}{3.88}\\
 \hline
-DNACorpus2/AeCa & 1591049 & 3.71 & 3.778 & 4.000 & 4.00 & 3.57 & 3.786 & 3.786 & 3.874\\
+DNACorpus2/AeCa & 1591049 & 3.71 & 3.778 & 4.000 & 4.00 & 3.57 & 3.786 & 3.786 & 3.874 & 3.84\\
 \hline
-\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{3.64} & \cellcolor{gray!6}{2.807} & \cellcolor{gray!6}{3.997} & \cellcolor{gray!6}{3.28} & \cellcolor{gray!6}{3.36} & \cellcolor{gray!6}{3.653} & \cellcolor{gray!6}{3.653} & \cellcolor{gray!6}{3.957}\\
+\cellcolor{gray!6}{DNACorpus2/AgPh} & \cellcolor{gray!6}{43970} & \cellcolor{gray!6}{3.64} & \cellcolor{gray!6}{2.807} & \cellcolor{gray!6}{3.997} & \cellcolor{gray!6}{3.28} & \cellcolor{gray!6}{3.36} & \cellcolor{gray!6}{3.653} & \cellcolor{gray!6}{3.653} & \cellcolor{gray!6}{3.957} & \cellcolor{gray!6}{3.59}\\
 \hline
-DNACorpus2/BuEb & 18940 & 3.62 & 2.552 & 3.993 & 2.59 & 3.25 & 3.595 & 3.595 & 3.964\\
+DNACorpus2/BuEb & 18940 & 3.62 & 2.552 & 3.993 & 2.59 & 3.25 & 3.595 & 3.595 & 3.964 & 3.45\\
 \hline
-\cellcolor{gray!6}{DNACorpus2/DaRe} & \cellcolor{gray!6}{62565020} & \cellcolor{gray!6}{3.88} & \cellcolor{gray!6}{3.928} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.39} & \cellcolor{gray!6}{3.76} & \cellcolor{gray!6}{4.013} & \cellcolor{gray!6}{4.013} & \cellcolor{gray!6}{4.035}\\
+\cellcolor{gray!6}{DNACorpus2/DaRe} & \cellcolor{gray!6}{62565020} & \cellcolor{gray!6}{3.88} & \cellcolor{gray!6}{3.928} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.39} & \cellcolor{gray!6}{3.76} & \cellcolor{gray!6}{4.013} & \cellcolor{gray!6}{4.013} & \cellcolor{gray!6}{4.035} & \cellcolor{gray!6}{4.99}\\
 \hline
-DNACorpus2/DrMe & 32181429 & 3.70 & 3.847 & 4.000 & 4.03 & 3.60 & 3.836 & 3.836 & 3.865\\
+DNACorpus2/DrMe & 32181429 & 3.70 & 3.847 & 4.000 & 4.03 & 3.60 & 3.836 & 3.836 & 3.865 & 4.01\\
 \hline
-\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{3.72} & \cellcolor{gray!6}{3.918} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.14} & \cellcolor{gray!6}{3.61} & \cellcolor{gray!6}{3.893} & \cellcolor{gray!6}{3.893} & \cellcolor{gray!6}{3.928}\\
+\cellcolor{gray!6}{DNACorpus2/EnIn} & \cellcolor{gray!6}{26403087} & \cellcolor{gray!6}{3.72} & \cellcolor{gray!6}{3.918} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.14} & \cellcolor{gray!6}{3.61} & \cellcolor{gray!6}{3.893} & \cellcolor{gray!6}{3.893} & \cellcolor{gray!6}{3.928} & \cellcolor{gray!6}{4.56}\\
 \hline
-DNACorpus2/EsCo & 4641652 & 3.70 & 3.817 & 4.000 & 4.02 & 3.57 & 3.791 & 3.791 & 3.847\\
+DNACorpus2/EsCo & 4641652 & 3.70 & 3.817 & 4.000 & 4.02 & 3.57 & 3.791 & 3.791 & 3.847 & 3.91\\
 \hline
-\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{3.74} & \cellcolor{gray!6}{3.776} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.15} & \cellcolor{gray!6}{3.65} & \cellcolor{gray!6}{3.943} & \cellcolor{gray!6}{3.943} & \cellcolor{gray!6}{3.897}\\
+\cellcolor{gray!6}{DNACorpus2/GaGa} & \cellcolor{gray!6}{148532294} & \cellcolor{gray!6}{3.74} & \cellcolor{gray!6}{3.776} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.15} & \cellcolor{gray!6}{3.65} & \cellcolor{gray!6}{3.943} & \cellcolor{gray!6}{3.943} & \cellcolor{gray!6}{3.897} & \cellcolor{gray!6}{4.10}\\
 \hline
-DNACorpus2/HaHi & 3890005 & 3.77 & 3.916 & 4.000 & 4.14 & 3.63 & 3.884 & 3.884 & 3.944\\
+DNACorpus2/HaHi & 3890005 & 3.77 & 3.916 & 4.000 & 4.14 & 3.63 & 3.884 & 3.884 & 3.944 & 3.94\\
 \hline
-\cellcolor{gray!6}{DNACorpus2/HePy} & \cellcolor{gray!6}{1667825} & \cellcolor{gray!6}{3.77} & \cellcolor{gray!6}{3.884} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.14} & \cellcolor{gray!6}{3.67} & \cellcolor{gray!6}{3.894} & \cellcolor{gray!6}{3.894} & \cellcolor{gray!6}{3.942}\\
+\cellcolor{gray!6}{DNACorpus2/HePy} & \cellcolor{gray!6}{1667825} & \cellcolor{gray!6}{3.77} & \cellcolor{gray!6}{3.884} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.14} & \cellcolor{gray!6}{3.67} & \cellcolor{gray!6}{3.894} & \cellcolor{gray!6}{3.894} & \cellcolor{gray!6}{3.942} & \cellcolor{gray!6}{4.01}\\
 \hline
-DNACorpus2/HoSa & 189752667 & 3.89 & 3.953 & 4.000 & 4.22 & 3.73 & 4.118 & 4.118 & 4.075\\
+DNACorpus2/HoSa & 189752667 & 3.89 & 3.953 & 4.000 & 4.22 & 3.73 & 4.118 & 4.118 & 4.075 & 4.48\\
 \hline
-\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{3.73} & \cellcolor{gray!6}{3.843} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.21} & \cellcolor{gray!6}{3.65} & \cellcolor{gray!6}{3.858} & \cellcolor{gray!6}{3.858} & \cellcolor{gray!6}{3.908}\\
+\cellcolor{gray!6}{DNACorpus2/OrSa} & \cellcolor{gray!6}{43262523} & \cellcolor{gray!6}{3.73} & \cellcolor{gray!6}{3.843} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.21} & \cellcolor{gray!6}{3.65} & \cellcolor{gray!6}{3.858} & \cellcolor{gray!6}{3.858} & \cellcolor{gray!6}{3.908} & \cellcolor{gray!6}{4.62}\\
 \hline
-DNACorpus2/PlFa & 8986712 & 3.82 & 4.031 & 4.000 & 4.28 & 3.77 & 4.000 & 4.000 & 4.010\\
+DNACorpus2/PlFa & 8986712 & 3.82 & 4.031 & 4.000 & 4.28 & 3.77 & 4.000 & 4.000 & 4.010 & 4.28\\
 \hline
-\cellcolor{gray!6}{DNACorpus2/ScPo} & \cellcolor{gray!6}{10652155} & \cellcolor{gray!6}{3.68} & \cellcolor{gray!6}{3.847} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.07} & \cellcolor{gray!6}{3.57} & \cellcolor{gray!6}{3.813} & \cellcolor{gray!6}{3.813} & \cellcolor{gray!6}{3.851}\\
+\cellcolor{gray!6}{DNACorpus2/ScPo} & \cellcolor{gray!6}{10652155} & \cellcolor{gray!6}{3.68} & \cellcolor{gray!6}{3.847} & \cellcolor{gray!6}{4.000} & \cellcolor{gray!6}{4.07} & \cellcolor{gray!6}{3.57} & \cellcolor{gray!6}{3.813} & \cellcolor{gray!6}{3.813} & \cellcolor{gray!6}{3.851} & \cellcolor{gray!6}{3.91}\\
 \hline
-DNACorpus2/YeMi & 73689 & 3.78 & 3.099 & 3.998 & 3.72 & 3.58 & 3.859 & 3.859 & 3.881\\
+DNACorpus2/YeMi & 73689 & 3.78 & 3.099 & 3.998 & 3.72 & 3.58 & 3.859 & 3.859 & 3.881 & 3.81\\
 \hline
 \end{tabular}}
 \end{table}
-Table \ref{tab:othertoolstab} summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors \texttt{bzip} and \texttt{gzip} in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, \texttt{genozip} does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. However, if you look at the performance data in Figure \ref{fig:othertoolsgraphfig}, you can see that both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including \texttt{genozip}. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
+Table \ref{tab:othertoolstab} summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors \texttt{bzip} and \texttt{gzip} in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, \texttt{genozip} does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. It is also worth noting that \texttt{xz} does surprisingly well, beating even \texttt{genozip} on some of the larger files. However, if you look at the performance data in Figure \ref{fig:othertoolsgraphfig}, you can see that both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including \texttt{genozip} and \texttt{xz}. In fact, \texttt{xz} is over 10 times slower than Three Stream LZW in terms of average compression time. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/othertoolsgraphfig-1.pdf}
-\caption{\label{fig:othertoolsgraphfig}Compression ratios of related works on DNACorpus1, reported as bits per base}
+\caption{\label{fig:othertoolsgraphfig}Average compression time of other methods and our final implementations.}
 \end{figure}
 \hypertarget{conclusion}{%
 \chapter*{Conclusion}\label{conclusion}}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-We started with a naive implementation of Lempel Ziv Welch, and our goal was to optimize it for DNA. Although we were not able to achieve as high of a compression ratio as other algorithms in literature and professional DNA compresion tools, we were able to make a fast algorithm that can do better than a 4.0 compression ratio on large files. There is a trade off when it comes to choosing a compression algorithm, with speed and space. If you needed to compress DNA files as small as possible, you should use the professional tools or one of the algorithms proposed in other research papers. If you want to compress DNA very quickly and you are okay with a moderate compression ratio, than you should use the Four to One implementation which we discussed previously. If you want something that is in between, with a moderate compression ratio and fairly fast, the results in Chapter 3 tell us that the Three Stream implementation of LZW would work very well for large files.
+We started with a naive implementation of Lempel Ziv Welch, and our goal was to optimize it for DNA. Although we were not able to achieve as high of a compression ratio as other algorithms in literature and professional DNA compresion tools, we were able to make a very fast algorithm that can do better than a 4.0 compression ratio on large files. There is a trade off when it comes to choosing a compression algorithm, with speed and space. If you needed to compress DNA files as small as possible, you should use the professional tools or one of the algorithms proposed in other research papers. If you want to compress DNA very quickly and you are okay with a moderate compression ratio, than you should use the Four to One implementation which we discussed previously. If you want something that is in between, with a moderate compression ratio and fast, the results in Chapter 3 tell us that the Three Stream implementation of LZW would work very well for large files.
 
-The concept of an indexed, Direct Map dictionary is one that could prove useful for other applications. Further research could be used to apply a similar idea to a different algorithm, one more suited to the redundancies present in DNA. I.e, could we take one of the research papers discussed in the Related Works section and apply the idea of the Direct Map to the algorithm presented in it? This could also be useful in other areas of compression in which the workload has a limited number of characters, because the size of the dictionary grows exponentially with as the number of characters needing to be accounted for increases.
+The concept of an indexed, Direct Map dictionary is one that could prove useful for other applications. Further research could be used to apply a similar idea to a different algorithm, one more suited to the redundancies present in DNA. I.e, could we take one of the research papers discussed in the Related Works section and apply the idea of the Direct Map to the algorithm presented in it? This could also be useful in other areas of compression in which the workload has a limited number of characters, because the size of the dictionary grows exponentially with as the number of characters needing to be accounted for increases. The usage of \texttt{pext} is also worth noting. Because of the 2 bit encoding possible for DNA sequences, we can create an index for a string of DNA very quickly. This, combined with the Direct Map Dictionary, can allow for dictionary accesses that are almost as fast as array accesses.
 
-The Four to One implementation and the usage of \texttt{pext} in general is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications where there are much less characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA).
+The Four to One implementation, another use of \texttt{pext}, is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications where there are much less characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA).
 
-Overall, our thesis has produced a few notable implementations of LZW and shown the applicability of \texttt{pext} in optimizing compression algorithms.
+Overall, our thesis has produced a few notable implementations of LZW, created a Direct Map Dictionary data structure which has high potential for other compression applications, and shown the relevance of \texttt{pext} in optimizing compression algorithms.
 
 \appendix
 
-\hypertarget{the-first-appendix}{%
-\chapter{The First Appendix}\label{the-first-appendix}}
+\hypertarget{appendix-the-code}{%
+\chapter{Appendix: The Code}\label{appendix-the-code}}
 
-This first appendix includes all of the R chunks of code that were hidden throughout the document (using the \texttt{include\ =\ FALSE} chunk tag) to help with readibility and/or setup.
-
-\textbf{In the main Rmd file}
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# This chunk ensures that the thesisdown package is}
-\CommentTok{\# installed and loaded. This thesisdown package includes}
-\CommentTok{\# the template files for the thesis.}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(remotes)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"remotes"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}\StringTok{\textquotesingle{}You need to run install.packages("remotes")",}
-\StringTok{            "first in the Console.\textquotesingle{}}\NormalTok{)}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(thesisdown)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-\NormalTok{    remotes}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"ismayc/thesisdown"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{"You need to run"}\NormalTok{,}
-        \StringTok{\textquotesingle{}remotes::install\_github("ismayc/thesisdown")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(dplyr)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{\textquotesingle{}You need to run install.packages("dplyr")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(ggplot2)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{\textquotesingle{}You need to run install.packages("ggplot2")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(bookdown)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"bookdown"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{\textquotesingle{}You need to run install.packages("bookdown")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(patchwork)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"patchwork"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{\textquotesingle{}You need to run install.packages("patchwork")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(tidyr)) \{}
-  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
-    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"tidyr"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-    \FunctionTok{stop}\NormalTok{(}
-      \FunctionTok{paste}\NormalTok{(}
-        \StringTok{\textquotesingle{}You need to run install.packages("tidyr")\textquotesingle{}}\NormalTok{,}
-        \StringTok{"first in the Console."}
-\NormalTok{      )}
-\NormalTok{    )}
-\NormalTok{  \}}
-\NormalTok{\}}
-
-\FunctionTok{options}\NormalTok{(}\AttributeTok{scipen=}\DecValTok{999}\NormalTok{)}
-\FunctionTok{library}\NormalTok{(tidyr)}
-\FunctionTok{library}\NormalTok{(dplyr)}
-\FunctionTok{library}\NormalTok{(ggplot2)}
-\FunctionTok{library}\NormalTok{(knitr)}
-\FunctionTok{library}\NormalTok{(kableExtra)}
-\FunctionTok{library}\NormalTok{(patchwork)}
-\FunctionTok{library}\NormalTok{(thesisdown)}
-\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(DiagrammeR)) \{}
-  \FunctionTok{install.packages}\NormalTok{(}\StringTok{"DiagrammeR"}\NormalTok{)}
-\NormalTok{\}}
-\FunctionTok{library}\NormalTok{(DiagrammeR)}
-\CommentTok{\# Set how wide the R output will go}
-\FunctionTok{options}\NormalTok{(}\AttributeTok{width =} \DecValTok{70}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-\textbf{In Chapter \ref{ref-labels}:}
-
-\hypertarget{the-second-appendix-for-fun}{%
-\chapter{The Second Appendix, for Fun}\label{the-second-appendix-for-fun}}
+All code for this thesis, including the Rmarkdown used to generate this document, can be found at \url{https://github.com/cadencorontzos/lzwfordna}.
 
 \backmatter
 

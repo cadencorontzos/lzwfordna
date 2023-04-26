@@ -1,93 +1,14 @@
-<!--
-# Graphics, References, and Labels {#ref-labels}
-
-
-## Figures
-
-If your thesis has a lot of figures, _R Markdown_ might behave better for you than that other word processor.  One perk is that it will automatically number the figures accordingly in each chapter.    You'll also be able to create a label for each figure, add a caption, and then reference the figure in a way similar to what we saw with tables earlier.  If you label your figures, you can move the figures around and _R Markdown_ will automatically adjust the numbering for you.  No need for you to remember!  So that you don't have to get too far into LaTeX to do this, a couple **R** functions have been created for you to assist.  You'll see their use below.
-
-
-In the **R** chunk below, we will load in a picture stored as `reed.jpg` in our main directory.  We then give it the caption of "Reed logo", the label of "reedlogo", and specify that this is a figure.  Make note of the different **R** chunk options that are given in the R Markdown file (not shown in the knitted document).
-
-```{r reedlogo, fig.cap="Reed logo", out.width="0.2\\linewidth", fig.align="center"}
-include_graphics(path = "figure/reed.jpg")
-```
-
-
-Here is a reference to the Reed logo: Figure \@ref(fig:reedlogo).  Note the use of the `fig:` code here.  By naming the **R** chunk that contains the figure, we can then reference that figure later as done in the first sentence here.  We can also specify the caption for the figure via the R chunk option `fig.cap`.
-
-\clearpage
-
-Below we will investigate how to save the output of an **R** plot and label it in a way similar to that done above.  Recall the `flights` dataset from Chapter \@ref(rmd-basics).  (Note that we've shown a different way to reference a section or chapter here.)  We will next explore a bar graph with the mean flight departure delays by airline from Portland for 2014.
-
-
-
-Here is a reference to this image: Figure \@ref(fig:delaysboxplot).
-
-A table linking these carrier codes to airline names is available at <https://github.com/ismayc/pnwflights14/blob/master/data/airlines.csv>.
-
-\clearpage
-
-Next, we will explore the use of the `out.extra` chunk option, which can be used to shrink or expand an image loaded from a file by specifying `"scale= "`. Here we use the mathematical graph stored in the "subdivision.pdf" file.
-
-```{r subd, results="asis", echo=FALSE, fig.cap="Subdiv. graph", out.extra="scale=0.75"}
-include_graphics("figure/subdivision.pdf")
-```
-
-Here is a reference to this image: Figure \@ref(fig:subd).  Note that `echo=FALSE` is specified so that the **R** code is hidden in the document.
-
-**More Figure Stuff**
-
-Lastly, we will explore how to rotate and enlarge figures using the `out.extra` chunk option.  (Currently this only works in the PDF version of the book.)
-
-```{r subd2, results="asis", echo=FALSE, out.extra="angle=180, scale=1.1", fig.cap="A Larger Figure, Flipped Upside Down"}
-include_graphics("figure/subdivision.pdf")
-```
-
-As another example, here is a reference: Figure \@ref(fig:subd2).  
-
-## Footnotes and Endnotes
-
-You might want to footnote something. ^[footnote text] The footnote will be in a smaller font and placed appropriately. Endnotes work in much the same way. More information can be found about both on the CUS site or feel free to reach out to <data@reed.edu>.
-
-## Bibliographies
-
-Of course you will need to cite things, and you will probably accumulate an armful of sources. There are a variety of tools available for creating a bibliography database (stored with the .bib extension).  In addition to BibTeX suggested below, you may want to consider using the free and easy-to-use tool called Zotero.  The Reed librarians have created Zotero documentation at <https://libguides.reed.edu/citation/zotero>.  In addition, a tutorial is available from Middlebury College at <https://sites.middlebury.edu/zoteromiddlebury/>.
-
-_R Markdown_ uses _pandoc_ (<https://pandoc.org/>) to build its bibliographies.  One nice caveat of this is that you won't have to do a second compile to load in references as standard LaTeX requires. To cite references in your thesis (after creating your bibliography database), place the reference name inside square brackets and precede it by the "at" symbol.  For example, here's a reference to a book about worrying:  [@Molina1994].  This `Molina1994` entry appears in a file called `thesis.bib` in the `bib` folder.  This bibliography database file was created by a program called BibTeX.  You can call this file something else if you like (look at the YAML header in the main .Rmd file) and, by default, is to placed in the `bib` folder.  
-
-For more information about BibTeX and bibliographies, see our CUS site (<https://web.reed.edu/cis/help/latex/index.html>)^[@reedweb2007]. There are three pages on this topic:  _bibtex_ (which talks about using BibTeX, at <https://web.reed.edu/cis/help/latex/bibtex.html>), _bibtexstyles_ (about how to find and use the bibliography style that best suits your needs, at <https://web.reed.edu/cis/help/latex/bibtexstyles.html>) and _bibman_ (which covers how to make and maintain a bibliography by hand, without BibTeX, at <https://web.reed.edu/cis/help/latex/bibman.html>). The last page will not be useful unless you have only a few sources.
-
-If you look at the YAML header at the top of the main .Rmd file you can see that we can specify the style of the bibliography by referencing the appropriate csl file.  You can download a variety of different style files at <https://www.zotero.org/styles>.  Make sure to download the file into the csl folder.  
-
-
-\vfill
-
-**Tips for Bibliographies**
-
-- Like with thesis formatting, the sooner you start compiling your bibliography for something as large as thesis, the better. Typing in source after source is mind-numbing enough; do you really want to do it for hours on end in late April? Think of it as procrastination.
-- The cite key (a citation's label) needs to be unique from the other entries.
-- When you have more than one author or editor, you need to separate each author's name by the word "and" e.g. `Author = {Noble, Sam and Youngberg, Jessica},`.
-- Bibliographies made using BibTeX (whether manually or using a manager) accept LaTeX markup, so you can italicize and add symbols as necessary.
-- To force capitalization in an article title or where all lowercase is generally used, bracket the capital letter in curly braces.
-- You can add a Reed Thesis citation^[@noble2002] option. The best way to do this is to use the phdthesis type of citation, and use the optional "type" field to enter "Reed thesis" or "Undergraduate thesis." 
-
-## Anything else?
-
-If you'd like to see examples of other things in this template, please contact the Data @ Reed team (email <data@reed.edu>) with your suggestions. We love to see people using _R Markdown_ for their theses, and are happy to help.
-
--->
-
 # Comparison to other tools
 
-Now that we have implemented several versions of LZW, we want to compare them to each other to see which would be preferable in different situations. We also want to compare the performance of these different implementations to the 4 to 1 direct translation and other professional compression tools.
+Now that we have implemented several versions of LZW, we will compare them to each other to see which would be preferable in different situations. We also want to compare the performance of these different implementations to the Four to One implementation and other professional compression tools.
 
 ## Comparison of our Implementations
 
-We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with std Dictioary, LZW with multiple std dictionaries, three stream LZW, and the four to one translation. Figure \@ref(fig:comparisonofourmethodsfig) shows the performance of these methods on the corpora. 
+We have five different implementations at this point: LZW with Direct Map Dictionary, LZW with the Standard Dictionary, LZW with Multiple Standard Dictionaries, Three Stream LZW, and the Four To One translation. Figure \@ref(fig:comparisonofourmethodsfig) shows the performance of these methods on the corpora. 
 
+We can also see the raw values in Table \@ref(tab:comparisonofourmethodstab). While the Four to One implementation completely dominates in terms of throughput, the Direct Map version is substantially faster than the Standard and Multiple Dictionary versions. The Three Stream LZW comes in between the Direct Map and Four to One implementations in terms of compression time, but it actually has the best compression ratio out of all LZW versions on most of the input files. This means that by switching from the Standard Dictionary to the Direct Map and adding on entropy encoding, we were able to regain the lost ground in terms of compression ratio while not totally compromising our performance improvements. 
 
-```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 5, echo = F}
+```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Performance comparison of our final implementations.", fig.height = 5, echo = F}
 compare_implementations(list(
   c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
   c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary'),
@@ -97,8 +18,7 @@ compare_implementations(list(
 ), FALSE, "Final Implementation")
 ```
 
-
-```{r comparisonofourmethodstab, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
+```{r comparisonofourmethodstab, warnings= F, messages = F, fig.height = 7, echo = F}
 
 process_corpus_group <- function(array){
 	wholedf = data.frame()
@@ -132,15 +52,37 @@ kbl(df_new, caption = "Performance metrics for our final implementations.") %>%
     kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
 
-We can also see the raw values in Table \@ref(tab:comparisonofourmethodstab). While the Four to One implementation completely dominates in terms of throughput, the Direct Map version is substantially faster than the Standard and Multiple Dictionary versions. The Three Stream LZW comes in between the Direct Map and Four to One implementations in terms of compression time, but it actually has the best compression ratio out of all three dictionary versions on most of the input files. This means that by switching from the Standard Dictionary to the Direct Map and adding on entropy encoding, we were able to regain the lost ground in terms of compression ratio while not totally compromising our performance improvements. 
+It is also worth noting that until now, we have not had much discussion about decompression time. That is because it is usually not as interesting as compression time; for instance, with LZW implementations, we are just looking up codewords in the dictionary to their corresponding string, tacking another character onto that string, and outputting the result. This tends to be much faster than having to look for the longest run, thus decompression is almost always faster than compression when it comes to LZW. Nevertheless, we can still look at the decompression times for our implementation. As seen in Figure \@ref(fig:decompcomparisonofourmethodsfig), the ordering of average decompression time is mostly unsurprising. The Multiple Standard Dictionaries and the single Standard Dictionaries take the most time, with Three Stream LZW coming in second. The surprising part is that Direct Map LZW is slightly faster than Four to One in decompression time. Four to One is also the only implementation which had a larger average decompression time than average compression time. The reason for this is that the decompression implementation for Four to One is not the fastest possible: right now it just reads the bytes one by one and translates the 2 bit encodings back into full characters. A faster implementation would start with a pre-loaded dictionary of all possible byte values mapped to their corresponding 4 character string. This wasn't implemented due to time constraints, which is why Figure \@ref(fig:decompcomparisonofourmethodsfig) doesn't look quite like you might expect. 
+
+```{r decompcomparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Average Decompression time of our final implementations.", fig.height = 5, fig.width = 4, fig.align="center", echo = F}
+# Would be nice to get compare_implementations to do this automatically
+# but I'm too lazy
+num_files <-length(unique(wholedf$File.Name))
+
+# Calculate avg decomp time
+dcomp_summary <- wholedf %>% 
+  group_by(Implementation) %>% 
+  summarize(
+    decomp_time = sum(Decompression.Time)*.000000001/num_files
+  )
+
+# output graph
+dcomp_summary %>% 
+  ggplot(aes(x = Implementation, y = decomp_time, fill = Implementation))+
+  geom_col(show.legend = F)+
+  labs(x="Implementation", y = "Average Decompression Time (s)", title = "Average Decompression Time")+
+   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+```
+
 
 ## Compression Algorithms in Literature
 
-As discussed in the related work section of chapter 1, there have been several other compression algorithms proposed and tested in the field tailored for DNA. Not all of these are publicly available, thus we can only compare to the numbers that they reported.
+As discussed in the related work section of chapter 1, there have been several other compression algorithms proposed that are tailored for DNA. Not all of these are publicly available, thus we can only compare to the numbers that the researchers reported.
 
-Note that I wasn't able to get compression times for these algorithms, only the compression ratios.
+Note that I wasn't able to get compression times for these algorithms, only the compression ratios [@CaoXM].
 
-```{r researchmethodsresultsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
+```{r researchmethodsresultsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 4, echo = F}
 
 Name <- c("DNACorpus1/chmpxx", "DNACorpus1/chntxx", "DNACorpus1/hehcmv", "DNACorpus1/humdyst", "DNACorpus1/humghcs", "DNACorpus1/humhbb", "DNACorpus1/humhdab", "DNACorpus1/humprtb", "DNACorpus1/mpomtcg", "DNACorpus1/mtpacga", "DNACorpus1/vaccg")
 
@@ -176,10 +118,6 @@ df <- data.frame(
   Name,
   BioCompress2 = c(1.6848, 1.6172, 1.8480, 1.9262, 1.3074, 1.8800, 1.8770, 1.9066, 1.9378, 1.8752, 1.7614),
   GenCompress = c(1.6730, 1.6146, 1.8470, 1.9231, 1.0969, 1.8204, 1.8192, 1.8466, 1.9058, 1.8624, 1.7614),
-  # DNAC = c(1.6716, 1.6127, 1.8492, 1.9116, 1.0272, 1.7897, 1.7951, 1.8165, 1.8920, 1.8556, 1.7580),
-  # DNAP = c(1.6602, 1.6103, 1.8346, 1.9088, 1.0390, 1.7771, 1.7394, 1.7886, 1.8932, 1.8535, 1.7583),
-  # CDNA = c(NA, 1.6500, NA, 1.9300, 0.9500, NA, 1.6700, 1.7200, 1.8700, 1.8500, 1.8100),
-  # GeMNL = c(1.6617, 1.6101, 1.8420, 1.9085, 1.0089, NA, 1.7059, 1.7639, 1.8822, 1.8440, 1.7644),
   XM = c(1.6577, 1.6068, 1.8426, 1.9031, 0.9828, 1.7513, 1.6671, 1.7361, 1.8768, 1.8447, 1.7649),
   Standard_Dictionary,
   Direct_Map_Dictionary,
@@ -196,11 +134,11 @@ names(df_new) <-   gsub("\\_", " ", names(df_new))
   kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
 
-As you can see, the compression ratio for these other algorithms are much better. This makes sense, because these algorithms were specifically created with DNA in mind, while we started from an algorithm, LZW, which was created for the redundancies present in human text. Our algorithms also do better on longer text, which puts them at a disadvantage in this comparison. In fact, the average size of the files in Corpus 1 is surprisingly small for the number of papers that have used them. If you had files that are only about 100 thousand bytes, you don't really need to compress them at all. For smaller files, the four to one version or even our Direct Map version may be preferable because of how fast they are. These other papers do not provide performance metrics like compression time, but we believe that our implementations would be faster on longer files.
+As you can see, the compression ratio for these other algorithms are much better. This makes sense, because these algorithms were specifically created with DNA in mind, while we started from an algorithm, LZW, which was created for the redundancies present in human text. Our algorithms also tend to do better on longer texts, which puts them at a disadvantage because Corpus 1 has mostly smaller files. In fact, the average size of the files in Corpus 1 is surprisingly small for the number of papers that have used them. If you had files that are only about 100 thousand bytes, you don't really need to compress them at all. For smaller files, the Four to One version or even Direct Map LZW version may be preferable because of how fast they are. These other papers do not provide performance metrics like compression time, but we believe that our implementations would be much faster on longer files.
 
 ## Comparison to Other Professional Tools
 
-The other tools that we choose to use are `gzip`, `bzip`, and `genozip`. Both `bzip` and `gzip` are open source, general compression tools. As mentioned earlier `genozip` was created specifically for DNA compression and the compression of other common filetypes in biological research [@genozip]. 
+The other tools that we choose to use are `gzip`, `bzip`, `xz`, and `genozip`. All three of `xz`, `bzip`, and `gzip` are open source, general compression tools. As mentioned earlier `genozip` was created specifically for DNA compression and the compression of other common filetypes in biological research [@genozip]. 
 
 ```{r othertoolstab, echo=FALSE}
 gzip1 <- read.csv("data/stats/other_tools/gzip_corpus_1_stats.csv")
@@ -223,7 +161,14 @@ genozip <- rbind(genozip1, genozip2)
 genozip <- genozip %>% mutate(
   Program = "genozip"
 )
-wholedf1 <- rbind(genozip, bzip, gzip)
+
+xz1 <- read.csv("data/stats/other_tools/xz_corpus_1_stats.csv")
+xz2 <- read.csv("data/stats/other_tools/xz_corpus_2_stats.csv")
+xz <- rbind(xz2, xz1)
+xz <- xz %>%  mutate(
+  Program = "xz"
+)
+wholedf1 <- rbind(genozip, bzip, gzip, xz)
 
 wholedf <- process_corpus_group(list(
   c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
@@ -250,31 +195,30 @@ wholedf <- wholedf %>% rename(
 
 wholedf <- rbind(wholedf, wholedf1)
 
+
 df_new <- wholedf %>% 
   select(File.Name, Program, Compression.Ratio, Original.File.Size) %>% 
   spread(key = Program, value = Compression.Ratio) 
 names(df_new) <-   gsub("\\.", " ", names(df_new))
 
 
-kbl(df_new, caption = "Performance metrics for other tools. Both bzip and gzip were ran with option -9, and genozip was ran with --input=generic.") %>%
-  add_header_above(c(" " = 2, "Compression Ratio " = 8 )) %>% 
+kbl(df_new, caption = "Performance metrics for other professional tools. Xz, bzip, and gzip were ran with option -9, and genozip was ran with --input=generic.") %>%
+  add_header_above(c(" " = 2, "Compression Ratio " = 9 )) %>% 
     kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 
 ```
 
 
-Table  \@ref(tab:othertoolstab) summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip` in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, `genozip` does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. However, if you look at the performance data in Figure \@ref(fig:othertoolsgraphfig), you can see that both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including `genozip`. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
+Table  \@ref(tab:othertoolstab) summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip` in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, `genozip` does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. It is also worth noting that `xz` does surprisingly well, beating even `genozip` on some of the larger files. However, if you look at the performance data in Figure \@ref(fig:othertoolsgraphfig), you can see that both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including `genozip` and `xz`. In fact, `xz` is over 10 times slower than Three Stream LZW in terms of average compression time. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
 
-```{r othertoolsgraphfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
-
+```{r othertoolsgraphfig, warnings= F, messages = F, fig.cap = "Average compression time of other methods and our final implementations.", fig.height = 5, echo = F}
 
 summary <- wholedf %>% 
   group_by(Program) %>% 
   reframe(
-    comp_throughput = sum(Original.File.Size)/sum(Compression.Time)/1024,
+    comp_throughput = sum(Original.File.Size)/1024/sum(Compression.Time),
     mean_comp_time = sum(Compression.Time)/ length(unique(File.Name))
   )
-
   plot1<- summary %>% 
     ggplot(aes(x = Program, y = comp_throughput, fill = Program))+
     geom_col(show.legend = F)+

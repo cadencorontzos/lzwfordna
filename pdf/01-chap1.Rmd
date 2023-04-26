@@ -269,9 +269,9 @@ DNA-specific compression algorithms have also been a growing subsection of compu
 
 One of the first papers exploring this was published in 1994 [@grumbach]. It proposes an algorithm called `biocompress2`, expanding on a previous paper by the same author. They focus on encoding palindromes in DNA sequences, which allows them to achieve an above average compression ratio, though performance is not evaluated. This paper has been cited by many following papers sparking interest in DNA compression, and the collection of sequences that it uses for algorithm comparison is used in this thesis.
 
-Chen et al. proposed an algorithm called GenCompress, which uses approximate matching [@Chen2001ACA]. It matches sequences of nucleotides to sequences already seen in the file, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this relative matching method, although their technique is computationally expensive.
+Chen et al. proposed an algorithm called `GenCompress`, which uses approximate matching [@Chen2001ACA]. It matches sequences of nucleotides to sequences already seen in the file, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this relative matching method, although their technique is computationally expensive.
 
-In 2007, Cao et al. published a paper detailing another algorithm, `XM`, which uses statistical methods to try and predict the next character while encoding and decoding [@CaoXM]. This method was found to outperform both Biocompress2 and GenCompress in terms of compression ratio.
+In 2007, Cao et al. published a paper detailing another algorithm, `XM`, which uses statistical methods to try and predict the next character while encoding and decoding [@CaoXM]. This method was found to outperform both `biocompress2` and `GenCompress` in terms of compression ratio.
 
 A paper in 2021 uses segmenting and partitioning to create a parallel compression algorithm called `genozip` [@genozip]. This paper also published their code online in a convenient format which allows others to compare and test their implementation. 
 
