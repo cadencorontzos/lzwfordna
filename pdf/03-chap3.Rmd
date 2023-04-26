@@ -88,7 +88,7 @@ We have five different implementations at this point: LZW with Direct Map Dictio
 
 
 ```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 5, echo = F}
-compare_coprora(list(
+compare_implementations(list(
   c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
   c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary'),
   c('data/stats/final/corpus_1_multstddict_final_687ff25.csv', 'data/stats/final/corpus_2_multstddict_final_687ff25.csv', 'Mult Std Dictionaries'),
@@ -200,7 +200,7 @@ As you can see, the compression ratio for these other algorithms are much better
 
 ## Comparison to Other Professional Tools
 
-The other tools that we choose to use are `gzip`, `bzip`, and `genozip`. Both `bzip` and `gzip` are open source, general compression tools. As mentioned earlier `genozip` is was creates specifically for DNA compression and the compression of other common filetypes in biological research [@genozip]. 
+The other tools that we choose to use are `gzip`, `bzip`, and `genozip`. Both `bzip` and `gzip` are open source, general compression tools. As mentioned earlier `genozip` was created specifically for DNA compression and the compression of other common filetypes in biological research [@genozip]. 
 
 ```{r othertoolstab, echo=FALSE}
 gzip1 <- read.csv("data/stats/other_tools/gzip_corpus_1_stats.csv")
@@ -250,7 +250,6 @@ wholedf <- wholedf %>% rename(
 
 wholedf <- rbind(wholedf, wholedf1)
 
-
 df_new <- wholedf %>% 
   select(File.Name, Program, Compression.Ratio, Original.File.Size) %>% 
   spread(key = Program, value = Compression.Ratio) 
@@ -264,7 +263,7 @@ kbl(df_new, caption = "Performance metrics for other tools. Both bzip and gzip w
 ```
 
 
-Table  \@ref(tab:othertoolstab) summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip` in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, `genozip` does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. However, if you look at the performance data in Figure \@ref(fig:othertoolsgraphfig), you can see that our both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including `genozip`. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
+Table  \@ref(tab:othertoolstab) summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip` in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, `genozip` does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. However, if you look at the performance data in Figure \@ref(fig:othertoolsgraphfig), you can see that both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including `genozip`. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
 
 ```{r othertoolsgraphfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 7, echo = F}
 
@@ -272,7 +271,7 @@ Table  \@ref(tab:othertoolstab) summarizes the compression ratios of both the ot
 summary <- wholedf %>% 
   group_by(Program) %>% 
   reframe(
-    comp_throughput = sum(Original.File.Size)/sum(Compression.Time),
+    comp_throughput = sum(Original.File.Size)/sum(Compression.Time)/1024,
     mean_comp_time = sum(Compression.Time)/ length(unique(File.Name))
   )
 

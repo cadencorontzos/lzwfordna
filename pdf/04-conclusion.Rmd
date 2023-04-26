@@ -4,6 +4,6 @@ We started with a naive implementation of Lempel Ziv Welch, and our goal was to 
 
 The concept of an indexed, Direct Map dictionary is one that could prove useful for other applications. Further research could be used to apply a similar idea to a different algorithm, one more suited to the redundancies present in DNA. I.e, could we take one of the research papers discussed in the Related Works section and apply the idea of the Direct Map to the algorithm presented in it? This could also be useful in other areas of compression in which the workload has a limited number of characters, because the size of the dictionary grows exponentially with as the number of characters needing to be accounted for increases.
 
-The Four to One implementation and the usage of `pext` in general is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications with where there are much less characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA). 
+The Four to One implementation and the usage of `pext` in general is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications where there are much less characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA). 
 
 Overall, our thesis has produced a few notable implementations of LZW and shown the applicability of `pext` in optimizing compression algorithms.

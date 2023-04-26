@@ -200,7 +200,7 @@ I want to thank a few people.
 }
 
 \Abstract{
-This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lepel Ziv Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call Three Stream LZW. We also implement an algorithm which trivially translates nucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great compression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast, having double the throughput of some professional compression tools.
+This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lempel-Ziv-Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call Three Stream LZW. We also implement an algorithm which trivially translates nucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great compression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast, having double the throughput of some professional compression tools.
 }
 
 	\usepackage{setspace}\onehalfspacing
@@ -242,6 +242,7 @@ This thesis gives an introduction to compression. Specifically, we focus on comp
 \begin{table}[h]
     \centering
     \begin{tabular}{ll}
+                \textbf{DNA} & Deoxyribonucleic acid \\
                 \textbf{EOF} & End of file \\
                 \textbf{LZW} & Lempel Ziv Welch \\
                 \textbf{RLE} & Run Length Encoding \\
@@ -256,7 +257,7 @@ This thesis gives an introduction to compression. Specifically, we focus on comp
 
   \listoffigures
   \begin{abstract}
-    This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lepel Ziv Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call Three Stream LZW. We also implement an algorithm which trivially translates nucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great compression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast, having double the throughput of some professional compression tools.
+    This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lempel-Ziv-Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call Three Stream LZW. We also implement an algorithm which trivially translates nucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great compression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast, having double the throughput of some professional compression tools.
   \end{abstract}
 
 \mainmatter % here the regular arabic numbering starts
@@ -281,7 +282,7 @@ Information on computers can take many forms, such as text, audio, and video. Th
 \hypertarget{compression-ratio}{%
 \subsection{Compression Ratio}\label{compression-ratio}}
 
-Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressed as a ratio of the size of the uncompressed data's original size (\(OS\)) to the size of the compressed size (\(CS\)).
+Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressed as a ratio of the size of the uncompressed size (\(OS\)) to the compressed size (\(CS\)).
 
 \[CR = \frac{OS}{CS}\]
 
@@ -295,10 +296,10 @@ The run time is also an important part of evaluating the effectiveness of a comp
 \hypertarget{memory-usage}{%
 \subsection{Memory Usage}\label{memory-usage}}
 
-Memory usage is closely tied with runtime when it comes to compression algorithms. Memory generally the storage a program uses while it is running. So to reduce our run time and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage. Throughout this thesis, we will assume that most of memory usage is encapsulated in our measurement of run time.
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory is generally the storage a program uses while it is running. So to reduce our run time and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage. Throughout this thesis, we will assume that most of memory usage is encapsulated in our measurement of run time.
 
-\hypertarget{lossless-vs.-lossy-compression}{%
-\section{Lossless vs.~Lossy Compression}\label{lossless-vs.-lossy-compression}}
+\hypertarget{lossy-vs.-lossless-compression}{%
+\section{Lossy vs.~Lossless Compression}\label{lossy-vs.-lossless-compression}}
 
 \hypertarget{lossy}{%
 \subsection{Lossy}\label{lossy}}
@@ -330,11 +331,11 @@ Although not as sophisticated as other methods, RLE is effective when used on ap
 \hypertarget{huffman}{%
 \subsection{Huffman}\label{huffman}}
 
-Huffman Encoding is a strategy that assigns variable length code to certain symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
+Huffman Encoding is a lossless compression algorithm that assigns variable length code to certain symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
 
 Suppose we have a message ``ACAGGATGGC''. We can calculate the frequency of each letter by counting the number of times each letter shows up and dividing by the total number of letters
 
-Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters. The more frequent character occur higher up in the tree, giving them a shorter length. The less frequent characters occur farther down on the tree. If you follow the branches in Figure \ref{fig:huffman} down to a letter, it will tell you the code associated with that letter.
+Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters. The more frequent characters occur higher up in the tree, giving them a shorter length. The less frequent characters occur farther down on the tree. If you follow the branches in Figure \ref{fig:huffman} down to a letter, it will tell you the code associated with that letter.
 \begin{figure}[h]\centering
 
 
@@ -367,7 +368,7 @@ So our message would be encoded to \(1011010001011100110\).
 
 Arithmetic encoding is another lossless compression algorithm that uses probability to assign codes to symbols in the message. Unlike Huffman, arithmetic encoding assigns a single code to the whole message, rather than separate codes for each symbol.
 
-Here is a simple example. Say we want to encode a string of characters ``ACGGT''. Arithmetic Encoding also requires the encoder and decoder know the probabilities of each of the characters that could possibly be in the message. Let's say the probability of each symbol in the message are
+Here is a simple example. Say we want to encode a string of characters ``ACGGT''. Arithmetic Encoding also requires the encoder and decoder know the probabilities of each of the characters that could possibly be in the message. Let's say the probabilities of each symbol in the message are
 \begin{itemize}
 \tightlist
 \item
@@ -452,7 +453,7 @@ LZW has several convenient properties:
 \item
   When we send this encoding to someone else, we don't need to send a ``codebook'' (our dictionary). They are able to build it up themselves as they decode.
 \item
-  There only needs to be one run over the data once to encode and decode. This means that the run time of the algorithm should increase linearly with the length of the input.
+  There only needs to be one run over the data to encode and decode. This means that the run time of the algorithm should increase linearly with the length of the input.
 \item
   As runs get longer, we will start to see more and more repeating patterns, and replacing them with codewords will become more and more effective.
 \end{itemize}
@@ -531,13 +532,14 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 \hypertarget{related-work}{%
 \section{Related work}\label{related-work}}
 
+Deoxyribonucleic acid (DNA) is the building block of life. In four letters (A, C, G, and T) called nucleotides, DNA holds the genetic information required for reproduction in all living organisms. DNA can be billion of characters long, which can mean gigabytes or terabytes of storage on a computer.
 The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area, in the intersection of bioinformatics, computer science, and mathematics.
 
-There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length. This allows each of the dictionaries grow more slowly, allowing accesses to be faster. This paper also used genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
+There have been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length. This allows each of the dictionaries to grow more slowly, allowing accesses to be faster. This paper also used genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
 
 Another paper used simple parallelization techniques to improve compression speed (Pani, Mishra, \& Mishra, 2012). Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
 
-Yet another paper made use of Chinese Remainder Theorem to augment Lempel-Ziv-Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we were not able to achieve similar results. We reached out to the authors, but we were not able to further our progress on this method and thus the it is not used in this thesis.
+Another paper made use of Chinese Remainder Theorem (CRT) to augment Lempel-Ziv-Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we were not able to achieve similar results. We reached out to the authors, but we were not able to further our progress on this method and thus it is not used in this thesis.
 
 DNA-specific compression algorithms have also been a growing subsection of computer science for decades. These papers do not focus on LZW, but they do consider some similar methods.
 
@@ -640,7 +642,7 @@ Most graphs in this section will refer to throughput and average compression tim
 \hypertarget{a-starting-point}{%
 \section{A Starting Point}\label{a-starting-point}}
 
-As stated previously, we thought it was best to get a working implementation of LZW in C++ on regular text files, , and then optimize it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon. If the initial implementation is inefficient, it makes us harder to tell if the different techniques we have are affecting performance.
+As stated previously, we thought it was best to get a working implementation of LZW in C++ on regular text files, and then optimize it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon. If the initial implementation is inefficient, it makes it harder to tell if the different techniques we have are affecting performance.
 
 This section chronologically covers some milestones reached when implementing an efficient initial version of LZW. These milestones are compared to one another at the end of the section.
 
@@ -710,7 +712,7 @@ The solution was to reserve a codeword to mark the end of the file. So we start 
     \OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
-As discussed in Section \ref{lempel-ziv-welch}, if we don't mark the end of the file, the decoder won't be able to know when to stop decoding. So the decoding algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword.
+As discussed in Section \ref{lempel-ziv-welch}, if we don't mark the end of the file, the decoder won't be able to know when to stop decoding. So the decoding algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it finds the end of file, we stop and output the EOF codeword.
 
 The problem was, what about what is left over? When compressing, the algorithm could be part of the way through a search when it reaches the end of the file. Suppose we are reading a file, and the file ends with ``ACCT''. If ``A'' is in the dictionary, we see if ``AC'' is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
 \begin{enumerate}
@@ -771,7 +773,7 @@ The next major step in the code was to start using constants for everything, inc
 \end{itemize}
 It also made sense to start using a specific type for codewords. At this stage, we opted for a 32 bit unsigned integer.
 
-There are several tools at a developers disposal when looking to debug and optimize code. One tool used for this thesis was \texttt{callgrind} which is a profiling tool. Profiling tools are used to look at how your code works, where the bottlenecks are, and what can be changed/improved for the performance of your code.
+There are several tools at a developer's disposal when looking to debug and optimize code. One tool used for this thesis was \texttt{callgrind} which is a profiling tool. Profiling tools are used to look at how your code works, where the bottlenecks are, and what can be changed/improved for the performance of your code.
 
 Callgrind in particular is a tool which associates assembly instructions to lines of code, indicating which lines take a lot of instructions and which take less. For those unfamiliar, assembly instructions are what code is converted into so that it can be ran on your computer's processor. In general, more instructions means that code takes longer to run.
 
@@ -803,7 +805,7 @@ As shown, this line is taking a significant amount of instructions, and it needs
 420,120,704 ( 2.85%)  => /usr/include/c++/9/bits/basic_string.h
 50,570,065 ( 0.34%)  => /usr/include/c++/9/bits/hashtable_policy.h
 \end{verbatim}
-There are several potential issues with what \texttt{callgrind} attempts to do by associating machine instructions with individual lines. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Another thing is that compliers are very advanced, and sometimes small optimizations like this are done by the compiler automatically.
+There are several potential issues with what \texttt{callgrind} attempts to do by associating machine instructions with individual lines. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Another thing is that compilers are very advanced, and sometimes small optimizations like this are done by the compiler automatically.
 
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of \texttt{callgrind}, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
 
@@ -812,7 +814,7 @@ Despite these issues, this change was still worth making, if not to save time th
 
 The LZW algorithm is built on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over.
 
-Another thing that I noticed from the \texttt{callgrind} output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most languages, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing string, which can have a significant performance penalty.
+Another thing that I noticed from the \texttt{callgrind} output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most languages, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing strings, which can have a significant performance penalty.
 
 In this version of the algorithm, every time we have already seen a sequence, we have to concatenate a character. I noticed that I was doing this concatenation multiple times without needing to. You may have noticed this extraneous concatenation in the if statement in Section \ref{getting-eof-to-work}.
 \begin{Shaded}
@@ -920,7 +922,7 @@ This should reduce the amount of time the program spends on string concatenation
 
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
-When reading a byte stream of the file, the file may not always be in memory, which is the fastest part of our storage. The \texttt{ifstream} class in C++, the typical method of reading a file, has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data.
+When reading a byte stream of the file, the file may not always be in memory, which is the fastest part of our storage. The \texttt{ifstream} class in C++, the typical method of reading a file, has many extraneous features that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data.
 
 \hypertarget{comparison}{%
 \subsection{Comparison}\label{comparison}}
@@ -936,7 +938,7 @@ Figure \ref{fig:comparecorporaoptimizingfig} shows the performance of the algori
 \hypertarget{trying-different-dictionaries}{%
 \section{Trying Different Dictionaries}\label{trying-different-dictionaries}}
 
-A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and placing others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program.
+A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and inserting others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program.
 
 So another step towards an efficient LZW was to be to abstract out the C++ \texttt{std::unordered\_map} and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
 
@@ -952,25 +954,25 @@ In our analysis of the two corpora, we found some interesting statistics in the 
 \caption{\label{tab:runstatsfigcp1}Run statistics in Corpus 1}\tabularnewline
 \toprule()
 \begin{minipage}[b]{\linewidth}\centering
-average\_run\_length
+Average Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-maximum\_run\_length
+Maximum Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-median\_run\_length
+Median Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-sd\_run\_length
+Sd Run Length
 \end{minipage} \\
 \midrule()
 \endfirsthead
 \toprule()
 \begin{minipage}[b]{\linewidth}\centering
-average\_run\_length
+Average Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-maximum\_run\_length
+Maximum Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-median\_run\_length
+Median Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-sd\_run\_length
+Sd Run Length
 \end{minipage} \\
 \midrule()
 \endhead
@@ -985,25 +987,25 @@ sd\_run\_length
 \caption{\label{tab:runstatsfigcp2}Run statistics in Corpus 2}\tabularnewline
 \toprule()
 \begin{minipage}[b]{\linewidth}\centering
-average\_run\_length
+Average Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-maximum\_run\_length
+Maximum Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-median\_run\_length
+Median Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-sd\_run\_length
+Sd Run Length
 \end{minipage} \\
 \midrule()
 \endfirsthead
 \toprule()
 \begin{minipage}[b]{\linewidth}\centering
-average\_run\_length
+Average Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-maximum\_run\_length
+Maximum Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-median\_run\_length
+Median Run Length
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-sd\_run\_length
+Sd Run Length
 \end{minipage} \\
 \midrule()
 \endhead
@@ -1406,7 +1408,7 @@ So on average, every codeword shows up a maximum of 4 times. This means that for
 \hypertarget{a-new-approach}{%
 \subsection{A New Approach}\label{a-new-approach}}
 
-Given that we are not able to achieve a compression ratio over 4.0 with the Direct Map LZW, we need to alter our approach. The issue with our dataset is that long runs are rare. Every once in a while, there may an opportunity to replace a run of 15 with a codeword, but most of the time the runs being replaced are of length 8 or less. Eight characters can be represented by 16 bits via the 2 bit encodings, so any run under 8 that is replaced actually increases the total number of bits in the output file.
+Given that we are not able to achieve a compression ratio over 4.0 with the Direct Map LZW, we need to alter our approach. The issue with our dataset is that long runs are rare. Every once in a while, there may be an opportunity to replace a run of 15 with a codeword, but most of the time the runs being replaced are of length 8 or less. Eight characters can be represented by 16 bits via the 2 bit encodings, so any run under 8 that is replaced actually increases the total number of bits in the output file.
 
 The fact that we are not getting a compression ratio over 4.0 led us to think of a new twist on the algorithm specifically tailored for this situation. The scheme uses three streams of data: characters, codewords, and indicator bits. The algorithm works as follows.
 
@@ -1424,7 +1426,7 @@ Decompression: We start by reading an indicator bit
 \item
   if the bit is 1, we read a codeword from the codeword stream and the next character from the character stream. We add this to the dictionary like the old algorithm.
 \item
-  if the bit is 0, we read the next 8 characters. We then use \texttt{find\_longest} to find the longest run and add it to the dictionary. We can then put the 8 characters into the output stream and move on
+  if the bit is 0, we read the next 8 characters. We then use \texttt{find\_longest} to find the longest run and add it to the dictionary. We can then put the 8 characters into the output stream and move on.
 \end{itemize}
 This is, in essence, a greedy algorithm. We have the choice of outputting a codeword or 8 characters every time, and we choose the choice which results in the least number of bits in the output file.
 
@@ -1549,7 +1551,7 @@ As you can see, the compression ratio for these other algorithms are much better
 \hypertarget{comparison-to-other-professional-tools}{%
 \section{Comparison to Other Professional Tools}\label{comparison-to-other-professional-tools}}
 
-The other tools that we choose to use are \texttt{gzip}, \texttt{bzip}, and \texttt{genozip}. Both \texttt{bzip} and \texttt{gzip} are open source, general compression tools. As mentioned earlier \texttt{genozip} is was creates specifically for DNA compression and the compression of other common filetypes in biological research (Lan et al., 2021).
+The other tools that we choose to use are \texttt{gzip}, \texttt{bzip}, and \texttt{genozip}. Both \texttt{bzip} and \texttt{gzip} are open source, general compression tools. As mentioned earlier \texttt{genozip} was created specifically for DNA compression and the compression of other common filetypes in biological research (Lan et al., 2021).
 \begin{table}[!h]
 
 \caption{\label{tab:othertoolstab}Performance metrics for other tools. Both bzip and gzip were ran with option -9, and genozip was ran with --input=generic.}
@@ -1615,7 +1617,7 @@ DNACorpus2/YeMi & 73689 & 3.78 & 3.099 & 3.998 & 3.72 & 3.58 & 3.859 & 3.859 & 3
 \hline
 \end{tabular}}
 \end{table}
-Table \ref{tab:othertoolstab} summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors \texttt{bzip} and \texttt{gzip} in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, \texttt{genozip} does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. However, if you look at the performance data in Figure \ref{fig:othertoolsgraphfig}, you can see that our both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including \texttt{genozip}. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
+Table \ref{tab:othertoolstab} summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors \texttt{bzip} and \texttt{gzip} in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, \texttt{genozip} does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. However, if you look at the performance data in Figure \ref{fig:othertoolsgraphfig}, you can see that both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including \texttt{genozip}. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/othertoolsgraphfig-1.pdf}
@@ -1629,7 +1631,7 @@ We started with a naive implementation of Lempel Ziv Welch, and our goal was to 
 
 The concept of an indexed, Direct Map dictionary is one that could prove useful for other applications. Further research could be used to apply a similar idea to a different algorithm, one more suited to the redundancies present in DNA. I.e, could we take one of the research papers discussed in the Related Works section and apply the idea of the Direct Map to the algorithm presented in it? This could also be useful in other areas of compression in which the workload has a limited number of characters, because the size of the dictionary grows exponentially with as the number of characters needing to be accounted for increases.
 
-The Four to One implementation and the usage of \texttt{pext} in general is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications with where there are much less characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA).
+The Four to One implementation and the usage of \texttt{pext} in general is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications where there are much less characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA).
 
 Overall, our thesis has produced a few notable implementations of LZW and shown the applicability of \texttt{pext} in optimizing compression algorithms.
 

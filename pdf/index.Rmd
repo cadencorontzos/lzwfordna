@@ -36,6 +36,7 @@ abbreviations:
   LZW: Lempel Ziv Welch
   RLE: Run Length Encoding
   EOF: End of file
+  DNA: Deoxyribonucleic acid
 
 bibliography: bib/thesis.bib
 
@@ -160,12 +161,4 @@ options(width = 70)
 ```{r eval=!knitr::is_latex_output(), child=here::here("prelims", "00-abstract.Rmd")}
 
 ```
-
-<!-- The {.unnumbered} option here means that the introduction will be 
-"Chapter 0." You can also use {-} for no numbers on chapters.
-# Introduction {.unnumbered}
-
-When dealing with DNA, it 
-
--->
 

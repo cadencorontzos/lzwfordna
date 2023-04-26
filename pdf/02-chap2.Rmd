@@ -1,4 +1,10 @@
 
+<!--
+
+Helper functions for figure generation
+
+-->
+
 ```{r meancomptimefunc, echo = F}
 # returns mean compression time in seconds
 # assumes time is given in nanoseconds
@@ -18,6 +24,7 @@ mean_comp_time <- function(corpus){
 csv_to_table <- function(filename, caption = "f"){
   df <- read.csv(filename)
   names(df) <- gsub("\\.", " ", names(df))
+  names(df) <- gsub("\\_", " ", names(df))
   knitr::kable(df, "markdown", align= 'cc', caption = caption)
 }
 ```
@@ -34,20 +41,24 @@ throughput <- function(df){
 }
 ```
 
-```{r comparecorporafunc, echo = F}
+```{r compareimplementationsfunc, echo = F}
 # Given a list of vectors
 # assumes vector contains (corpus 1 stats, corpus 2 stats, description)
 # returns side by side plots of throughput and average compression time
-compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone", label_angle=45){
+compare_implementations <- function(array, per_corpus = FALSE, x_axis = "Milestone", label_angle=45){
+  
+  # set up empty df
 	df <- data.frame(
-	  
 	   comp_throughput = numeric(0),
 		  hm_comp = numeric(0),
 		  description = character(0),
 		  order = numeric(0),
 		  corpus = character(0)
 	)
+	
+	# keep track of order
   ord <- 1
+  
 	for(corpus_pair in array){
 		cp1 <- read.csv(corpus_pair[1])
 		cp2 <- read.csv(corpus_pair[2])
@@ -55,10 +66,12 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone", lab
 		
 		
 		if(per_corpus){
+		  
+		  # if we want to split by corpus, take avgs individually
 		  means1 <- mean_comp_time(cp1)
 		  means2 <- mean_comp_time(cp2)
 		  
-		  df<- df %>% add_row( 
+		  df <- df %>% add_row( 
 	                        comp_throughput = throughput(cp1),
                     		  hm_comp = means1$mean_comp,
                     		  description = corpus_pair[3],
@@ -66,7 +79,7 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone", lab
                     		  corpus = "Corpus 1"
                       		)
 
-		df<- df %>% add_row(
+		  df <- df %>% add_row(
                   		  comp_throughput = throughput(cp2),
                   		  hm_comp = means2$mean_comp,
                   		  description = corpus_pair[3],
@@ -74,23 +87,18 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone", lab
                   		  corpus = "Corpus2"
                     		)
 		}else{
-		
-		  comb <- rbind(cp1,cp2)
-		  		means <- mean_comp_time(comb)
 
-		  		df<- df %>%  add_row(comp_throughput = throughput(comb),
-		  hm_comp = means$mean_comp,
-		  description = corpus_pair[3],
-		  order = ord,
-		  corpus = "Corpus 1"
-		)
-
+		  # otherwise just do all the files
+		  means <- mean_comp_time(comb)
+		  df<- df %>%  add_row( comp_throughput = throughput(comb),
+                      		  hm_comp = means$mean_comp,
+                      		  description = corpus_pair[3],
+                      		  order = ord,
+                      		  corpus = "Corpus 1"
+                      		)
 		}
-
-
-		ord<- ord+1
-
 		
+		ord<- ord+1
 	}
   df<- na.omit(df)
 
@@ -100,15 +108,24 @@ compare_coprora <- function(array, per_corpus = FALSE, x_axis = "Milestone", lab
     {if(per_corpus)facet_wrap(~corpus)}+
     labs(x=x_axis, y = "Throughput (Mb/s)", title = "Throughput")+
     theme(axis.text.x = element_text(angle = label_angle, hjust = 1))
+  
   plot2 <- df %>% 
     ggplot(aes(x = reorder(description, order), y = hm_comp, fill = description))+
     geom_col(show.legend = F)+
     {if(per_corpus)facet_wrap(~corpus)}+
-    labs(x=x_axis, y = "Mean Compression Time (s)", title = "Average Compression Time")+
+    labs(x=x_axis, y = "Mean Compression Time (s)", title = "Mean Compression Time")+
     theme(axis.text.x = element_text(angle = label_angle, hjust = 1))
+  
+  # this puts the plots side by side via the patchwork package
   plot1+plot2
 }
 ```
+
+<!--
+
+End of helper functions
+
+-->
 
 # Optimizing LZW: Approach
 
@@ -127,10 +144,10 @@ Our strategy was as follows:
 
 Most compression papers make use of a corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the algorithm to others available.
 
-
 ```{r corpus1filesfig, warnings= F, messages = F, fig.cap = "Corpus 1", fig.height = 7, echo = FALSE} 
 csv_to_table('data/corpus_1_summary.csv', "Corpus 1")
 ```
+
 In the world of DNA compression, there are several academic papers on the subject. As mentioned in Chapter 1, one of the first and most popular of the papers was published in 1994. The selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications [@grumbach]. We call this Corpus 1, summarized in \@ref(tab:corpus1filesfig). 
 
 Another, newer paper aimed to create a corpus specifically for compressing DNA [@prataspinho]. They put together a corpus of DNA sequences for this purpose. Since the papers publishing, it has been cited by several DNA compression studies.
@@ -138,6 +155,7 @@ Another, newer paper aimed to create a corpus specifically for compressing DNA [
 ```{r corpus2filesfig, warnings= F, messages = F, fig.cap = "Corpus 2", fig.height = 7, echo = FALSE}
 csv_to_table('data/corpus_2_summary.csv', "Corpus 2")
 ```
+
 The dataset in Table \@ref(tab:corpus2filesfig), which we call Corpus 2, is publicly available at this [https://tinyurl.com/DNAcorpus](https://tinyurl.com/DNAcorpus).
 
 ## Evaluating Performance
@@ -150,7 +168,7 @@ Most graphs in this section will refer to throughput and average compression tim
 
 ## A Starting Point
 
-As stated previously, we thought it was best to get a working implementation of LZW in C++ on regular text files, , and then optimize it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon. If the initial implementation is inefficient, it makes us harder to tell if the different techniques we have are affecting performance.
+As stated previously, we thought it was best to get a working implementation of LZW in C++ on regular text files, and then optimize it for DNA. We want to try various techniques tried by researches in the field, but it is important to have a fast baseline from which we can compare and improve upon. If the initial implementation is inefficient, it makes it harder to tell if the different techniques we have are affecting performance.
 
 This section chronologically covers some milestones reached when implementing an efficient initial version of LZW. These milestones are compared to one another at the end of the section.
 
@@ -217,7 +235,7 @@ The solution was to reserve a codeword to mark the end of the file. So we start 
 		dictionary[str1] = i;
 	}
 ```
-As discussed in Section \@ref(lempel-ziv-welch), if we don't mark the end of the file, the decoder won't be able to know when to stop decoding. So the decoding algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it find the end of file, we stop and output the EOF codeword. 
+As discussed in Section \@ref(lempel-ziv-welch), if we don't mark the end of the file, the decoder won't be able to know when to stop decoding. So the decoding algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it finds the end of file, we stop and output the EOF codeword. 
 
 The problem was, what about what is left over? When compressing, the algorithm could be part of the way through a search when it reaches the end of the file. Suppose we are reading a file, and the file ends with "ACCT". If "A" is in the dictionary, we see if "AC" is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
 
@@ -267,7 +285,7 @@ The next major step in the code was to start using constants for everything, inc
 
 It also made sense to start using a specific type for codewords. At this stage, we opted for a 32 bit unsigned integer.
 
-There are several tools at a developers disposal when looking to debug and optimize code. One tool used for this thesis was `callgrind` which is a profiling tool. Profiling tools are used to look at how your code works, where the bottlenecks are, and what can be changed/improved for the performance of your code.
+There are several tools at a developer's disposal when looking to debug and optimize code. One tool used for this thesis was `callgrind` which is a profiling tool. Profiling tools are used to look at how your code works, where the bottlenecks are, and what can be changed/improved for the performance of your code.
 
 Callgrind in particular is a tool which associates assembly instructions to lines of code, indicating which lines take a lot of instructions and which take less. For those unfamiliar, assembly instructions are what code is converted into so that it can be ran on your computer's processor. In general, more instructions means that code takes longer to run.
 
@@ -302,7 +320,7 @@ As shown, this line is taking a significant amount of instructions, and it needs
 50,570,065 ( 0.34%)  => /usr/include/c++/9/bits/hashtable_policy.h
 ```
 
-There are several potential issues with what `callgrind` attempts to do by associating machine instructions with individual lines. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Another thing is that compliers are very advanced, and sometimes small optimizations like this are done by the compiler automatically. 
+There are several potential issues with what `callgrind` attempts to do by associating machine instructions with individual lines. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Another thing is that compilers are very advanced, and sometimes small optimizations like this are done by the compiler automatically. 
 
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of `callgrind`, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
 
@@ -310,7 +328,7 @@ Despite these issues, this change was still worth making, if not to save time th
 
 The LZW algorithm is built on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over. 
 
-Another thing that I noticed from the `callgrind` output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most languages, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing string, which can have a significant performance penalty.
+Another thing that I noticed from the `callgrind` output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most languages, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing strings, which can have a significant performance penalty.
 
 In this version of the algorithm, every time we have already seen a sequence, we have to concatenate a character. I noticed that I was doing this concatenation multiple times without needing to. You may have noticed this extraneous concatenation in the if statement in Section \@ref(getting-eof-to-work). 
 
@@ -419,14 +437,14 @@ This should reduce the amount of time the program spends on string concatenation
 
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
-When reading a byte stream of the file, the file may not always be in memory, which is the fastest part of our storage. The `ifstream` class in C++, the typical method of reading a file, has many extraneous feature that we don't need. If we map the file directly into memory using `mmap` and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a `char*` opens the possibility to getting rid of `std::string` entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data. 
+When reading a byte stream of the file, the file may not always be in memory, which is the fastest part of our storage. The `ifstream` class in C++, the typical method of reading a file, has many extraneous features that we don't need. If we map the file directly into memory using `mmap` and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a `char*` opens the possibility to getting rid of `std::string` entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data. 
 
 ### Comparison
 
 Taking metrics of the algorithm at each of the stages listed in this chapter, we can make a graph showing the improvements in performance.
 
 ```{r comparecorporaoptimizingfig, warnings= F, messages = F, fig.cap = "Comparison of the performance of the different milestones", fig.height = 4, echo = F}
-compare_coprora(list(
+compare_implementations(list(
   c('data/stats/corpus_1_fixedeof_9066eef.csv', 'data/stats/corpus_2_fixedeof_9066eef.csv', 'Fixed EOF'),
   c('data/stats/corpus_1_usingconstants_2c3f782.csv', 'data/stats/corpus_2_usingconstants_2c3f782.csv', 'Using constants'),
   c('data/stats/corpus_1_stringconcat_8963f64.csv', 'data/stats/corpus_2_stringconcat_8963f64.csv', 'String concatenation'),
@@ -439,7 +457,7 @@ Figure \@ref(fig:comparecorporaoptimizingfig) shows the performance of the algor
 
 ## Trying Different Dictionaries
 
-A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and placing others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program. 
+A lot of the stress of the LZW algorithm is on the dictionary. We are constantly looking strings up and inserting others. Because of the reliance on this data structure, we know that the dictionary accesses and lookups are a bottleneck, so improvements in those areas could greatly increase the efficiency of our program. 
 
 So another step towards an efficient LZW was to be to abstract out the C++ `std::unordered_map` and have multiple different dictionary implementations to try and experiment with in our attempt to optimize LZW for DNA compression.
 
@@ -478,7 +496,7 @@ For each string size 1 to n, we have an array with enough slots for every possib
 
 
 ```{r directmaplenthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
-compare_coprora(list(
+compare_implementations(list(
 	c('data/stats/directmap/corpus_1_directmap_266bcb7_len10.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len10.csv', 10),
 	c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 15)
 ), x_axis = "Max String Length", label_angle = 0)
@@ -535,7 +553,7 @@ This logic is supported by Figure \@ref(fig:multvsonedictfig), which shows one `
 
 
 ```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
-compare_coprora(list(
+compare_implementations(list(
 	c('data/stats/multdict/corpus_1_multdict_06f9a20_len10.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len10.csv', 10),
 	c('data/stats/multdict/corpus_1_multdict_06f9a20_len15.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len15.csv', 15),
 	c('data/stats/multdict/corpus_1_multdict_06f9a20_len20.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len20.csv', 20),
@@ -546,7 +564,7 @@ compare_coprora(list(
 
 ```{r multvsonedictfig, warnings= F, messages = F, fig.cap = "Comparing one Dict to Mult Dict", fig.height = 4, echo = F}
 
-compare_coprora(list(
+compare_implementations(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
   c('data/stats/multdict/corpus_1_multdict_06f9a20_len10.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len10.csv', 'Multiple Indexed Dictionaries')
   ))
@@ -564,7 +582,7 @@ Again, taking the Direct Map approach means decreasing compression ratio overall
 
 ```{r dictionarytechniquecompfig, warnings= F, messages = F, fig.cap = "Comparing the three types of dictionaries. The Direct Map has a max length of 15 and the Mult Dict has a max length of 10.",echo = F, fig.height=4}
 
-compare_coprora(list(
+compare_implementations(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
   c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Direct Map Dictionary'),
   c('data/stats/multdict/corpus_1_multdict_06f9a20_len10.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len10.csv', 'Multiple Indexed Dictionaries')
@@ -657,7 +675,7 @@ find_longest(input_string){
 Of course, we could also calculate the indexes for binary search on the fly. So we now have 5 different schemes of finding the longest run: looping up or down, looping up or down on the fly, binary search, binary search on the fly, and looping up from 0 like we were doing before. Figure \@ref(fig:findlongestfrommaxfig) shows a comparison of these methods. 
 
 ```{r findlongestfrommaxfig, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 4}
-compare_coprora(list(
+compare_implementations(list(
   c('data/stats/ddict/corpus_1_ddictbinarysearch_e196a55.csv', 'data/stats/ddict/corpus_2_ddictbinarysearch_e196a55.csv', 'Binary search'),
   c('data/stats/ddict/corpus_1_ddictbinarysearchflyindex_94305a5.csv', 'data/stats/ddict/corpus_2_ddictbinarysearchflyindex_94305a5.csv', 'Binary Fly Index'),
   c('data/stats/ddict/corpus_1_ddictloopdownflyindex_7ae114e.csv', 'data/stats/ddict/corpus_2_ddictloopdownflyindex_7ae114e.csv', 'Loop Down Fly Index'),
@@ -674,7 +692,7 @@ We see that calculating the index on the fly does tend to improve performance. H
 As we can see in Figure \@ref(fig:findlongestfromavg), looping or doing binary search from the average run length, which we approximate at 7, increases throughput and decreases mean compression time relative to looping up from zero.
 
 ```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 3}
-compare_coprora(list(
+compare_implementations(list(
   c('data/stats/ddict/corpus_1_ddictdownavg_edafb16.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down from Average'),
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search from Average'),
   c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Looping up from zero')
@@ -691,7 +709,7 @@ One way to avoid the edge case where we encounter a very long run is to just not
 
 
 ```{r findlongestwmax, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at average with strings over max not accepted", echo = F, fig.height = 5}
-compare_coprora(list(
+compare_implementations(list(
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down'),
   c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max Enforced'),
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search'),
@@ -785,7 +803,7 @@ We did get lucky in that the 6th and 7th bit (from left to right) on A, C, T, an
 We can apply this technique to our `find_longest` function: we can extract the index of a string using pext very quickly, then use that index rather than recalculating it every time. Figure \@ref(fig:findlongestwpext) hows the results of this application for both looping and binary search. In both cases, using pext to extract the index of the string increases throughput and decreases average compression time.
 
 ```{r findlongestwpext, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run with pext", echo = F, fig.height = 5}
-compare_coprora(list(
+compare_implementations(list(
   c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max'),
   c('data/stats/ddict/corpus_1_ddictloopwpext_70ee265.csv', 'data/stats/ddict/corpus_2_ddictloopwpext_70ee265.csv', 'Loop Down with Pext'),
   c('data/stats/ddict/corpus_1_ddictbswmax_588ee0d.csv', 'data/stats/ddict/corpus_2_ddictbswmax_588ee0d.csv', 'Binary Search with Max'),
@@ -862,7 +880,7 @@ So on average, every codeword shows up a maximum of 4 times. This means that for
 
 ### A New Approach
 
-Given that we are not able to achieve a compression ratio over 4.0 with the Direct Map LZW, we need to alter our approach. The issue with our dataset is that long runs are rare. Every once in a while, there may an opportunity to replace a run of 15 with a codeword, but most of the time the runs being replaced are of length 8 or less. Eight characters can be represented by 16 bits via the 2 bit encodings, so any run under 8 that is replaced actually increases the total number of bits in the output file.
+Given that we are not able to achieve a compression ratio over 4.0 with the Direct Map LZW, we need to alter our approach. The issue with our dataset is that long runs are rare. Every once in a while, there may be an opportunity to replace a run of 15 with a codeword, but most of the time the runs being replaced are of length 8 or less. Eight characters can be represented by 16 bits via the 2 bit encodings, so any run under 8 that is replaced actually increases the total number of bits in the output file.
 
 The fact that we are not getting a compression ratio over 4.0 led us to think of a new twist on the algorithm specifically tailored for this situation. The scheme uses three streams of data: characters, codewords, and indicator bits. The algorithm works as follows.
 
@@ -874,7 +892,7 @@ Compression:
 Decompression: We start by reading an indicator bit
 
 + if the bit is 1, we read a codeword from the codeword stream and the next character from the character stream. We add this to the dictionary like the old algorithm.
-+ if the bit is 0, we read the next 8 characters. We then use `find_longest` to find the longest run and add it to the dictionary. We can then put the 8 characters into the output stream and move on
++ if the bit is 0, we read the next 8 characters. We then use `find_longest` to find the longest run and add it to the dictionary. We can then put the 8 characters into the output stream and move on.
 
 This is, in essence, a greedy algorithm. We have the choice of outputting a codeword or 8 characters every time, and we choose the choice which results in the least number of bits in the output file.
 
