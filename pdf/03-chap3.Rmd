@@ -121,8 +121,6 @@ wholedf <- process_corpus_group(list(
   c('data/stats/final/corpus_1_threestream_final_687ff25.csv', 'data/stats/final/corpus_2_threestream_final_687ff25.csv', 'Three Stream LZW')
 ))
 
-
-library(tidyr)
 df_new <- wholedf %>% 
   select(File.Name, Implementation, Compression.Ratio, Original.File.Size) %>% 
   spread(key = Implementation, value = Compression.Ratio) 
@@ -252,7 +250,7 @@ wholedf <- wholedf %>% rename(
 
 wholedf <- rbind(wholedf, wholedf1)
 
-library(tidyr)
+
 df_new <- wholedf %>% 
   select(File.Name, Program, Compression.Ratio, Original.File.Size) %>% 
   spread(key = Program, value = Compression.Ratio) 

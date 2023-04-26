@@ -192,12 +192,11 @@ I want to thank a few people.
 }
 
 \Dedication{
-You can have a dedication here if you wish.
+
 }
 
 \Preface{
-This is an example of a thesis setup to use the reed thesis document class
-(for LaTeX) and the R bookdown package, in general.
+
 }
 
 \Abstract{
@@ -238,10 +237,7 @@ This thesis gives an introduction to compression. Specifically, we focus on comp
   \begin{acknowledgements}
     I want to thank a few people.
   \end{acknowledgements}
-  \begin{preface}
-    This is an example of a thesis setup to use the reed thesis document class
-    (for LaTeX) and the R bookdown package, in general.
-  \end{preface}
+
 \chapter*{List of Abbreviations}
 \begin{table}[h]
     \centering
@@ -262,20 +258,12 @@ This thesis gives an introduction to compression. Specifically, we focus on comp
   \begin{abstract}
     This thesis gives an introduction to compression. Specifically, we focus on compressing DNA sequences using the Lepel Ziv Welch compression algorithm. We designed a data structure we deem the Direct Map Dictionary. The Direct Map Dictionary is indexed by file size and by a unique index for every possible string. We were also able to take advantage of the machine instruction \texttt{pext} to extract bits in parallel and make the indexing of strings even faster. We wrote a LZW implementation using this data structure, as well as another implementation which uses a greedy version of LZW and additional entropy encoding, which we call Three Stream LZW. We also implement an algorithm which trivially translates nucleotides to a two bit representation using \texttt{pext}, which we call Four to One. The Four to One version is extremely fast and achieves a compression ratio of 4.0 every time, which we believe could be useful in other applications with similar constraints. The Direct Map LZW is fast but doesn't have a great compression ratio, but the Three Stream LZW is able to achieve compression ratios greater than 4.0 on large files while still being fast, having double the throughput of some professional compression tools.
   \end{abstract}
-  \begin{dedication}
-    You can have a dedication here if you wish.
-  \end{dedication}
+
 \mainmatter % here the regular arabic numbering starts
 \pagestyle{fancyplain} % turns page numbering back on
 
-\hypertarget{introduction}{%
-\chapter*{Introduction}\label{introduction}}
-\addcontentsline{toc}{chapter}{Introduction}
-
-When dealing with DNA, it
-
-\hypertarget{backround-and-motivations}{%
-\chapter{Backround and Motivations}\label{backround-and-motivations}}
+\hypertarget{background-and-motivations}{%
+\chapter{Background and Motivations}\label{background-and-motivations}}
 
 This thesis deals with some high-level topics and uses language specific to compression research. This chapter tries to give brief summaries and examples of the relevant topics to be discussed so readers of all experience levels can put our results into context.
 
@@ -283,9 +271,9 @@ This thesis deals with some high-level topics and uses language specific to comp
 \section{What is information?}\label{what-is-information}}
 
 Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could use words, you could use sign language. But regardless of the medium, there is some important idea to get across. Does it matter if the other person gets your message exactly? If someone asks you ``Where library'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library''?
-Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, lets assumed that information is data with some sort of significance that makes it worth preserving and conveying.
+Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let's assume that information is data with significance that makes it worth preserving and conveying.
 
-Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, screens, etc. To maximize the amount of information that can be transmitted through a channel with a limited capacity, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
+Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, and screens. To maximize the amount of information that can be transmitted through a channel with a limited capacity, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
 
 \hypertarget{compression-metrics}{%
 \section{Compression Metrics}\label{compression-metrics}}
@@ -302,7 +290,7 @@ So a higher compression ratio means a more effective compression algorithm, and 
 \hypertarget{run-time}{%
 \subsection{Run Time}\label{run-time}}
 
-The run time is also an important part of evaluating the effectiveness of a compression algorithm. Run time is typically defined as the length of time a program takes to complete a task. Sometimes, if time is constrained, you may care less about saving space. For example, if you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15 but takes twice as long as the other, you may opt for a lower compression ratio to save time.
+The run time is also an important part of evaluating the effectiveness of a compression algorithm. Run time is typically defined as the length of time a program takes to complete a task. Sometimes, if time is constrained, you may care less about saving space. For example, suppose you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15. If the one with the higher compression ratio takes twice as long as the other, you may opt for a lower compression ratio to save time.
 
 \hypertarget{memory-usage}{%
 \subsection{Memory Usage}\label{memory-usage}}
@@ -315,12 +303,12 @@ Memory usage is closely tied with runtime when it comes to compression algorithm
 \hypertarget{lossy}{%
 \subsection{Lossy}\label{lossy}}
 
-Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality picture, but the general information in the picture is preserved. Another example is MP3 audio files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorable for devices with limited storage like MP3 players and cellphones.
+Lossy compression is based on the idea that not all information is vital. For instance, when saving a picture on your computer, your computer may save it in the .jpeg format to save space. Jpegs lose some of the information in the original picture and produce an overall lower quality photo, but the general information in the picture is preserved. Another example is MP3 audio files. MP3 compression discards some of the information and sound quality in exchange for a file that takes up less space, which is often favorable for devices with limited storage like MP3 players and cellphones.
 
 \hypertarget{lossless}{%
 \subsection{Lossless}\label{lossless}}
 
-Lossless compression is the compression of data with the goal of preserving all the information in the data so that it can be reproduced perfectly on decompression. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be wholly recovered, like scientific data, archiving (e.g a .zip folder), and high end audio recording. Examples of lossless compression algorithms are Huffman Encoding and Lempel-Ziv-Welch, which is the focus of this thesis.
+Lossless compression is the compression of data with the goal of preserving all the information in the data so that it can be reproduced perfectly on decompression. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be wholly recovered, like scientific data, archiving (e.g a .zip folder), and high end audio recording. Examples of lossless compression algorithms are Huffman Encoding and Lempel-Ziv-Welch.
 
 \hypertarget{classic-compression-algorithms}{%
 \section{Classic Compression Algorithms}\label{classic-compression-algorithms}}
@@ -337,7 +325,7 @@ Even if this message did mean something, we can get the information across witho
 
 \[2A1G1C8T5G3C1T\]
 
-We could compress this even further if we omit the 1 on characters that only appear once. Although not as sophisticated as other methods, RLE is effective when used on texts that have a lot of repeating characters.
+Although not as sophisticated as other methods, RLE is effective when used on applications with large runs of repetitive data. For instance, photos that have solid backgrounds, like a logo, can be effectively compressed by RLE.
 
 \hypertarget{huffman}{%
 \subsection{Huffman}\label{huffman}}
@@ -379,38 +367,45 @@ So our message would be encoded to \(1011010001011100110\).
 
 Arithmetic encoding is another lossless compression algorithm that uses probability to assign codes to symbols in the message. Unlike Huffman, arithmetic encoding assigns a single code to the whole message, rather than separate codes for each symbol.
 
-Here is a simple example. Say we want to encode a string of characters ``ACGT''. Arithmetic Encoding also requires the encoder and decoder know the probabilities of each of the characters that could possibly be in the message. Let's say the probability of each symbol in the message are
+Here is a simple example. Say we want to encode a string of characters ``ACGGT''. Arithmetic Encoding also requires the encoder and decoder know the probabilities of each of the characters that could possibly be in the message. Let's say the probability of each symbol in the message are
 \begin{itemize}
 \tightlist
 \item
-  P(A) = 1/10
+  \(P(A) = a_1 = 2/10\)
 \item
-  P(C) = 2/10
+  \(P(C) = a_2 = 2/10\)
 \item
-  P(G) = 4/10
+  \(P(G) = a_3 = 4/10\)
 \item
-  P(T) = 3/10
+  \(P(T) = a_4 = 2/10\)
 \end{itemize}
 We want to represent the message as a fractional number between 0 and 1. We will divide the interval {[}0,1{]} into sub intervals using the probabilities of each character in the message. That way, each symbol is represented by the sub-interval that corresponds to its probability.
+\begin{figure}
 
-Since `A' comes first, we divide {[}0,1{]} into {[}0.0,0.1). Since `C' is next, we go from {[}0.0,0.1{]} to {[}0.01, 0.03). Then since `G is next, we go from {[}0.01, 0.03) to {[}0.016, 0.02). Finally, since 'T' is last, we go from {[}0.016, 0.02) to {[}0.0188, 0.02).
+{\centering \includegraphics[width=0.9\linewidth]{figure/arithmeticencoding} 
 
-So any number in the interval can be used to represent our message.
+}
+
+\caption{Example of arithmetic encoding.}\label{fig:arithmeticencoding}
+\end{figure}
+Since `A' comes first, we divide {[}0,1{]} into {[}0.0,0.2) since \(P(A) = 2/10\). Since `C' is next, we divide the new fraction of the space {[}0.0, 0.2) into chunks based on the probabilities of the characters and choose the chunk corresponding to `C'. Figure \ref{fig:arithmeticencoding} shows this process through the whole string ``ACGGT''. We end up with an interval from 0.0688 to 0.06752.
+
+So any number in the interval can be used to represent our message as long as the decoder knows the probabilities that we used to encode it.
 
 \hypertarget{lempel-ziv-welch}{%
 \subsection{Lempel-Ziv-Welch}\label{lempel-ziv-welch}}
 
-Lempel-Ziv-Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords, where codewords represent strings previously seen in the message. As it compresses the message, the dictionary grows. The compression algorithm leaves behind the codewords and some of the original characters, allowing the decompression algorithm to build up the same dictionary as it decompresses the message.
+Lempel-Ziv-Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords. A dictionary is a key value system: when you give it a key, it either gives you a value or tells you that the key does not exist. In this case, the keys are strings of characters and the values are codewords, which are numbers meant to represent those strings.
 
-Here is a simple example. We may be sending messages with the characters `A', `C', `T', `G', so we can start by assigning those strings codewords. So our dictionary will start as \{`A' = 0, `C' = 1, `T' = 2, `G' = 3\}. Say we want to send the message
+Here is a simple example. We may be sending messages with the characters `A', `C', `T', `G', so we can start by assigning those strings codewords. So our dictionary will start as \{`A' = 0, `C' = 1, `T' = 2, `G' = 3\}. So in other words, `A' is synonymous with 0, `C' is synonymous with 1, and so on. Say we compress to send the message
 
 \[\text{AAGGAATCC}\]
 
-When we compress, we start at the beginning of the message and scan through. We ask ourselves, ``Is''A'' in our dictionary?''
+When we compress, we start at the beginning of the message and scan through. We ask ourselves, ``Is `A' in our dictionary?''
 
 \[\textbf{A} \text{AGGAATCC}\]
 
-Since we started with ``A'' in our dictionary, we can move on. We then add on the next character in the sequence and ask ``Is''AA'' in our dictionary?''
+Well, we started with `A' in our dictionary, so we can check in the dictionary and confirm it is there. We then add on the next character in the sequence and ask ``Is''AA'' in our dictionary?''
 
 \[\textbf{AA} \text{GGAATCC}\]
 
@@ -445,14 +440,13 @@ So the encoded string will look something like
 10 & AAGGAATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7, CC: 8} & 0A1G4T3C \\
 \hline
 \end{tabular}
-\label{tab:lzwexample}
 \caption{ An example of LZW ran on the input "AAGGAATCC"}
+\label{tab:lzwexample}
 \end{table}
 Table \ref{tab:lzwexample} illustrates this example fully.
 
-When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character `A' and add that new string to the dictionary. We would add that to the dictionary and assign it to our next available codeword, 4. As you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
-
-This method has several convenient properties:
+When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character `A' and add that new string to the dictionary''. We would add ``AA'' to the dictionary and assign it to our next available codeword, 4. As you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
+LZW has several convenient properties:
 \begin{itemize}
 \tightlist
 \item
@@ -466,7 +460,7 @@ To decode, we can simply start with the same dictionary. We see codewords follow
 
 Now that we have laid out how the algorithm works, we can get more specific for our use case. For us, the input is a file on the computer, and the output is also a file (hopefully a smaller one). We read all the characters in the file, encode them, and put them into a new file. Then, when we want to decode, we read the encoded file and output the decoded characters. Again, LZW is lossless, so the original file and the decoded file should be identical.
 
-Here is some example pseudo code on what this algorithm would look like.
+Here is some example pseudocode
 \begin{verbatim}
 LZWEncode(input):
 
@@ -539,19 +533,19 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 
 The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area, in the intersection of bioinformatics, computer science, and mathematics.
 
-There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length. That way, the dictionaries grow more slowly and accesses are faster. This paper also used genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
+There has been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length. This allows each of the dictionaries grow more slowly, allowing accesses to be faster. This paper also used genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
 
 Another paper used simple parallelization techniques to improve compression speed (Pani, Mishra, \& Mishra, 2012). Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio.
 
-Yet another paper made use of Chinese Remainder Theorem to augment Lempel-Ziv-Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we could not get anything that looked like it may improve compression time. We reached out to the authors, but we were not able to further our progress on this method and thus the it is not used in this thesis.
+Yet another paper made use of Chinese Remainder Theorem to augment Lempel-Ziv-Welch (Ibrahim \& Gbolagade, 2020). They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we were not able to achieve similar results. We reached out to the authors, but we were not able to further our progress on this method and thus the it is not used in this thesis.
 
-DNA-specific compression algorithms have also been around for a while. These papers do not focus on LZW, but they do consider some similar methods.
+DNA-specific compression algorithms have also been a growing subsection of computer science for decades. These papers do not focus on LZW, but they do consider some similar methods.
 
-One of the first papers exploring this was published in 1994 (Grumbach \& Tahi, 1994). It proposes an algorithm called \texttt{biocompress2}, expanding on a previous paper by the same author. They focus on encoding palindromes in DNA sequences, which doesn't do much to help the compression ratio. However, this paper has been cited by many following papers sparking interest in DNA compression, and the collection of sequences that it uses for algorithm comparison is used in this thesis.
+One of the first papers exploring this was published in 1994 (Grumbach \& Tahi, 1994). It proposes an algorithm called \texttt{biocompress2}, expanding on a previous paper by the same author. They focus on encoding palindromes in DNA sequences, which allows them to achieve an above average compression ratio, though performance is not evaluated. This paper has been cited by many following papers sparking interest in DNA compression, and the collection of sequences that it uses for algorithm comparison is used in this thesis.
 
-Chen et al.~proposed an algorithm called GenCompress, which uses approximate matching (Chen, Kwong, \& Li, 2001). It matches sequnces to sequences already seen, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this method, although their technique is computationally expensive.
+Chen et al.~proposed an algorithm called GenCompress, which uses approximate matching (Chen, Kwong, \& Li, 2001). It matches sequences of nucleotides to sequences already seen in the file, and maps those sequences using various edits to turn one sequence into another. They are able to achieve a great compression ratio with this relative matching method, although their technique is computationally expensive.
 
-In 2007, Minh Cao et al.~published a paper detailing another algorithm, XM, which uses statistical methods to try and predict the next character while encoding and decoding (Cao, Dix, Allison, \& Mears, 2007). This method was found to outperform both Biocompress2 and GenCompress in terms of compression ratio.
+In 2007, Cao et al.~published a paper detailing another algorithm, \texttt{XM}, which uses statistical methods to try and predict the next character while encoding and decoding (Cao, Dix, Allison, \& Mears, 2007). This method was found to outperform both Biocompress2 and GenCompress in terms of compression ratio.
 
 A paper in 2021 uses segmenting and partitioning to create a parallel compression algorithm called \texttt{genozip} (Lan, Tobler, Souilmi, \& Llamas, 2021). This paper also published their code online in a convenient format which allows others to compare and test their implementation.
 
@@ -1677,6 +1671,76 @@ This first appendix includes all of the R chunks of code that were hidden throug
 \NormalTok{    )}
 \NormalTok{  \}}
 \NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(dplyr)) \{}
+  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
+    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \FunctionTok{stop}\NormalTok{(}
+      \FunctionTok{paste}\NormalTok{(}
+        \StringTok{\textquotesingle{}You need to run install.packages("dplyr")\textquotesingle{}}\NormalTok{,}
+        \StringTok{"first in the Console."}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  \}}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(ggplot2)) \{}
+  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
+    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \FunctionTok{stop}\NormalTok{(}
+      \FunctionTok{paste}\NormalTok{(}
+        \StringTok{\textquotesingle{}You need to run install.packages("ggplot2")\textquotesingle{}}\NormalTok{,}
+        \StringTok{"first in the Console."}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  \}}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(bookdown)) \{}
+  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
+    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"bookdown"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \FunctionTok{stop}\NormalTok{(}
+      \FunctionTok{paste}\NormalTok{(}
+        \StringTok{\textquotesingle{}You need to run install.packages("bookdown")\textquotesingle{}}\NormalTok{,}
+        \StringTok{"first in the Console."}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(patchwork)) \{}
+  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
+    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"patchwork"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \FunctionTok{stop}\NormalTok{(}
+      \FunctionTok{paste}\NormalTok{(}
+        \StringTok{\textquotesingle{}You need to run install.packages("patchwork")\textquotesingle{}}\NormalTok{,}
+        \StringTok{"first in the Console."}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(tidyr)) \{}
+  \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Install needed packages for \{thesisdown\}}\StringTok{\textasciigrave{}}\NormalTok{) \{}
+    \FunctionTok{install.packages}\NormalTok{(}\StringTok{"tidyr"}\NormalTok{, }\AttributeTok{repos =} \StringTok{"https://cran.rstudio.com"}\NormalTok{)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \FunctionTok{stop}\NormalTok{(}
+      \FunctionTok{paste}\NormalTok{(}
+        \StringTok{\textquotesingle{}You need to run install.packages("tidyr")\textquotesingle{}}\NormalTok{,}
+        \StringTok{"first in the Console."}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\FunctionTok{options}\NormalTok{(}\AttributeTok{scipen=}\DecValTok{999}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(tidyr)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(knitr)}
+\FunctionTok{library}\NormalTok{(kableExtra)}
+\FunctionTok{library}\NormalTok{(patchwork)}
 \FunctionTok{library}\NormalTok{(thesisdown)}
 \ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(DiagrammeR)) \{}
   \FunctionTok{install.packages}\NormalTok{(}\StringTok{"DiagrammeR"}\NormalTok{)}

@@ -5,79 +5,45 @@ date: 'May 2023'
 institution: 'Reed College'
 division: 'Mathematics and Natural Sciences'
 advisor: 'Eitan Frachtenberg'
-# If you have more two advisors, un-silence line 7
-#altadvisor: 'Your Other Advisor'
+
 department: 'Computer Science'
 degree: 'Bachelor of Arts'
 knit: bookdown::render_book
 site: bookdown::bookdown_site
 
-# The next two lines allow you to change the spacing in your thesis. You can 
-# switch out \onehalfspacing with \singlespacing or \doublespacing, if desired.
 header-includes:
     - \usepackage{setspace}\onehalfspacing
     - \usepackage[edges]{forest}
     - \usepackage{tikz}
 
-# This will automatically install the {remotes} package and {thesisdown}
-# Change this to FALSE if you'd like to install them manually on your own.
 params:
   'Install needed packages for {thesisdown}': True
   
-# Remove the hashtag to specify which version of output you would like.
-# Can only choose one at a time.
+
 output:
   thesisdown::thesis_pdf: 
     extra_dependencies: ['forest', 'tikz']
-#  thesisdown::thesis_gitbook: default         
-#  thesisdown::thesis_word: default
-#  thesisdown::thesis_epub: default
 
-# If you are creating a PDF you'll need to write your preliminary content 
-# (e.g., abstract, acknowledgements) below or use code similar to line 25-26 
-# for the .RMD files. If you are NOT producing a PDF, delete or silence
-# lines 25-39 in this YAML header.
 abstract: |
   `r if(knitr:::is_latex_output()) paste(readLines(here::here("prelims", "00-abstract.Rmd")), collapse = "\n  ")`
-# If you'd rather include the preliminary content in files instead of inline
-# like below, use a command like that for the abstract above.  Note that a tab 
-# is needed on the line after the `|`.
 acknowledgements: |
   I want to thank a few people.
-dedication: |
-  You can have a dedication here if you wish. 
-preface: |
-  This is an example of a thesis setup to use the reed thesis document class 
-  (for LaTeX) and the R bookdown package, in general.
+#dedication: |
+#  You can have a dedication here if you wish. 
+#preface: |
+#  ex
 abbreviations:
   LZW: Lempel Ziv Welch
   RLE: Run Length Encoding
   EOF: End of file
 
-# Note that abbreviations in lowercase letters will NOT be automatically capitalized
-# Delete or silence the abbreviations section if you do not want a list of abbreviations
-  
-# Specify the location of the bibliography below
 bibliography: bib/thesis.bib
-# Download your specific csl file and refer to it in the line below.
+
 csl: csl/apa.csl
 lot: true
 lof: true
 ---
 
-
-<!--
-Above is the YAML (YAML Ain't Markup Language) header that includes a lot of 
-metadata used to produce the document.  Be careful with spacing in this header!
-
-If you'd prefer to not include a Dedication, for example, simply delete the section entirely, or silence them (add # before each line). 
-
-If you have other LaTeX packages you would like to include, delete the # before header-includes and list the packages after hyphens on new lines.
-
-If you'd like to include a comment that won't be produced in your resulting file enclose it in a block like this.
-
-If you receive a duplicate label error after knitting, make sure to delete the index.Rmd file and then knit again.
--->
 
 ```{r include_packages, include=FALSE}
 # This chunk ensures that the thesisdown package is
@@ -106,6 +72,76 @@ if (!require(thesisdown)) {
     )
   }
 }
+if (!require(dplyr)) {
+  if (params$`Install needed packages for {thesisdown}`) {
+    install.packages("dplyr", repos = "https://cran.rstudio.com")
+  } else {
+    stop(
+      paste(
+        'You need to run install.packages("dplyr")',
+        "first in the Console."
+      )
+    )
+  }
+}
+if (!require(ggplot2)) {
+  if (params$`Install needed packages for {thesisdown}`) {
+    install.packages("ggplot2", repos = "https://cran.rstudio.com")
+  } else {
+    stop(
+      paste(
+        'You need to run install.packages("ggplot2")',
+        "first in the Console."
+      )
+    )
+  }
+}
+if (!require(bookdown)) {
+  if (params$`Install needed packages for {thesisdown}`) {
+    install.packages("bookdown", repos = "https://cran.rstudio.com")
+  } else {
+    stop(
+      paste(
+        'You need to run install.packages("bookdown")',
+        "first in the Console."
+      )
+    )
+  }
+}
+
+if (!require(patchwork)) {
+  if (params$`Install needed packages for {thesisdown}`) {
+    install.packages("patchwork", repos = "https://cran.rstudio.com")
+  } else {
+    stop(
+      paste(
+        'You need to run install.packages("patchwork")',
+        "first in the Console."
+      )
+    )
+  }
+}
+
+if (!require(tidyr)) {
+  if (params$`Install needed packages for {thesisdown}`) {
+    install.packages("tidyr", repos = "https://cran.rstudio.com")
+  } else {
+    stop(
+      paste(
+        'You need to run install.packages("tidyr")',
+        "first in the Console."
+      )
+    )
+  }
+}
+
+options(scipen=999)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(patchwork)
 library(thesisdown)
 if (!require(DiagrammeR)) {
   install.packages("DiagrammeR")
@@ -114,13 +150,6 @@ library(DiagrammeR)
 # Set how wide the R output will go
 options(width = 70)
 ```
-
-<!--
-The acknowledgments, preface, dedication, and abstract are added into the PDF
-version automatically by inputting them in the YAML at the top of this file.
-Alternatively, you can put that content in files like 00--prelim.Rmd and
-00-abstract.Rmd like done below.
--->
 
 
 
@@ -134,9 +163,9 @@ Alternatively, you can put that content in files like 00--prelim.Rmd and
 
 <!-- The {.unnumbered} option here means that the introduction will be 
 "Chapter 0." You can also use {-} for no numbers on chapters.
--->
 # Introduction {.unnumbered}
 
 When dealing with DNA, it 
 
+-->
 
