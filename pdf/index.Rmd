@@ -1,5 +1,5 @@
 ---
-title: 'Optimizing Lempel Ziv Welch for DNA Compression'
+title: 'Optimizing Lempel-Ziv-Welch for DNA Compression'
 author: 'Caden Corontzos'
 date: 'May 2023'
 institution: 'Reed College'

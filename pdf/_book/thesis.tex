@@ -113,7 +113,7 @@
   \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 
 % To pass between YAML and LaTeX the dollar signs are added by CII
-\title{Optimizing Lempel Ziv Welch for DNA Compression}
+\title{Optimizing Lempel-Ziv-Welch for DNA Compression}
 \author{Caden Corontzos}
 % The month and year that you submit your FINAL draft TO THE LIBRARY (May or December)
 \date{May 2023}
@@ -554,7 +554,7 @@ As a whole, these papers give us some guidance in terms of where to aim our rese
 \hypertarget{optimizing-lzw-approach}{%
 \chapter{Optimizing LZW: Approach}\label{optimizing-lzw-approach}}
 
-To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++. A majority of the work in this thesis involved rewriting, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
+To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write in C++. A majority of the work in this thesis involved writing, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
 
 While we may not end up creating the best DNA compressor available, the objective is to explore the boundaries of LZW and to tailor it as best we can for the task of DNA compression. As you will see, the algorithm has limitations.
 
@@ -572,7 +572,7 @@ Our strategy was as follows:
 \hypertarget{corpora}{%
 \section{Corpora}\label{corpora}}
 
-Most compression papers make use of a corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the performance of different algorithms to one another.
+Most compression papers make use of a corpus, which is a collection of files to run a compression algorithm on in order to evaluate performance and to compare the algorithm to others available.
 \begin{longtable}[]{@{}cc@{}}
 \caption{\label{tab:corpus1filesfig}Corpus 1}\tabularnewline
 \toprule()
@@ -596,9 +596,9 @@ mtpacga & 100314 \\
 vaccg & 191737 \\
 \bottomrule()
 \end{longtable}
-In the world of DNA compression, there are several academic papers on the subject. One of the first and most popular of the papers was published in 1994, and the selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications (Grumbach \& Tahi, 1994). We call this Corpus 1, summarized in \ref{tab:corpus1filesfig}.
+In the world of DNA compression, there are several academic papers on the subject. As mentioned in Chapter 1, one of the first and most popular of the papers was published in 1994. The selection of DNA sequences used in the paper have become an informal corpus for the subject of DNA compression, cited by more than thirty publications (Grumbach \& Tahi, 1994). We call this Corpus 1, summarized in \ref{tab:corpus1filesfig}.
 
-Another, newer paper aimed to create a corpus specifically for compressing DNA (Pratas \& Pinho, 2018). They put together a corpus of DNA sequences for this purpose, as summarized below. Since the papers publishing, it has been cited by several DNA compression papers.
+Another, newer paper aimed to create a corpus specifically for compressing DNA (Pratas \& Pinho, 2018). They put together a corpus of DNA sequences for this purpose. Since the papers publishing, it has been cited by several DNA compression studies.
 \begin{longtable}[]{@{}cc@{}}
 \caption{\label{tab:corpus2filesfig}Corpus 2}\tabularnewline
 \toprule()
@@ -626,16 +626,16 @@ ScPo & 10652155 \\
 YeMi & 73689 \\
 \bottomrule()
 \end{longtable}
-The dataset in Table \ref{tab:corpus2filesfig} is publicly available at this \url{https://tinyurl.com/DNAcorpus}.
+The dataset in Table \ref{tab:corpus2filesfig}, which we call Corpus 2, is publicly available at this \url{https://tinyurl.com/DNAcorpus}.
 
 \hypertarget{evaluating-performance}{%
 \section{Evaluating Performance}\label{evaluating-performance}}
 
 Evaluating performance of a program is difficult. There is a notion of theoretical run time, but on an actual computer there are many processes running in the background, so it can be hard to get a consistent reading on performance.
 
-To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, the stats were taken on the same computer. Our test machine was a PC with a AMD Ryzen 5 5500 processor 32 gigabytes of RAM running Ubuntu version 20.04. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
+To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, the stats were taken on the same computer. Our test machine was a PC with an AMD Ryzen 5 5500 processor 32 gigabytes of RAM running Ubuntu version 20.04. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
 
-Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files. All graphs use the files from both corpora unless stated otherwise.
+Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files. All graphs use all the files from both corpora unless stated otherwise.
 
 \hypertarget{a-starting-point}{%
 \section{A Starting Point}\label{a-starting-point}}
@@ -651,7 +651,7 @@ When reading files on the computer, most characters are stored as bytes, which a
 
 But if we are translating numbers to binary, we don't need all of the bits in a byte. In binary, \texttt{1} is the same as \texttt{01} is the same as \texttt{00000000000001}. So when we are outputting codewords for LZW, we don't necessarily need to output a whole byte. We can have growing codewords.
 
-As the number of codewords grows, the number of bits needed to represent it also grows. So if we are on codeword 8, we need 4 bits since 8 is \texttt{1000}. As our dictionary grows, we can grow the number of bits needed to display a codeword and save a lot of space in our compressed document.
+As the number of codewords grows, the number of bits needed to represent them also grows. We need to always have enough bits to represent our current largest codeword, otherwise the decoder won't know how many bits each codeword is. So if we are on codeword 8, we need 4 bits since 8 is \texttt{1000}. We will need 4 bits until our codeword reaches 16, which is \texttt{10000} in binary. From then on, we will need to use 5 bits for every codeword. As our dictionary grows, we can grow the number of bits needed to display a codeword and save a lot of space in our compressed document.
 
 So we needed a method of outputting bits one by one, and reading in bits one by one. This is not something that is supported in C++ on its own. We were able to create this functionality by defining a class.
 \begin{Shaded}
@@ -700,8 +700,6 @@ So when we are encoding and need to output a codeword, we can \texttt{output\_n\
 
 One of the very early issues with the implementation was how to denote the end of a file. The early implementation would work for some files, but for others the very last part of the file would be lost after encoding and then decoding.
 
-In theoretical implementations of LZW, computer scientists tend to denote the end of a message with a special character, one that isn't seen anywhere else in the file. In this initial implementation, that wasn't possible because we are implementing a base version of LZW, and we wanted to be able to compress any file with any characters.
-
 The solution was to reserve a codeword to mark the end of the file. So we start with a starting dictionary containing all ASCII characters.
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -719,7 +717,7 @@ The problem was, what about what is left over? When compressing, the algorithm c
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  ``ACC'' was in the dictionary but ``ACCT'' was not. This means we can output the codeword for ``ACC'', follow it by the character ``T'', and we are done. This is the ideal scenario, because nothing is left over when we output the EOF codeword
+  ``ACC'' was in the dictionary but ``ACCT'' was not. This means we can output the codeword for ``ACC'', follow it by the character ``T'', and we are done. This is the ideal scenario, because nothing is left over when we output the EOF codeword.
 \item
   ``ACCT'' was in the dictionary: This means we have one more codeword to output, but since we reached the end of the file, we never got to output it.
 \item
@@ -773,9 +771,9 @@ The next major step in the code was to start using constants for everything, inc
 \end{itemize}
 It also made sense to start using a specific type for codewords. At this stage, we opted for a 32 bit unsigned integer.
 
-There are several tools at a developers disposal when looking to debug and optimize code. One tool used for this thesis was \texttt{callgrind} which is a tool of \texttt{valgrind} a profiling tool. Profiling tools are used to look at how your code works, where the bottlenecks are, and what can be changed/improved for the performance of your code.
+There are several tools at a developers disposal when looking to debug and optimize code. One tool used for this thesis was \texttt{callgrind} which is a profiling tool. Profiling tools are used to look at how your code works, where the bottlenecks are, and what can be changed/improved for the performance of your code.
 
-Callgrind in particular is a profiling tool which associates assembly instructions to lines of code, indicating to the programmer which lines take a lot of instructions and which take less. For those unfamiliar, assembly instructions are what code is converted into so that it can be ran on your computer's processor. In general, more instructions means that code takes longer to run.
+Callgrind in particular is a tool which associates assembly instructions to lines of code, indicating which lines take a lot of instructions and which take less. For those unfamiliar, assembly instructions are what code is converted into so that it can be ran on your computer's processor. In general, more instructions means that code takes longer to run.
 
 The callgrind output drew attention to one particular part of the code. A C++ \texttt{unordered\_map} uses iterators, basically pointers into the dictionary. If an entry is not present in the dictionary, the \texttt{find()} function will return a iterator to the end of the dictionary.
 
@@ -797,7 +795,7 @@ Here is the \texttt{callgrind} output for that line.
 956,941,242 ( 1.61%)  => /usr/include/c++/9/bits/unordered_map.h
 241,180,314 ( 0.41%)  => /usr/include/c++/9/bits/hashtable_policy.h
 \end{verbatim}
-As shown, this line is taking a significant amount of instructions, and it needs to pull the end() of the dictionary each time it is ran. If we use cend() instead and save that iterator in a variable called end, we can save a significant amount of instructions.
+As shown, this line is taking a significant amount of instructions, and it needs to pull the \texttt{end()} of the dictionary each time it is ran. If save that iterator in a variable called \texttt{end}, we can save a significant amount of instructions.
 \begin{verbatim}
 89,470,115 ( 0.61%)          if (dictionary.find(currentBlock + next_character) != end ){
 3,353,009,053 (22.78%)  => /usr/include/c++/9/bits/basic_string.h
@@ -805,7 +803,7 @@ As shown, this line is taking a significant amount of instructions, and it needs
 420,120,704 ( 2.85%)  => /usr/include/c++/9/bits/basic_string.h
 50,570,065 ( 0.34%)  => /usr/include/c++/9/bits/hashtable_policy.h
 \end{verbatim}
-Of course, there are several issues with this method. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Another thing is that compliers are very advanced, and sometimes small optimizations like this are done by the compiler automatically.
+There are several potential issues with what \texttt{callgrind} attempts to do by associating machine instructions with individual lines. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Another thing is that compliers are very advanced, and sometimes small optimizations like this are done by the compiler automatically.
 
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of \texttt{callgrind}, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to give indications to trouble spots which can be improved.
 
@@ -814,13 +812,13 @@ Despite these issues, this change was still worth making, if not to save time th
 
 The LZW algorithm is built on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over.
 
-Another thing that I noticed from the \texttt{callgrind} output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most language, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing string, which can have a significant performance penalty.
+Another thing that I noticed from the \texttt{callgrind} output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenation in most languages, including C++, have a lot of overhead. A lot of implementations involve creating a new string every time you concatenate two existing string, which can have a significant performance penalty.
 
-In the version of the algorithm at the time, every time we have already seen a sequence, we have to concatenate a character. I noticed that I was doing this concatenation multiple times without needing to. You may have noticed this extraneous concatenation in the if statement in Section \ref{getting-eof-to-work}.
+In this version of the algorithm, every time we have already seen a sequence, we have to concatenate a character. I noticed that I was doing this concatenation multiple times without needing to. You may have noticed this extraneous concatenation in the if statement in Section \ref{getting-eof-to-work}.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{// we concatenate the strings here}
-\ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end }\OperatorTok{)\{}
+\ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end}\OperatorTok{)\{}
     \CommentTok{// and here}
 \NormalTok{    currentBlock }\OperatorTok{=}\NormalTok{ currentBlock }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
 \OperatorTok{\}}
@@ -834,12 +832,12 @@ In the version of the algorithm at the time, every time we have already seen a s
 \OperatorTok{\}}
 \end{Highlighting}
 \end{Shaded}
-If we just save \texttt{currentBlock\ +\ next\_character} into a new variable, that will prevent doing the concatenation 2 more times.
+If we just save \texttt{currentBlock\ +\ next\_character} into a new variable, that will prevent doing the concatenation 2 extra times.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{// save concatenation here}
 \BuiltInTok{std::}\NormalTok{string}\OperatorTok{ }\NormalTok{string\_seen\_plus\_new\_char }\OperatorTok{=}\NormalTok{ current\_string\_seen }\OperatorTok{+}\NormalTok{ next\_character}\OperatorTok{;}
-\ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end }\OperatorTok{)\{}
+\ControlFlowTok{if} \OperatorTok{(}\NormalTok{dictionary}\OperatorTok{.}\NormalTok{find}\OperatorTok{(}\NormalTok{string\_seen\_plus\_new\_char}\OperatorTok{)} \OperatorTok{!=}\NormalTok{ end}\OperatorTok{)\{}
 \NormalTok{    current\_string\_seen }\OperatorTok{=}\NormalTok{ string\_seen\_plus\_new\_char}\OperatorTok{;}
 \OperatorTok{\}}
 \ControlFlowTok{else}\OperatorTok{\{}
@@ -922,7 +920,7 @@ This should reduce the amount of time the program spends on string concatenation
 
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
-When reading a byte stream of the file, the file may not be in memory the way we want it. The \texttt{ifstream} class in C++ also has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data.
+When reading a byte stream of the file, the file may not always be in memory, which is the fastest part of our storage. The \texttt{ifstream} class in C++, the typical method of reading a file, has many extraneous feature that we don't need. If we map the file directly into memory using \texttt{mmap} and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a \texttt{char*} opens the possibility to getting rid of \texttt{std::string} entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data.
 
 \hypertarget{comparison}{%
 \subsection{Comparison}\label{comparison}}
