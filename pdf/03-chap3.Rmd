@@ -216,9 +216,10 @@ Table  \@ref(tab:othertoolstab) summarizes the compression ratios of both the ot
 summary <- wholedf %>% 
   group_by(Program) %>% 
   reframe(
-    comp_throughput = sum(Original.File.Size)/1024/sum(Compression.Time),
-    mean_comp_time = sum(Compression.Time)/ length(unique(File.Name))
+    comp_throughput = sum(Original.File.Size)/(1024^2)/sum(Compression.Time),
+    mean_comp_time = sum(Compression.Time)/ length(unique(File.Name)),
   )
+
   plot1<- summary %>% 
     ggplot(aes(x = Program, y = comp_throughput, fill = Program))+
     geom_col(show.legend = F)+
