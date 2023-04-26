@@ -248,7 +248,7 @@ LZWDecode(input):
 
 This is the basic strategy we will start with for our LZW algorithm. In the next chapter, we will go over parts of the algorithm in depth in C++. Here is a quick summary of terms repeated throughout the next two chapters.
 
-+ `dictionary`: a key-value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a `std::unordered_map` and uses a hash table, but the concept is the same.
++ `dictionary`: a key-value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a `std::unordered_map` and uses a hash table, but the concept is the same. During this thesis, we will use `std::unordered_map` and Standard Dictionary interchangeably.
 + `codeword`: a number used to take the place of a string in our encoding.
 + `run`: the next run of characters in our input that are already in our dictionary. So if we are encoding "ACTG", and "A", "AC", and "ACT" are in the dictionary but "ACTG" is not, we have a run of 3.
 + `EOF`: end of file, the special character that we need to output at the end of the encoding.

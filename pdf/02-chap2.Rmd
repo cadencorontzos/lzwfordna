@@ -474,7 +474,7 @@ csv_to_table('data/corpus_1_run_stats.csv', 'Run statistics in Corpus 1')
 csv_to_table('data/corpus_2_run_stats.csv', "Run statistics in Corpus 2")
 ```
 
-Tables \@ref(tab:runstatsfigcp1) and \@ref(tab:runstatsfigcp2) show stats on the run lengths of the "runs" of data, where a run is a string added to the dictionary during a run of the LZW algorithm, and a histogram of runs from both corpora can be seen in Figure \@ref(fig:allrunshistfig).
+Tables \@ref(tab:runstatsfigcp1) and \@ref(tab:runstatsfigcp2) show stats on the run lengths of the "runs" of data, where a run is a string added to the dictionary during a run of the LZW algorithm. So if there is a run of length 8, that means we are replacing 8 characters in the original text with a codeword. A histogram of runs from both corpora can be seen in Figure \@ref(fig:allrunshistfig).
 
 ```{r allrunshistfig, warnings= F, messages = F, fig.cap = "A histogram showing the lengths of runs for both copora.", fig.height = 3, echo = F}
 all_runs <- read.csv('data/all_corpus_run_counts.csv')
@@ -485,17 +485,15 @@ all_runs %>%
 ```
 
 Given this data, it is clear that it would be advantageous to speed up the dictionary for smaller run sizes, since most of the runs are below size 15. As stated before, there have been research papers about the possibility of using multiple indexed dictionaries for LZW, including Keerthy [@KeerthyMID]. 
-To achieve a similar effect to multiple indexed dictionaries, we opted for a unique approach. Rather than use a hashmap, we can map the strings directly into memory. Since all of the strings only contain four characters ('A', 'C', 'T', and 'G'), we can represent the characters with two bits. So for a length `n` string, we can represent it with `2n` bits. 
+To achieve a similar effect to multiple indexed dictionaries, we opted for a unique approach. Rather than use a slow dictionary implementation like the `std::unordered_map` in C++, we can try to map the strings directly into memory. 
 
-So we can create an indexed dictionary directly in memory for all strings below a certain length. We can use the `2n` bit representation of the string
-to index into an array of codewords. 
+Our first realization was that since all of the strings only contain four characters ('A', 'C', 'T', and 'G'), we can represent the characters with two bits. We can assign 'A' to be `00`, 'C' to be `01`, and so on. So for any string of length `n`, we can uniquely represent that string with `2n` bits. 
 
-For each string size 1 to n, we have an array with enough slots for every possible string. For example, for strings of length 3, we have an array of size $4^3$, since there are $4^3$ possible strings. In each of those $4^3$ slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent $2^6=4^3$ values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than `n`, we can just use a hashmap (like `std::unordered_map`) on top to handle those. We call this data structure the Direct Map Dictionary. Different numbers `n` may provide different performance results.
+Assume for each string size 1 to n, we have an array with enough slots for every possible string of that length. For example, for strings of length 3, we have an array of size $4^3$, since there are $4^3$ possible strings. In each of those $4^3$ slots, we have space for a codeword. All strings of length 3 can be represented by 6 bits, and since 6 bits can represent $2^6=4^3$ values, we can use the bit representation to index into the dictionary. If the codeword at that place in the dictionary is 0, we have never seen it before. If it is non-zero, we have found the codeword for that string. For all strings greater than `n`, we can just use a single `std::unordered_map` on top to store those longer strings. Since we are storing all these codewords in memory, it also makes sense to use shorter codewords, such as 16 bit unsigned integers rather than the 32 bit codewords we were using in previous implementations.
 
+We call this data structure the Direct Map Dictionary. Different numbers `n` may provide different performance results.
 
-
-
-```{r directmaplenthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
+```{r directmaplenthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max string lengths for Direct Map", fig.height = 3, echo = F}
 compare_implementations(list(
 	c('data/stats/directmap/corpus_1_directmap_266bcb7_len10.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len10.csv', 10),
 	c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 15)
@@ -503,11 +501,11 @@ compare_implementations(list(
 ```
 
 
-As seen in Figure \@ref(fig:directmaplenthcompfig), the throughput is greater and the average compression time is less for a direct map dictionary with a max string length of 15 as opposed to a max string length of 10. This makes sense, because any string over the max requires an entry in a hashmap, which takes much more time than a dictionary access. Using a string length of over 15 is difficult because the amount of memory required increases exponentially.
+As seen in Figure \@ref(fig:directmaplenthcompfig), having a max string length of 15 rather than 10 leads to an increase in throughput and a decrease in mean compression time. This makes sense, because any string over the max requires an entry into the `std::unordered_map`, which takes much more time than a Direct Map Dictionary access. Ideally, we would have this Direct Map data structure support strings of longer lengths than 15. However, supporting string lengths of over 15 is difficult because the amount of memory required increases exponentially. The number of possible strings is quadrupled as the number of characters increases, and our computers are limited in the amount of data that can be stored in memory.
 
 Since we are limiting the size of codewords, we will run out of codewords faster than before. Thus, the compression ratio may be different.
 
-```{r directtostdcomprat, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
+```{r directtostdcomprat, echo = F}
 
 df1 <- read.csv('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv')
 df2 <- read.csv('data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv')
@@ -532,12 +530,12 @@ df_new <- df %>%
 names(df_new) <-   gsub("\\.", " ", names(df_new))
 
 
-kbl(df_new) %>%
+kbl(df_new, caption = "Comparison of Compression Ratios between Direct Map and Standard Dictionaries" ) %>%
   add_header_above(c(" " = 2, "Compression Ratio " = 2)) %>% 
     kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
 
-As seen in Figure \@ref(tab:directtostdcomprat), using the Direct Map Dictionary decreases the compression ratio on every input file relative to the Standard Dictionary Implementation. This is a trade off between compression time and compression ratio. Our hope is that the Direct Map version will be much faster, and we will be able to make up some of the compression ratio lost by using entropy encoding. 
+As seen in Table \@ref(tab:directtostdcomprat), using the Direct Map Dictionary decreases the compression ratio on every input file relative to the Standard Dictionary Implementation. This is a trade off between compression time and compression ratio. Our hope is that the Direct Map version will be much faster, and we will be able to make up some of the compression ratio lost by using entropy encoding. 
 
 It's also worth noting that at this point, we are outputting codewords followed by characters. If we output codewords followed by two bits representing the next character, we will save 6 bits per iteration. The relative differences in compression ratio between the Direct Map and Std Dictionaries would not change.
 
@@ -545,14 +543,14 @@ It's also worth noting that at this point, we are outputting codewords followed 
 ### Multiple Standard Dictionaries
 
 
-Similar to the Direct Mapped approach, we use dictionaries for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a regular dictionary, or a `std::unordered_map`. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. As seen in Figure \@ref(fig:multdictlengthcompfig), the throughput tends to increase and the average compression time tends to increase as we increase the number of indexed dictionaries. This result was not necessarily one we expected, but it does make sense that there is a certain amount of overhead that is required for a hashmap. The hash function takes about the same amount of time no matter the number of elements in the map, and resizing is rare. So adding more dictionaries only adds more overhead, which tends to slightly decrease efficiency.
+Similar to the Direct Mapped approach, we can use an individual `std::unordered_map` for each string size up to a certain size `n` , and for all strings of length greater than `n`, we use a single `std::unordered_map`. As with the direct map dictionary, we need to specify a max string length. We collected metrics for different choices of max string length. As seen in Figure \@ref(fig:multdictlengthcompfig), the throughput tends to decrease and the average compression time tends to increase as we increase the number of indexed dictionaries. This result was not necessarily one we expected, but it does make sense that there is a certain amount of overhead that is required for a `std::unordered_map`. The hash function, which is what maps keys to their values (i.e. strings to their codewords), takes about the same amount of time no matter the number of elements in the map, and resizing is rare. So adding more dictionaries only adds more overhead, which tends to slightly decrease efficiency.
 
-Compression ratio still remains the same as strings of all lengths are accommodated. 
-This logic is supported by Figure \@ref(fig:multvsonedictfig), which shows one `std::unordered_map` compared to the Multiple Indexed model.
+Compression ratio remains the same as a single Standard Dictionary, since strings of all lengths are accommodated and we are using 32 bit codewords. 
+This logic is supported by Figure \@ref(fig:multvsonedictfig), which shows one `std::unordered_map` compared to Multiple Standard Dictionaries. 
 
 
 
-```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max lengths for Direct Map", fig.height = 3, echo = F}
+```{r multdictlengthcompfig, warnings= F, messages = F, fig.cap = "Comparing different max string lengths for Multiple Standard Dictionaries", fig.height = 3, echo = F}
 compare_implementations(list(
 	c('data/stats/multdict/corpus_1_multdict_06f9a20_len10.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len10.csv', 10),
 	c('data/stats/multdict/corpus_1_multdict_06f9a20_len15.csv', 'data/stats/multdict/corpus_2_multdict_06f9a20_len15.csv', 15),
@@ -562,7 +560,7 @@ compare_implementations(list(
 ```
 
 
-```{r multvsonedictfig, warnings= F, messages = F, fig.cap = "Comparing one Dict to Mult Dict", fig.height = 4, echo = F}
+```{r multvsonedictfig, warnings= F, messages = F, fig.cap = "Comparing one Standard Dictionary to Multiple Standard Dictionaries (with a max string length of 10)", fig.height = 4, echo = F}
 
 compare_implementations(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
@@ -571,9 +569,6 @@ compare_implementations(list(
 
 ```
 
-The Multiple Standard Dictionary implementation has the same compression ratio as the single Standard Dictionary implementation.
-
-
 ### Comparison
 
 Figure \@ref(fig:dictionarytechniquecompfig) shows a comparison of all three techniques: Standard Dictionary, Multiple Standard Dictionaries, and Direct Mapped Dictionary. As shown, the Direct Map technique greatly increases throughput and thus decreases average compression time. Given these results, we decided to shift our focus onto the Direct Map and try to optimize this scheme as much as possible.
@@ -581,7 +576,6 @@ Figure \@ref(fig:dictionarytechniquecompfig) shows a comparison of all three tec
 Again, taking the Direct Map approach means decreasing compression ratio overall. The hope is that we will be able to use entropy encoding on the output of the Direct Map version of LZW to make up for that loss in compression ratio.
 
 ```{r dictionarytechniquecompfig, warnings= F, messages = F, fig.cap = "Comparing the three types of dictionaries. The Direct Map has a max length of 15 and the Mult Dict has a max length of 10.",echo = F, fig.height=4}
-
 compare_implementations(list(
   c('data/stats/corpus_1_stddict_68bea3d.csv', 'data/stats/corpus_2_stddict_68bea3d.csv', 'Standard Dictionary'),
   c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Direct Map Dictionary'),
@@ -600,7 +594,7 @@ Our dictionary data structures all have a `get_longest_in_dict` function. This f
 
 Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by looping up from zero.
 
-Another strategy would be to start from the maximum string length of the dictionary, so 15. We can check if the next string of the max length is in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down . Here is some pseudocode that mimics this proposed algorithm.
+Another strategy would be to start from the maximum string length of the dictionary, so 15. We can check if the next string of the max length is in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down. Keep in mind that in order to look up a string in a Direct Map Dictionary, you need to convert the string to it's two bit representation, which we call an index. Here is some pseudocode that mimics this proposed algorithm.
 
 ```
 find_longest(input_string){
@@ -654,7 +648,7 @@ Binary search is a searching technique for sorted lists, but we can use it in th
 
 If the middle element is equal to the target value, the search ends and the position of the element is returned. If the middle element is greater than the target value, the search continues on the lower half of the subarray. Conversely, if the middle element is less than the target value, the search continues on the upper half of the subarray.
 
-Binary search has a time complexity of O(log n), which makes it a very efficient algorithm for searching large sorted arrays. In our case, we search for where the string of length n is in the dictionary, but the string of length n+1 is not.
+Binary search has a time complexity of O(log n), meaning most times, we don't have to search through all the values to find the one we are looking for. This makes it a very efficient algorithm for searching large sorted arrays. In our case, we search for where the string of length n is in the dictionary, but the string of length n+1 is not.
 
 ```
 find_longest(input_string){
@@ -691,7 +685,7 @@ We see that calculating the index on the fly does tend to improve performance. H
 
 As we can see in Figure \@ref(fig:findlongestfromavg), looping or doing binary search from the average run length, which we approximate at 7, increases throughput and decreases mean compression time relative to looping up from zero.
 
-```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run", echo = F, fig.height = 3}
+```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting from the average.", echo = F, fig.height = 5}
 compare_implementations(list(
   c('data/stats/ddict/corpus_1_ddictdownavg_edafb16.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down from Average'),
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search from Average'),
@@ -705,10 +699,10 @@ As we predicted, this greatly improves performance. We are capitalizing on the f
 
 ### Not Allowing strings over max
 
-One way to avoid the edge case where we encounter a very long run is to just not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the hashmap on top of our dictionary, but we will take a hit in compression ratio. Figure \@ref(fig:findlongestwmax) summarizes the results of the different methods with the max length rule enforced. There isn't too much of a performance change, which makes sense because long runs are very rare. 
+One way to avoid the edge case where we encounter a very long run is to just not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the `std::unordered_map` on top of our Direct Map Dictionary, but we will take a hit in compression ratio. Figure \@ref(fig:findlongestwmax) summarizes the results of the different methods with the max length rule enforced. There isn't too much of a performance change, which makes sense because long runs are very rare. 
 
 
-```{r findlongestwmax, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at average with strings over max not accepted", echo = F, fig.height = 5}
+```{r findlongestwmax, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at average with strings over max (15) not accepted.", echo = F, fig.height = 5}
 compare_implementations(list(
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down'),
   c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max Enforced'),
@@ -718,7 +712,7 @@ compare_implementations(list(
 
 ```
 
-Of course, not allowing string over max length does mean that our compression ratio will change. Up until this point, all the different versions of the Direct Mapped Dictionary had the same compression ratio. Table \@ref(tab:maxenforcedstats) shows the affect of enforcing the max string length on the total compression ratio over both corpora. As we can see, it is minimal, which makes sense because long runs are very rare.
+Of course, not allowing string over max length does mean that our compression ratio will change. Up until this point, all the different versions of the Direct Mapped Dictionary had the same compression ratio represented in Table \@ref(tab:directtostdcomprat). Table \@ref(tab:maxenforcedstats) shows the affect of enforcing the max string length on the total compression ratio over both corpora. As we can see, it is minimal, which makes sense because long runs are very rare.
 
 
 ```{r maxenforcedstats, warnings= F, messages = F, echo = F}
@@ -738,13 +732,13 @@ knitr::kable(f, format="latex", booktabs=TRUE, caption = "Compression Ratio chan
 
 ```
 
-This difference in compression ratio is very slight, but remember that we already took a decrease in compression ratio by selecting the Direct Map Dictionary over the Standard Dictionary.
+This difference in compression ratio is very slight, but remember that we already took a decrease in compression ratio by selecting the Direct Map Dictionary over the Standard Dictionary. Given the improvement in performance, we will now be not allowing strings over the max length in the Direct Map Dictionary unless stated otherwise.
 
 ### Using `pext`
 
-One potential bottleneck of finding the longest run is converting a run of characters into an index. We can try to do it on the fly as we loop up or down, but we could also use machine instructions. 
+One potential bottleneck of finding the longest run is converting a run of characters into an index for the Direct Map Dictionary. We can try to do it on the fly as we loop up or down, but we could also use machine instructions. 
 
-Our strategy is to use `pext`, which extracts bits in parallel, meaning at the same time. The `pext` instruction is a recent addition to the x86 istruction set, so it has not been widely used yet as optimization technique.
+We could use `pext`, which is a command that extracts bits in parallel, meaning at the same time. The `pext` instruction is a recent addition to the x86 instruction set, so it has not yet been widely used yet as optimization technique.
 
 We give `pext` a string of characters, say 'ACTG', and a bit mask, and it will extract those bits from our string. Figure \@ref(fig:pext) details this process for a string of length 4.
 
@@ -800,13 +794,13 @@ node distance=0pt,
 
 We did get lucky in that the 6th and 7th bit (from left to right) on A, C, T, and G give a unique 2 bit values. This means we can just extract the 6th and 7th bit from every character without knowing what it is.
 
-We can apply this technique to our `find_longest` function: we can extract the index of a string using pext very quickly, then use that index rather than recalculating it every time. Figure \@ref(fig:findlongestwpext) hows the results of this application for both looping and binary search. In both cases, using pext to extract the index of the string increases throughput and decreases average compression time.
+We can apply this technique to our `find_longest` function: we can extract the index of a string using pext very quickly, then use that index rather than recalculating it every time.This means that if we precompute the index with `pext`, a lookup in the Direct Map Dictionary can theoretically happen in constant time. In other words, the actual dictionary queries are almost instantaneous. Figure \@ref(fig:findlongestwpext) hows the results of this application for both looping and binary search. In both cases, using pext to extract the index of the string increases throughput and decreases average compression time.
 
-```{r findlongestwpext, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run with pext", echo = F, fig.height = 5}
+```{r findlongestwpext, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run with pext.", echo = F, fig.height = 5}
 compare_implementations(list(
-  c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down with Max'),
+  c('data/stats/ddict/corpus_1_ddictloopupwmax_3868e61.csv', 'data/stats/ddict/corpus_2_ddictloopupwmax_3868e61.csv', 'Loop Down'),
   c('data/stats/ddict/corpus_1_ddictloopwpext_70ee265.csv', 'data/stats/ddict/corpus_2_ddictloopwpext_70ee265.csv', 'Loop Down with Pext'),
-  c('data/stats/ddict/corpus_1_ddictbswmax_588ee0d.csv', 'data/stats/ddict/corpus_2_ddictbswmax_588ee0d.csv', 'Binary Search with Max'),
+  c('data/stats/ddict/corpus_1_ddictbswmax_588ee0d.csv', 'data/stats/ddict/corpus_2_ddictbswmax_588ee0d.csv', 'Binary Search'),
   c('data/stats/ddict/corpus_1_ddictbswpext_6737906.csv', 'data/stats/ddict/corpus_2_ddictbswpext_6737906.csv', 'Binary Search with Pext')
 ), FALSE, "Strategy for Finding Longest Run")
 
@@ -816,10 +810,10 @@ compare_implementations(list(
 
 ## Returning to Compression Ratio
 
-After spending a lot of time debugging, we returned our attention to the compression ratio. Most of our optimizations didn't have much of an effect on compression ratio, with the exception of disallowing strings over a certain length. We did note that the Direct Map does have a lower compression ratio than the Standard Dictionary implementation due to a smaller codeword size and to the fact that the Standard Dictionary allows runs of any length.  
+After spending a majority of the time optimizing, we returned our attention to the compression ratio. Most of our optimizations for the Direct Map Dictionary didn't have much of an effect on compression ratio, with the exception of disallowing strings over a certain length. We did note that the Direct Map already has a lower compression ratio than the Standard Dictionary implementation due to a smaller codeword size.  
 
 
-```{r directostdfinal, warnings= F, messages = F, fig.cap = "Comparing compression ratios of the two Dictionary versions", fig.height = 5, echo = F}
+```{r directostdfinal, fig.height = 5, echo = F}
 process_corpus_group <- function(array){
 	wholedf = data.frame()
 	for(group_list in array){
@@ -846,24 +840,24 @@ df_new <- wholedf %>%
 names(df_new) <-   gsub("\\.", " ", names(df_new))
 
 
-kbl(df_new) %>%
+kbl(df_new, caption ="Comparing compression ratios of the two Dictionary versions." ) %>%
   add_header_above(c(" " = 2, "Compression Ratio " = 2)) %>% 
     kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
 
-In Figure \@ref(fig:directostdfinal), we can see a comparison in compression ratios of the final implementations of the Direct Map and Standard Dictionaries. Note that the Multiple Standard Dictionary version should have the same compression ratios as its single counterpart.
+In Table \@ref(tab:directostdfinal), we can see a comparison in compression ratios of the final implementations of the Direct Map and Standard Dictionaries. Note that the Multiple Standard Dictionaries version has the same compression ratios as a single Standard Dictionary.
 
 ### A point of Comparison
 
-It's worth noting that for sequences of DNA, if the bases are encoded in ASCII, there is a simple and effecient algorithm to compress the file with a 4.0 compression ratio every time. Since there are only 4 bases, we can represent each base with 2 bits. This is a simple conversion, and it requires no dictionaries or codewords. 
+It's worth noting that for sequences of DNA, if the bases are encoded in ASCII, there is a simple and effecient algorithm to compress the file with a 4.0 compression ratio every time. Since there are only 4 bases, we can represent each base with 2 bits. Since each ASCII character takes up 1 bytes, or 8 bits, the compression ratio is always 8/2 = 4.0. This is a simple conversion, and it requires no dictionaries or codewords. 
 
-So the takeaway is, if a DNA compression algorithm can't compress with a compression ratio of higher than 4.0 (2 bits per base), than this simple algorithm would be perferable every time. 
+If a DNA compression algorithm can't compress with a compression ratio of higher than 4.0 (2 bits per base), than this simple algorithm would be preferable every time. 
 
-We implemented this method using `pext`, and the results are detailed in the next chapter.
+We call this method Four to One encoding. We implemented this in C++ using `pext`, and the results are detailed in the next chapter.
 
 ### Entropy Encoding
 
-Our initial idea was that we would compress the DNA with LZW, then use a entropy encoder like arithmetic encoding or Huffman to further compress the data. This was an oversight, as the algorithm as we have described it thus far does not lend itself well to entropy encoding.
+Our initial idea was that we would compress the DNA with LZW, then use a entropy encoding method like Arithmetic encoding or Huffman to further compress the data. This was an oversight, as the algorithm as we have described it thus far does not lend itself well to entropy encoding.
 
 Our algorithm outputs codewords and two bits representing the next character. For a codeword size of 16 bits, this means each loop of our algorithm outputs 18 bits. So any repetitiveness or reuse will not be detectable by an entropy encoder which works on data of 8, 16, or 32 bit chunks.
 
@@ -871,9 +865,9 @@ So maybe we break the compressed file into two separate files; a file of codewor
 
 The issue is that entropy encoders rely on repeating numbers of a high frequency. We can cut down the number of bits a certain entry takes to make it more compressible, and make less common entries take more bits (see Figure \@ref(fig:huffman)). DNA nucleotides show up with roughly the same frequency, so having 2 bits per character is hard to beat. So the file with all the characters in it can't be compressed further.
 
-What about the codewords? Well, a key realization is that any codeword will only show up 4 times in a single run of the program. Say we add the codeword `1234="ACT"` to our dictionary. When will we output this codeword ? Well, we will output it when we see "ACT" followed by another character. Since there are only 4 characters, once you see those 4 other strings ("ACTA", "ACTG", "ACTC", and "ACTT"), we will never output it again because we are looking for the longest run possible.
+What about the codewords? Well, a key realization is that any codeword will only show up 4 times in a single run of the program. Say we add the codeword `120="ACT"` to our dictionary. When will we output this codeword ? Well, we will output it when we see "ACT" followed by another character. Since there are only 4 characters, once you see those 4 other strings ("ACTA", "ACTG", "ACTC", and "ACTT"), we will never output it again because we are looking for the longest run possible.
 
-There are two cases in which we will output a codeword more than 4 times. If we run out of codewords and we have never encoded "ACTG", any time "ACTG" comes up, we will output `1234G`. This case is hard to predict as we have no way of controlling what strings are left when we run out of codewords. The other case is for strings that are the max length. These long runs may show up multiple times, and since we won't add any strings longer than the max to our dictionary, it will never be overwritten. However, these runs are very rare, or else the compression ratio wouldn't be an issue.
+There are two cases in which we will output a codeword more than 4 times. If we run out of codewords and we have never encoded "ACTG", any time "ACTG" comes up, we will output `120G`. This case is hard to predict as we have no way of controlling what strings are left when we run out of codewords. The other case is for strings that are the max length. These long runs may show up multiple times, and since we won't add any strings longer than the max to our dictionary, it will never be overwritten. However, these runs are very rare, or else the compression ratio wouldn't be an issue.
 
 So on average, every codeword shows up a maximum of 4 times. This means that for long strands of DNA, we have output nearly all of the codewords with relatively even frequency. In other words, entropy encoding will not shorten the length of the codewords.
 
@@ -886,7 +880,7 @@ The fact that we are not getting a compression ratio over 4.0 led us to think of
 
 Compression:
 
-+ if the next longest run is less than 8 characters, we add it to the dictionary, but rather than output the codeword, we just output the 2 bit representation of the characters. We output a 0 to the indicator stream to indicate this choice.
++ if the next longest run is less than 8 characters, we add it to the dictionary, but rather than output the codeword, we just output the 2 bit representation of the next 8 characters. We output a 0 to the indicator stream to indicate this choice.
 + if the next longest run is equal to or greater than 8, we output a codeword to the codeword stream and the next character to the character stream. We also output a 1 to the indicator stream to indicate a codeword was output.
 
 Decompression: We start by reading an indicator bit
@@ -894,7 +888,7 @@ Decompression: We start by reading an indicator bit
 + if the bit is 1, we read a codeword from the codeword stream and the next character from the character stream. We add this to the dictionary like the old algorithm.
 + if the bit is 0, we read the next 8 characters. We then use `find_longest` to find the longest run and add it to the dictionary. We can then put the 8 characters into the output stream and move on.
 
-This is, in essence, a greedy algorithm. We have the choice of outputting a codeword or 8 characters every time, and we choose the choice which results in the least number of bits in the output file.
+This is, in essence, a greedy algorithm. A greedy algorithm is one that, when given a choice, it chooses the path that is most advantageous to the overall goal. This new algorithm have the choice of outputting a codeword or 8 characters every time, and we choose the choice which results in the least number of bits in the output file.
 
-The other advantage to this algorithm is that it works well for entropy encoding. The indicator bits are mostly 0, since most runs are less than 8. The codeword stream is also compressible, since none of the codewords for strings less than length 8 are output. The performance of this new scheme is assessed in the next chapter.
+The other advantage to this algorithm is that it works well for entropy encoding. The indicator bits are mostly 0, since most runs are less than 8. The codeword stream is also compressible, since none of the codewords for strings less than length 8 are output. We call this new scheme Three Stream LZW, and it's performance is evaluated in the next chapter. 
 
