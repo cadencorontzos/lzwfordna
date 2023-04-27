@@ -4,7 +4,7 @@ This thesis deals with some high-level topics and uses language specific to comp
 
 ## What is information?
 
-  Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could use words, you could use sign language. Regardless of the medium, there is some important idea to get across. Does it matter if the other person gets your message exactly? If someone asks you "Where library?", despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks "Where is the library"?
+  Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information: you could send a text message, you could use words, you could use sign language. Regardless of the medium, there is some important idea to get across. Does it matter if the other person gets your message exactly? If someone asks you "Where library?", despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks "Where is the library"?
   Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let's assume that information is data with significance that makes it worth preserving and conveying.
 
 Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, and screens. To maximize the amount of information that can be transmitted through a channel with a limited capacity, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
@@ -101,7 +101,7 @@ So our message would be encoded to $1011010001011100110$.
 Arithmetic encoding is another lossless compression algorithm that uses probability to assign codes to symbols in the message. Unlike Huffman, arithmetic encoding assigns a single code to the whole message, rather than separate codes for each symbol.
 
 
-Here is a simple example. Say we want to encode a string of characters "ACGGT". Arithmetic Encoding also requires the encoder and decoder know the probabilities of each of the characters that could possibly be in the message. Let's say the probabilities of each symbol in the message are
+Here is a simple example. Say we want to encode a string of characters "ACGGT". Arithmetic Encoding also requires the encoder and decoder know the probabilities of each of the characters that could possibly be in the message. Let's say the probabilities of each symbol in the message are:
 
 * $P(A) = a_1 = 2/10$
 * $P(C) = a_2 = 2/10$
@@ -281,14 +281,14 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 
 ## Related Work 
 
-Deoxyribonucleic acid (DNA) is the building block of life. In four letters (A, C, G, and T) called nucleotides, DNA holds the genetic information required for reproduction in all living organisms. DNA can be billion of characters long, which can mean gigabytes or terabytes of storage on a computer.
+Deoxyribonucleic acid (DNA) is the building block of life. In four letters (A, C, G, and T) called nucleotides, DNA holds the genetic information required for reproduction in all living organisms. DNA can be billions of characters long, which can mean gigabytes or terabytes of storage on a computer.
 The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area in the intersection of bioinformatics, computer science, and mathematics.
 
 There have been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process [@KeerthyMID]. The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length. This allows each of the dictionaries to grow more slowly, allowing accesses to be faster. This paper also used genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
 
 Another paper used simple parallelization techniques to improve compression speed [@panialok]. Rather than compressing the whole file linearly, the researches broke the file into portions and compressed them with LZW in parallel, which greatly increased the compression speed at the cost of a reduced compression ratio. 
 
-Another paper made use of Chinese Remainder Theorem (CRT) to augment Lempel-Ziv-Welch [@ibrahimgbolagade]. They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we were not able to achieve similar results. We reached out to the authors, but we were not able to further our progress on this method and thus it is not used in this thesis.
+Other researchers made use of Chinese Remainder Theorem (CRT) to augment Lempel-Ziv-Welch [@ibrahimgbolagade]. They saw great reduction in compression time without compromising compression ratio, although these results could not be verified. The details of their implementation were not clear from the paper. We tried multiple different methods of utilizing CRT given the pseudocode in their paper, but we were not able to achieve similar results. We reached out to the authors, but we were not able to further our progress on this method and thus it is not used in this thesis.
 
 
 DNA-specific compression algorithms have also been a growing subsection of computer science for decades. These papers do not focus on LZW, but they do consider some similar methods.

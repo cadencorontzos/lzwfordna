@@ -154,7 +154,7 @@ Another, newer paper aimed to create a corpus specifically for compressing DNA [
 csv_to_table('data/corpus_2_summary.csv', "Corpus 2")
 ```
 
-The dataset in Table \@ref(tab:corpus2filesfig), which we call Corpus 2, is publicly available at this [https://tinyurl.com/DNAcorpus](https://tinyurl.com/DNAcorpus).
+The dataset in Table \@ref(tab:corpus2filesfig), which we call Corpus 2, is publicly available at [https://tinyurl.com/DNAcorpus](https://tinyurl.com/DNAcorpus).
 
 ## Evaluating Performance
 
@@ -358,7 +358,7 @@ else{
 
 ### Dictionary Lookups
  
-Dictionary lookups can be expensive, especially with the Standard Dictioary. We learned from `callgrind` that along with string operations, our program spent a large fraction of the total runtime doing these lookups.
+Dictionary lookups can be expensive, especially with the Standard Dictionary. We learned from `callgrind` that along with string operations, our program spent a large fraction of the total runtime doing these lookups.
 
 We looked for ways to reduce the volume of lookups. At the time, the algorithm looked up the current string and the next character in the dictionary. If that string was in the dictionary, it keeps adding characters. If the string was not in the dictionary, then the algorithm outputs the codeword for the current string.
 
@@ -421,7 +421,7 @@ while(next_character != EOF){
 }
 ```
 
-This should reduce the amount of time the program spends on dictioary lookups.
+This should reduce the amount of time the program spends on dictionary lookups.
 
 ### Using Const Char *
 

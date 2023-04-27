@@ -28,7 +28,10 @@ abstract: |
   `r if(knitr:::is_latex_output()) paste(readLines(here::here("prelims", "00-abstract.Rmd")), collapse = "\n  ")`
 acknowledgements: |
   Thank you to Eitan Frachtenberg, who helped me constantly throughout the whole year writing this. I never thought thesising would be so much fun, and I hope you enjoyed it as much as I did.
-  Thanks also to all the other staff and faculty who helped me through my four years at Reed. Thank you to B Hunter, who was enormous help to me in getting jobs and opportunites while at Reed. Thank you also to David Ramirez, whose advice and mentorship I am always grateful for. 
+
+  Thanks also to all the other staff and faculty who helped me through my four years at Reed. Thank you to B Hunter, who was enormous help to me in getting jobs and opportunites throughout my time here. Thank you also to David Ramirez, whose advice and mentorship I am always grateful for. 
+
+  Thank you to my family for supporting me, and thank you to all the wonderful people I met at Reed. I have enjoyed this part of my life immensely, and I am excited to see what is next.
 #dedication: |
 #  You can have a dedication here if you wish. 
 #preface: |
