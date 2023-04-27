@@ -279,7 +279,7 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 + `run`: the next run of characters in our input that are already in our dictionary. So if we are encoding "ACTG", and "A", "AC", and "ACT" are in the dictionary but "ACTG" is not, we have a run of 3.
 + `EOF`: end of file, the special character that we need to output at the end of the encoding.
 
-## Related work 
+## Related Work 
 
 Deoxyribonucleic acid (DNA) is the building block of life. In four letters (A, C, G, and T) called nucleotides, DNA holds the genetic information required for reproduction in all living organisms. DNA can be billion of characters long, which can mean gigabytes or terabytes of storage on a computer.
 The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area in the intersection of bioinformatics, computer science, and mathematics.
