@@ -33,7 +33,7 @@ csv_to_table <- function(filename, caption = "f"){
 # returns throughput in Mb/s
 # assumes time is in nanoseconds
 throughput <- function(df){
-  bytes_per_megabyte <-(1/(1024*1024))
+  bytes_per_megabyte <-(1/1024)
   seconds_per_nanosecond <- .000000001
   sum_bytes <- sum(df$Original.File.Size)
   sum_time_ns <- sum(df$Compression.Time)
