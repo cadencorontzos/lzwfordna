@@ -6,7 +6,7 @@ import statistics
 
 LZW_ENCODE = './lzwencode'
 LZW_DECODE = './lzwdecode'
-FOUR_TO_kNE_ENCODE = './four_to_one_encode'
+FOUR_TO_ONE_ENCODE = './four_to_one_encode'
 FOUR_TO_ONE_DECODE = './four_to_one_decode'
 THREE_STREAM_ENCODE = './three_stream_lzwencode'
 THREE_STREAM_DECODE = './three_stream_lzwdecode'
