@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# A script to run metrics on comrpession tools
+
 # Check that the user has provided two arguments
 if [[ $# -ne 2 ]]; then
     echo "Usage: $0 <compression_tool> <directory>"
