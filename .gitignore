@@ -8,7 +8,6 @@ __pycache__
 *.out
 *main
 *a.out
-/lzwcpp/lzw
 /lzwcpp/test_bitio
 /lzwcpp/*lzwencode
 /lzwcpp/*lzwdecode

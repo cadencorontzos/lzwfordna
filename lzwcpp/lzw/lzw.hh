@@ -1,5 +1,5 @@
 #pragma once
-#include "bitio/bitio.hh"
+#include "../bitio/bitio.hh"
 #include <string>
 
 /**

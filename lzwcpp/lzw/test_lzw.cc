@@ -1,6 +1,6 @@
 #include "../bitio/bitio.hh"
 #include "../dictionary/direct_mapped_dict.hh"
-#include "../lzw.hh"
+#include "lzw.hh"
 #include <bitset>
 #include <cassert>
 #include <fstream>
