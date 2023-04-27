@@ -828,8 +828,8 @@ process_corpus_group <- function(array){
 }
 
 wholedf <- process_corpus_group(list(
-  c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
-  c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary')
+  c('data/stats/final/corpus_1_stddict_final_ccf351c.csv', 'data/stats/final/corpus_2_stddict_final_ccf351c.csv', 'Std Dictionary'),
+  c('data/stats/final/corpus_1_ddict_final_ccf351c.csv', 'data/stats/final/corpus_2_ddict_final_ccf351c.csv', 'Direct Map Dictionary')
 ))
 
 

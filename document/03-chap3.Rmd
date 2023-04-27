@@ -10,11 +10,11 @@ We can also see the raw values in Table \@ref(tab:comparisonofourmethodstab). Wh
 
 ```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Performance comparison of our final implementations.", fig.height = 5, echo = F}
 compare_implementations(list(
-  c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
-  c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary'),
-  c('data/stats/final/corpus_1_multstddict_final_687ff25.csv', 'data/stats/final/corpus_2_multstddict_final_687ff25.csv', 'Mult Std Dictionaries'),
-  c('data/stats/final/corpus_1_4t1_final_687ff25.csv', 'data/stats/final/corpus_2_4t1_final_687ff25.csv', 'Four to One'),
-  c('data/stats/final/corpus_1_threestream_final_687ff25.csv', 'data/stats/final/corpus_2_threestream_final_687ff25.csv', 'Three Stream LZW')
+  c('data/stats/final/corpus_1_stddict_final_ccf351c.csv', 'data/stats/final/corpus_2_stddict_final_ccf351c.csv', 'Std Dictionary'),
+  c('data/stats/final/corpus_1_ddict_final_ccf351c.csv', 'data/stats/final/corpus_2_ddict_final_ccf351c.csv', 'Direct Map Dictionary'),
+  c('data/stats/final/corpus_1_multstddict_final_ccf351c.csv', 'data/stats/final/corpus_2_multstddict_final_ccf351c.csv', 'Mult Std Dictionaries'),
+  c('data/stats/final/corpus_1_4t1_final_ccf351c.csv', 'data/stats/final/corpus_2_4t1_final_ccf351c.csv', 'Four to One'),
+  c('data/stats/final/corpus_1_threestream_final_ccf351c.csv', 'data/stats/final/corpus_2_threestream_final_ccf351c.csv', 'Three Stream LZW')
 ), FALSE, "Final Implementation")
 ```
 
@@ -34,11 +34,11 @@ process_corpus_group <- function(array){
 }
 
 wholedf <- process_corpus_group(list(
-  c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
-  c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary'),
-  c('data/stats/final/corpus_1_multstddict_final_687ff25.csv', 'data/stats/final/corpus_2_multstddict_final_687ff25.csv', 'Mult Std Dictionaries'),
-  c('data/stats/final/corpus_1_4t1_final_687ff25.csv', 'data/stats/final/corpus_2_4t1_final_687ff25.csv', 'Four to One'),
-  c('data/stats/final/corpus_1_threestream_final_687ff25.csv', 'data/stats/final/corpus_2_threestream_final_687ff25.csv', 'Three Stream LZW')
+  c('data/stats/final/corpus_1_stddict_final_ccf351c.csv', 'data/stats/final/corpus_2_stddict_final_ccf351c.csv', 'Std Dictionary'),
+  c('data/stats/final/corpus_1_ddict_final_ccf351c.csv', 'data/stats/final/corpus_2_ddict_final_ccf351c.csv', 'Direct Map Dictionary'),
+  c('data/stats/final/corpus_1_multstddict_final_ccf351c.csv', 'data/stats/final/corpus_2_multstddict_final_ccf351c.csv', 'Mult Std Dictionaries'),
+  c('data/stats/final/corpus_1_4t1_final_ccf351c.csv', 'data/stats/final/corpus_2_4t1_final_ccf351c.csv', 'Four to One'),
+  c('data/stats/final/corpus_1_threestream_final_ccf351c.csv', 'data/stats/final/corpus_2_threestream_final_ccf351c.csv', 'Three Stream LZW')
 ))
 
 df_new <- wholedf %>% 
@@ -108,11 +108,11 @@ process_run_corpus1 <- function(filename, ms=FALSE){
   
 }
 
-Standard_Dictionary<- process_run_corpus1("data/stats/final/corpus_1_stddict_final_687ff25.csv")
- Direct_Map_Dictionary <- process_run_corpus1('data/stats/final/corpus_1_ddict_final_687ff25.csv')
- Mult_Std_Dictionaries <- process_run_corpus1('data/stats/final/corpus_1_multstddict_final_687ff25.csv')
- Four_to_One <- process_run_corpus1('data/stats/final/corpus_1_4t1_final_687ff25.csv')
- Three_Stream_LZW <- process_run_corpus1('data/stats/final/corpus_1_threestream_final_687ff25.csv')
+Standard_Dictionary<- process_run_corpus1("data/stats/final/corpus_1_stddict_final_ccf351c.csv")
+ Direct_Map_Dictionary <- process_run_corpus1('data/stats/final/corpus_1_ddict_final_ccf351c.csv')
+ Mult_Std_Dictionaries <- process_run_corpus1('data/stats/final/corpus_1_multstddict_final_ccf351c.csv')
+ Four_to_One <- process_run_corpus1('data/stats/final/corpus_1_4t1_final_ccf351c.csv')
+ Three_Stream_LZW <- process_run_corpus1('data/stats/final/corpus_1_threestream_final_ccf351c.csv')
 
 df <- data.frame(
   Name,
@@ -171,11 +171,11 @@ xz <- xz %>%  mutate(
 wholedf1 <- rbind(genozip, bzip, gzip, xz)
 
 wholedf <- process_corpus_group(list(
-  c('data/stats/final/corpus_1_stddict_final_687ff25.csv', 'data/stats/final/corpus_2_stddict_final_687ff25.csv', 'Std Dictionary'),
-  c('data/stats/final/corpus_1_ddict_final_687ff25.csv', 'data/stats/final/corpus_2_ddict_final_687ff25.csv', 'Direct Map Dictionary'),
-  c('data/stats/final/corpus_1_multstddict_final_687ff25.csv', 'data/stats/final/corpus_2_multstddict_final_687ff25.csv', 'Mult Std Dictionaries'),
-  c('data/stats/final/corpus_1_4t1_final_687ff25.csv', 'data/stats/final/corpus_2_4t1_final_687ff25.csv', 'Four to One'),
-  c('data/stats/final/corpus_1_threestream_final_687ff25.csv', 'data/stats/final/corpus_2_threestream_final_687ff25.csv', 'Three Stream LZW')
+  c('data/stats/final/corpus_1_stddict_final_ccf351c.csv', 'data/stats/final/corpus_2_stddict_final_ccf351c.csv', 'Std Dictionary'),
+  c('data/stats/final/corpus_1_ddict_final_ccf351c.csv', 'data/stats/final/corpus_2_ddict_final_ccf351c.csv', 'Direct Map Dictionary'),
+  c('data/stats/final/corpus_1_multstddict_final_ccf351c.csv', 'data/stats/final/corpus_2_multstddict_final_ccf351c.csv', 'Mult Std Dictionaries'),
+  c('data/stats/final/corpus_1_4t1_final_ccf351c.csv', 'data/stats/final/corpus_2_4t1_final_ccf351c.csv', 'Four to One'),
+  c('data/stats/final/corpus_1_threestream_final_ccf351c.csv', 'data/stats/final/corpus_2_threestream_final_ccf351c.csv', 'Three Stream LZW')
 ))
 
 wholedf <- wholedf %>% rename(
