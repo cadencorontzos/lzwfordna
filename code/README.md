@@ -7,6 +7,7 @@ A collection of compression tools, including several implemenations of LZW, spec
 - `cmake` and `g++`
 - if haven't installed the submodules for this repo, run `git submodules update --init --recursive`
 - some code relies on little endianess
+- some code uses `pext`, which requires an x86 instruction set. Computers that don't support `pext` may see varied performance results
 
 ### Usage
 
