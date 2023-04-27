@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>lzwfordna: Main Page</title>
+<title>lzwfordna: Lempel-Ziv-Welch for DNA</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -68,10 +68,56 @@ $(function() {
 </div>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">lzwfordna Documentation</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title">Lempel-Ziv-Welch for DNA </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p ><a class="anchor" id="md_README"></a> A collection of compression tools, including several implementations of Lempel-Ziv-Welch, specifically tailored towards compressing DNA.</p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+Prerequisites</h1>
+<ul>
+<li><code>cmake</code> and <code>g++</code></li>
+<li>if haven't installed the submodules for this repo, run <code>git submodules update --init --recursive</code></li>
+<li>some code relies on little endianess</li>
+<li>all implementations uses <code>pext</code>, which requires an x86 instruction set. Computers that don't support <code>pext</code> may see varied performance results</li>
+<li>all implementations expect files with only "A", "C", "T", or "G" in ASCII encoding. No newlines at the end of files</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md2"></a>
+Usage</h1>
+<p >To compile, run</p>
+<div class="fragment"><div class="line">make all</div>
+</div><!-- fragment --><p >If you get an error about <code>./entropy-encoding</code>, make sure you have submodules installed.</p>
+<p >Make sure to check out the <a href="https://cadencorontzos.github.io/lzwfordna/">documentation</a>.</p>
+<h2><a class="anchor" id="autotoc_md3"></a>
+LZW</h2>
+<p >To encode a file with <a class="el" href="classLZW.html">LZW</a>,</p>
+<div class="fragment"><div class="line">./lzwencode &lt;filename&gt;</div>
+</div><!-- fragment --><p >To decode</p>
+<div class="fragment"><div class="line">./lzwdecode &lt;original-filename&gt;.compressed.lzw</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
+Three Stream LZW</h2>
+<p >To encode a file with <a class="el" href="classThree__Stream__LZW.html">Three_Stream_LZW</a>,</p>
+<div class="fragment"><div class="line">./three_stream_lzwencode &lt;filename&gt;</div>
+</div><!-- fragment --><p >Three stream will produce a bunch of output files. To decompress effectively, run</p>
+<div class="fragment"><div class="line">./three_stream_lzwdecode &lt;original-filename&gt;.compressed.lzw</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
+Four To One</h2>
+<p >To encode a file with <a class="el" href="classFour__To__One.html">Four_To_One</a> encoding</p>
+<div class="fragment"><div class="line">./four_to_one_encode &lt;filename&gt;</div>
+</div><!-- fragment --><p >To decode</p>
+<div class="fragment"><div class="line">./four_to_one_decode &lt;original-filename&gt;.4t1</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>
+Testing</h1>
+<p >Most of the modules have unit test files, which you can produce by running</p>
+<div class="fragment"><div class="line">make test</div>
+</div><!-- fragment --><p >You can also run integration tests on each individual compressor. See the <code>./scripts</code> directory. Here is an example for regular <a class="el" href="classLZW.html">LZW</a>, assuming you have a folder of DNA files called Corpus1</p>
+<div class="fragment"><div class="line">sh scripts/integration.sh Corpus1</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md7"></a>
+Benchmarking</h1>
+<p >One of the corpora that I used for testing is publicly available <a href="https://tinyurl.com/DNAcorpus">here</a>. The other is not publicly available anywhere and I'm not sure about the legality of providing it, but if you search the internet hard enough it is easy to find.</p>
+<p >To benchmark the implementations, you can use <code>scripts/run_lzw_on_corpora.py</code>, which will produce a <code>csv</code> and <code>md</code> for the run that you can easily load into data analysis.</p>
+<p >If you want to compare these implementations or others to command line tools, you can easily use or slightly change the script at <code>scripts/benchmark.sh</code>. </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
