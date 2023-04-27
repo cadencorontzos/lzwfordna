@@ -17,7 +17,7 @@ Compression Ratio is the measure of size reduction achieved by a compression alg
 
 $$CR = \frac{OS}{CS}$$
 
-So a higher compression ratio means a more effective compression algorithm, and means that we were able to store more information in less space, allowing for easier storage and transfer.
+So a higher compression ratio means a more effective compression algorithm, and means that we were able to represent more information in less space, allowing for easier storage and transfer.
 
 ### Compression Time
 
@@ -133,7 +133,7 @@ As long as the person recieving this message understood that 'AA' = 1, they coul
 
 $$\text{1212}$$
 
-As you can see, our message is getting shorter. The problem is, how do we decide what elements start in our dictionary? Well, we can start with a small dictionary, and build up a larger dictionary as we go along. Let me explain. Suppose we are still trying to encode "AACAAC". Assume we start with the dictionary {'AA' = 1}. We can scan through the message, looking for instances of 'AA' and replace them. We see "AAC" at the beginning of the string. We can encode this as "1C". Here is our message so far
+As you can see, our message is getting shorter. The problem is, how do we decide what elements start in our dictionary? Well, we can start with a small dictionary, and build up a larger dictionary as we go along. Let me explain. Suppose we are still trying to encode "AACAAC". Assume we start with the dictionary {'AA' = 1}. We can scan through the message from left to right, looking for instances of 'AA' and replace them. We see "AAC" at the beginning of the string. We can encode this as "1C". Here is our message so far
 
 $$\text{1CAAC}$$
 
@@ -145,7 +145,7 @@ $$\text{1C2}$$
 
 The reason the final meassage is not "22" is because we didn't start with 'AAC' in our dictionary. If we output "22", the decoder won't know what 2 means. We leave behind the "1C" to indicate to the decoder that 'ACC' should be added to the dictionary.
 
-The decoder, when it see "1C", will know that that means "take the string that has codeword 1, add on the character 'C', and add that new string to your dictionary". So they will add 'AAC' = 2 to their dictionary. When they see the following 2, they know that 2 = 'AAC', so they are able to decode the message. In this way, we can build up the dicionary as we encode and decode, and as long as we start with the same starting dictionary, the message will always be preserved. You can imagine continuing this process throughout the message. We find the longest string that is in our dictionary. We output the codeword for that string, and then the character that follows that string. Then, we add that new sequence to our dictionary. This way, we can build up runs of longer and longer strings, and thus we are able to replace longer runs of characters with codewords.
+So suppose we want to decode the message "1C2". The decoder, when it see "1C", will know that that means "take the string that has codeword 1, add on the character 'C', and add that new string to your dictionary". So they will add 'AAC' = 2 to their dictionary. When they see the following 2, they know that 2 = 'AAC', so they are able to decode the message. In this way, we can build up the dicionary as we encode and decode, and as long as we start with the same starting dictionary, the message will always be preserved. You can imagine continuing this process throughout the message. We find the longest string that is in our dictionary. We output the codeword for that string, and then the character that follows that string. Then, we add that new sequence to our dictionary. This way, we can build up runs of longer and longer strings, and thus we are able to replace longer runs of characters with codewords.
 
 Here is a more complex example. We may be sending messages with the characters 'A', 'C', 'T', 'G', so we can start by assigning those strings codewords. So our dictionary will start as {'A' = 0, 'C' = 1, 'T' = 2, 'G' = 3}. So in other words, 'A' is synonymous with 0, 'C' is synonymous with 1, and so on. Say we compress to send the message 
 

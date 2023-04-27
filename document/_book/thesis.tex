@@ -204,7 +204,7 @@ Thank you to my family for supporting me, and thank you to all the wonderful peo
 }
 
 \Abstract{
-Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer files that are gigabytes or even terabytes in size. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a data structure we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
+Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer files that are gigabytes or even terabytes in size. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
 }
 
 	\usepackage{setspace}\onehalfspacing
@@ -265,7 +265,7 @@ Large files containing DNA sequences can be bottlenecks for genetic research, as
 
   \listoffigures
   \begin{abstract}
-    Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer files that are gigabytes or even terabytes in size. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a data structure we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
+    Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer files that are gigabytes or even terabytes in size. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
   \end{abstract}
 
 \mainmatter % here the regular arabic numbering starts
@@ -294,7 +294,7 @@ Compression Ratio is the measure of size reduction achieved by a compression alg
 
 \[CR = \frac{OS}{CS}\]
 
-So a higher compression ratio means a more effective compression algorithm, and means that we were able to store more information in less space, allowing for easier storage and transfer.
+So a higher compression ratio means a more effective compression algorithm, and means that we were able to represent more information in less space, allowing for easier storage and transfer.
 
 \hypertarget{compression-time}{%
 \subsection{Compression Time}\label{compression-time}}
@@ -418,7 +418,7 @@ As long as the person recieving this message understood that `AA' = 1, they coul
 
 \[\text{1212}\]
 
-As you can see, our message is getting shorter. The problem is, how do we decide what elements start in our dictionary? Well, we can start with a small dictionary, and build up a larger dictionary as we go along. Let me explain. Suppose we are still trying to encode ``AACAAC''. Assume we start with the dictionary \{`AA' = 1\}. We can scan through the message, looking for instances of `AA' and replace them. We see ``AAC'' at the beginning of the string. We can encode this as ``1C''. Here is our message so far
+As you can see, our message is getting shorter. The problem is, how do we decide what elements start in our dictionary? Well, we can start with a small dictionary, and build up a larger dictionary as we go along. Let me explain. Suppose we are still trying to encode ``AACAAC''. Assume we start with the dictionary \{`AA' = 1\}. We can scan through the message from left to right, looking for instances of `AA' and replace them. We see ``AAC'' at the beginning of the string. We can encode this as ``1C''. Here is our message so far
 
 \[\text{1CAAC}\]
 
@@ -430,7 +430,7 @@ Now, as we get to the end of the message, we see ``AAC'' again. Now that we have
 
 The reason the final meassage is not ``22'' is because we didn't start with `AAC' in our dictionary. If we output ``22'', the decoder won't know what 2 means. We leave behind the ``1C'' to indicate to the decoder that `ACC' should be added to the dictionary.
 
-The decoder, when it see ``1C'', will know that that means ``take the string that has codeword 1, add on the character `C', and add that new string to your dictionary''. So they will add `AAC' = 2 to their dictionary. When they see the following 2, they know that 2 = `AAC', so they are able to decode the message. In this way, we can build up the dicionary as we encode and decode, and as long as we start with the same starting dictionary, the message will always be preserved. You can imagine continuing this process throughout the message. We find the longest string that is in our dictionary. We output the codeword for that string, and then the character that follows that string. Then, we add that new sequence to our dictionary. This way, we can build up runs of longer and longer strings, and thus we are able to replace longer runs of characters with codewords.
+So suppose we want to decode the message ``1C2''. The decoder, when it see ``1C'', will know that that means ``take the string that has codeword 1, add on the character `C', and add that new string to your dictionary''. So they will add `AAC' = 2 to their dictionary. When they see the following 2, they know that 2 = `AAC', so they are able to decode the message. In this way, we can build up the dicionary as we encode and decode, and as long as we start with the same starting dictionary, the message will always be preserved. You can imagine continuing this process throughout the message. We find the longest string that is in our dictionary. We output the codeword for that string, and then the character that follows that string. Then, we add that new sequence to our dictionary. This way, we can build up runs of longer and longer strings, and thus we are able to replace longer runs of characters with codewords.
 
 Here is a more complex example. We may be sending messages with the characters `A', `C', `T', `G', so we can start by assigning those strings codewords. So our dictionary will start as \{`A' = 0, `C' = 1, `T' = 2, `G' = 3\}. So in other words, `A' is synonymous with 0, `C' is synonymous with 1, and so on. Say we compress to send the message
 
@@ -878,7 +878,7 @@ If we just save \texttt{currentBlock\ +\ next\_character} into a new variable, t
 \hypertarget{dictionary-lookups}{%
 \subsection{Dictionary Lookups}\label{dictionary-lookups}}
 
-Dictionary lookups can be expensive, especially with the Standard Dictionary. We learned from \texttt{callgrind} that along with string operations, our program spent a large fraction of the total runtime doing these lookups.
+Dictionary lookups can be expensive, especially with the Standard Dictionary. We learned from \texttt{callgrind} that along with string operations, our program spent a large fraction of the total run time doing these lookups.
 
 We looked for ways to reduce the volume of lookups. At the time, the algorithm looked up the current string and the next character in the dictionary. If that string was in the dictionary, it keeps adding characters. If the string was not in the dictionary, then the algorithm outputs the codeword for the current string.
 
@@ -1664,7 +1664,7 @@ Table \ref{tab:othertoolstab} summarizes the compression ratios of both the othe
 \chapter*{Conclusion}\label{conclusion}}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-We started with a naive implementation of Lempel Ziv Welch, and our goal was to optimize it for DNA. Although we were not able to achieve as high of a compression ratio as other algorithms in literature and professional DNA compresion tools, we were able to make a very fast algorithm that can do better than a 4.0 compression ratio on large files. There is a trade off when it comes to choosing a compression algorithm, with speed and space. If you needed to compress DNA files as small as possible, you should use the professional tools or one of the algorithms proposed in other research papers. If you want to compress DNA very quickly and you are okay with a moderate compression ratio, than you should use the Four to One implementation which we discussed previously. If you want something that is in between, with a moderate compression ratio and fast compression time, the results in Chapter 3 tell us that the Three Stream implementation of LZW would work very well for large files.
+We started with a naive implementation of Lempel Ziv Welch, and our goal was to optimize it for DNA. Although we were not able to achieve as high of a compression ratio as other algorithms in literature and professional DNA compresion tools, we were able to make a very fast algorithm that can do better than a 4.0 compression ratio on large files. There is a trade off when it comes to choosing a compression algorithm, with speed and space. If you needed to compress DNA files as small as possible, you should use the professional tools or one of the algorithms proposed in other research papers. If you want to compress DNA very quickly and you are okay with a moderate compression ratio, than you should use the Four to One implementation which we discussed previously. If you want something that is in between, with a good compression ratio and fast compression time, the results in Chapter 3 tell us that the Three Stream implementation of LZW would work very well for large files.
 
 The concept of an indexed, Direct Map dictionary is one that could prove useful for other applications. Further research could be used to apply a similar idea to a different algorithm, one more suited to the redundancies present in DNA. In other words, could we take one of the research papers discussed in Section \ref{related-work} and apply the idea of the Direct Map to the algorithm presented in it? This could also be useful in other areas of compression in which the workload has a limited number of characters like with DNA. The usage of \texttt{pext} is also worth noting. Because of the 2 bit encoding possible for DNA sequences, we can create an index for a string of DNA very quickly. This, combined with the Direct Map Dictionary, allows for the Direct Map Dictionary to have dictionary accesses that are almost as fast as array accesses.
 
