@@ -268,12 +268,12 @@ Large files containing DNA sequences can be bottlenecks for genetic research, as
 \hypertarget{background-and-motivations}{%
 \chapter{Background and Motivations}\label{background-and-motivations}}
 
-This thesis deals with some high-level topics and uses language specific to compression research. This chapter tries to give brief summaries and examples of the relevant topics to be discussed so readers of all experience levels can put our results into context.
+This thesis deals with some high-level topics and uses language specific to compression research. This chapter gives brief summaries and examples of the relevant topics to be discussed so readers of all experience levels can put our results into context.
 
 \hypertarget{what-is-information}{%
 \section{What is information?}\label{what-is-information}}
 
-Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could use words, you could use sign language. But regardless of the medium, there is some important idea to get across. Does it matter if the other person gets your message exactly? If someone asks you ``Where library'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library''?
+Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information; you could send a text message, you could use words, you could use sign language. Regardless of the medium, there is some important idea to get across. Does it matter if the other person gets your message exactly? If someone asks you ``Where library?'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library''?
 Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let's assume that information is data with significance that makes it worth preserving and conveying.
 
 Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, and screens. To maximize the amount of information that can be transmitted through a channel with a limited capacity, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
@@ -284,21 +284,21 @@ Information on computers can take many forms, such as text, audio, and video. Th
 \hypertarget{compression-ratio}{%
 \subsection{Compression Ratio}\label{compression-ratio}}
 
-Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressed as a ratio of the size of the uncompressed size (\(OS\)) to the compressed size (\(CS\)).
+Compression Ratio is the measure of size reduction achieved by a compression algorithm. It is typically expressed as a ratio of the size of the original, uncompressed size (\(OS\)) to the compressed size (\(CS\)).
 
 \[CR = \frac{OS}{CS}\]
 
 So a higher compression ratio means a more effective compression algorithm, and means that we were able to store more information in less space, allowing for easier storage and transfer.
 
-\hypertarget{run-time}{%
-\subsection{Run Time}\label{run-time}}
+\hypertarget{compression-time}{%
+\subsection{Compression Time}\label{compression-time}}
 
-The run time is also an important part of evaluating the effectiveness of a compression algorithm. Run time is typically defined as the length of time a program takes to complete a task. Sometimes, if time is constrained, you may care less about saving space. For example, suppose you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15. If the one with the higher compression ratio takes twice as long as the other, you may opt for a lower compression ratio to save time.
+The run time is also an important part of evaluating the effectiveness of a compression algorithm. Run time is typically defined as the length of time a program takes to complete a task. In this case, we are interested in compression time. Sometimes, if time is constrained, you may care less about saving space. For example, suppose you have the option of two compression algorithms, one with a compression ratio of 2.0, and another with a compression ratio of 2.15. If the one with the higher compression ratio takes twice as long as the other, you may opt for a lower compression ratio to save time.
 
 \hypertarget{memory-usage}{%
 \subsection{Memory Usage}\label{memory-usage}}
 
-Memory usage is closely tied with runtime when it comes to compression algorithms. Memory is generally the storage a program uses while it is running. So to reduce our run time and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage. Throughout this thesis, we will assume that most of memory usage is encapsulated in our measurement of run time.
+Memory usage is closely tied with runtime when it comes to compression algorithms. Memory is generally the storage a program uses while it is running. So to reduce our run time and make a more effective compression algorithm, we want to be saving only the most important data that our algorithm needs in order to reduce our memory usage. Throughout this thesis, we will assume that most of memory usage is encapsulated in our measurement of compression time.
 
 \hypertarget{lossy-vs.-lossless-compression}{%
 \section{Lossy vs.~Lossless Compression}\label{lossy-vs.-lossless-compression}}
@@ -324,7 +324,7 @@ Suppose you want to send the following message
 
 \[AAGCTTTTTTTTGGGGGCCCT\]
 
-Even if this message did mean something, we can get the information across without repeating ourselves. When writing a grocery list, you don't write ``egg egg egg egg'', you say ``4 eggs''. RLE uses this same strategy.
+We can still get this message across without repeating ourself quite as much. When writing a grocery list, you don't write ``egg egg egg egg'', you say ``4 eggs''. RLE uses this same strategy.
 
 \[2A1G1C8T5G3C1T\]
 
@@ -400,7 +400,31 @@ So any number in the interval can be used to represent our message as long as th
 
 Lempel-Ziv-Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords. A dictionary is a key value system: when you give it a key, it either gives you a value or tells you that the key does not exist. In this case, the keys are strings of characters and the values are codewords, which are numbers meant to represent those strings.
 
-Here is a simple example. We may be sending messages with the characters `A', `C', `T', `G', so we can start by assigning those strings codewords. So our dictionary will start as \{`A' = 0, `C' = 1, `T' = 2, `G' = 3\}. So in other words, `A' is synonymous with 0, `C' is synonymous with 1, and so on. Say we compress to send the message
+Here is a simple example. Suppose we decide that `AA' = 2. In other words, any time we see the number 2, we know that it actually means `AA'. So if we wanted to send a message
+
+\[\text{AACAAC}\]
+
+We could just say
+
+\[\text{2C2C}\]
+
+As long as the person recieving this message understood that `AA' = 2, they could easily determine what I meant. LZW works in the same way. This rule that we started with, that `AA' = 2, is essentially a dictionary. It holds keys and values. To make the example more complex, suppose we decide that \{`AA' = 1, `C' = 2\}. We could encoding the message ``AACAAC'' as
+
+\[\text{1212}\]
+
+As you can see, our message is getting shorter. The problem is, how do we decide what elements start in our dictionary? Well, we can start with a small dictionary, and build up a larger dictionary as we go along. Let me explain. Suppose we are still trying to encode ``AACAAC''. Assume we start with the dictionary \{`AA' = 1\}. We can scan through the message, looking for instances of `AA' and replace them. We see ``AAC'' at the beginning of the string. We can encode this as ``1C''. Here is our message so far
+
+\[\text{1CAAC}\]
+
+But what if we see the string ``AAC'' again? Well, when we output ``1C'', we can add this new string, ``AAC'', to our dictionary. So our dictionary now looks like \{`AA' = 1, `AAC' = 2\}. Notice we just assign the new string whatever number we left off on while creating the dictionary.
+
+Now, as we get to the end of the message, we see ``AAC'' again. Now that we have a codeword for ``AAC'', we can just output 2. So our final message looks like
+
+\[\text{1C2}\]
+
+Now the person decoding, when they see ``1C'', they know that that means ``take the string that has codeword 1, add on the character `C', and add that new string to your dictionary''. So they will add `AAC' = 2 to their dictionary. When they see the following 2, they know that 2 = `AAC', so they are able to decode the message. In this way, we can build up the dicionary as we encode and decode, and as long as we start with the same starting dictionary, the message will always be preserved.
+
+Here is a more complex example. We may be sending messages with the characters `A', `C', `T', `G', so we can start by assigning those strings codewords. So our dictionary will start as \{`A' = 0, `C' = 1, `T' = 2, `G' = 3\}. So in other words, `A' is synonymous with 0, `C' is synonymous with 1, and so on. Say we compress to send the message
 
 \[\text{AAGGAATCC}\]
 
@@ -448,7 +472,7 @@ So the encoded string will look something like
 \end{table}
 Table \ref{tab:lzwexample} illustrates this example fully.
 
-When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character `A' and add that new string to the dictionary''. We would add ``AA'' to the dictionary and assign it to our next available codeword, 4. As you can see, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
+When we are decoding, we start with the same dictionary. We see ``0A'' and know that that means ``Take the string that has codeword 0, add on the character `A' and add that new string to the dictionary''. We would add ``AA'' to the dictionary and assign it to our next available codeword, 4. Again, while decoding, we are able to build up the same dictionary as was used for encoding, as long as we use the same starting dictionary.
 LZW has several convenient properties:
 \begin{itemize}
 \tightlist
@@ -525,7 +549,7 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 \item
   \texttt{dictionary}: a key-value system. Like a real dictionary holds words and their corresponding definitions, our dictionary holds codewords and their corresponding strings of characters. In C++, this is called a \texttt{std::unordered\_map} and uses a hash table, but the concept is the same. During this thesis, we will use \texttt{std::unordered\_map} and Standard Dictionary interchangeably.
 \item
-  \texttt{codeword}: a number used to take the place of a string in our encoding.
+  \texttt{codeword}: a number that is assigned to a string in our encoding and decoding. The it is called a \texttt{codeword} because it is a code for the string it represents.
 \item
   \texttt{run}: the next run of characters in our input that are already in our dictionary. So if we are encoding ``ACTG'', and ``A'', ``AC'', and ``ACT'' are in the dictionary but ``ACTG'' is not, we have a run of 3.
 \item
@@ -535,7 +559,7 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 \section{Related work}\label{related-work}}
 
 Deoxyribonucleic acid (DNA) is the building block of life. In four letters (A, C, G, and T) called nucleotides, DNA holds the genetic information required for reproduction in all living organisms. DNA can be billion of characters long, which can mean gigabytes or terabytes of storage on a computer.
-The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area, in the intersection of bioinformatics, computer science, and mathematics.
+The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area in the intersection of bioinformatics, computer science, and mathematics.
 
 There have been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length. This allows each of the dictionaries to grow more slowly, allowing accesses to be faster. This paper also used genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.
 
@@ -553,7 +577,7 @@ In 2007, Cao et al.~published a paper detailing another algorithm, \texttt{XM}, 
 
 A paper in 2021 uses segmenting and partitioning to create a parallel compression algorithm called \texttt{genozip} (Lan, Tobler, Souilmi, \& Llamas, 2021). This paper also published their code online in a convenient format which allows others to compare and test their implementation.
 
-As a whole, these papers give us some guidance in terms of where to aim our research. Most of them boast great compression ratios, but their methods can be very computationally intensive in some cases, and thus, slow. We will aim to use previous research on LZW to make a very fast implementation for DNA sequences, then try and use characteristics of the sequences to improve compression ratio. Our hope isn't necessarily to create the best compression ratio out of all these methods, but to make a fast LZW implmentation with a respectable compression ratio. If we are able to make the algorithm very fast, it may be preferable to these other algorithms in some cases if the file is very large.
+As a whole, these papers give us some guidance in terms of where to aim our research. Most of them boast great compression ratios, but their methods can be very computationally intensive in some cases, and thus, slow. We will aim to use previous research on LZW to make a very fast implementation for DNA sequences, then try and use characteristics of the sequences to improve compression ratio. Our hope isn't necessarily to create the best compression ratio out of all these methods, but to make a fast LZW implmentation with a respectable compression ratio. If we are able to make the algorithm very fast, it may be preferable to these other algorithms if the file is very large.
 
 \hypertarget{optimizing-lzw-approach}{%
 \chapter{Optimizing LZW: Approach}\label{optimizing-lzw-approach}}
