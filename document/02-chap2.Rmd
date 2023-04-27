@@ -128,7 +128,7 @@ End of helper functions
 
 # Optimizing LZW: Approach
 
-To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to use C++. A majority of the work in this thesis involved writing, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
+To restate the goal of this thesis, we seek to optimize LZW for use in compression of DNA. I chose to write code C++. A majority of the work in this thesis involved creating, refactoring, and reconfiguring code to improve performance. The various methods we used for this process are discussed throughout the chapter.
 
 While we may not end up creating the best DNA compression ratio available, the objective is to explore the boundaries of LZW and to tailor it as best we can for the task of DNA compression. As you will see, the algorithm has limitations.
 
@@ -162,7 +162,7 @@ Evaluating performance of a program is difficult. There is a notion of theoretic
 
 To attempt to counteract this, we ran the function on the same file multiple times, and took the median of the compression and decompression times for all the runs. Also, for any graphs or tables in this thesis, the stats were taken on the same computer. Our test machine was a PC with an AMD Ryzen 5 5500 processor 32 gigabytes of RAM running Ubuntu version 20.04. We also did our best to mitigate any other programs running on the computer at the time of data collection to prevent interference.
 
-Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of bytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files. All graphs use all the files from both corpora unless stated otherwise.
+Most graphs in this section will refer to throughput and average compression time. Throughput is defined as the number of megabytes that the program processes per second. The higher the throughput, the more efficient the algorithm. The average compression time is taken as the time of compression divided by the total number of files. All graphs use all the files from both corpora unless stated otherwise.
 
 ## A Starting Point
 
@@ -224,15 +224,7 @@ So when we are encoding and need to output a codeword, we can `output_n_bits`, w
 
 One of the very early issues with the implementation was how to denote the end of a file. The early implementation would work for some files, but for others the very last part of the file would be lost after encoding and then decoding.
 
-The solution was to reserve a codeword to mark the end of the file. So we start with a starting dictionary containing all ASCII characters.
-
-```c++
-	std::unordered_map<std::string, int> dictionary;
-   	for (int i = 0; i < 256; ++i){
-		std::string str1(1, char(i));
-		dictionary[str1] = i;
-	}
-```
+The solution was to reserve a special codeword to mark the end of the file.
 As discussed in Section \@ref(lempel-ziv-welch), if we don't mark the end of the file, the decoder won't be able to know when to stop decoding. So the decoding algorithm goes along reading a file. It builds up a current string character by character, adding the character to the string and checking if it has seen that sequence before. Once it finds the end of file, we stop and output the EOF codeword. 
 
 The problem was, what about what is left over? When compressing, the algorithm could be part of the way through a search when it reaches the end of the file. Suppose we are reading a file, and the file ends with "ACCT". If "A" is in the dictionary, we see if "AC" is in the dictionary, and so on. This leaves us with three possible cases when we reached the end of the file
@@ -298,7 +290,7 @@ if (dictionary.find(currentBlock + next_character) != dictionary.end()){
 }
 ```
 
-Here is the `callgrind` output for that line.
+Here is the `callgrind` output for that line. The numbers on the left indicate the number of instructions, and the arrows indicate other functions that this line relies on.
 
 ```
 105,030,135 ( 0.18%)          if (dictionary.find(currentBlock + next_character) != dictionary.end()){
@@ -308,7 +300,7 @@ Here is the `callgrind` output for that line.
 956,941,242 ( 1.61%)  => /usr/include/c++/9/bits/unordered_map.h
 241,180,314 ( 0.41%)  => /usr/include/c++/9/bits/hashtable_policy.h
 ```
-As shown, this line is taking a significant amount of instructions, and it needs to pull the `end()` of the dictionary each time it is ran. If save that iterator in a variable called `end`, we can save a significant amount of instructions.
+So the if statement requires a lot of calls to outside functions, which results in billions of assembly instructions. This line is taking a significant amount of instructions, and it needs to look up the `end()` of the dictionary each time it is ran. If save that iterator in a variable called `end`, we can save a significant amount of instructions.
 
 ```
 89,470,115 ( 0.61%)          if (dictionary.find(currentBlock + next_character) != end ){
@@ -318,7 +310,7 @@ As shown, this line is taking a significant amount of instructions, and it needs
 50,570,065 ( 0.34%)  => /usr/include/c++/9/bits/hashtable_policy.h
 ```
 
-There are several potential issues with what `callgrind` attempts to do by associating machine instructions with individual lines. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Another thing is that compilers are very advanced, and sometimes small optimizations like this are done by the compiler automatically. 
+There are several potential issues with what `callgrind` attempts to do by associating machine instructions with individual lines. It is difficult to associate instructions with a single line of code. Some lines are interdependent, and assembly often behaves differently than the code that produces it. Modern compilers are also very advanced, and sometimes small optimizations like this are done by the compiler automatically. 
 
 Despite these issues, this change was still worth making, if not to save time then for sake of clarity and readability of the code. Also, despite the inaccuracy of `callgrind`, like many profiling tools, its job is not necessarily to provide exact measurements of code performance, but to indicate trouble spots in the code which can be improved.
 
@@ -326,7 +318,7 @@ Despite these issues, this change was still worth making, if not to save time th
 
 The LZW algorithm is built on iteration: we go through each character, adding it to our current block. If we've seen that current block before, we keep going. If not, we add that block to the dictionary and start over. 
 
-Another thing that I noticed from the `callgrind` output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenations in most languages, including C++, have a lot of overhead. A lot of implementations of string concatenation involve creating a new string every time you concatenate two existing strings, which can have a significant performance penalty.
+I noticed from the `callgrind` output was that a lot of time/instructions are being spent on string concatenation. In general, string concatenations in most languages, including C++, have a lot of overhead. A lot of implementations of string concatenation involve creating a new string every time you concatenate two existing strings, which can have a significant performance penalty.
 
 In this version of the algorithm, every time we have already seen a sequence, we have to concatenate a character. I noticed that I was doing this concatenation multiple times without needing to. You may have noticed this extraneous concatenation in the if statement in Section \@ref(using-constants). 
 
@@ -435,7 +427,7 @@ This should reduce the amount of time the program spends on dictioary lookups.
 
 The algorithm works by reading through the entire file, so we know that at some point, we will need to see every byte of the entire file.
 
-When reading a byte stream of the file, the file may not always be in memory, which is the fastest part of our storage. The `ifstream` class in C++, the typical method of reading a file, has many extraneous features that we don't need. If we map the file directly into memory using `mmap` and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a `char*` opens the possibility to getting rid of `std::string` entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data. 
+When reading a byte stream of the file, the file may not always be in memory, which is the fastest part of a computer's storage. The `ifstream` class in C++, the typical method of reading a file, has many extraneous features that we don't need. If we map the file directly into memory using `mmap` and pass around a pointer to that data, it will simplify and speed up the scanning process. Also, using a `char*` opens the possibility to getting rid of `std::string` entirely, which means way less overhead and decreased compression time. Rather than concatenate strings at all, we can pass around a pointer to the beginning of the data and a number which is an offset into the data. 
 
 ### Comparison
 
@@ -499,7 +491,7 @@ compare_implementations(list(
 ```
 
 
-As seen in Figure \@ref(fig:directmaplenthcompfig), having a max string length of 15 rather than 10 leads to an increase in throughput and a decrease in mean compression time. This makes sense, because any string over the max requires an entry into the `std::unordered_map`, which takes much more time than a Direct Map Dictionary access. Ideally, we would have this Direct Map data structure support strings of longer lengths than 15. However, supporting string lengths of over 15 is difficult because the amount of memory required increases exponentially. The number of possible strings is quadrupled as the length of the string increases by 1, and our computers are limited in the amount of data that can be stored in memory.
+As seen in Figure \@ref(fig:directmaplenthcompfig), having a max string length of 15 rather than 10 leads to an increase in throughput and a decrease in mean compression time. This makes sense, because any string over the max requires an entry into the `std::unordered_map`, which takes much more time than a Direct Map Dictionary access. Ideally, we would have this Direct Map data structure support strings of longer lengths than 15. However, this is difficult because the amount of memory required increases exponentially. The number of possible strings is quadrupled as the length of the string increases by 1, and our computers are limited in the amount of data that can be stored in memory.
 
 Since we are limiting the size of codewords, we will run out of codewords faster than before. Thus, the compression ratio may be different.
 
@@ -528,7 +520,7 @@ df_new <- df %>%
 names(df_new) <-   gsub("\\.", " ", names(df_new))
 
 
-kbl(df_new, caption = "Comparison of Compression Ratios between Direct Map and Standard Dictionaries" ) %>%
+kbl(df_new, caption = "Comparison of Compression Ratios between Direct Map and Standard Dictionaries." ) %>%
   add_header_above(c(" " = 2, "Compression Ratio " = 2)) %>% 
     kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
@@ -592,7 +584,7 @@ Our dictionary data structures all have a `get_longest_in_dict` function. This f
 
 Given the statistics of our corpora, we know that this process can be faster. Since most runs are above 6-7, we waste a lot of time by looping up from zero.
 
-Another strategy would be to start from the maximum string length of the dictionary, so 15. We can check if the next string of the max length is in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down. Keep in mind that in order to look up a string in a Direct Map Dictionary, you need to convert the string to it's two bit representation, which we call an index. Here is some pseudocode that mimics this proposed algorithm.
+Another strategy would be to start from the maximum string length of the dictionary, so 15. We can check if the next string of the max length is in the dictionary. If it is, we need to check strings longer than the max, so we can iterate up. If it isn't, we need to check strings shorter, so we can either iterate down. Keep in mind that in order to look up a string in a Direct Map Dictionary, you need to convert the string to its two bit representation, which we call an index. Here is some pseudocode that mimics this proposed algorithm.
 
 ```
 find_longest(input_string){
@@ -615,7 +607,7 @@ find_longest(input_string){
 
 ```
 
-Calculating the index, however, takes time. While we are looping up or down, we could just use the index of the next 15 characters as a starting point. If we are looping up, we can add on the next character's two bit representation as we loop. For instance, suppose our string has an index of `00101100`. If the next character is 'A', we can simply tack the two bit representation for 'A' to the end of our index, yielding `00101100|00`. 
+Calculating the index takes time. While we are looping up or down, we could just use the index of the next 15 characters as a starting point. If we are looping up, we can add on the next character's two bit representation as we loop. For instance, suppose our string has an index of `00101100`. If the next character is 'A', we can simply tack the two bit representation for 'A' to the end of our index, yielding `00101100|00`. 
 
 Similarly, we can chop off two bits at a time while looping down. We can name this process looping "on the fly", since we are constructing our index on the fly rather than recalculating it every time. So our modified pseudocode would look like the code below:
 
@@ -693,11 +685,11 @@ compare_implementations(list(
 
 ```
 
-As we predicted, this greatly improves performance. We are capitalizing on the fact that most runs are short. There is the occasional run that is very long, but from the run statistics we saw that the standard deviation for both corpora was pretty small. So on the edge cases in which there are very long runs, we could be wasting a lot of time. 
+We are capitalizing on the fact that most runs are short. There is the occasional run that is very long, but from the run statistics we saw that the standard deviation for both corpora was pretty small. So on the edge cases in which there are very long runs, we could be wasting a lot of time. 
 
 ### Not Allowing strings over max
 
-One way to avoid the edge case where we encounter a very long run is to just not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the `std::unordered_map` on top of our Direct Map Dictionary, but we will take a hit in compression ratio. Figure \@ref(fig:findlongestwmax) summarizes the results of the different methods with the max length rule enforced. There is a slight performance improvement, which makes sense because long runs are very rare. 
+One way to avoid the edge case where we encounter a very long run is to not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the `std::unordered_map` on top of our Direct Map Dictionary, but we will take a hit in compression ratio. Figure \@ref(fig:findlongestwmax) summarizes the results of the different methods with the max length rule enforced. There is a slight performance improvement, which makes sense because long runs are very rare. 
 
 
 ```{r findlongestwmax, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at average with strings over max (15) not accepted.", echo = F, fig.height = 5}
@@ -784,7 +776,7 @@ node distance=0pt,
 \draw[B=](B7.north) -- node[above=2mm] {T in binary}(B8.north);
     \end{tikzpicture}
 
-\caption{How `pext` extracts bits}
+\caption{How pext extracts bits}
 
 \label{fig:pext}
 \end{figure}
@@ -792,7 +784,7 @@ node distance=0pt,
 
 We did get lucky in that the 6th and 7th bit (from left to right) on A, C, T, and G give a unique 2 bit values. This means we can just extract the 6th and 7th bit from every character without knowing what it is.
 
-We can apply this technique to our `find_longest` function: we can extract the index of a string using pext very quickly, then use that index rather than recalculating it every time.This means that if we precompute the index with `pext`, a lookup in the Direct Map Dictionary can theoretically happen in constant time. In other words, the actual dictionary queries are almost instantaneous. Figure \@ref(fig:findlongestwpext) hows the results of this application for both looping and binary search. In both cases, using pext to extract the index of the string increases throughput and decreases average compression time.
+We can apply this technique to our `find_longest` function: we can extract the index of a string using `pext` very quickly, then use that index rather than recalculating it every time. This means that if we precompute the index with `pext`, a lookup in the Direct Map Dictionary can theoretically happen in constant time. In other words, the actual dictionary queries are almost instantaneous. Figure \@ref(fig:findlongestwpext) hows the results of this application for both looping and binary search. In both cases, using `pext` to extract the index of the string increases throughput and decreases average compression time.
 
 ```{r findlongestwpext, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run with pext.", echo = F, fig.height = 4}
 compare_implementations(list(
@@ -847,9 +839,9 @@ In Table \@ref(tab:directostdfinal), we can see a comparison in compression rati
 
 ### A point of Comparison
 
-It's worth noting that for sequences of DNA, if the bases are encoded in ASCII, there is a simple and effecient algorithm to compress the file with a 4.0 compression ratio every time. Since there are only 4 bases, we can represent each base with 2 bits. Since each ASCII character takes up 1 bytes, or 8 bits, the compression ratio is always 8/2 = 4.0. This is a simple conversion, and it requires no dictionaries or codewords. 
+It's worth noting that for sequences of DNA, if the bases are encoded in ASCII, there is a simple and efficient algorithm to compress the file with a 4.0 compression ratio every time. Since there are only 4 bases, we can represent each base with 2 bits. Since each ASCII character takes up 1 bytes, or 8 bits, the compression ratio is always 8/2 = 4.0. This is a simple conversion, and it requires no dictionaries or codewords. 
 
-If a DNA compression algorithm can't compress with a compression ratio of higher than 4.0 (2 bits per base), than this simple algorithm would be preferable every time. 
+If a DNA compression algorithm can't compress with a compression ratio of higher than 4.0 (2 bits per base/nucleotide), than this simple algorithm would be preferable every time. 
 
 We call this method Four to One encoding. We implemented this in C++ using `pext`, and the results are detailed in the next chapter.
 
@@ -857,7 +849,7 @@ We call this method Four to One encoding. We implemented this in C++ using `pext
 
 Our initial idea was that we would compress the DNA with LZW, then use a entropy encoding method like Arithmetic encoding or Huffman to further compress the data. This was an oversight, as the algorithm as we have described it thus far does not lend itself well to entropy encoding.
 
-Our algorithm outputs codewords and two bits representing the next character. For a codeword size of 16 bits, this means each loop of our algorithm outputs 18 bits. So any repetitiveness or reuse will not be detectable by an entropy encoder which works on data of 8, 16, or 32 bit chunks.
+Our algorithm outputs codewords and two bits representing the next character. For a codeword size of 16 bits, this means each loop of our algorithm outputs 18 bits. So any repetitiveness or reuse will not be detectable by an entropy encoder, because they tend to work on data in 8, 16, or 32 bit chunks.
 
 So maybe we break the compressed file into two separate files; a file of codewords and a file of the two bit representations of the following characters. Now we can compress these two files, right?
 
