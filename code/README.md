@@ -1,37 +1,13 @@
-Quick readme for this proj
+# LZW for DNA
 
-## Bitio
-bitio allows for reading + writiing bits
-to run its unit tests
-```
-    make test_bitio
-    ./bitio
-```
+A collection of compression tools, including several implemenations of LZW, specifically tailored towards compresing DNA.
 
-## LZW
-lzw is the main algoritm class
-lzwencode and lzwdecode call that class
+### Prerequisites
 
-To encode
-``` 
-    make lzwencode
-    ./lzwencode $FILE_NAME
-``` 
-to decode
-```
-    make lzwdecode
-    ./lzwdecode $FILENAME
-```
+- `cmake` and `g++`
+- if haven't installed the submodules for this repo, run `git submodules update --init --recursive`
+- some code relies on little endianess
 
-as of right now the encoded/decoded files will juse be in the same directory as the input.
+### Usage
 
-to run unit tests
-```
-    make test_lzw
-    ./test_lzw
-```
-to run integration tests
-```
-    make all
-    sh integration.sh $FOLDER_NAME
-```
+See this [github site](https://cadencorontzos.github.io/lzwfordna/) for code documentation.
