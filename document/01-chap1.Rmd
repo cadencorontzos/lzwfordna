@@ -121,15 +121,15 @@ So any number in the interval can be used to represent our message as long as th
 
 Lempel-Ziv-Welch is another lossless compression algorithm. When compressing, LZW builds a dictionary of codewords. A dictionary is a key value system: when you give it a key, it either gives you a value or tells you that the key does not exist. In this case, the keys are strings of characters and the values are codewords, which are numbers meant to represent those strings.
 
-Here is a simple example. Suppose we decide that 'AA' = 2. In other words, any time we see the number 2, we know that it actually means 'AA'. So if we wanted to send a message
+Here is a simple example. Suppose we decide that 'AA' = 1. In other words, any time we see the number 1, we know that it actually means 'AA'. So if we wanted to send a message
 
 $$\text{AACAAC}$$
 
 We could just say
 
-$$\text{2C2C}$$
+$$\text{1C1C}$$
 
-As long as the person recieving this message understood that 'AA' = 2, they could easily determine what I meant. LZW works in the same way. This rule that we started with, that 'AA' = 2, is essentially a dictionary. It holds keys and values. To make the example more complex, suppose we decide that {'AA' = 1, 'C' = 2}. We could encoding the message "AACAAC" as
+As long as the person recieving this message understood that 'AA' = 1, they could easily determine what I meant. LZW works in the same way. This rule that we started with, that 'AA' = 1, is essentially a dictionary. It holds keys and values. To make the example more complex, suppose we decide that {'AA' = 1, 'C' = 2}. We could encoding the message "AACAAC" as
 
 $$\text{1212}$$
 
@@ -143,7 +143,9 @@ Now, as we get to the end of the message, we see "AAC" again. Now that we have a
 
 $$\text{1C2}$$
 
-Now the person decoding, when they see "1C", they know that that means "take the string that has codeword 1, add on the character 'C', and add that new string to your dictionary". So they will add 'AAC' = 2 to their dictionary. When they see the following 2, they know that 2 = 'AAC', so they are able to decode the message. In this way, we can build up the dicionary as we encode and decode, and as long as we start with the same starting dictionary, the message will always be preserved.
+The reason the final meassage is not "22" is because we didn't start with 'AAC' in our dictionary. If we output "22", the decoder won't know what 2 means. We leave behind the "1C" to indicate to the decoder that 'ACC' should be added to the dictionary.
+
+The decoder, when it see "1C", will know that that means "take the string that has codeword 1, add on the character 'C', and add that new string to your dictionary". So they will add 'AAC' = 2 to their dictionary. When they see the following 2, they know that 2 = 'AAC', so they are able to decode the message. In this way, we can build up the dicionary as we encode and decode, and as long as we start with the same starting dictionary, the message will always be preserved. You can imagine continuing this process throughout the message. We find the longest string that is in our dictionary. We output the codeword for that string, and then the character that follows that string. Then, we add that new sequence to our dictionary. This way, we can build up runs of longer and longer strings, and thus we are able to replace longer runs of characters with codewords.
 
 Here is a more complex example. We may be sending messages with the characters 'A', 'C', 'T', 'G', so we can start by assigning those strings codewords. So our dictionary will start as {'A' = 0, 'C' = 1, 'T' = 2, 'G' = 3}. So in other words, 'A' is synonymous with 0, 'C' is synonymous with 1, and so on. Say we compress to send the message 
 
