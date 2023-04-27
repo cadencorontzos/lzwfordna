@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>lzwfordna: lzw/lzw.cc File Reference</title>
+<title>lzwfordna: lzw/lzwdecode.cc File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,47 +74,49 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#var-members">Variables</a>  </div>
-  <div class="headertitle"><div class="title">lzw.cc File Reference</div></div>
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">lzwdecode.cc File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="lzw_8hh_source.html">lzw.hh</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="direct__mapped__dict_8hh_source.html">../dictionary/direct_mapped_dict.hh</a>&quot;</code><br />
-<code>#include &lt;climits&gt;</code><br />
+<code>#include &lt;chrono&gt;</code><br />
+<code>#include &lt;fcntl.h&gt;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
 <code>#include &lt;fstream&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;sys/mman.h&gt;</code><br />
+<code>#include &lt;sys/stat.h&gt;</code><br />
+<code>#include &lt;sys/types.h&gt;</code><br />
+<code>#include &lt;unistd.h&gt;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:acf6ca0ad35e76b5bd027c7e0c1cbf450"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 1&lt;&lt; CHAR_BIT &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lzw_8cc.html#acf6ca0ad35e76b5bd027c7e0c1cbf450">encode_values</a></td></tr>
-<tr class="separator:acf6ca0ad35e76b5bd027c7e0c1cbf450"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab74564ca2140f26b76ce4be770fd331a"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 1&lt;&lt; CHAR_BIT &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lzw_8cc.html#ab74564ca2140f26b76ce4be770fd331a">decode_values</a></td></tr>
-<tr class="separator:ab74564ca2140f26b76ce4be770fd331a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a0ddf1224851353fc92bfbff6f499fa97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lzwdecode_8cc.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> (int argc, char *argv[])</td></tr>
+<tr class="separator:a0ddf1224851353fc92bfbff6f499fa97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="ab74564ca2140f26b76ce4be770fd331a" name="ab74564ca2140f26b76ce4be770fd331a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab74564ca2140f26b76ce4be770fd331a">&#9670;&#160;</a></span>decode_values</h2>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a0ddf1224851353fc92bfbff6f499fa97" name="a0ddf1224851353fc92bfbff6f499fa97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ddf1224851353fc92bfbff6f499fa97">&#9670;&#160;</a></span>main()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;int, 1 &lt;&lt; CHAR_BIT&gt; decode_values</td>
+          <td class="memname">int main </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
         </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="acf6ca0ad35e76b5bd027c7e0c1cbf450" name="acf6ca0ad35e76b5bd027c7e0c1cbf450"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf6ca0ad35e76b5bd027c7e0c1cbf450">&#9670;&#160;</a></span>encode_values</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;int, 1 &lt;&lt; CHAR_BIT&gt; encode_values</td>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>argv</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
