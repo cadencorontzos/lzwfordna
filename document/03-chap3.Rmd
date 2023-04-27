@@ -8,7 +8,7 @@ We have five different implementations at this point: LZW with Direct Map Dictio
 
 We can also see the raw values in Table \@ref(tab:comparisonofourmethodstab). While the Four to One implementation completely dominates in terms of throughput, the Direct Map version is substantially faster than the Standard and Multiple Dictionary versions. The Three Stream LZW comes in between the Direct Map and Four to One implementations in terms of compression time, but it actually has the best compression ratio out of all LZW versions on most of the input files. This means that by switching from the Standard Dictionary to the Direct Map and adding on entropy encoding, we were able to regain the lost ground in terms of compression ratio while not totally compromising our performance improvements. 
 
-```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Performance comparison of our final implementations.", fig.height = 5, echo = F}
+```{r comparisonofourmethodsfig, warnings= F, messages = F, fig.cap = "Performance comparison of our final implementations.", fig.height = 4, echo = F}
 compare_implementations(list(
   c('data/stats/final/corpus_1_stddict_final_ccf351c.csv', 'data/stats/final/corpus_2_stddict_final_ccf351c.csv', 'Std Dictionary'),
   c('data/stats/final/corpus_1_ddict_final_ccf351c.csv', 'data/stats/final/corpus_2_ddict_final_ccf351c.csv', 'Direct Map Dictionary'),
@@ -211,7 +211,7 @@ kbl(df_new, caption = "Performance metrics for other professional tools. Xz, bzi
 
 Table  \@ref(tab:othertoolstab) summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip` in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, `genozip` does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. It is also worth noting that `xz` does surprisingly well, beating even `genozip` on some of the larger files. However, if you look at the performance data in Figure \@ref(fig:othertoolsgraphfig), you can see that both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including `genozip` and `xz`. In fact, `xz` is over 10 times slower than Three Stream LZW in terms of average compression time. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
 
-```{r othertoolsgraphfig, warnings= F, messages = F, fig.cap = "Average compression time of other methods and our final implementations.", fig.height = 5, echo = F}
+```{r othertoolsgraphfig, warnings= F, messages = F, fig.cap = "Average compression time of other methods and our final implementations.", fig.height = 4, echo = F}
 
 summary <- wholedf %>% 
   group_by(Program) %>% 
