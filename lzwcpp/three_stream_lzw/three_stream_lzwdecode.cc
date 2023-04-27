@@ -9,8 +9,8 @@
 #include <unistd.h>
 #include <vector>
 
-#include "entropy-encoding/include/turborc.h"
-#include "three_stream_lzw/three_stream_lzw.hh"
+#include "../entropy-encoding/include/turborc.h"
+#include "three_stream_lzw.hh"
 namespace fs = std::filesystem;
 
 int main(int argc, char *argv[]) {
