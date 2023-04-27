@@ -45,8 +45,11 @@ for file in "$directory"/*; do
 			elif  [[ "$tool" == *genozip* ]]; then            
             	t=$( { /bin/time -f "%e" "$tool" --input=generic "$file" >/dev/null; } 2>&1 )
             	compressed_size=("$(du -b "${file}.genozip" | awk '{print $1}')")
+			elif  [[ "$tool" == "xz" ]]; then            
+            	t=$( { /bin/time -f "%e" "$tool" -k -9 "$file" >/dev/null; } 2>&1 )
+            	compressed_size=("$(du -b "${file}.xz" | awk '{print $1}')")
 			else
-				echo "I only know about bzip2, gzip, and genozip."
+				echo "I only know about bzip2, gzip, xz, and genozip."
 				exit 1
 			fi
 			# Store the compression time and size
@@ -58,6 +61,8 @@ for file in "$directory"/*; do
             	rm -f "${file}.gz"
 			elif  [[ "$tool" == *genozip* ]]; then            
             	rm -f "${file}.genozip"
+			elif  [[ "$tool" == "xz" ]]; then            
+            	rm -f "${file}.xz"
 			fi
         done
         
