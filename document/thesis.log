@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  27 APR 2023 15:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  6 MAY 2023 17:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1225,7 +1225,7 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1248--1249
  []
 
 
-Underfull \vbox (badness 7047) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [37 <./thesis_files/figure-latex/findlongestfrommaxfig-1.pdf>]
 <thesis_files/figure-latex/findlongestwmax-1.pdf, id=644, 469.755pt x 361.35pt>
@@ -1238,10 +1238,10 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1259--1260
  [][] 
  []
 
-[38 <./thesis_files/figure-latex/findlongestfromavg-1.pdf>]
+[38 <./thesis_files/figure-latex/findlongestfromavg-1.pdf>] [39 <./thesis_files/figure-latex/findlongestwmax-1.pdf>]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1278.
-[39 <./thesis_files/figure-latex/findlongestwmax-1.pdf>] (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarychains.code.tex
+(c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarychains.code.tex
 File: tikzlibrarychains.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2023-01-15 v3.1.10 (3.1.10)
@@ -1261,7 +1261,7 @@ Overfull \hbox (19.54811pt too wide) in paragraph at lines 1326--1327
  [][] 
  []
 
-<thesis_files/figure-latex/findlongestwpext-1.pdf, id=670, 469.755pt x 289.08pt>
+<thesis_files/figure-latex/findlongestwpext-1.pdf, id=669, 469.755pt x 289.08pt>
 File: thesis_files/figure-latex/findlongestwpext-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/findlongestwpext-1.pdf>
 Package pdftex.def Info: thesis_files/figure-latex/findlongestwpext-1.pdf  used on input line 1336.
@@ -1271,9 +1271,6 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1336--1337
  [][] 
  []
 
-
-Underfull \vbox (badness 4144) has occurred while \output is active []
-
 [40{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
@@ -1282,7 +1279,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [42]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1629) has occurred while \output is active []
 
 [43] [44] [45] [46
 
@@ -1362,7 +1359,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  132i,12n,132p,1638b,1600s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on thesis.pdf (74 pages, 439131 bytes).
+Output written on thesis.pdf (74 pages, 439881 bytes).
 PDF statistics:
  921 PDF objects out of 1000 (max. 8388607)
  787 compressed objects within 8 object streams

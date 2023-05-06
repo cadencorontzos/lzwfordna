@@ -223,7 +223,7 @@ summary <- wholedf %>%
   plot1<- summary %>% 
     ggplot(aes(x = Program, y = comp_throughput, fill = Program))+
     geom_col(show.legend = F)+
-    labs(x="Program", y = "Throughput (Mb/s)", title = "Throughput")+
+    labs(x="Program", y = "Throughput (MBps)", title = "Throughput")+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   plot2 <- summary %>% 
     ggplot(aes(x = Program, y = mean_comp_time, fill = Program))+

@@ -3,7 +3,7 @@ title: 'Optimizing Lempel-Ziv-Welch for DNA Compression'
 author: 'Caden Corontzos'
 date: 'May 2023'
 institution: 'Reed College'
-division: 'Mathematics and Natural Sciences'
+division: 'Mathematical and Natural Sciences'
 advisor: 'Eitan Frachtenberg'
 
 department: 'Computer Science'

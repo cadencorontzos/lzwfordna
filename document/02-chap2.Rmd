@@ -29,7 +29,7 @@ csv_to_table <- function(filename, caption = "f"){
 ```
 
 ```{r throughputfunc, echo = F}
-# returns throughput in Mb/s
+# returns throughput in MBps
 # assumes time is in nanoseconds
 throughput <- function(df){
   bytes_per_megabyte <-(1/(1024*1024))
@@ -105,7 +105,7 @@ compare_implementations <- function(array, per_corpus = FALSE, x_axis = "Milesto
     ggplot(aes(x = reorder(description, order), y = comp_throughput, fill = description))+
     geom_col(show.legend = F)+
     {if(per_corpus)facet_wrap(~corpus)}+
-    labs(x=x_axis, y = "Throughput (Mb/s)", title = "Throughput")+
+    labs(x=x_axis, y = "Throughput (MBps)", title = "Throughput")+
     theme(axis.text.x = element_text(angle = label_angle, hjust = 1))
   
   plot2 <- df %>% 
@@ -634,11 +634,11 @@ find_longest(input_string){
 
 Of course, there are theoretically quicker ways of iterating than looping up or down. We could use binary search. 
 
-Binary search is a searching technique for sorted lists, but we can use it in this scenario as well. Suppose we have a string of characters, and we are searching for the longest string already in the dictionary. The algorithm works by repeatedly dividing the search interval in half, comparing the middle element of the subarray to the target value, and then deciding whether to continue the search on the lower half or upper half of the subarray.
+Binary search is a searching technique for sorted lists, but we can use it in this scenario as well. Suppose we have an array of integers, and we are searching for some value in that array. The algorithm works by repeatedly dividing the search interval in half, comparing the middle element of the subarray to the target value, and then deciding whether to continue the search on the left half or right half of the subarray.
 
-If the middle element is equal to the target value, the search ends and the position of the element is returned. If the middle element is greater than the target value, the search continues on the lower half of the subarray. Conversely, if the middle element is less than the target value, the search continues on the upper half of the subarray.
+If the middle element is equal to the target value, the search ends and the position of the element is returned. If the middle element is greater than the target value, the search continues on the left half of the subarray. Conversely, if the middle element is less than the target value, the search continues on the right half of the subarray.
 
-Binary search has a time complexity of O(log n), meaning most times, we don't have to search through all the values to find the one we are looking for. This makes it a very efficient algorithm for searching large sorted arrays. In our case, we search for where the string of length n is in the dictionary, but the string of length n+1 is not.
+Binary search has a time complexity of O(log n), meaning most times, we don't have to search through all the values to find the one we are looking for. This makes it a very efficient algorithm for searching large sorted arrays. In our case, we are searching an array of bytes rather than an array of integers. We are looking for where a string of length n is in the dictionary, but the string of length n+1 is not.
 
 ```
 find_longest(input_string){
@@ -656,7 +656,7 @@ find_longest(input_string){
 
 ```
 
-Of course, we could also calculate the indexes for binary search on the fly. So we now have 5 different schemes of finding the longest run: looping up or down, looping up or down on the fly, binary search, binary search on the fly, and looping up from 0 like we were doing before. Figure \@ref(fig:findlongestfrommaxfig) shows a comparison of these methods. 
+Of course, we could also calculate the indexes for binary search on the fly. So we now have 5 different schemes of finding the longest run: looping up or down, looping up or down on the fly, binary search, binary search on the fly, and looping up from zero, and looping up from zero on the fly. Figure \@ref(fig:findlongestfrommaxfig) shows a comparison of these methods. 
 
 ```{r findlongestfrommaxfig, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run.", echo = F, fig.height = 4}
 compare_implementations(list(
@@ -664,7 +664,8 @@ compare_implementations(list(
   c('data/stats/ddict/corpus_1_ddictbinarysearchflyindex_94305a5.csv', 'data/stats/ddict/corpus_2_ddictbinarysearchflyindex_94305a5.csv', 'Binary Fly Index'),
   c('data/stats/ddict/corpus_1_ddictloopdownflyindex_7ae114e.csv', 'data/stats/ddict/corpus_2_ddictloopdownflyindex_7ae114e.csv', 'Loop Down Fly Index'),
   c('data/stats/ddict/corpus_1_ddictloopdown_2d0c8b8.csv', 'data/stats/ddict/corpus_2_ddictloopdown_2d0c8b8.csv', 'Loop Down'),
-  c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Looping up from zero')
+  c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Looping up from zero'),
+  c('data/stats/ddict/corpus_1_ddictloopup0onfly_7ae114e.csv', 'data/stats/ddict/corpus_2_ddictloopup0onfly_7ae114e.csv', 'Looping up from zero fly index')
 ), FALSE , "Strategy for Finding Longest Run")
 
 ```
@@ -673,13 +674,14 @@ We see that calculating the index on the fly does tend to improve performance. H
 
 ### Finding the Longest From The Average
 
-As we can see in Figure \@ref(fig:findlongestfromavg), looping or doing binary search from the average run length, which we approximate at 7, increases throughput and decreases mean compression time relative to looping up from zero.
+As we can see in Figure \@ref(fig:findlongestfromavg), looping from the average run length, which we approximate at 7, increases throughput and decreases mean compression time relative to looping up from zero. Binary search from the average performs about the same as looping up from zero on the fly.
 
 ```{r findlongestfromavg, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting from the average.", echo = F, fig.height = 4}
 compare_implementations(list(
   c('data/stats/ddict/corpus_1_ddictdownavg_edafb16.csv', 'data/stats/ddict/corpus_2_ddictdownavg_edafb16.csv', 'Loop Down from Average'),
   c('data/stats/ddict/corpus_1_ddictbsavg_a482e6d.csv', 'data/stats/ddict/corpus_2_ddictbsavg_a482e6d.csv', 'Binary search from Average'),
-  c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Looping up from zero')
+  c('data/stats/directmap/corpus_1_directmap_266bcb7_len15.csv', 'data/stats/directmap/corpus_2_directmap_266bcb7_len15.csv', 'Looping up from zero'),
+    c('data/stats/ddict/corpus_1_ddictloopup0onfly_7ae114e.csv', 'data/stats/ddict/corpus_2_ddictloopup0onfly_7ae114e.csv', 'Looping up from zero fly index')
 ), FALSE)
 
 
@@ -689,7 +691,7 @@ We are capitalizing on the fact that most runs are short. There is the occasiona
 
 ### Not Allowing strings over max
 
-One way to avoid the edge case where we encounter a very long run is to not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the `std::unordered_map` on top of our Direct Map Dictionary, but we will take a hit in compression ratio. Figure \@ref(fig:findlongestwmax) summarizes the results of the different methods with the max length rule enforced. There is a slight performance improvement, which makes sense because long runs are very rare. 
+One way to avoid the edge case where we encounter a very long run is to not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the `std::unordered_map` on top of our Direct Map Dictionary, but we will take a hit in compression ratio. Figure \@ref(fig:findlongestwmax) summarizes the results of the different methods with the max length rule enforced. There is a slight performance improvement for looping, which makes sense because long runs are very rare. Binary search actually takes a performance drop. The reason for this is that because we are starting at the average, most of the time we are searching for a value that is right next to our start value. So in a lot of cases, binary search will actually require more search time relative to looping. There are also a lot of if statements involved in binary search, which can increase the run time if the computer has a hard time predicting the outcome of those if statements.
 
 
 ```{r findlongestwmax, warnings= F, messages = F, fig.cap = "Comparing the different ways of finding the longest run starting at average with strings over max (15) not accepted.", echo = F, fig.height = 5}
