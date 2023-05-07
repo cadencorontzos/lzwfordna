@@ -110,6 +110,6 @@ int main(int argc, char *argv[]) {
   std::cout << "Compressed file size (bytes) : " << output_size << std::endl;
   std::cout << "Compression Ratio : "
             << compressionRatio(output_size, fileInfo.st_size) << std::endl;
-  std::cout << "Compression Time (ms) : " << duration.count() << std::endl;
+  std::cout << "Compression Time (ns) : " << duration.count() << std::endl;
   return 0;
 }
