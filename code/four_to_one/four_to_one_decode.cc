@@ -59,6 +59,6 @@ int main(int argc, char *argv[]) {
   fs::path out = std::string(argv[1]) + ".decompressed.4t1";
   auto output_size = fs::file_size(out);
   std::cout << "Decompressed file size (bytes) : " << output_size << std::endl;
-  std::cout << "Decompression Time (ms) : " << duration.count() << std::endl;
+  std::cout << "Decompression Time (ns) : " << duration.count() << std::endl;
   return 0;
 }
