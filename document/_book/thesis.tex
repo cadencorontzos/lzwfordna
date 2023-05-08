@@ -1212,11 +1212,7 @@ find_longest(input_string){
 \end{verbatim}
 Of course, there are theoretically quicker ways of iterating than looping up or down. We could use binary search.
 
-Binary search is a searching technique for sorted lists, but we can use it in this scenario as well. Suppose we have an array of integers, and we are searching for some value in that array. The algorithm works by repeatedly dividing the search interval in half, comparing the middle element of the subarray to the target value, and then deciding whether to continue the search on the left half or right half of the subarray.
-
-If the middle element is equal to the target value, the search ends and the position of the element is returned. If the middle element is greater than the target value, the search continues on the left half of the subarray. Conversely, if the middle element is less than the target value, the search continues on the right half of the subarray.
-
-Binary search has a time complexity of O(log n), meaning most times, we don't have to search through all the values to find the one we are looking for. This makes it a very efficient algorithm for searching large sorted arrays. In our case, we are searching an array of bytes rather than an array of integers. We are looking for where a string of length n is in the dictionary, but the string of length n+1 is not.
+Binary search is a searching technique for sorted lists, but we can use it in this scenario as well. We are looking for where a string of length n is in the dictionary, but the string of length n+1 is not. Suppose we are searching for the longest run in a string of length 7. We can see if the middle element, the string of length 4, is the longest run. If it is, we return it. If it is not the longest run but it is in the dictionary, we can continue searching between lengths 5 and 7. If the string of length 4 is not in the dictionary, we know the longest run must lie between lengths 1 and 3. We can continue searching in this manner until we find the longest run.
 \begin{verbatim}
 find_longest(input_string){
 
@@ -1237,12 +1233,12 @@ Of course, we could also calculate the indexes for binary search on the fly. So 
 \includegraphics{thesis_files/figure-latex/findlongestfrommaxfig-1.pdf}
 \caption{\label{fig:findlongestfrommaxfig}Comparing the different ways of finding the longest run.}
 \end{figure}
-We see that calculating the index on the fly does tend to improve performance. However, we can also see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in \ref{fig:allrunshistfig}. This means that if we start looking from runs around length 10, we should see a performance improvement.
+We see that calculating the index on the fly does tend to improve performance, so from now on we will calculate indexes on the fly. However, we can also see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in \ref{fig:allrunshistfig}. This means that if we start looking from runs around length 10, we should see a performance improvement.
 
 \hypertarget{finding-the-longest-from-the-average}{%
 \subsection{Finding the Longest From The Average}\label{finding-the-longest-from-the-average}}
 
-As we can see in Figure \ref{fig:findlongestfromavg}, looping from the average run length, which we approximate at 7, increases throughput and decreases mean compression time relative to looping up from zero. Binary search from the average performs about the same as looping up from zero on the fly.
+As we can see in Figure \ref{fig:findlongestfromavg}, looping from the average run length, which we approximate at 7, increases throughput and decreases mean compression time relative to looping up from zero. Binary search from the average performs about the same as looping up from zero.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/findlongestfromavg-1.pdf}
