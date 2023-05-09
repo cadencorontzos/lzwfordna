@@ -37,7 +37,7 @@ acknowledgements: |
 #preface: |
 #  ex
 abbreviations:
-  LZW: Lempel Ziv Welch
+  LZW: Lempel-Ziv-Welch
   RLE: Run Length Encoding
   EOF: End of file
   DNA: Deoxyribonucleic acid

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  8 MAY 2023 17:02
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  8 MAY 2023 17:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1297,20 +1297,16 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1472--1473
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [47]
-<thesis_files/figure-latex/decompcomparisonofourmethodsfig-1.pdf, id=723, 289.08pt x 361.35pt>
+<thesis_files/figure-latex/decompcomparisonofourmethodsfig-1.pdf, id=723, 289.08pt x 289.08pt>
 File: thesis_files/figure-latex/decompcomparisonofourmethodsfig-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/decompcomparisonofourmethodsfig-1.pdf>
 Package pdftex.def Info: thesis_files/figure-latex/decompcomparisonofourmethodsfig-1.pdf  used on input line 1543.
-(pdftex.def)             Requested size: 289.07928pt x 361.34912pt.
+(pdftex.def)             Requested size: 289.07928pt x 289.07928pt.
 [48 <./thesis_files/figure-latex/comparisonofourmethodsfig-1.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[49]
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[50 <./thesis_files/figure-latex/decompcomparisonofourmethodsfig-1.pdf>]
-<thesis_files/figure-latex/othertoolsgraphfig-1.pdf, id=750, 469.755pt x 289.08pt>
+[49 <./thesis_files/figure-latex/decompcomparisonofourmethodsfig-1.pdf>]
+<thesis_files/figure-latex/othertoolsgraphfig-1.pdf, id=746, 469.755pt x 289.08pt>
 File: thesis_files/figure-latex/othertoolsgraphfig-1.pdf Graphic file (type pdf)
 <use thesis_files/figure-latex/othertoolsgraphfig-1.pdf>
 Package pdftex.def Info: thesis_files/figure-latex/othertoolsgraphfig-1.pdf  used on input line 1656.
@@ -1322,6 +1318,9 @@ Overfull \hbox (36.13387pt too wide) in paragraph at lines 1656--1657
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[50]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [51] [52 <./thesis_files/figure-latex/othertoolsgraphfig-1.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1361,13 +1360,13 @@ Package rerunfilecheck Info: File `thesis.out' has not changed.
 Here is how much of TeX's memory you used:
  37599 strings out of 477961
  821330 string characters out of 5836430
- 1900068 words of memory out of 5000000
+ 1901068 words of memory out of 5000000
  56979 multiletter control sequences out of 15000+600000
  571160 words of font info for 73 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  132i,12n,132p,1638b,1600s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on thesis.pdf (74 pages, 440271 bytes).
+Output written on thesis.pdf (74 pages, 440273 bytes).
 PDF statistics:
  924 PDF objects out of 1000 (max. 8388607)
  790 compressed objects within 8 object streams
