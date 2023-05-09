@@ -37,7 +37,6 @@
 \usepackage{chemarr} %% Useful for one reaction arrow, useless if you're not a chem major
 \usepackage[hyphens]{url}
 % Added by CII
-\usepackage{hyperref}
 \usepackage{lmodern}
 \usepackage{float}
 \floatplacement{figure}{H}
@@ -45,7 +44,8 @@
 \usepackage{calc}
 % End of CII addition
 \usepackage{rotating}
-
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=false}
 % Next line commented out by CII
 %%% \usepackage{natbib}
 % Comment out the natbib line above and uncomment the following two lines to use the new
@@ -256,7 +256,6 @@ Large files containing DNA sequences can be bottlenecks for genetic research, as
                 \textbf{RLE} & Run Length Encoding \\
             \end{tabular}
 \end{table}
-  \hypersetup{linkcolor=black}
   \setcounter{secnumdepth}{2}
   \setcounter{tocdepth}{2}
   \tableofcontents
