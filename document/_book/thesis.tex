@@ -192,7 +192,7 @@ Thank you to Eitan Frachtenberg, who helped me constantly throughout the whole y
 
 Thanks also to all the other staff and faculty who helped me through my four years at Reed. Thank you to B Hunter, who was enormous help to me in getting jobs and opportunites throughout my time here. Thank you also to David Ramirez, whose advice and mentorship I am always grateful for.
 
-Thank you to my family for supporting me, and thank you to all the wonderful people I met at Reed. I have enjoyed this part of my life immensely, and I am excited to see what is next.
+Thank you to my family for supporting me, especially my parents, and thank you to all the wonderful people I met at Reed. I have enjoyed this part of my life immensely, and I am excited to see what is next.
 }
 
 \Dedication{
@@ -204,7 +204,7 @@ Thank you to my family for supporting me, and thank you to all the wonderful peo
 }
 
 \Abstract{
-Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer gigabytes or even terabytes worth of genetic data. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
+Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer gigabytes or even terabytes worth of genetic data. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
 }
 
 	\usepackage{setspace}\onehalfspacing
@@ -243,7 +243,7 @@ Large files containing DNA sequences can be bottlenecks for genetic research, as
 
     Thanks also to all the other staff and faculty who helped me through my four years at Reed. Thank you to B Hunter, who was enormous help to me in getting jobs and opportunites throughout my time here. Thank you also to David Ramirez, whose advice and mentorship I am always grateful for.
 
-    Thank you to my family for supporting me, and thank you to all the wonderful people I met at Reed. I have enjoyed this part of my life immensely, and I am excited to see what is next.
+    Thank you to my family for supporting me, especially my parents, and thank you to all the wonderful people I met at Reed. I have enjoyed this part of my life immensely, and I am excited to see what is next.
   \end{acknowledgements}
 
 \chapter*{List of Abbreviations}
@@ -265,7 +265,7 @@ Large files containing DNA sequences can be bottlenecks for genetic research, as
 
   \listoffigures
   \begin{abstract}
-    Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer gigabytes or even terabytes worth of genetic data. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
+    Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer gigabytes or even terabytes worth of genetic data. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
   \end{abstract}
 
 \mainmatter % here the regular arabic numbering starts
@@ -279,7 +279,7 @@ This thesis deals with some high-level topics and uses language specific to comp
 \hypertarget{what-is-information}{%
 \section{What is information?}\label{what-is-information}}
 
-Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information: you could send a text message, you could use words, you could use sign language. Regardless of the medium, there is some important idea to get across. Does it matter if the other person gets your message exactly? If someone asks you ``Where library?'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library''?
+Suppose you had an idea that you wanted to share with another person. Humans have many ways to communicate information: you could send a text message, you could use words, you could use sign language. Regardless of the medium, there is some important idea to get across. Does it matter if the other person gets your message exactly? If someone asks you ``Where library?'', despite the lack of prepositions, you still understand what they mean. So did that person convey any less information than a person who asks ``Where is the library?''?
 Clearly, information is fundamental to how humans interact and how they understand the world, but defining it proves difficult. For our purposes, let's assume that information is data with significance that makes it worth preserving and conveying.
 
 Information on computers can take many forms, such as text, audio, and video. This information can travel through many channels including the internet, wires, and screens. To maximize the amount of information that can be transmitted through a channel with a limited capacity, we need to encode the information in a way which minimizes its size, while also preserving its essential features. This process is called compression.
@@ -317,7 +317,7 @@ Lossy compression is based on the idea that not all information is vital. For in
 \hypertarget{lossless}{%
 \subsection{Lossless}\label{lossless}}
 
-Lossless compression is the compression of data with the goal of preserving all the information in the data so that it can be reproduced perfectly on decompression. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be wholly recovered, like scientific data, archiving (e.g a .zip folder), and high end audio recording. Examples of lossless compression algorithms are Huffman Encoding and Lempel-Ziv-Welch.
+Lossless compression is the compression of data with the goal of preserving all the information in the data so that it can be reproduced perfectly on decompression. As a result, lossless compression algorithms usually don't compress as well as their lossy counterparts. Lossless algorithms are important for use cases in which data needs to be wholly recovered, like scientific data, archiving (e.g a .zip folder), and high end audio and video. Examples of lossless compression algorithms are Huffman Encoding and Lempel-Ziv-Welch.
 
 \hypertarget{classic-compression-algorithms}{%
 \section{Classic Compression Algorithms}\label{classic-compression-algorithms}}
@@ -334,14 +334,14 @@ We can still get this message across without repeating ourself quite as much. Wh
 
 \[2A1G1C8T5G3C1T\]
 
-Although not as sophisticated as other methods, RLE is effective when used on applications with large runs of repetitive data. For instance, photos that have solid backgrounds, like a logo, can be effectively compressed by RLE.
+Although not as sophisticated as other methods, RLE is effective when used on applications with large runs of repetitive data. For instance, photos that have large areas of solid colors, like a logo, can be effectively compressed by RLE.
 
 \hypertarget{huffman}{%
 \subsection{Huffman}\label{huffman}}
 
-Huffman Encoding is a lossless compression algorithm that assigns variable length code to certain symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
+Huffman Encoding is a lossless compression algorithm that assigns codes do different symbols in the data. The goal is to assign short codes to frequently appearing symbols and longer codes to less frequent symbols.
 
-Suppose we have a message ``ACAGGATGGC''. We can calculate the frequency of each letter by counting the number of times each letter shows up and dividing by the total number of letters
+Suppose we have a message ``ACAGGATGGC''. We can calculate the frequency of each letter by counting the number of times each letter shows up and dividing by the total number of letters.
 
 Then, we can use the frequencies to build a tree, which will assign short codes for frequent letters and longer code for less frequent letters. The more frequent characters occur higher up in the tree, giving them a shorter length. The less frequent characters occur farther down on the tree. If you follow the branches in Figure \ref{fig:huffman} down to a letter, it will tell you the code associated with that letter.
 \begin{figure}[h]\centering
@@ -374,19 +374,19 @@ So our message would be encoded to \(1011010001011100110\).
 \hypertarget{arithmetic}{%
 \subsection{Arithmetic}\label{arithmetic}}
 
-Arithmetic encoding is another lossless compression algorithm that uses probability to assign codes to symbols in the message. Unlike Huffman, arithmetic encoding assigns a single code to the whole message, rather than separate codes for each symbol.
+Arithmetic encoding is another lossless compression algorithm that uses probability to encode messages. Unlike Huffman, arithmetic encoding assigns a single code to the whole message, rather than separate codes for each symbol.
 
-Here is a simple example. Say we want to encode a string of characters ``ACGGT''. Arithmetic Encoding also requires the encoder and decoder know the probabilities of each of the characters that could possibly be in the message. Let's say the probabilities of each symbol in the message are:
+Here is a simple example. Say we want to encode a string of characters ``ACGGT''. Arithmetic encoding also requires the encoder and decoder know the probabilities of each of the characters that could possibly be in the message. Let's say the probabilities of each symbol in the message are:
 \begin{itemize}
 \tightlist
 \item
-  \(P(A) = a_1 = 2/10\)
+  \(P(A) = P(a_1) = 2/10\)
 \item
-  \(P(C) = a_2 = 2/10\)
+  \(P(C) = P(a_2) = 2/10\)
 \item
-  \(P(G) = a_3 = 4/10\)
+  \(P(G) = P(a_3) = 4/10\)
 \item
-  \(P(T) = a_4 = 2/10\)
+  \(P(T) = P(a_4) = 2/10\)
 \end{itemize}
 We want to represent the message as a fractional number between 0 and 1. We will divide the interval {[}0,1{]} into sub intervals using the probabilities of each character in the message. That way, each symbol is represented by the sub-interval that corresponds to its probability.
 \begin{figure}
@@ -418,7 +418,7 @@ As long as the person recieving this message understood that `AA' = 1, they coul
 
 \[\text{1212}\]
 
-As you can see, our message is getting shorter. The problem is, how do we decide what elements start in our dictionary? Well, we can start with a small dictionary, and build up a larger dictionary as we go along. Let me explain. Suppose we are still trying to encode ``AACAAC''. Assume we start with the dictionary \{`AA' = 1\}. We can scan through the message from left to right, looking for instances of `AA' and replace them. We see ``AAC'' at the beginning of the string. We can encode this as ``1C''. Here is our message so far
+As you can see, our message is getting shorter. The problem is, how do we decide what elements start in our dictionary? Well, we can start with a small dictionary, and build up a larger dictionary as we go along. Let me explain. Suppose we are still trying to encode ``AACAAC''. Assume we start with the dictionary \{`AA' = 1\}. We can scan through the message from left to right, looking for instances of `AA' and replace them. We see ``AAC'' at the beginning of the string. We can encode this as ``1C''. Here is our message so far, where the ``1C'' has already been encoded, and everything else we have yet to look at.
 
 \[\text{1CAAC}\]
 
@@ -566,7 +566,7 @@ This is the basic strategy we will start with for our LZW algorithm. In the next
 \hypertarget{related-work}{%
 \section{Related Work}\label{related-work}}
 
-Deoxyribonucleic acid (DNA) is the building block of life. In four letters (A, C, G, and T) called nucleotides, DNA holds the genetic information required for reproduction in all living organisms. DNA can be billions of characters long, which can mean gigabytes or terabytes of storage on a computer.
+Deoxyribonucleic acid (DNA) is the building block of life. In four letters (A, C, G, and T) called nucleotides, DNA holds the genetic information required for reproduction in all living organisms. DNA can be billions of characters long, which can mean gigabytes or terabytes of storage for a researcher using many of these files.
 The idea of compressing DNA is not novel, nor is the idea of using LZW for this purpose. DNA compression is a significant research area in the intersection of bioinformatics, computer science, and mathematics.
 
 There have been several attempts to optimize LZW by computer science researchers. One paper made use of multiple indexed dictionaries in order to speed up the compression process (Keerthy, 2019). The concept is simple: rather than a single large dictionary, have multiple dictionaries, one for each possible string length. This allows each of the dictionaries to grow more slowly, allowing accesses to be faster. This paper also used genomic data to gather their metrics and compared their algorithm to other popular DNA compression techniques, which makes it particularly relevant for this thesis.

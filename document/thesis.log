@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  8 MAY 2023 16:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  8 MAY 2023 17:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -988,10 +988,7 @@ Package pdftex.def Info: figure/arithmeticencoding.png  used on input line 394.
 [5{c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc} <./figure/arithmeticencoding.png (PNG copy)>] [6]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[7]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-[8] [9] [10] [11]
+[7] [8] [9] [10] [11]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [12] [13] [14
@@ -1370,7 +1367,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  132i,12n,132p,1638b,1600s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on thesis.pdf (74 pages, 440193 bytes).
+Output written on thesis.pdf (74 pages, 440271 bytes).
 PDF statistics:
  924 PDF objects out of 1000 (max. 8388607)
  790 compressed objects within 8 object streams
