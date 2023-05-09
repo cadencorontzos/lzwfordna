@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  8 MAY 2023 17:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.23)  8 MAY 2023 16:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1343,6 +1343,16 @@ Underfull \hbox (badness 1675) in paragraph at lines 1710--1712
  []
 
 
+Underfull \hbox (badness 1715) in paragraph at lines 1719--1721
+[]\T1/lmr/m/n/12 Singhaniya, R. (2021, Oc-to-ber). \T1/lmr/m/it/12 Bench Part-ner\T1/lmr/m/n/12 . Re-trieved from []$\T1/lmtt/m/n/12 https :
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1719--1721
+\T1/lmtt/m/n/12 / / benchpartner . com / q / explain -[] arithmetic -[] encoding -[] process -[] with -[]
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [57
@@ -1352,18 +1362,18 @@ Package rerunfilecheck Info: File `thesis.out' has not changed.
 (rerunfilecheck)             Checksum: A40298D1F220847DFE9A0CD82ED28FED;7735.
  ) 
 Here is how much of TeX's memory you used:
- 37598 strings out of 477961
- 821304 string characters out of 5836430
+ 37599 strings out of 477961
+ 821330 string characters out of 5836430
  1900068 words of memory out of 5000000
  56979 multiletter control sequences out of 15000+600000
  571160 words of font info for 73 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  132i,12n,132p,1638b,1600s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/ccbal/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on thesis.pdf (74 pages, 439754 bytes).
+Output written on thesis.pdf (74 pages, 440193 bytes).
 PDF statistics:
- 920 PDF objects out of 1000 (max. 8388607)
- 786 compressed objects within 8 object streams
- 215 named destinations out of 1000 (max. 500000)
+ 924 PDF objects out of 1000 (max. 8388607)
+ 790 compressed objects within 8 object streams
+ 216 named destinations out of 1000 (max. 500000)
  451 words of extra memory for PDF output out of 10000 (max. 10000000)
 

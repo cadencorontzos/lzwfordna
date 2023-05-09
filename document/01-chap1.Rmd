@@ -113,7 +113,7 @@ We want to represent the message as a fractional number between 0 and 1. We will
 ```{r arithmeticencoding, echo = FALSE, fig.cap="Example of arithmetic encoding.", out.width="0.9\\linewidth", fig.align="center"}
 include_graphics(path = "figure/arithmeticencoding.png")
 ```
-Since 'A' comes first, we divide [0,1] into [0.0,0.2) since $P(A) = 2/10$. Since 'C' is next, we divide the new fraction of the space [0.0, 0.2) into chunks based on the probabilities of the characters and choose the chunk corresponding to 'C'. Figure \@ref(fig:arithmeticencoding) shows this process through the whole string "ACGGT". We end up with an interval from 0.0688 to 0.06752.
+Since 'A' comes first, we divide [0,1] into [0.0,0.2) since $P(A) = 2/10$. Since 'C' is next, we divide the new fraction of the space [0.0, 0.2) into chunks based on the probabilities of the characters and choose the chunk corresponding to 'C'. Figure \@ref(fig:arithmeticencoding) shows this process through the whole string "ACGGT". We end up with an interval from 0.0688 to 0.06752 [@arithmeticencodingsite].
 
 So any number in the interval can be used to represent our message as long as the decoder knows the probabilities that we used to encode it.
 

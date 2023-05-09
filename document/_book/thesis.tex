@@ -397,7 +397,7 @@ We want to represent the message as a fractional number between 0 and 1. We will
 
 \caption{Example of arithmetic encoding.}\label{fig:arithmeticencoding}
 \end{figure}
-Since `A' comes first, we divide {[}0,1{]} into {[}0.0,0.2) since \(P(A) = 2/10\). Since `C' is next, we divide the new fraction of the space {[}0.0, 0.2) into chunks based on the probabilities of the characters and choose the chunk corresponding to `C'. Figure \ref{fig:arithmeticencoding} shows this process through the whole string ``ACGGT''. We end up with an interval from 0.0688 to 0.06752.
+Since `A' comes first, we divide {[}0,1{]} into {[}0.0,0.2) since \(P(A) = 2/10\). Since `C' is next, we divide the new fraction of the space {[}0.0, 0.2) into chunks based on the probabilities of the characters and choose the chunk corresponding to `C'. Figure \ref{fig:arithmeticencoding} shows this process through the whole string ``ACGGT''. We end up with an interval from 0.0688 to 0.06752 (Singhaniya, 2021).
 
 So any number in the interval can be used to represent our message as long as the decoder knows the probabilities that we used to encode it.
 
@@ -1715,6 +1715,9 @@ Pani, A., Mishra, M., \& Mishra, T. (2012). Parallel lempel-ziv-welch (PLZW) tec
 
 \leavevmode\vadjust pre{\hypertarget{ref-prataspinho}{}}%
 Pratas, D., \& Pinho, A. (2018). A DNA sequence corpus for compression benchmark. In (pp. 208--215). http://doi.org/\href{https://doi.org/10.1007/978-3-319-98702-6_25}{10.1007/978-3-319-98702-6\_25}
+
+\leavevmode\vadjust pre{\hypertarget{ref-arithmeticencodingsite}{}}%
+Singhaniya, R. (2021, October). \emph{Bench Partner}. Retrieved from \url{https://benchpartner.com/q/explain-arithmetic-encoding-process-with-an-example}
 
 \leavevmode\vadjust pre{\hypertarget{ref-welch1984technique}{}}%
 Welch, T. A. (1984). A technique for high-performance data compression. \emph{Computer}, \emph{17}(6), 8--19. http://doi.org/\href{https://doi.org/10.1109/MC.1984.1659158}{10.1109/MC.1984.1659158}
