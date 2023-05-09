@@ -204,7 +204,7 @@ Thank you to my family for supporting me, and thank you to all the wonderful peo
 }
 
 \Abstract{
-Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer files that are gigabytes or even terabytes in size. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
+Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer gigabytes or even terabytes worth of genetic data. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
 }
 
 	\usepackage{setspace}\onehalfspacing
@@ -265,7 +265,7 @@ Large files containing DNA sequences can be bottlenecks for genetic research, as
 
   \listoffigures
   \begin{abstract}
-    Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer files that are gigabytes or even terabytes in size. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
+    Large files containing DNA sequences can be bottlenecks for genetic research, as it can be very difficult to store and transfer gigabytes or even terabytes worth of genetic data. In this thesis, we focus on compressing DNA sequences using the Lempel-Ziv-Welch (LZW) compression algorithm. LZW relies heavily on a dictionary type data structure, hindering its speed in compression. We propose a dictionary implementation we call the Direct Map Dictionary. Using the machine instruction \texttt{pext}, we were able to make the Direct Map Dictionary very fast and specifically tailored for DNA. Using this new data structure, we implement a greedy version of LZW we call Three Stream LZW which is able to compress large DNA files with a good compression ratio and notable speed, even when compared to professional tools.
   \end{abstract}
 
 \mainmatter % here the regular arabic numbering starts
@@ -364,7 +364,7 @@ if n=1{edge label={node [midway, left] {0} } }{edge label={node [midway, right] 
  ] 
 ] 
 \end{forest}
-\caption{Example Huffman tree}
+\caption{Example Huffman tree.}
 \label{fig:huffman}
 \end{figure}
 So \(G=0\), \(A = 10\), \(T=111\) and \(C=110\). Notice that none of the encodings are prefixes of one another, which makes it unambiguous in decoding.
@@ -475,7 +475,7 @@ So the encoded string will look something like
 10 & AAGGAATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7, CC: 8} & 0A1G4T3C \\
 \hline
 \end{tabular}
-\caption{ An example of LZW ran on the input "AAGGAATCC"}
+\caption{ An example of LZW ran on the input "AAGGAATCC".}
 \label{tab:lzwexample}
 \end{table}
 Table \ref{tab:lzwexample} illustrates this example fully.
@@ -1233,7 +1233,7 @@ Of course, we could also calculate the indexes for binary search on the fly. So 
 \includegraphics{thesis_files/figure-latex/findlongestfrommaxfig-1.pdf}
 \caption{\label{fig:findlongestfrommaxfig}Comparing the different ways of finding the longest run.}
 \end{figure}
-We see that calculating the index on the fly does tend to improve performance, so from now on we will calculate indexes on the fly. However, we can also see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in \ref{fig:allrunshistfig}. This means that if we start looking from runs around length 10, we should see a performance improvement.
+We see that calculating the index on the fly does tend to improve performance, so from now on we will calculate indexes on the fly. However, we can also see that none of the other strategies are better than just looping up from zero. This could be because most of the runs are very short, which we can see in Figure \ref{fig:allrunshistfig}. This means that if we start looking from runs around length 10, we should see a performance improvement.
 
 \hypertarget{finding-the-longest-from-the-average}{%
 \subsection{Finding the Longest From The Average}\label{finding-the-longest-from-the-average}}
@@ -1249,7 +1249,7 @@ We are capitalizing on the fact that most runs are short. There is the occasiona
 \hypertarget{not-allowing-strings-over-max}{%
 \subsection{Not Allowing strings over max}\label{not-allowing-strings-over-max}}
 
-One way to avoid the edge case where we encounter a very long run is to not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the \texttt{std::unordered\_map} on top of our Direct Map Dictionary, but we will take a hit in compression ratio. Figure \ref{fig:findlongestwmax} summarizes the results of the different methods with the max length rule enforced. There is a slight performance improvement for looping, which makes sense because long runs are very rare. Binary search actually takes a performance drop. The reason for this is that because we are starting at the average, most of the time we are searching for a value that is right next to our start value. So in a lot of cases, binary search will actually require more search time relative to looping. There are also a lot of if statements involved in binary search, which can increase the run time if the computer has a hard time predicting the outcome of those if statements.
+One way to avoid the edge case where we encounter a very long run is to not allow strings in the dictionary longer than the max string length, in this case, 15. This means we won't have to deal with the overhead of the \texttt{std::unordered\_map} on top of our Direct Map Dictionary, but we will take a hit in compression ratio. Figure \ref{fig:findlongestwmax} summarizes the results of the different methods with the max length rule enforced. There is a slight performance improvement for looping, which makes sense because long runs are very rare. Binary search actually takes a performance drop. When the max is enforced, we can do binary search across the strings of lengths 1-15, while before we were either binary searching down from 7 or looping up because the maximum string length was unbounded. This allows us to avoid ever having to loop, which should be faster, but it isn't. The reason for this is that because we are starting at the average, most of the time we are searching for a value that is right next to our start value. So in a lot of cases, binary search will actually require more search time relative to looping. There are also a lot of if statements involved in binary search, which can increase the run time if the computer has a hard time predicting the outcome of those if statements.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/findlongestwmax-1.pdf}
@@ -1326,7 +1326,7 @@ node distance=0pt,
 \end{figure}
 We did get lucky in that the 6th and 7th bit (from left to right) on A, C, T, and G give a unique 2 bit values. This means we can just extract the 6th and 7th bit from every character without knowing what it is.
 
-We can apply this technique to our \texttt{find\_longest} function: we can extract the index of a string using \texttt{pext} very quickly, then use that index rather than recalculating it every time. This means that if we precompute the index with \texttt{pext}, a lookup in the Direct Map Dictionary can theoretically happen in constant time. In other words, the actual dictionary queries are almost instantaneous. Figure \ref{fig:findlongestwpext} hows the results of this application for both looping and binary search. In both cases, using \texttt{pext} to extract the index of the string increases throughput and decreases average compression time.
+We can apply this technique to our \texttt{find\_longest} function: we can extract the index of a string using \texttt{pext} very quickly, then use that index rather than recalculating it every time. This means that if we precompute the index with \texttt{pext}, a lookup in the Direct Map Dictionary can theoretically happen in constant time. In other words, the actual dictionary queries are almost instantaneous. Figure \ref{fig:findlongestwpext} hows the results of this application for both looping and binary search. In both cases, using \texttt{pext} to extract the index of the string increases throughput and decreases average compression time. Overall, looping from the average using \texttt{pext} is the fastest strategy, so this is the method used in the final implementation of the Direct Map Dictionary.
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/findlongestwpext-1.pdf}
@@ -1474,7 +1474,7 @@ We can also see the raw values in Table \ref{tab:comparisonofourmethodstab}. Whi
 \end{figure}
 \begin{table}[!h]
 
-\caption{\label{tab:comparisonofourmethodstab}Performance metrics for our final implementations.}
+\caption{\label{tab:comparisonofourmethodstab}Compression Ratios of Final Implementations.}
 \centering
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{l|r|r|r|r|r|r}
@@ -1654,7 +1654,7 @@ Table \ref{tab:othertoolstab} summarizes the compression ratios of both the othe
 \begin{figure}
 \centering
 \includegraphics{thesis_files/figure-latex/othertoolsgraphfig-1.pdf}
-\caption{\label{fig:othertoolsgraphfig}Average compression time of other methods and our final implementations.}
+\caption{\label{fig:othertoolsgraphfig}Time comparison of professional tools and our final implementations.}
 \end{figure}
 \hypertarget{conclusion}{%
 \chapter*{Conclusion}\label{conclusion}}
@@ -1666,7 +1666,7 @@ The concept of an indexed, Direct Map dictionary is one that could prove useful 
 
 The Four to One implementation, another use of \texttt{pext}, is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications where there are fewer characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA).
 
-Overall, our thesis has produced a few notable implementations of LZW, created a Direct Map Dictionary data structure which has high potential for other compression applications, and shown the relevance of \texttt{pext} in optimizing compression algorithms.
+Overall, this thesis has produced a few notable implementations of LZW, created a Direct Map Dictionary data structure which has high potential for other compression applications, and shown the relevance of \texttt{pext} in optimizing compression algorithms.
 
 \appendix
 

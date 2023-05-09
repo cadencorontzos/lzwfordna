@@ -87,7 +87,7 @@ if n=1{edge label={node [midway, left] {0} } }{edge label={node [midway, right] 
 ] 
 \end{forest}
 
-\caption{Example Huffman tree}
+\caption{Example Huffman tree.}
 \label{fig:huffman}
 \end{figure}
 
@@ -191,7 +191,7 @@ $$\text{0A....}$$
 10 & AAGGAATCC & {A: 0, G: 1, T: 2, C: 3, AA: 4, GG: 5, GA: 6, AAT: 7, CC: 8} & 0A1G4T3C \\
 \hline
 \end{tabular}
-\caption{ An example of LZW ran on the input "AAGGAATCC"}
+\caption{ An example of LZW ran on the input "AAGGAATCC".}
 \label{tab:lzwexample}
 \end{table}
 

@@ -47,7 +47,7 @@ df_new <- wholedf %>%
 names(df_new) <-   gsub("\\.", " ", names(df_new))
 
 
-kbl(df_new, caption = "Performance metrics for our final implementations.") %>%
+kbl(df_new, caption = "Compression Ratios of Final Implementations.") %>%
   add_header_above(c(" " = 2, "Compression Ratio " = 5 )) %>% 
     kable_styling(latex_options=c("scale_down", "hold_position", "striped"))
 ```
@@ -82,7 +82,7 @@ As discussed in the related work section of chapter 1, there have been several o
 
 Note that I wasn't able to get compression times for these algorithms, only the compression ratios [@CaoXM].
 
-```{r researchmethodsresultsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base", fig.height = 4, echo = F}
+```{r researchmethodsresultsfig, warnings= F, messages = F, fig.cap = "Compression ratios of related works on DNACorpus1, reported as bits per base.", fig.height = 4, echo = F}
 
 Name <- c("DNACorpus1/chmpxx", "DNACorpus1/chntxx", "DNACorpus1/hehcmv", "DNACorpus1/humdyst", "DNACorpus1/humghcs", "DNACorpus1/humhbb", "DNACorpus1/humhdab", "DNACorpus1/humprtb", "DNACorpus1/mpomtcg", "DNACorpus1/mtpacga", "DNACorpus1/vaccg")
 
@@ -211,7 +211,7 @@ kbl(df_new, caption = "Performance metrics for other professional tools. Xz, bzi
 
 Table  \@ref(tab:othertoolstab) summarizes the compression ratios of both the other tools and our 5 implementations. Not surprisingly, all of our implementations do better than general compressors `bzip` and `gzip` in terms of compression ratio on the larger files. Both of these tools were created to work on a broad array of files, and thus they do not take into account the specific characteristics of genetic sequences that we saw such as there only being four characters. On the other hand, `genozip` does outperform our implementation in terms of compression ratio on most files, which also makes sense as it was also created with DNA in mind. It is also worth noting that `xz` does surprisingly well, beating even `genozip` on some of the larger files. However, if you look at the performance data in Figure \@ref(fig:othertoolsgraphfig), you can see that both our Three Stream LZW and Direct Map LZW are significantly faster than all these other tools, including `genozip` and `xz`. In fact, `xz` is over 10 times slower than Three Stream LZW in terms of average compression time. So for large files, you if you want a balance between compression ratio and compression time, Three Streams may be a viable option. Of course, if you are looking for speed, you should use the Four to One implementation, which still blows all others out of the water.
 
-```{r othertoolsgraphfig, warnings= F, messages = F, fig.cap = "Average compression time of other methods and our final implementations.", fig.height = 4, echo = F}
+```{r othertoolsgraphfig, warnings= F, messages = F, fig.cap = "Time comparison of professional tools and our final implementations.", fig.height = 4, echo = F}
 
 summary <- wholedf %>% 
   group_by(Program) %>% 

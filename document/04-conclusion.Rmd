@@ -6,4 +6,4 @@ The concept of an indexed, Direct Map dictionary is one that could prove useful 
 
 The Four to One implementation, another use of `pext`, is also notable. The Four to One implementation is extremely fast, and could also be useful for other compression applications where there are fewer characters than the encoding scheme accounts for (bytes can be used to store 256 different values, but only 4 are used for DNA). 
 
-Overall, our thesis has produced a few notable implementations of LZW, created a Direct Map Dictionary data structure which has high potential for other compression applications, and shown the relevance of `pext` in optimizing compression algorithms.
+Overall, this thesis has produced a few notable implementations of LZW, created a Direct Map Dictionary data structure which has high potential for other compression applications, and shown the relevance of `pext` in optimizing compression algorithms.
